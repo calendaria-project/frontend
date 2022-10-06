@@ -1,10 +1,10 @@
 import { FC, useContext, useEffect, useState } from 'react';
 import { Button, Col, Form, Input, Row, Table } from 'antd';
 
-import { AuthContext } from '../../../context/AuthContextProvider';
-import { actionMethodResultSync } from '../../../functions/actionMethodResult';
-import { getRequestHeader } from '../../../functions/common';
-import { IPositionViewModel } from '../../../interfaces';
+import { AuthContext } from 'context/AuthContextProvider';
+import { actionMethodResultSync } from 'functions/actionMethodResult';
+import { getRequestHeader } from 'functions/common';
+import { IPositionViewModel } from 'interfaces';
 import { PositionDirectoryModal } from './modal';
 import './styles.scss'
 
@@ -37,7 +37,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
           style={{ margin: 0 }}
           rules={[
             {
-              required: dataIndex !== 'nameEn' ? true : false,
+              required: dataIndex !== 'nameEn',
               message: 'Обязательное поле!',
             },
           ]}

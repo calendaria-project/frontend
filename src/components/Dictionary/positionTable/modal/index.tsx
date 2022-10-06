@@ -1,5 +1,5 @@
 import { Modal, Form, Input, Button, Row, Col } from 'antd'
-import { IPositionViewModel } from "../../../../interfaces";
+import { IPositionViewModel } from "interfaces";
 import { FormInstance } from "antd/es/form/Form";
 
 export interface IPositionDirectoryModal {

@@ -2,12 +2,12 @@ import { Form, message } from 'antd';
 import React, { useContext, useEffect, useState } from "react";
 import { ColumnDefinition } from "tabulator-tables";
 
-import { AuthContext } from "../../../context/AuthContextProvider";
-import { companiesColumns } from "../../../data/columns";
-import { actionMethodResultSync } from "../../../functions/actionMethodResult";
-import { getRequestHeader } from "../../../functions/common";
-import {ICompanyCreateViewModel, ICompanyViewModel, ICompanyTreeNodeModel} from "../../../interfaces";
-import { createTableViaTabulator } from "../../../services/tabulator";
+import { AuthContext } from "context/AuthContextProvider";
+import { companiesColumns } from "data/columns";
+import { actionMethodResultSync } from "functions/actionMethodResult";
+import { getRequestHeader } from "functions/common";
+import {ICompanyCreateViewModel, ICompanyViewModel, ICompanyTreeNodeModel} from "interfaces";
+import { createTableViaTabulator } from "services/tabulator";
 import { CompanyDirectoryModal } from "./modal";
 import './styles.scss';
 import {DataNode} from "antd/es/tree";

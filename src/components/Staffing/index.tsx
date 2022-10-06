@@ -1,6 +1,6 @@
 import { Col, Row } from 'antd';
 import { useEffect, useState } from "react";
-import Header from '../../ui/Header';
+import Header from 'ui/Header';
 
 const Staffing = () => {
 

@@ -1,5 +1,5 @@
 import { Modal, Form, Input, Button, Row, Col } from 'antd'
-import { IDivisionCreateViewModel, IDivisionViewModel } from "../../../../interfaces";
+import { IDivisionCreateViewModel, IDivisionViewModel } from "interfaces";
 import { FormInstance } from "antd/es/form/Form";
 
 export interface IDivisionDirectoryModal {

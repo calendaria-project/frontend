@@ -4,13 +4,13 @@ import { Button, Layout, Menu, MenuProps } from 'antd';
 import { OrderedListOutlined, MenuUnfoldOutlined, MenuFoldOutlined, ScheduleOutlined } from '@ant-design/icons';
 import ButtonGroup from 'antd/lib/button/button-group';
 
-import MainProvider from '../../store/provider';
-import { AuthContext } from "../../context/AuthContextProvider";
-import Dictionary from '../Dictionary';
+import MainProvider from 'store/provider';
+import { AuthContext } from "context/AuthContextProvider";
+import Dictionary from 'components/Dictionary';
 
 import 'antd/dist/antd.css';
 import '../../index.css';
-import Staffing from '../Staffing';
+import Staffing from 'components/Staffing';
 
 const { Header, Sider, Content } = Layout;
 

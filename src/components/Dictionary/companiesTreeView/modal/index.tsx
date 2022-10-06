@@ -1,6 +1,6 @@
 import React from "react";
 import { Modal, Form, Input, Checkbox, Button, Row, Col, Select } from 'antd'
-import { ICompanyCreateViewModel, ICompanyViewModel, IFormItem } from "../../../../interfaces";
+import { ICompanyCreateViewModel, ICompanyViewModel, IFormItem } from "interfaces";
 import { FormInstance } from "antd/es/form/Form";
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import FormItemLabel from "antd/es/form/FormItemLabel";

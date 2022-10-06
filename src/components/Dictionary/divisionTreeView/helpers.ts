@@ -1,5 +1,5 @@
 import { DataNodeItem } from ".";
-import { IDivisionTreeNodeViewModel } from "../../../interfaces";
+import { IDivisionTreeNodeViewModel } from "interfaces";
 
 export const updateTreeChildrenData = (list: DataNodeItem[], id: number, children: DataNodeItem[]): DataNodeItem[] =>
     list.map(node => {

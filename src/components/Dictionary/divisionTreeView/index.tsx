@@ -3,12 +3,12 @@ import type { DataNode } from 'antd/es/tree';
 import React, { useContext, useEffect, useState } from "react";
 import { ColumnDefinition } from "tabulator-tables";
 
-import { AuthContext } from "../../../context/AuthContextProvider";
-import { divisionsColumns } from "../../../data/columns";
-import { actionMethodResultSync } from "../../../functions/actionMethodResult";
-import { getRequestHeader } from "../../../functions/common";
-import { ICompanyViewModel, IDivisionCreateViewModel, IDivisionTreeNodeViewModel, IDivisionViewModel } from "../../../interfaces";
-import { createTableViaTabulator } from "../../../services/tabulator";
+import { AuthContext } from "context/AuthContextProvider";
+import { divisionsColumns } from "data/columns";
+import { actionMethodResultSync } from "functions/actionMethodResult";
+import { getRequestHeader } from "functions/common";
+import { ICompanyViewModel, IDivisionCreateViewModel, IDivisionTreeNodeViewModel, IDivisionViewModel } from "interfaces";
+import { createTableViaTabulator } from "services/tabulator";
 import { DivisionDirectoryModal } from "./modal";
 import './styles.scss';
 

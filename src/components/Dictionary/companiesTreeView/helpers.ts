@@ -1,5 +1,5 @@
 import { DataNodeItem } from ".";
-import { ICompanyTreeNodeModel } from "../../../interfaces";
+import { ICompanyTreeNodeModel } from "interfaces";
 
 export const updateTreeChildrenData = (list: DataNodeItem[], id: number, children: DataNodeItem[]): DataNodeItem[] =>
     list.map(node => {
