@@ -1,9 +1,13 @@
 import { DataNodeItem } from ".";
 import { ICompanyTreeNodeModel } from "interfaces";
 
-export const updateTreeChildrenData = (list: DataNodeItem[], id: number, children: DataNodeItem[]): DataNodeItem[] =>
-    list.map(node => {
-        let data = JSON.parse(JSON.stringify(children))
+export const updateTreeChildrenData = (
+    list: DataNodeItem[],
+    id: number,
+    children: DataNodeItem[]
+): DataNodeItem[] =>
+    list.map((node) => {
+        let data = JSON.parse(JSON.stringify(children));
         if (node.id === id) {
             return {
                 ...node,
@@ -13,15 +17,18 @@ export const updateTreeChildrenData = (list: DataNodeItem[], id: number, childre
         if (node.children) {
             return {
                 ...node,
-                children: updateTreeChildrenData(JSON.parse(JSON.stringify(node.children)), id, JSON.parse(JSON.stringify(data))),
+                children: updateTreeChildrenData(
+                    JSON.parse(JSON.stringify(node.children)),
+                    id,
+                    JSON.parse(JSON.stringify(data))
+                )
             };
         }
         return node;
     });
 
-
 export const saveNode = (list: DataNodeItem[], data: DataNodeItem): DataNodeItem[] =>
-    list.map(node => {
+    list.map((node) => {
         if (node.id === data.id) {
             return {
                 ...data,
@@ -31,16 +38,16 @@ export const saveNode = (list: DataNodeItem[], data: DataNodeItem): DataNodeItem
         if (node.children) {
             return {
                 ...node,
-                children: saveNode(node.children, data),
+                children: saveNode(node.children, data)
             };
         }
         return node;
     });
 
 export const addNode = (list: DataNodeItem[], id: number, data: DataNodeItem): DataNodeItem[] =>
-    list.map(node => {
+    list.map((node) => {
         if (node.id === id) {
-            console.log('sssss')
+            console.log("sssss");
             return {
                 ...node,
                 children: [...node.children, data]
@@ -49,21 +56,21 @@ export const addNode = (list: DataNodeItem[], id: number, data: DataNodeItem): D
         if (node.children) {
             return {
                 ...node,
-                children: addNode(node.children, id, data),
+                children: addNode(node.children, id, data)
             };
         }
         return node;
     });
 
 export const getCompanyTreeItem = (data: ICompanyTreeNodeModel): DataNodeItem => {
-    const id = data.id ? data.id : data.companyId
+    const id = data.id ? data.id : data.companyId;
     return {
         ...data,
         title: data.nameRu,
         id: id,
-        key: id,
-    } as DataNodeItem
-}
+        key: id
+    } as DataNodeItem;
+};
 
 export const modifyCompanyDataToTreeData = (data: ICompanyTreeNodeModel[]): DataNodeItem[] =>
-    data.map(el => getCompanyTreeItem(el))
+    data.map((el) => getCompanyTreeItem(el));

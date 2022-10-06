@@ -4,4 +4,4 @@ export enum MainActionTypes {
     SET_TOKEN = "SET_TOKEN"
 }
 
-export type MainAction = ISetTokenAction
+export type MainAction = ISetTokenAction;

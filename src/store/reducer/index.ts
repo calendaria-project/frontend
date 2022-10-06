@@ -7,8 +7,8 @@ export default (state: IMainState, action: MainAction): IMainState => {
             return {
                 ...state,
                 token: action.payload
-            }
+            };
         default:
-            return { ...state }
+            return { ...state };
     }
-}
+};

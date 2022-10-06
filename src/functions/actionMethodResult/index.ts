@@ -1,9 +1,9 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { IActionMethodCallback, IRequestData } from './interfaces';
-import exceptions from './json/exceptions.json';
-import exceptionsV2 from './json/exceptionsV2.json';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import { IActionMethodCallback, IRequestData } from "./interfaces";
+import exceptions from "./json/exceptions.json";
+import exceptionsV2 from "./json/exceptionsV2.json";
 
-const mode = "DEVELOPMENT"
+const mode = "DEVELOPMENT";
 
 /**
  * @deprecated use actionMethodResultSync
@@ -36,8 +36,27 @@ export const actionMethodResult = (
 };
 
 interface IErrorData {
-    status: 400 | 401 | 402 | 403 | 404 | 405 | 406 | 407 | 408 | 409 | 410 | 418 | 419 | 429 | 434 | 500 | 503 | 507 | 520
-    message: string
+    status:
+        | 400
+        | 401
+        | 402
+        | 403
+        | 404
+        | 405
+        | 406
+        | 407
+        | 408
+        | 409
+        | 410
+        | 418
+        | 419
+        | 429
+        | 434
+        | 500
+        | 503
+        | 507
+        | 520;
+    message: string;
 }
 
 export const actionMethodResultSync = async (
@@ -48,7 +67,7 @@ export const actionMethodResultSync = async (
     /**
      * axios method
      */
-    method: 'post' | 'get' | 'patch' | 'put' | 'delete',
+    method: "post" | "get" | "patch" | "put" | "delete",
     /**
      * axios config
      */
@@ -65,12 +84,8 @@ export const actionMethodResultSync = async (
      * using for render own function
      */
     fnc = {
-        beforeRequest: (...args: any): void => {
-
-        },
-        afterRequest: (response: AxiosResponse): void => {
-
-        }
+        beforeRequest: (...args: any): void => {},
+        afterRequest: (response: AxiosResponse): void => {}
     }
 ) => {
     try {
@@ -79,61 +94,75 @@ export const actionMethodResultSync = async (
         let actionCallback;
 
         switch (method) {
-            case 'get':
-                var response = await axios.get(window.url + url, config).catch((reason) => exceptionHandler(reason, errorData));
+            case "get":
+                var response = await axios
+                    .get(window.url + url, config)
+                    .catch((reason) => exceptionHandler(reason, errorData));
                 break;
-            case 'patch':
-                var response = await axios.patch(window.url + url, data, config).catch((reason) => exceptionHandler(reason, errorData));
+            case "patch":
+                var response = await axios
+                    .patch(window.url + url, data, config)
+                    .catch((reason) => exceptionHandler(reason, errorData));
                 break;
-            case 'post':
-                var response = await axios.post(window.url + url, data, config).catch((reason) => exceptionHandler(reason, errorData));
+            case "post":
+                var response = await axios
+                    .post(window.url + url, data, config)
+                    .catch((reason) => exceptionHandler(reason, errorData));
                 break;
-            case 'put':
-                var response = await axios.put(window.url + url, data, config).catch((reason) => exceptionHandler(reason, errorData));
+            case "put":
+                var response = await axios
+                    .put(window.url + url, data, config)
+                    .catch((reason) => exceptionHandler(reason, errorData));
                 break;
-            case 'delete':
-                var response = await axios.delete(window.url + url, config).catch((reason) => exceptionHandler(reason, errorData));
+            case "delete":
+                var response = await axios
+                    .delete(window.url + url, config)
+                    .catch((reason) => exceptionHandler(reason, errorData));
         }
 
         fnc.afterRequest(response);
 
         if (response?.data) {
-            actionCallback = response.data
+            actionCallback = response.data;
         }
 
         return actionCallback;
-    }
-    catch (err: any) {
-        const messageError = mode.includes("PROD") ? err.message?.split("!")[0] : err.message?.split("!")[1];
+    } catch (err: any) {
+        const messageError = mode.includes("PROD")
+            ? err.message?.split("!")[0]
+            : err.message?.split("!")[1];
         throw new Error(messageError);
     }
-}
+};
 
 export const exceptionHandler = (err: AxiosError, errorData?: IErrorData[]): never => {
-    const response = err.response!
+    const response = err.response!;
 
     if (response) {
         if (errorData) {
-            let hasResult = errorData.find(err => err.status === response.status);
+            let hasResult = errorData.find((err) => err.status === response.status);
 
-            if (hasResult)
-                throw new Error(hasResult.message);
+            if (hasResult) throw new Error(hasResult.message);
         }
 
-        let exception = exceptionsV2.find(obj => obj.status === response.status);
-        throw new Error(`${exception?.message} \n !${mode} MODE: exception status ${exception?.status} \n ${exception?.httpMessage}`);
-    }
-    else {
+        let exception = exceptionsV2.find((obj) => obj.status === response.status);
+        throw new Error(
+            `${exception?.message} \n !${mode} MODE: exception status ${exception?.status} \n ${exception?.httpMessage}`
+        );
+    } else {
         if (mode.includes("LOCAL")) {
             setTimeout(() => {
                 window.open(process.env.URL);
             }, 4000);
-            throw new Error(`!${mode} failed to response to server, check access to ${process.env.URL}. \n Opening ${process.env.URL}...`);
-        }
-        else
-            throw new Error(`Произошла ошибки при оброботке запроса, пожалуйста, повторите попытку чуть позднее \n !${mode} MODE: failed to response to server`);
+            throw new Error(
+                `!${mode} failed to response to server, check access to ${process.env.URL}. \n Opening ${process.env.URL}...`
+            );
+        } else
+            throw new Error(
+                `Произошла ошибки при оброботке запроса, пожалуйста, повторите попытку чуть позднее \n !${mode} MODE: failed to response to server`
+            );
     }
-}
+};
 
 const defaultData = (
     data: any
@@ -143,15 +172,15 @@ const defaultData = (
 } => {
     const result = {
         error: {} as object | null,
-        data: {},
+        data: {}
     };
 
-    if (data.code !== 'SUCCESS') {
+    if (data.code !== "SUCCESS") {
         const exceptionData = exceptions.find((el) => el.code === data.statusCode) as object;
 
         result.error = {
             ...exceptionData,
-            ...data,
+            ...data
         };
     } else {
         result.error = null;
@@ -166,7 +195,7 @@ const arrayData = (data: any[]) => {
     const result = [] as any;
 
     data.forEach((element, index) => {
-        if (element.data.code === 'SUCCESS') {
+        if (element.data.code === "SUCCESS") {
             result.push(element.data.data);
         } else {
             const exceptionData = exceptions.find(
@@ -176,14 +205,14 @@ const arrayData = (data: any[]) => {
             errors.push({
                 error: {
                     ...exceptionData,
-                    ...data[index],
-                },
+                    ...data[index]
+                }
             });
         }
     });
 
     return {
         errors,
-        result,
+        result
     };
 };

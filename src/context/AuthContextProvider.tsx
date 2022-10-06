@@ -3,7 +3,7 @@ import Keycloak, { KeycloakConfig, KeycloakInitOptions } from "keycloak-js";
 import { createContext, useEffect, useState } from "react";
 
 const {
-    location: { protocol, hostname, port },
+    location: { protocol, hostname, port }
 } = window;
 const baseUrl = `${protocol}//${hostname}${port ? `:${port}` : ""}`;
 
@@ -13,7 +13,7 @@ const baseUrl = `${protocol}//${hostname}${port ? `:${port}` : ""}`;
 const keycloakConfig: KeycloakConfig = {
     realm: "calendaria",
     clientId: "client-ui",
-    url: "http://192.168.64.40:8001/auth",
+    url: "http://192.168.64.40:8001/auth"
     // url: "https://lemur-16.cloud-iam.com/auth", //temporary server
 };
 
@@ -24,7 +24,7 @@ const keycloakInitOptions: KeycloakInitOptions = {
     // Configure that Keycloak will check if a user is already authenticated (when opening the app or reloading the page). If not authenticated the user will be send to the login form. If already authenticated the webapp will open.
     onLoad: "login-required",
     // checkLoginIframe: false,
-    redirectUri: `${baseUrl}/`,
+    redirectUri: `${baseUrl}/`
 };
 
 // Create the Keycloak client instance
@@ -46,7 +46,7 @@ interface AuthContextValues {
     login: () => void;
     logout: () => void;
     updateToken: () => void;
-    token: string,
+    token: string;
 }
 
 /**
@@ -57,17 +57,15 @@ const defaultAuthContextValues: AuthContextValues = {
     token: "",
     roles: [],
     userInfo: {},
-    login: () => { },
-    logout: () => { },
+    login: () => {},
+    logout: () => {},
     updateToken: () => {}
 };
 
 /**
  * Create the AuthContext using the default values.
  */
-export const AuthContext = createContext<AuthContextValues>(
-    defaultAuthContextValues
-);
+export const AuthContext = createContext<AuthContextValues>(defaultAuthContextValues);
 
 /**
  * The props that must be passed to create the {@link AuthContextProvider}.
@@ -100,16 +98,14 @@ const AuthContextProvider = (props: AuthContextProviderProps) => {
         async function initializeKeycloak() {
             // console.log("initialize Keycloak");
             try {
-                const isAuthenticatedResponse = await keycloak.init(
-                    keycloakInitOptions
-                );
+                const isAuthenticatedResponse = await keycloak.init(keycloakInitOptions);
                 if (!isAuthenticatedResponse) {
                     console.log("user is not yet authenticated.");
                 } else {
                     // console.log("user already authenticated");
                     console.log(keycloak.token);
                     setRoles(keycloak.realmAccess?.roles || []);
-                    setToken(keycloak.token)
+                    setToken(keycloak.token);
                     keycloak.loadUserInfo().then((user: any) => {
                         setUserInfo(user);
                     });

@@ -1,18 +1,18 @@
-import { Modal, Form, Input, Button, Row, Col } from 'antd'
+import { Modal, Form, Input, Button, Row, Col } from "antd";
 import { IPositionViewModel } from "interfaces";
 import { FormInstance } from "antd/es/form/Form";
 
 export interface IPositionDirectoryModal {
     okText: string;
     title: string;
-    setIsVisible: (val: boolean) => void
+    setIsVisible: (val: boolean) => void;
     onFinish: (values: IPositionViewModel) => void;
     isVisible: boolean;
-    form: FormInstance<IPositionViewModel>
+    form: FormInstance<IPositionViewModel>;
 }
 
 const validateMessages = {
-    required: "Обязательное поле!",
+    required: "Обязательное поле!"
 };
 
 export const PositionDirectoryModal = ({
@@ -23,18 +23,12 @@ export const PositionDirectoryModal = ({
     setIsVisible,
     form
 }: IPositionDirectoryModal) => {
-
     const handleCancel = () => {
-        setIsVisible(false)
-    }
+        setIsVisible(false);
+    };
 
     return (
-        <Modal
-            title={title}
-            open={isVisible}
-            footer={null}
-            onCancel={handleCancel}
-        >
+        <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
             <Form<IPositionViewModel>
                 form={form}
                 name="basic"
@@ -47,52 +41,37 @@ export const PositionDirectoryModal = ({
                 layout="vertical"
                 className="directoryModal"
             >
-                <Row gutter={16} >
+                <Row gutter={16}>
                     <Col xl={12} xs={24}>
-                        <Form.Item
-                            name="code"
-                            label="Код"
-                            rules={[{ required: true }]}
-                        >
+                        <Form.Item name="code" label="Код" rules={[{ required: true }]}>
                             <Input />
                         </Form.Item>
                     </Col>
                     <Col xl={12} xs={24}>
-                        <Form.Item
-                            name="nameKz"
-                            label="На Казахском"
-                            rules={[{ required: true }]}
-                        >
+                        <Form.Item name="nameKz" label="На Казахском" rules={[{ required: true }]}>
                             <Input />
                         </Form.Item>
                     </Col>
                     <Col xl={12} xs={24}>
-                        <Form.Item
-                            name="nameRu"
-                            label="На русском"
-                            rules={[{ required: true }]}
-                        >
+                        <Form.Item name="nameRu" label="На русском" rules={[{ required: true }]}>
                             <Input />
                         </Form.Item>
                     </Col>
 
                     <Col xl={12} xs={24}>
-                        <Form.Item
-                            name="nameEn"
-                            label="На английском"
-                        >
+                        <Form.Item name="nameEn" label="На английском">
                             <Input />
                         </Form.Item>
                     </Col>
                     <Col xl={24} xs={24}>
-                        <Form.Item style={{ display: 'flex', justifyContent: 'center' }}>
+                        <Form.Item style={{ display: "flex", justifyContent: "center" }}>
                             <Button type="primary" htmlType="submit">
                                 {okText}
                             </Button>
                         </Form.Item>
                     </Col>
                 </Row>
-            </Form >
-        </Modal >
-    )
-}
+            </Form>
+        </Modal>
+    );
+};

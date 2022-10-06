@@ -1,4 +1,4 @@
-import React from 'react'
-import { IContextProps } from './interfaces'
+import React from "react";
+import { IContextProps } from "./interfaces";
 
-export const MainContext = React.createContext({} as IContextProps)
+export const MainContext = React.createContext({} as IContextProps);

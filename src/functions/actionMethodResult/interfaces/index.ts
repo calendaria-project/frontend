@@ -1,4 +1,4 @@
-import { TCode } from '../types';
+import { TCode } from "../types";
 
 export interface IRequestData {
     code: TCode;
