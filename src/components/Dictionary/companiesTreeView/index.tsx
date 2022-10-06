@@ -6,10 +6,16 @@ import { AuthContext } from "../../../context/AuthContextProvider";
 import { companiesColumns } from "../../../data/columns";
 import { actionMethodResultSync } from "../../../functions/actionMethodResult";
 import { getRequestHeader } from "../../../functions/common";
-import { ICompanyCreateViewModel, ICompanyViewModel } from "../../../interfaces";
+import {ICompanyCreateViewModel, ICompanyViewModel, ICompanyTreeNodeModel} from "../../../interfaces";
 import { createTableViaTabulator } from "../../../services/tabulator";
 import { CompanyDirectoryModal } from "./modal";
 import './styles.scss';
+import {DataNode} from "antd/es/tree";
+
+export type DataNodeItem =
+    DataNode &
+    ICompanyTreeNodeModel &
+    { children: DataNodeItem[] }
 
 export const CompanyTreeView: React.FC = ({
 }) => {
