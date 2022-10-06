@@ -1,69 +1,69 @@
-import type { FormRule } from 'antd'
+import type { FormRule } from "antd";
 
 export interface ICompanyBaseModel {
-    bin: string,
-    nameKz: string,
-    nameRu: string,
-    nameEn: string,
-    parentId: number,
+    bin: string;
+    nameKz: string;
+    nameRu: string;
+    nameEn: string;
+    parentId: number;
 }
 
 export interface ICompanyTreeNodeModel extends ICompanyBaseModel {
-    id: number
-    nodeType: string
-    companyId: number
+    id: number;
+    nodeType: string;
+    companyId: number;
 }
 
 export interface ICompanyAddressBaseModel {
-    address: string,
-    type: string
+    address: string;
+    type: string;
 }
 
 export interface ICompanyCreateViewModel extends ICompanyBaseModel {
-    companyAddresses: ICompanyAddressCreateViewModel[]
+    companyAddresses: ICompanyAddressCreateViewModel[];
 }
 
 export interface ICompanyViewModel extends ICompanyBaseModel {
-    companyAddresses: ICompanyAddressViewModel[]
-    companyId: number,
-    createdAt: string
-    updatedAt: string
+    companyAddresses: ICompanyAddressViewModel[];
+    companyId: number;
+    createdAt: string;
+    updatedAt: string;
 }
 
-export interface ICompanyAddressCreateViewModel extends ICompanyAddressBaseModel { }
+export interface ICompanyAddressCreateViewModel extends ICompanyAddressBaseModel {}
 
 export interface ICompanyAddressViewModel extends ICompanyAddressBaseModel {
-    companyAddressId: number,
-    companyId: number,
-    createdAt: string
-    updatedAt: string
+    companyAddressId: number;
+    companyId: number;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface IPositionBaseModel {
-    code: string,
-    nameKz: string,
-    nameRu: string,
-    nameEn: string
+    code: string;
+    nameKz: string;
+    nameRu: string;
+    nameEn: string;
 }
 
-export interface IPositionViewModel extends IPositionBaseModel  {
-    positionId: number,
-    createdAt: string
-    updatedAt: string
+export interface IPositionViewModel extends IPositionBaseModel {
+    positionId: number;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface IFormItem {
     name: string;
     label: string;
     rules: FormRule[];
-    tooltip?: string
+    tooltip?: string;
 }
 
 export interface IDictionaryBaseModel {
-    nameKz: string,
-    nameRu: string,
-    nameEn: string,
-    code: string,
+    nameKz: string;
+    nameRu: string;
+    nameEn: string;
+    code: string;
 }
 
 export interface IDivisionViewModel extends IDictionaryBaseModel {

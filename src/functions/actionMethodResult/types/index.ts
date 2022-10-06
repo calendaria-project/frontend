@@ -1,1 +1,1 @@
-export type TCode = 'SUCCESS' | 'FAILED';
+export type TCode = "SUCCESS" | "FAILED";
