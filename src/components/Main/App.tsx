@@ -16,6 +16,8 @@ import Staffing from "components/Staffing";
 import StaffingItem from "components/Staffing/staffingItem";
 import "antd/dist/antd.css";
 import "index.css";
+import Users from "components/Users";
+import UserItem from "components/Users/userItem";
 
 const { Header, Sider, Content } = Layout;
 
@@ -120,6 +122,12 @@ const App = () => {
                                         path="/staffing/:staffingId"
                                         element={<StaffingItem />}
                                     />
+                                    {/*<Route key="users-route" path="/users" element={<Users />} />*/}
+                                    {/*<Route*/}
+                                    {/*    key="users-item-route"*/}
+                                    {/*    path="/users/:usersId"*/}
+                                    {/*    element={<UserItem />}*/}
+                                    {/*/>*/}
                                 </Routes>
                             </Content>
                         </Layout>
