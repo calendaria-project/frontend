@@ -12,10 +12,10 @@ import ButtonGroup from "antd/lib/button/button-group";
 import MainProvider from "store/provider";
 import { AuthContext } from "context/AuthContextProvider";
 import Dictionary from "components/Dictionary";
-
-import "antd/dist/antd.css";
-import "../../index.css";
 import Staffing from "components/Staffing";
+import StaffingItem from "components/Staffing/staffingItem";
+import "antd/dist/antd.css";
+import "index.css";
 
 const { Header, Sider, Content } = Layout;
 
@@ -114,6 +114,11 @@ const App = () => {
                                         key="staffing-route"
                                         path="/staffing"
                                         element={<Staffing />}
+                                    />
+                                    <Route
+                                        key="staffing-item-route"
+                                        path="/staffing/:staffingId"
+                                        element={<StaffingItem />}
                                     />
                                 </Routes>
                             </Content>

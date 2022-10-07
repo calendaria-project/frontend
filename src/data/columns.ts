@@ -20,6 +20,21 @@ export const companiesColumns: ColumnDefinition[] = [
     }
 ];
 
+export const staffingItemColumns: ColumnDefinition[] = [
+    {
+        title: "Название на Русском",
+        field: "nameRu"
+    },
+    {
+        title: "Оклад",
+        field: "salary"
+    },
+    {
+        title: "Надбавка к окладу",
+        field: "salarySupplement"
+    },
+];
+
 export const divisionsColumns: ColumnDefinition[] = [
     {
         title: "Название на Казахском",

@@ -10,6 +10,10 @@ code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
+#root {
+    overflow-x: auto;
+}
+
 #tree-list-demo {
     min-height: 700px;
 }

@@ -1,0 +1,57 @@
+.iconWrap {
+    background-color: rgba(52, 107, 107, 0.372);
+    width: 25px;
+    height: 25px;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.treeList {
+    .ant-tree-iconEle {
+        margin-right: 10px;
+    }
+    .treePlusIcon {
+        margin-left: 10px;
+    }
+    .editWrap {
+        display: flex;
+        align-items: center;
+    }
+    .ant-tree-node-content-wrapper {
+        display: flex;
+        align-items: center;
+        .ant-tree-title {
+            .treeItemWrap {
+                display: flex;
+                align-items: center;
+                .treeItemTitle {
+                    font-size: 16px;
+                    margin-right: 10px;
+                    margin-left: 10px;
+                }
+            }
+        }
+    }
+}
+
+.directoryModal {
+    .ant-form-item {
+        margin-bottom: 10px !important;
+        .ant-form-item-label {
+            width: 100% !important;
+            min-width: 100% !important;
+        }
+        .ant-form-item-control {
+            width: 100% !important;
+            min-width: 100% !important;
+        }
+    }
+    .-item-label {
+        padding-left: 0 !important;
+    }
+    .redCircleBtn {
+        margin-top: 33px !important;
+    }
+}
