@@ -1,4 +1,3 @@
-import React from "react";
 import Keycloak, { KeycloakConfig, KeycloakInitOptions } from "keycloak-js";
 import { createContext, useEffect, useState } from "react";
 
@@ -12,7 +11,7 @@ const baseUrl = `${protocol}//${hostname}${port ? `:${port}` : ""}`;
  */
 const keycloakConfig: KeycloakConfig = {
     realm: "calendaria",
-    clientId: "client-ui",
+    clientId: process.env.KEYCLOAK_CLIENT_ID || "",
     url: "http://192.168.64.40:8001/auth"
     // url: "https://lemur-16.cloud-iam.com/auth", //temporary server
 };
