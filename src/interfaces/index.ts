@@ -30,7 +30,7 @@ export interface ICompanyViewModel extends ICompanyBaseModel {
     updatedAt: string;
 }
 
-export interface ICompanyAddressCreateViewModel extends ICompanyAddressBaseModel {}
+export interface ICompanyAddressCreateViewModel extends ICompanyAddressBaseModel { }
 
 export interface ICompanyAddressViewModel extends ICompanyAddressBaseModel {
     companyAddressId: number;
@@ -88,4 +88,46 @@ export interface IPositionViewModel extends IDictionaryBaseModel {
     positionId: number;
     createdAt: string;
     updatedAt: string;
+}
+
+export interface IStaffingModel {
+    staffingId: number;
+    companyId: number; // ID компании
+    fromDate: any; // Дата действия с
+    toDate: any; // Дата действия по
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface IStaffingItemModel {
+    staffingItemId: number; // ID единицы штатного расписания (заполняется на бэке, в PUT нужно передать)
+    staffingId: number; // ID штатного расписания
+    divisionId: number; // ID подразделения
+    positionId: number; // ID должности
+    staffUnitCount: number; // Кол - во единиц
+    salary: number; // Оклад
+    salarySupplement: number; // Надбавка к окладу
+    createdAt: string; // Дата создания(заполняется на бэке, в PUT нужно передать)
+    updatedAt: string; // Дата обновления
+}
+
+export interface IStaffingItemCreateModel {
+    staffingId: number,
+    divisionId: number,
+    positionId: number,
+    staffUnitCount: number,
+    salary: number,
+    salarySupplement: number
+}
+
+export interface IStaffingItemViewModel {
+    staffingItemId: number,
+    staffingId: number,
+    divisionId: number,
+    positionId: number,
+    staffUnitCount: number,
+    salary: number,
+    salarySupplement: number,
+    createdAt: string
+    updatedAt: string
 }
