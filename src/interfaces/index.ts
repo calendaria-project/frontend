@@ -30,7 +30,7 @@ export interface ICompanyViewModel extends ICompanyBaseModel {
     updatedAt: string;
 }
 
-export interface ICompanyAddressCreateViewModel extends ICompanyAddressBaseModel { }
+export interface ICompanyAddressCreateViewModel extends ICompanyAddressBaseModel {}
 
 export interface ICompanyAddressViewModel extends ICompanyAddressBaseModel {
     companyAddressId: number;
@@ -112,22 +112,44 @@ export interface IStaffingItemModel {
 }
 
 export interface IStaffingItemCreateModel {
-    staffingId: number,
-    divisionId: number,
-    positionId: number,
-    staffUnitCount: number,
-    salary: number,
-    salarySupplement: number
+    staffingId: number;
+    divisionId: number;
+    positionId: number;
+    staffUnitCount: number;
+    salary: number;
+    salarySupplement: number;
 }
 
 export interface IStaffingItemViewModel {
-    staffingItemId: number,
-    staffingId: number,
-    divisionId: number,
-    positionId: number,
-    staffUnitCount: number,
-    salary: number,
-    salarySupplement: number,
-    createdAt: string
-    updatedAt: string
+    staffingItemId: number;
+    staffingId: number;
+    divisionId: number;
+    positionId: number;
+    staffUnitCount: number;
+    salary: number;
+    salarySupplement: number;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface IUsersTableModel {
+    id: string | number;
+    fullName: string;
+    email?: string;
+    status: string;
+    profession: string;
+    phone?: string;
+    date: any;
+}
+
+export interface IUsersCardModel {
+    id: string | number;
+    fullName: string;
+    email?: string;
+    iin: string;
+    birth: string;
+    gender: string;
+    profession: string;
+    phone?: string;
+    sign: any;
 }

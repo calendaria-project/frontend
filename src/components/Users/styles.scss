@@ -1,0 +1,12 @@
+.usersTable {
+  thead.ant-table-thead>tr>th {
+    background: #1890ff;
+  }
+  &__fullName {
+    cursor: pointer;
+  }
+}
+
+.ant-select .ant-select-selector {
+  border-radius: 6px !important;
+}

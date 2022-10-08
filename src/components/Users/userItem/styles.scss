@@ -1,0 +1,9 @@
+.userItem {
+  &__userCard {
+    border-radius: 6px !important;
+    & .ant-card-head {
+      color: #fff;
+      background: #2F80ED;
+    }
+  }
+}

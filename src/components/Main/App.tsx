@@ -5,7 +5,8 @@ import {
     OrderedListOutlined,
     MenuUnfoldOutlined,
     MenuFoldOutlined,
-    ScheduleOutlined
+    ScheduleOutlined,
+    IdcardOutlined
 } from "@ant-design/icons";
 import ButtonGroup from "antd/lib/button/button-group";
 
@@ -31,6 +32,11 @@ const items: MenuProps["items"] = [
         key: "staffing",
         icon: <ScheduleOutlined />,
         label: "Штатные расписания"
+    },
+    {
+        key: "users",
+        icon: <IdcardOutlined />,
+        label: "Сотрудники"
     }
 ];
 
@@ -122,12 +128,12 @@ const App = () => {
                                         path="/staffing/:staffingId"
                                         element={<StaffingItem />}
                                     />
-                                    {/*<Route key="users-route" path="/users" element={<Users />} />*/}
-                                    {/*<Route*/}
-                                    {/*    key="users-item-route"*/}
-                                    {/*    path="/users/:usersId"*/}
-                                    {/*    element={<UserItem />}*/}
-                                    {/*/>*/}
+                                    <Route key="users-route" path="/users" element={<Users />} />
+                                    <Route
+                                        key="users-item-route"
+                                        path="/users/:usersId"
+                                        element={<UserItem />}
+                                    />
                                 </Routes>
                             </Content>
                         </Layout>
