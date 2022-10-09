@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState, createElement } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { Button, Layout, Menu, MenuProps } from "antd";
+import { Button, Spin, Layout, Menu, MenuProps } from "antd";
 import {
     OrderedListOutlined,
     MenuUnfoldOutlined,
     MenuFoldOutlined,
     ScheduleOutlined,
-    IdcardOutlined
+    IdcardOutlined,
+    LoadingOutlined
 } from "@ant-design/icons";
 import ButtonGroup from "antd/lib/button/button-group";
 
@@ -19,6 +20,8 @@ import "antd/dist/antd.css";
 import "index.css";
 import Users from "components/Users";
 import UserItem from "components/Users/userItem";
+
+const antIcon = <LoadingOutlined style={{ fontSize: 40 }} spin />;
 
 const { Header, Sider, Content } = Layout;
 
@@ -140,7 +143,16 @@ const App = () => {
                     </Layout>
                 </MainProvider>
             ) : (
-                <>Loading...</>
+                <div
+                    style={{
+                        height: "100vh",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center"
+                    }}
+                >
+                    <Spin indicator={antIcon} />
+                </div>
             )}
         </>
     );
