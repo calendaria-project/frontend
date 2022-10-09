@@ -14,9 +14,9 @@ import usersSortValues, {
 import { IUsersTableModel } from "interfaces";
 import { useNavigate } from "react-router";
 
-const Users: FC = () => {
-    const { Option } = Select;
+const { Option } = Select;
 
+const Users: FC = () => {
     const [data, setData] = useState<IUsersTableModel[]>(usersTableData);
     const navigate = useNavigate();
 
@@ -43,7 +43,9 @@ const Users: FC = () => {
     const handleFiltrationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setData(
             usersTableData.filter((dataItem) =>
-                Object.values(dataItem).some((value) => (value + "").includes(e.target.value))
+                Object.values(dataItem).some((value) =>
+                    (value + "").toLowerCase().includes(e.target.value.toLowerCase())
+                )
             )
         );
     };
@@ -52,6 +54,7 @@ const Users: FC = () => {
         () => [
             {
                 title: "ФИО",
+                key: "fullName",
                 dataIndex: "fullName",
                 width: 200,
                 render: (_: any, record: IUsersTableModel) => (
@@ -62,18 +65,23 @@ const Users: FC = () => {
             },
             {
                 title: "E-mail",
+                key: "email",
                 dataIndex: "email"
             },
             {
                 title: "Статус",
+                key: "status",
+
                 dataIndex: "status"
             },
             {
                 title: "Должность",
+                key: "profession",
                 dataIndex: "profession"
             },
             {
                 title: "Номер телефона",
+                key: "phone",
                 dataIndex: "phone"
             }
         ],

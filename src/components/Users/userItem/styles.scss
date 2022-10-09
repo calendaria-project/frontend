@@ -1,5 +1,9 @@
+.ant-divider {
+  margin: 8px 0;
+}
+
 .userItem {
-  &__userCard {
+  &__mainCard, &__extraCard {
     border-radius: 6px !important;
     & .ant-card-head {
       color: #fff;

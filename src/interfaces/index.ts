@@ -147,7 +147,8 @@ export interface IUsersCardModel {
     fullName: string;
     email?: string;
     iin: string;
-    birth: string;
+    birth: any;
+    date: any;
     gender: string;
     profession: string;
     phone?: string;

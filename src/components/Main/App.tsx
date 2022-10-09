@@ -140,7 +140,7 @@ const App = () => {
                     </Layout>
                 </MainProvider>
             ) : (
-                <>Loading</>
+                <>Loading...</>
             )}
         </>
     );
