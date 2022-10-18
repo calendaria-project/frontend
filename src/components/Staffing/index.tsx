@@ -99,6 +99,7 @@ const Staffing: FC = () => {
                     ...row
                 });
                 actionMethodResultSync(
+                    "DICTIONARY",
                     "staffing",
                     "put",
                     getRequestHeader(authContext.token),
@@ -114,6 +115,7 @@ const Staffing: FC = () => {
                     toDate: moment(record.toDate).format("YYYY-MM-DD")
                 };
                 actionMethodResultSync(
+                    "DICTIONARY",
                     "staffing",
                     "post",
                     getRequestHeader(authContext.token),
@@ -215,6 +217,7 @@ const Staffing: FC = () => {
 
     const getCompanies = () => {
         actionMethodResultSync(
+            "DICTIONARY",
             "company?page=0&size=100&sortingRule=companyId%3AASC",
             "get",
             getRequestHeader(authContext.token)
@@ -224,6 +227,7 @@ const Staffing: FC = () => {
     useEffect(() => {
         if (selectedCompanyId) {
             actionMethodResultSync(
+                "DICTIONARY",
                 `staffing?companyId=${selectedCompanyId}`,
                 "get",
                 getRequestHeader(authContext.token)

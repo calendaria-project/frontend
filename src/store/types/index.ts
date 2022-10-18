@@ -1,7 +1,5 @@
-import { ISetTokenAction } from "../interfaces";
-
 export enum MainActionTypes {
-    SET_TOKEN = "SET_TOKEN"
+    SET_TOKEN = "SET_TOKEN",
+    SET_USER_SELECTED_KEY = "SET_USER_SELECTED_KEY",
+    SET_CURRENT_USER_DATA_ITEM_INFO = "SET_CURRENT_USER_DATA_ITEM_INFO"
 }
-
-export type MainAction = ISetTokenAction;

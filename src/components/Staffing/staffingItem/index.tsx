@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { Button, Col, Form, message, PageHeader, Row } from "antd";
+import { Col, Form, message, PageHeader, Row } from "antd";
 import { ColumnDefinition } from "tabulator-tables";
 
 import { AuthContext } from "context/AuthContextProvider";
@@ -13,7 +13,7 @@ import { createTableViaTabulator } from "services/tabulator";
 import { StaffingItemModal } from "./modal";
 import "./styles.scss";
 
-const StaffingItem: React.FC = ({ }) => {
+const StaffingItem: React.FC = ({}) => {
     const authContext = useContext(AuthContext);
     const navigate = useNavigate();
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -22,16 +22,16 @@ const StaffingItem: React.FC = ({ }) => {
     const [form] = Form.useForm<IStaffingItemCreateModel>();
     const [editForm] = Form.useForm<IStaffingItemViewModel>();
     const [table, setTable] = useState<Tabulator>();
-    const { staffingId } = useParams()
-    const [positions, setPositions] = useState<IPositionViewModel[]>([])
+    const { staffingId } = useParams();
+    const [positions, setPositions] = useState<IPositionViewModel[]>([]);
 
     useEffect(() => {
         createStaffingItemNestedTable();
-        getPositions()
+        getPositions();
     }, []);
 
     const nestedTableActionsFormatter = (cell: Tabulator.CellComponent) => {
-        const data: any = cell.getData()
+        const data: any = cell.getData();
         let editBtn = document.createElement("button");
         editBtn.textContent = "Изменить";
         editBtn.setAttribute("class", "editBtn ant-btn ant-btn-secondary");
@@ -62,7 +62,7 @@ const StaffingItem: React.FC = ({ }) => {
 
     const createStaffingItemNestedTable = () => {
         let url = `staffing-items/tree?staffingId=${staffingId}`;
-        actionMethodResultSync(url, "get", getRequestHeader(authContext.token))
+        actionMethodResultSync("DICTIONARY", url, "get", getRequestHeader(authContext.token))
             .then((data) => {
                 let actionsCell: ColumnDefinition = {
                     title: "",
@@ -73,12 +73,9 @@ const StaffingItem: React.FC = ({ }) => {
                 setTable(
                     createTableViaTabulator(
                         "#staffingItemsTable",
-                        10,
-                        "local",
-                        "",
                         [...staffingItemColumns, actionsCell],
                         data,
-                        () => { }
+                        () => {}
                     )
                 );
             })
@@ -88,9 +85,10 @@ const StaffingItem: React.FC = ({ }) => {
     };
 
     const hanldeAddStaffingItem = async (data: IStaffingItemCreateModel) => {
+        console.log(data);
         const staffingItem = selectedRow?.getData();
         data.staffingId = Number(staffingId) || 0;
-        data.divisionId = staffingItem.id
+        data.divisionId = staffingItem.id;
         let newChild = await createStaffingItem(data);
         selectedRow?.addTreeChild(newChild);
         setSelectedRow(undefined);
@@ -99,7 +97,7 @@ const StaffingItem: React.FC = ({ }) => {
     };
 
     const hanldeUpdateStaffingItem = async (data: any) => {
-        console.log(data)
+        console.log(data);
         let updatedData = await updateStaffingById(data);
         selectedRow?.update({ ...updatedData, _children: selectedRow.getData()._children });
         createStaffingItemNestedTable();
@@ -110,13 +108,19 @@ const StaffingItem: React.FC = ({ }) => {
 
     const updateStaffingById = (data: IStaffingItemViewModel) => {
         let url = `staffing-items`;
-        return actionMethodResultSync(url, "put", getRequestHeader(authContext.token), data)
+        return actionMethodResultSync(
+            "DICTIONARY",
+            url,
+            "put",
+            getRequestHeader(authContext.token),
+            data
+        )
             .then((data) => {
                 message.success("Успешно обновлено");
                 return data;
             })
             .catch((err) => {
-                console.log(err)
+                console.log(err);
                 message.error("Ошибка");
                 return {};
             });
@@ -124,13 +128,18 @@ const StaffingItem: React.FC = ({ }) => {
 
     const deleteStaffingById = (id: number) => {
         let url = `staffing-items/${id}`;
-        return actionMethodResultSync(url, "delete", getRequestHeader(authContext.token))
+        return actionMethodResultSync(
+            "DICTIONARY",
+            url,
+            "delete",
+            getRequestHeader(authContext.token)
+        )
             .then((data) => {
                 message.success("Успешно удалено");
                 return data;
             })
             .catch((err) => {
-                console.log(err)
+                console.log(err);
                 message.error("Ошибка");
                 return {};
             });
@@ -138,7 +147,13 @@ const StaffingItem: React.FC = ({ }) => {
 
     const createStaffingItem = (data: IStaffingItemCreateModel) => {
         let url = `staffing-items`;
-        return actionMethodResultSync(url, "post", getRequestHeader(authContext.token), data)
+        return actionMethodResultSync(
+            "DICTIONARY",
+            url,
+            "post",
+            getRequestHeader(authContext.token),
+            data
+        )
             .then((data) => {
                 message.success("Успешно создано");
                 return data;
@@ -152,7 +167,7 @@ const StaffingItem: React.FC = ({ }) => {
 
     const getStaffingItemById = (id: number) => {
         let url = `staffing-items/${id}`;
-        return actionMethodResultSync(url, "get", getRequestHeader(authContext.token))
+        return actionMethodResultSync("DICTIONARY", url, "get", getRequestHeader(authContext.token))
             .then((data) => {
                 return data;
             })
@@ -164,9 +179,9 @@ const StaffingItem: React.FC = ({ }) => {
 
     const getPositions = () => {
         let url = `position?page=0&size=1000`;
-        actionMethodResultSync(url, "get", getRequestHeader(authContext.token))
+        actionMethodResultSync("DICTIONARY", url, "get", getRequestHeader(authContext.token))
             .then((data) => {
-                setPositions(data.content)
+                setPositions(data.content);
             })
             .catch((err) => {
                 console.log(err);
@@ -187,9 +202,9 @@ const StaffingItem: React.FC = ({ }) => {
     };
 
     const onDelete = async (row: Tabulator.RowComponent) => {
-        const data = row.getData()
-        await deleteStaffingById(data.id)
-        createStaffingItemNestedTable()
+        const data = row.getData();
+        await deleteStaffingById(data.id);
+        createStaffingItemNestedTable();
     };
 
     return (
@@ -197,7 +212,7 @@ const StaffingItem: React.FC = ({ }) => {
             <Col span={24}>
                 <PageHeader
                     className="site-page-header"
-                    onBack={() => navigate('/staffing')}
+                    onBack={() => navigate("/staffing")}
                     title="Штатные расписания"
                     subTitle="Штатные единицы"
                 />
@@ -221,10 +236,10 @@ const StaffingItem: React.FC = ({ }) => {
                     form={editForm}
                     positions={positions}
                 />
-                <div id="staffingItemsTable"></div>
+                <div id="staffingItemsTable" />
             </Col>
         </Row>
     );
 };
 
-export default StaffingItem
+export default StaffingItem;

@@ -102,7 +102,7 @@ const AuthContextProvider = (props: AuthContextProviderProps) => {
                     console.log("user is not yet authenticated.");
                 } else {
                     // console.log("user already authenticated");
-                    console.log(keycloak.token);
+                    console.log(keycloak);
                     setRoles(keycloak.realmAccess?.roles || []);
                     setToken(keycloak.token);
                     keycloak.loadUserInfo().then((user: any) => {

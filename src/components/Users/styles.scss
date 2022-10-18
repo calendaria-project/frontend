@@ -1,5 +1,5 @@
 .usersTable {
-  thead.ant-table-thead>tr>th {
+  thead.ant-table-thead > tr > th {
     background: #1890ff;
   }
   &__fullName {
@@ -9,4 +9,62 @@
 
 .ant-select .ant-select-selector {
   border-radius: 6px !important;
+}
+
+.addUserFormWrap {
+  padding: 0 70px;
+  .uplaodBtn {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    color: #2f80ed;
+  }
+  .deleteBtn {
+    font-weight: 400;
+    font-size: 16px;
+    color: #eb5757;
+  }
+  .ant-typography {
+    margin-bottom: 0;
+  }
+  .infoTitleRow {
+    margin-bottom: 20px;
+  }
+  .ant-divider {
+    margin-bottom: 20px;
+  }
+  .uploadItem {
+    position: relative;
+    button {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+    }
+  }
+  .addUserTitleSpace {
+    width: 100%;
+    .ant-space-item:first-child {
+      margin-bottom: 70px;
+    }
+    .ant-space-item:nth-child(2) {
+      width: 150px;
+      height: 150px;
+      border-radius: 100%;
+      overflow: hidden;
+    }
+    .avatarWrap {
+      width: 150px;
+      height: 150px;
+      background: #e0e0e0;
+      border-radius: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .anticon.anticon-plus {
+        font-size: 34px;
+        color: #fff;
+      }
+    }
+  }
 }

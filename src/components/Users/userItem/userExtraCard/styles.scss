@@ -1,29 +1,30 @@
 .userItem {
-  &__mainCard {
+  &__extraCard {
     border-radius: 6px !important;
     height: 100%;
-    &-btn {
-      color: #2F80ED;
-      border-radius: 4px
-    }
     & .ant-card-head {
       color: #fff;
       background: #2F80ED;
     }
     &-divider.ant-divider {
-        margin: 14px 0;
+      margin: 8px 0;
     }
+  }
+  &__extraCard li.ant-menu-item {
+    height: 30px !important;
+    padding-left: 0 !important;
   }
 }
 
-.container {
+.icon {
+  position: absolute;
+  right: 16px
+}
+
+.row-container {
   padding: 20px;
   margin-right: 0;
   margin-left: 0;
-
-  &-backText {
-    cursor: pointer;
-  }
 }
 
 .row-wrapper {
@@ -38,11 +39,14 @@
   justify-content: end
 }
 
-.delete-btn {
-  color: #EB5757;
-  background: #fff
+.ok-btn {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center
 }
 
-.mobile-number-wrapper {
-  margin: 8px 0
+.add-text {
+  cursor: pointer;
+  font-size: 10px;
+  color: #2f80ed;
 }

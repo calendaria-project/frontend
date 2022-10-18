@@ -1,4 +1,4 @@
-import { Modal, Form, DatePicker, Button, Row, Col } from 'antd'
+import { Modal, Form, DatePicker, Button, Row, Col } from "antd";
 import { FormInstance } from "antd/es/form/Form";
 
 import { IStaffingModel } from "interfaces";
@@ -6,14 +6,14 @@ import { IStaffingModel } from "interfaces";
 export interface IStaffingDirectoryModal {
     okText: string;
     title: string;
-    setIsVisible: (val: boolean) => void
+    setIsVisible: (val: boolean) => void;
     onFinish: (values: IStaffingModel) => void;
     isVisible: boolean;
-    form: FormInstance<IStaffingModel>
+    form: FormInstance<IStaffingModel>;
 }
 
 const validateMessages = {
-    required: "Обязательное поле!",
+    required: "Обязательное поле!"
 };
 
 export const StaffingScheduleModal = ({
@@ -24,18 +24,12 @@ export const StaffingScheduleModal = ({
     setIsVisible,
     form
 }: IStaffingDirectoryModal) => {
-
     const handleCancel = () => {
-        setIsVisible(false)
-    }
+        setIsVisible(false);
+    };
 
     return (
-        <Modal
-            title={title}
-            open={isVisible}
-            footer={null}
-            onCancel={handleCancel}
-        >
+        <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
             <Form<IStaffingModel>
                 form={form}
                 name="basic"
@@ -48,7 +42,7 @@ export const StaffingScheduleModal = ({
                 layout="vertical"
                 className="directoryModal"
             >
-                <Row gutter={16} >
+                <Row gutter={16}>
                     <Col xl={12} xs={24}>
                         <Form.Item
                             name="fromDate"
@@ -59,22 +53,19 @@ export const StaffingScheduleModal = ({
                         </Form.Item>
                     </Col>
                     <Col xl={12} xs={24}>
-                        <Form.Item
-                            name="toDate"
-                            label="Дата действия по"
-                        >
+                        <Form.Item name="toDate" label="Дата действия по">
                             <DatePicker format="DD/MM/YYYY" />
                         </Form.Item>
                     </Col>
-                    <Col xl={24} xs={24}>
-                        <Form.Item style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Col style={{ marginTop: "16px" }} xl={24} xs={24}>
+                        <Form.Item style={{ display: "flex", justifyContent: "center" }}>
                             <Button type="primary" htmlType="submit">
                                 {okText}
                             </Button>
                         </Form.Item>
                     </Col>
                 </Row>
-            </Form >
-        </Modal >
-    )
-}
+            </Form>
+        </Modal>
+    );
+};

@@ -60,7 +60,7 @@ const fullUsersData: TUsers = [
     }
 ];
 
-const usersTableData = fullUsersData.map((userDataItem) => {
+const usersTableData = fullUsersData.map((userDataItem, i) => {
     const { id, name, surname, patronymic, email, status, profession, phone, date } = userDataItem;
 
     return {
@@ -71,32 +71,13 @@ const usersTableData = fullUsersData.map((userDataItem) => {
         status,
         profession,
         phone,
-        date
+        date,
+        division: {
+            divisionId: i + 1,
+            nameRu: "Division " + (i + 1)
+        },
+        divisionId: i + 1
     };
 });
 
-const usersCardData = fullUsersData.map((userDataItem) => {
-    const { status, name, surname, patronymic, ...data } = userDataItem;
-
-    return {
-        ...data,
-        fullName: (surname ? `${surname} ` : "") + name + (patronymic ? ` ${patronymic}` : "")
-    };
-});
-
-export const DATE = "date";
-export const ALPHABET = "alphabet";
-export const PROFESSION = "profession";
-export const VERIFICATION = "verification";
-export const VERIFIED = "верифицированный";
-
-const usersSortValues = [
-    [DATE, "По дате"],
-    [ALPHABET, "По алфавиту"],
-    [PROFESSION, "По профессии"],
-    [VERIFICATION, "По верификации"]
-];
-
-export default usersSortValues;
-
-export { usersTableData, usersCardData };
+export { usersTableData };

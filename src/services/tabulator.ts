@@ -4,14 +4,11 @@ import "../assets/styles/tabulator.scss";
 
 export function createTableViaTabulator(
     tagId: string,
-    pageSize: number,
-    paginationType: "local" | "remote",
-    url: string,
     columns: ColumnDefinition[],
     data: any[],
     myRowclick: (e: UIEvent, row: Tabulator.RowComponent) => void,
-    isSelectable?: boolean,
-    isLoading?: boolean
+    isLoading?: boolean,
+    groupHeader?: ((value: any, count: number, data: any, group: Tabulator.GroupComponent) => string) | undefined,
 ): Tabulator {
     const token = sessionStorage.getItem("token");
     const table = new Tabulator(tagId, {
@@ -21,7 +18,9 @@ export function createTableViaTabulator(
         },
         layout: "fitColumns",
         dataTree: true,
+        groupHeader: groupHeader,
         rowClick: (e: UIEvent, row: Tabulator.RowComponent) => myRowclick(e, row),
+        groupBy: tagId === "#usersTable" ? "divisionId" : undefined,
         columns,
         data,
         cellClick: () => {}
