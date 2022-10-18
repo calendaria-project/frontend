@@ -1,0 +1,48 @@
+.userItem {
+  &__mainCard {
+    border-radius: 6px !important;
+    height: 100%;
+    &-btn {
+      color: #2F80ED;
+      border-radius: 4px
+    }
+    & .ant-card-head {
+      color: #fff;
+      background: #2F80ED;
+    }
+    &-divider.ant-divider {
+        margin: 14px 0;
+    }
+  }
+}
+
+.container {
+  padding: 20px;
+  margin-right: 0;
+  margin-left: 0;
+
+  &-backText {
+    cursor: pointer;
+  }
+}
+
+.row-wrapper {
+  margin-right: 0;
+  margin-left: 0;
+  width: 100%
+}
+
+.col-end-wrapper {
+  display: flex;
+  flex: 1 1 auto;
+  justify-content: end
+}
+
+.delete-btn {
+  color: #EB5757;
+  background: #fff
+}
+
+.mobile-number-wrapper {
+  margin: 8px 0
+}
