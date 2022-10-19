@@ -78,12 +78,6 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                                           />
                                       </Form.Item>
                                   ))}
-                                  {modalCurrentDataItemInfo.length - 1 === index &&
-                                      selectedKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE && (
-                                          <span className="add-text" onClick={handleAddClick}>
-                                              Добавить еще один язык
-                                          </span>
-                                      )}
                               </Col>
                           ))
                         : currentDataLayout.map((dataItemLayout, index) => (
