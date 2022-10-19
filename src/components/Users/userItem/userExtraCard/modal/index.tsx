@@ -57,8 +57,7 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                 form={form}
             >
                 <Row gutter={16}>
-                    {selectedKey === SelectedKeyTypes.EDUCATION ||
-                    selectedKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE
+                    {selectedKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE
                         ? modalCurrentDataItemInfo.map((dataItemInfo, index) => (
                               <Col xl={24} xs={24} key={index}>
                                   {currentDataLayout.map((dataItemLayout) => (

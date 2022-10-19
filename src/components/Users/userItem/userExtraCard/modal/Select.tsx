@@ -23,7 +23,7 @@ interface ISelectValue {
 const Select: FC<ISelect> = ({ form, dataItemLayout, currentDataItemInfo }) => {
     const authContext = useContext(AuthContext);
 
-    const [selectValue, setSelectValue] = useState<ISelectValue>({} as ISelectValue);
+    const [selectValue, setSelectValue] = useState<ISelectValue | undefined>({} as ISelectValue);
     const [selectValues, setSelectValues] = useState<Array<ISelectValue>>([]);
 
     useEffect(() => {
@@ -43,7 +43,7 @@ const Select: FC<ISelect> = ({ form, dataItemLayout, currentDataItemInfo }) => {
                 getRequestHeader(authContext.token)
             ).then((data) => setSelectValue(data));
         }
-    }, []);
+    }, [currentDataItemInfo]);
 
     useEffect(() => {
         form.setFieldsValue({
@@ -53,16 +53,20 @@ const Select: FC<ISelect> = ({ form, dataItemLayout, currentDataItemInfo }) => {
 
     const handleChangeValue = useCallback(
         (v: any) => {
+            const currentValueObject: ISelectValue | undefined = selectValues.find(
+                (item) => item.id === v
+            );
             form.setFieldsValue({
-                [dataItemLayout.propertyName]: selectValues.find((item) => item.id === v)
+                [dataItemLayout.propertyName]: currentValueObject
             });
+            setSelectValue(currentValueObject);
         },
         [selectValues]
     );
 
     return (
         <AntdSelect
-            value={selectValue.nameRu}
+            value={selectValue?.nameRu}
             placeholder={dataItemLayout.placeholder}
             onChange={handleChangeValue}
         >
