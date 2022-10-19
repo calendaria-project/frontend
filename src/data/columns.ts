@@ -54,3 +54,35 @@ export const divisionsColumns: ColumnDefinition[] = [
         field: "code"
     }
 ];
+
+export const usersColumns: ColumnDefinition[] = [
+    {
+        headerSort: false,
+        title: "ФИО",
+        field: "fullName",
+        formatter: (cell) => {
+            const data: any = cell.getData()
+            return `${data.lastname ? data.lastname : ""} ${data.firstname ? data.firstname : ""} ${data.patronymic ? data.patronymic : ""}`
+        }
+    },
+    {
+        headerSort: false,
+        title: "E-mail",
+        field: "personalContact.email",
+    },
+    {
+        headerSort: false,
+        title: "Статус",
+        field: "status"
+    },
+    {
+        headerSort: false,
+        title: "Должность",
+        field: "position.nameRu"
+    },
+    {
+        headerSort: false,
+        title: "Номер телефона",
+        field: "personalContact.mobilePhoneNumber"
+    },
+]

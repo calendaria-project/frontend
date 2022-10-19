@@ -8,6 +8,13 @@ export interface ICompanyBaseModel {
     parentId: number;
 }
 
+export interface ISimpleDictionaryModel {
+    nameKz: string;
+    nameRu: string;
+    nameEn: string;
+    id: number;
+}
+
 export interface ICompanyTreeNodeModel extends ICompanyBaseModel {
     id: number;
     nodeType: string;
@@ -30,7 +37,7 @@ export interface ICompanyViewModel extends ICompanyBaseModel {
     updatedAt: string;
 }
 
-export interface ICompanyAddressCreateViewModel extends ICompanyAddressBaseModel { }
+export interface ICompanyAddressCreateViewModel extends ICompanyAddressBaseModel {}
 
 export interface ICompanyAddressViewModel extends ICompanyAddressBaseModel {
     companyAddressId: number;
@@ -100,34 +107,135 @@ export interface IStaffingModel {
 }
 
 export interface IStaffingItemModel {
-    staffingItemId: number; // ID единицы штатного расписания (заполняется на бэке, в PUT нужно передать)
+    staffingItemId: number; // ID единицы штатного расписания (заполняется на бэке; в PUT нужно передать)
     staffingId: number; // ID штатного расписания
     divisionId: number; // ID подразделения
     positionId: number; // ID должности
     staffUnitCount: number; // Кол - во единиц
     salary: number; // Оклад
     salarySupplement: number; // Надбавка к окладу
-    createdAt: string; // Дата создания(заполняется на бэке, в PUT нужно передать)
+    createdAt: string; // Дата создания(заполняется на бэке; в PUT нужно передать)
     updatedAt: string; // Дата обновления
 }
 
 export interface IStaffingItemCreateModel {
-    staffingId: number,
-    divisionId: number,
-    positionId: number,
-    staffUnitCount: number,
-    salary: number,
-    salarySupplement: number
+    staffingId: number;
+    divisionId: number;
+    positionId: number;
+    staffUnitCount: number;
+    salary: number;
+    salarySupplement: number;
 }
 
 export interface IStaffingItemViewModel {
-    staffingItemId: number,
-    staffingId: number,
-    divisionId: number,
-    positionId: number,
-    staffUnitCount: number,
-    salary: number,
-    salarySupplement: number,
+    staffingItemId: number;
+    staffingId: number;
+    divisionId: number;
+    positionId: number;
+    staffUnitCount: number;
+    salary: number;
+    salarySupplement: number;
     createdAt: string
     updatedAt: string
+}
+
+export interface IDictionaryDtoModel {
+    nameKz: string;
+    nameRu: string;
+    nameEn: string;
+    id: number;
+    description: string
+}
+
+export interface ICompanyDtoModel {
+    companyId: number;
+    bin: string;
+    nameKz: string;
+    nameRu: string;
+    nameEn: string;
+    parentId: number
+}
+
+export interface IDivisionDtoModel {
+    divisionId: number;
+    companyId: number;
+    code: string;
+    nameKz: string;
+    nameRu: string;
+    nameEn: string;
+    parentId: number
+}
+
+export interface IPositionDtoModel {
+    positionId: number;
+    code: string;
+    nameKz: string;
+    nameRu: string;
+    nameEn: string;
+}
+
+export interface IPersonalContactDtoModel {
+    personalContactId: number;
+    email: string;
+    mobilePhoneNumber: string;
+    homePhoneNumber: string;
+    userId: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface IBusinessContactDtoModel {
+    businessContactId: number;
+    email: string;
+    mobilePhoneNumber: string;
+    internalPhoneNumber: string;
+    workPlace: string;
+    cabinetNumber: string;
+    userId: string;
+    createdAt: string;
+    updatedAt: string
+}
+
+export interface IUsersDtoViewModel {
+    userId: string;
+    username: string;
+    lastname: string;
+    firstname: string;
+    patronymic: string;
+    iin: string;
+    birthDate: string;
+    sex: IDictionaryDtoModel;
+    company: ICompanyDtoModel;
+    division: IDivisionDtoModel;
+    position: IPositionDtoModel;
+    employmentDate: string;
+    signFileId: string;
+    profilePhotoId: string;
+    personalContact: IPersonalContactDtoModel;
+    businessContact: IBusinessContactDtoModel;
+    createdAt: string;
+    updatedAt: string
+}
+
+export interface IUsersTableModel {
+    id: string | number;
+    fullName: string;
+    email?: string;
+    status: string;
+    profession: string;
+    phone?: string;
+    date: any;
+}
+
+export interface IUsersCardModel {
+    id: string | number;
+    fullName: string;
+    email?: string;
+    iin: string;
+    birth: any;
+    date: any;
+    gender: string;
+    profession: string;
+    phone?: string;
+    sign: any;
 }

@@ -1,21 +1,27 @@
-import { useContext, useEffect, useState, createElement } from "react";
+import { useContext, useState, createElement } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { Button, Layout, Menu, MenuProps } from "antd";
 import {
     OrderedListOutlined,
     MenuUnfoldOutlined,
     MenuFoldOutlined,
-    ScheduleOutlined
+    ScheduleOutlined,
+    IdcardOutlined
 } from "@ant-design/icons";
 import ButtonGroup from "antd/lib/button/button-group";
 
-import MainProvider from "store/provider";
 import { AuthContext } from "context/AuthContextProvider";
 import Dictionary from "components/Dictionary";
 import Staffing from "components/Staffing";
 import StaffingItem from "components/Staffing/staffingItem";
 import "antd/dist/antd.css";
 import "index.css";
+import Users from "components/Users";
+import UserItem from "components/Users/userItem";
+import Spinner from "ui/Spinner";
+
+import { Provider } from "react-redux";
+import store from "store";
 
 const { Header, Sider, Content } = Layout;
 
@@ -29,27 +35,19 @@ const items: MenuProps["items"] = [
         key: "staffing",
         icon: <ScheduleOutlined />,
         label: "Штатные расписания"
+    },
+    {
+        key: "users",
+        icon: <IdcardOutlined />,
+        label: "Сотрудники"
     }
 ];
 
-declare global {
-    interface Window {
-        url: string;
-    }
-}
-
 const App = () => {
     const authContext = useContext(AuthContext);
-    const [url, setUrl] = useState(process.env.URL || "");
     const [collapsed, setCollapsed] = useState(false);
     const [current, setCurrent] = useState("dictionary");
     const navigate = useNavigate();
-
-    useEffect(() => {
-        setUrl(process.env.URL || "");
-    }, []);
-
-    window.url = url;
 
     const onClick: MenuProps["onClick"] = (e) => {
         // console.log('click ', e);
@@ -61,7 +59,7 @@ const App = () => {
     return (
         <>
             {authContext.isAuthenticated ? (
-                <MainProvider>
+                <Provider store={store}>
                     <Layout style={{ minHeight: "100vh" }}>
                         <Sider trigger={null} collapsible collapsed={collapsed}>
                             <div style={{ height: 32, margin: 16 }} />
@@ -120,13 +118,28 @@ const App = () => {
                                         path="/staffing/:staffingId"
                                         element={<StaffingItem />}
                                     />
+                                    <Route key="users-route" path="/users" element={<Users />} />
+                                    <Route
+                                        key="users-item-route"
+                                        path="/users/:usersId"
+                                        element={<UserItem />}
+                                    />
                                 </Routes>
                             </Content>
                         </Layout>
                     </Layout>
-                </MainProvider>
+                </Provider>
             ) : (
-                <>Loading</>
+                <div
+                    style={{
+                        height: "100vh",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center"
+                    }}
+                >
+                    <Spinner />
+                </div>
             )}
         </>
     );

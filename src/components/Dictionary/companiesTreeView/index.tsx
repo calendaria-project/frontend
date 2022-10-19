@@ -48,7 +48,7 @@ export const CompanyTreeView: React.FC = ({}) => {
 
     const createCompamyNestedTable = () => {
         let url = `company/tree`;
-        actionMethodResultSync(url, "get", getRequestHeader(authContext.token))
+        actionMethodResultSync("DICTIONARY", url, "get", getRequestHeader(authContext.token))
             .then((data) => {
                 let actionsCell: ColumnDefinition = {
                     title: "",
@@ -59,9 +59,6 @@ export const CompanyTreeView: React.FC = ({}) => {
                 setTable(
                     createTableViaTabulator(
                         "#companiesTable",
-                        10,
-                        "local",
-                        "",
                         [...companiesColumns, actionsCell],
                         data,
                         () => {}
@@ -94,12 +91,12 @@ export const CompanyTreeView: React.FC = ({}) => {
 
     const updateCompanyById = (data: ICompanyViewModel) => {
         let url = `company`;
-        return actionMethodResultSync(url, "put", getRequestHeader(authContext.token), data)
+        return actionMethodResultSync("DICTIONARY", url, "put", getRequestHeader(authContext.token), data)
             .then((data) => {
                 message.success("Успешно обновлено");
                 return data;
             })
-            .catch((err) => {
+            .catch(() => {
                 message.error("Ошибка");
                 return {};
             });
@@ -107,7 +104,7 @@ export const CompanyTreeView: React.FC = ({}) => {
 
     const createCompany = (data: ICompanyCreateViewModel) => {
         let url = `company`;
-        return actionMethodResultSync(url, "post", getRequestHeader(authContext.token), data)
+        return actionMethodResultSync("DICTIONARY", url, "post", getRequestHeader(authContext.token), data)
             .then((data) => {
                 message.success("Успешно создано");
                 return data;
@@ -121,7 +118,7 @@ export const CompanyTreeView: React.FC = ({}) => {
 
     const getCompanyById = (id: number) => {
         let url = `company/${id}`;
-        return actionMethodResultSync(url, "get", getRequestHeader(authContext.token))
+        return actionMethodResultSync("DICTIONARY", url, "get", getRequestHeader(authContext.token))
             .then((data) => {
                 return data;
             })
@@ -162,7 +159,7 @@ export const CompanyTreeView: React.FC = ({}) => {
                 setIsVisible={setIsEditModalVisible}
                 form={editForm}
             />
-            <div id="companiesTable"></div>
+            <div id="companiesTable" />
         </>
     );
 };

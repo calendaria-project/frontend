@@ -42,6 +42,7 @@ export const DivisionTreeView: React.FC = () => {
 
     const getCompanies = () => {
         actionMethodResultSync(
+            "DICTIONARY",
             "company?page=0&size=100&sortingRule=companyId%3AASC",
             "get",
             getRequestHeader(authContext.token)
@@ -78,9 +79,6 @@ export const DivisionTreeView: React.FC = () => {
         setTable(
             createTableViaTabulator(
                 "#divisionsTable",
-                10,
-                "local",
-                "",
                 [...divisionsColumns, actionsCell],
                 data,
                 () => {}
@@ -117,7 +115,7 @@ export const DivisionTreeView: React.FC = () => {
 
     const getDivisionsByParentId = (id: number) => {
         let url = `division/tree?companyId=${selectedCompanyId || 0}`;
-        return actionMethodResultSync(url, "get", getRequestHeader(authContext.token))
+        return actionMethodResultSync("DICTIONARY", url, "get", getRequestHeader(authContext.token))
             .then((data) => data)
             .catch((err) => {
                 console.log(err);
@@ -127,9 +125,9 @@ export const DivisionTreeView: React.FC = () => {
     };
 
     const updateDivisionById = (data: IDivisionViewModel) => {
-        let url = `division`;
+        let url = `${process.env.DICTIONARY_URL}division`;
         data.companyId = selectedCompanyId || 0;
-        return actionMethodResultSync(url, "put", getRequestHeader(authContext.token), data)
+        return actionMethodResultSync("DICTIONARY", url, "put", getRequestHeader(authContext.token), data)
             .then((data) => {
                 message.success("Успешно обновлено");
                 return data;
@@ -141,9 +139,9 @@ export const DivisionTreeView: React.FC = () => {
     };
 
     const createDivision = (data: IDivisionCreateViewModel) => {
-        let url = `division`;
+        let url = `${process.env.DICTIONARY_URL}division`;
         data.companyId = selectedCompanyId || 0;
-        return actionMethodResultSync(url, "post", getRequestHeader(authContext.token), data)
+        return actionMethodResultSync("DICTIONARY", url, "post", getRequestHeader(authContext.token), data)
             .then((data) => {
                 message.success("Успешно создано");
                 return data;
@@ -157,7 +155,7 @@ export const DivisionTreeView: React.FC = () => {
 
     const getDivisionById = (id: number) => {
         let url = `division/${id}`;
-        return actionMethodResultSync(url, "get", getRequestHeader(authContext.token))
+        return actionMethodResultSync("DICTIONARY", url, "get", getRequestHeader(authContext.token))
             .then((data) => {
                 return data;
             })
@@ -220,7 +218,7 @@ export const DivisionTreeView: React.FC = () => {
                 setIsVisible={setIsEditModalVisible}
                 form={editForm}
             />
-            <div id="divisionsTable"></div>
+            <div id="divisionsTable" />
         </div>
     );
 };

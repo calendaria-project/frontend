@@ -1,4 +1,11 @@
-import React from "react";
-import { IContextProps } from "./interfaces";
+import userReducer from "./reducers/userReducer";
+import tokenReducer from "./reducers/tokenReducer";
+import { composeWithDevTools } from "redux-devtools-extension";
+import { applyMiddleware, combineReducers, createStore } from "redux";
 
-export const MainContext = React.createContext({} as IContextProps);
+export const rootReducer = combineReducers({ user: userReducer, token: tokenReducer });
+
+export type RootState = ReturnType<typeof rootReducer>;
+
+const store = createStore(rootReducer, composeWithDevTools(applyMiddleware()));
+export default store;

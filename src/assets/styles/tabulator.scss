@@ -22,7 +22,7 @@ $grey200: #e4e7ec;
 
 .tabulator .tabulator-header,
 .tabulator .tabulator-header .tabulator-col {
-    background-color: #fcfcfd !important;
+    background-color: #2f80ed !important;
     min-height: 50px !important;
     border: none !important;
 }
@@ -31,7 +31,7 @@ $grey200: #e4e7ec;
     // margin-top: -5px !important;
     // margin-bottom: 4px !important;
     font-size: 15px !important;
-    color: $grey500 !important;
+    color: #fff !important;
 }
 
 .tabulator-header-filter input {
@@ -106,9 +106,12 @@ $grey200: #e4e7ec;
 // }
 
 .tabulator-cell {
-    height: auto !important;
-    color: #253163;
-    font-size: 14px !important;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    letter-spacing: 0.01em;
+    color: #333333;
 }
 
 .tabulator-footer {
@@ -139,6 +142,7 @@ $grey200: #e4e7ec;
 
 .tabulator .tabulator-tableHolder .tabulator-placeholder span {
     font-size: 17px !important;
+    color: #333 !important;
 }
 
 .tabulator-page.active {
@@ -237,4 +241,21 @@ $grey200: #e4e7ec;
 
 .editBtn {
     margin-right: 10px;
+}
+
+#usersTable {
+    .tabulator {
+        .tabulator-header {
+            background-color: #2f80ed !important;
+        }
+    }
+    .userGroupHeaderWrap {
+        font-family: "Inter";
+        font-style: normal;
+        font-weight: 500;
+        font-size: 24px;
+        line-height: 30px;
+        color: #000000;
+        margin-left: 20px;
+    }
 }

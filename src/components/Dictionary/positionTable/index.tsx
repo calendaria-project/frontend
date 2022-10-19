@@ -77,6 +77,7 @@ const PositionList: FC = () => {
                     ...row
                 });
                 actionMethodResultSync(
+                    "DICTIONARY",
                     "position",
                     "put",
                     getRequestHeader(authContext.token),
@@ -87,6 +88,7 @@ const PositionList: FC = () => {
                 });
             } else {
                 actionMethodResultSync(
+                    "DICTIONARY",
                     "position",
                     "post",
                     getRequestHeader(authContext.token),
@@ -175,7 +177,7 @@ const PositionList: FC = () => {
     });
 
     useEffect(() => {
-        actionMethodResultSync("position", "get", getRequestHeader(authContext.token)).then(
+        actionMethodResultSync("DICTIONARY", "position", "get", getRequestHeader(authContext.token)).then(
             (res) => {
                 setData(res.content);
             }

@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { IActionMethodCallback, IRequestData } from "./interfaces";
 import exceptions from "./json/exceptions.json";
 import exceptionsV2 from "./json/exceptionsV2.json";
+import { ApyType } from "./types";
 
 const mode = "DEVELOPMENT";
 
@@ -63,6 +64,10 @@ export const actionMethodResultSync = async (
     /**
      * axios url
      */
+    apiType: ApyType,
+    /**
+     * axios url
+     */
     url: string,
     /**
      * axios method
@@ -90,34 +95,47 @@ export const actionMethodResultSync = async (
 ) => {
     try {
         fnc.beforeRequest();
-
         let actionCallback;
-
+        let baseUrl = "";
+        switch (apiType) {
+            case "DICTIONARY":
+                baseUrl = String(process.env.DICTIONARY_URL);
+                break;
+            case "FILE":
+                baseUrl = String(process.env.FILE_URL);
+                break;
+            case "USER":
+                baseUrl = String(process.env.USER_URL);
+                break;
+            default:
+                break;
+        }
+        const requestUrl = baseUrl + url;
         switch (method) {
             case "get":
                 var response = await axios
-                    .get(window.url + url, config)
-                    .catch((reason) => exceptionHandler(reason, errorData));
+                    .get(requestUrl, config)
+                    .catch((reason) => exceptionHandler(requestUrl, reason, errorData));
                 break;
             case "patch":
                 var response = await axios
-                    .patch(window.url + url, data, config)
-                    .catch((reason) => exceptionHandler(reason, errorData));
+                    .patch(requestUrl, data, config)
+                    .catch((reason) => exceptionHandler(requestUrl, reason, errorData));
                 break;
             case "post":
                 var response = await axios
-                    .post(window.url + url, data, config)
-                    .catch((reason) => exceptionHandler(reason, errorData));
+                    .post(requestUrl, data, config)
+                    .catch((reason) => exceptionHandler(requestUrl, reason, errorData));
                 break;
             case "put":
                 var response = await axios
-                    .put(window.url + url, data, config)
-                    .catch((reason) => exceptionHandler(reason, errorData));
+                    .put(requestUrl, data, config)
+                    .catch((reason) => exceptionHandler(requestUrl, reason, errorData));
                 break;
             case "delete":
                 var response = await axios
-                    .delete(window.url + url, config)
-                    .catch((reason) => exceptionHandler(reason, errorData));
+                    .delete(requestUrl, config)
+                    .catch((reason) => exceptionHandler(requestUrl, reason, errorData));
         }
 
         fnc.afterRequest(response);
@@ -132,10 +150,11 @@ export const actionMethodResultSync = async (
             ? err.message?.split("!")[0]
             : err.message?.split("!")[1];
         throw new Error(messageError);
+        // throw new Error();
     }
 };
 
-export const exceptionHandler = (err: AxiosError, errorData?: IErrorData[]): never => {
+export const exceptionHandler = (url: string, err: AxiosError, errorData?: IErrorData[]): never => {
     const response = err.response!;
 
     if (response) {
@@ -149,13 +168,14 @@ export const exceptionHandler = (err: AxiosError, errorData?: IErrorData[]): nev
         throw new Error(
             `${exception?.message} \n !${mode} MODE: exception status ${exception?.status} \n ${exception?.httpMessage}`
         );
+        // throw new Error();
     } else {
         if (mode.includes("LOCAL")) {
             setTimeout(() => {
-                window.open(process.env.URL);
+                window.open(url);
             }, 4000);
             throw new Error(
-                `!${mode} failed to response to server, check access to ${process.env.URL}. \n Opening ${process.env.URL}...`
+                `!${mode} failed to response to server, check access to ${url}. \n Opening ${url}...`
             );
         } else
             throw new Error(
