@@ -13,18 +13,27 @@ interface ISelect {
     currentDataItemInfo: any;
 }
 
+interface ISelectValue {
+    id: number;
+    nameRu: string;
+    nameKz: string;
+    nameEn: string;
+}
+
 const Select: FC<ISelect> = ({ form, dataItemLayout, currentDataItemInfo }) => {
     const authContext = useContext(AuthContext);
 
-    const [selectValue, setSelectValue] = useState<string | undefined>(undefined);
-    const [selectValues, setSelectValues] = useState([]);
+    const [selectValue, setSelectValue] = useState<ISelectValue>({} as ISelectValue);
+    const [selectValues, setSelectValues] = useState<Array<ISelectValue>>([]);
 
     useEffect(() => {
         const url = `simple/${dataItemLayout.dictionaryCode}`;
         actionMethodResultSync("DICTIONARY", url, "get", getRequestHeader(authContext.token)).then(
             (data) => setSelectValues(data)
         );
-        const id = currentDataItemInfo?.[dataItemLayout.propertyName]?.id;
+        const id =
+            currentDataItemInfo?.[dataItemLayout.propertyName]?.id ??
+            currentDataItemInfo?.[0]?.[dataItemLayout.propertyName]?.id;
         if (id) {
             const url = `simple/${dataItemLayout.dictionaryCode}/item/${id}`;
             actionMethodResultSync(
@@ -32,7 +41,7 @@ const Select: FC<ISelect> = ({ form, dataItemLayout, currentDataItemInfo }) => {
                 url,
                 "get",
                 getRequestHeader(authContext.token)
-            ).then((data) => setSelectValue(data?.nameRu));
+            ).then((data) => setSelectValue(data));
         }
     }, []);
 
@@ -42,21 +51,24 @@ const Select: FC<ISelect> = ({ form, dataItemLayout, currentDataItemInfo }) => {
         });
     }, []);
 
-    const handleChangeValue = useCallback((v: string) => {
-        form.setFieldsValue({
-            [dataItemLayout.propertyName]: v
-        });
-    }, []);
+    const handleChangeValue = useCallback(
+        (v: any) => {
+            form.setFieldsValue({
+                [dataItemLayout.propertyName]: selectValues.find((item) => item.id === v)
+            });
+        },
+        [selectValues]
+    );
 
     return (
         <AntdSelect
-            value={selectValue}
+            value={selectValue.nameRu}
             placeholder={dataItemLayout.placeholder}
             onChange={handleChangeValue}
         >
-            {(selectValues || []).map(({ nameRu, id }, i) => (
-                <Option value={nameRu} key={i}>
-                    {nameRu}
+            {(selectValues || []).map((el, i) => (
+                <Option value={el.id} key={i}>
+                    {el.nameRu}
                 </Option>
             ))}
         </AntdSelect>

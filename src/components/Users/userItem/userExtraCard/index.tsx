@@ -29,6 +29,7 @@ import { AuthContext } from "context/AuthContextProvider";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { getCurrentUserDataItemInfo, getSelectedKey } from "store/reducers/userReducer";
+import { removeEmptyObjectProperties } from "utils/removeEmptyObjectProperties";
 
 import { SetCurrentUserDataItemInfo, SetUserSelectedKey } from "store/actions";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
@@ -159,15 +160,18 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
             if (reqMethod === "post") {
                 const data =
                     record instanceof Array
-                        ? record.map((item) => ({ ...item, userId: usersId }))
-                        : { ...record, userId: usersId };
+                        ? record.map((item) => ({
+                              ...removeEmptyObjectProperties(item),
+                              userId: usersId
+                          }))
+                        : removeEmptyObjectProperties({ ...record, userId: usersId });
                 sendRequest(data);
             } else {
                 if (currentUserDataItemInfo instanceof Array) {
                     //доделать
-                    let data: Array<Object> = [];
-                    if (!_.isEqual(currentUserDataItemInfo, data)) {
+                    if (!_.isEqual(currentUserDataItemInfo, [])) {
                         if (selectedKey === SelectedKeyTypes.EDUCATION) {
+                            const data: Array<Object> = [];
                             currentUserDataItemInfo.forEach((dataItemInfo) => {
                                 if (dataItemInfo.educationId === record?.educationId) {
                                     data.push({ ...dataItemInfo, ...record });
@@ -175,7 +179,9 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                                     data.push(dataItemInfo);
                                 }
                             });
+                            sendRequest(data);
                         } else if (selectedKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE) {
+                            const data: Array<Object> = [];
                             currentUserDataItemInfo.forEach((dataItemInfo) => {
                                 if (
                                     dataItemInfo.languageKnowledgeId === record?.languageKnowledgeId
@@ -185,14 +191,19 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                                     data.push(dataItemInfo);
                                 }
                             });
+                            sendRequest(data);
+                        } else if (
+                            selectedKey === SelectedKeyTypes.INVENTORY ||
+                            selectedKey === SelectedKeyTypes.DOCUMENT
+                        ) {
+                            const dataObject = currentUserDataItemInfo?.[0] ?? {};
+                            const data = _.merge(dataObject, record);
+                            sendRequest(data);
                         }
-                        sendRequest(data);
                     }
                 } else {
-                    const data = { ...currentUserDataItemInfo, ...record };
-                    if (!_.isEqual(currentUserDataItemInfo, data)) {
-                        sendRequest(data);
-                    }
+                    const data = _.merge(currentUserDataItemInfo, record);
+                    sendRequest(data);
                 }
             }
 
@@ -277,7 +288,7 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                         <Row className="row-container" gutter={[16, 16]}>
                             {currentDataLayout
                                 ? currentDataLayout.map((dataItem, index) => (
-                                      <RowData key={index} dataItem={dataItem} />
+                                      <RowData key={index} dataItem={dataItem} usersId={usersId} />
                                   ))
                                 : null}
                         </Row>

@@ -8,7 +8,6 @@ import { validateMessages } from "data/validateMessages";
 import { SelectedKeyTypes, Types, TInputData } from "../constants";
 
 import "../styles.scss";
-import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { getCurrentUserDataItemInfo, getSelectedKey } from "store/reducers/userReducer";
 
@@ -35,17 +34,14 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
     const currentUserDataItemInfo = useTypedSelector((state) =>
         getCurrentUserDataItemInfo(state.user)
     );
-    const userMenuDataExists: boolean = isObjectNotEmpty(currentUserDataItemInfo);
 
     const handleCancel = useCallback(() => {
         setIsVisible(false);
     }, []);
 
-    const [modalCurrentDataItemInfo, setModalCurrentDataItemInfo] = useState(
+    const [modalCurrentDataItemInfo] = useState(
         currentUserDataItemInfo instanceof Array ? currentUserDataItemInfo : [{}]
     );
-
-    const handleAddClick = () => setModalCurrentDataItemInfo([...modalCurrentDataItemInfo, {}]);
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
@@ -83,21 +79,16 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                         : currentDataLayout.map((dataItemLayout, index) => (
                               <Col xl={24} xs={24} key={"" + index + dataItemLayout.propertyName}>
                                   {dataItemLayout.type === Types.SELECT ? (
-                                      dataItemLayout.propertyName === "inventoryType" &&
-                                      userMenuDataExists ? (
-                                          <></>
-                                      ) : (
-                                          <Form.Item
-                                              name={dataItemLayout.propertyName}
-                                              rules={[{ required: dataItemLayout.required }]}
-                                          >
-                                              <Select
-                                                  form={form}
-                                                  dataItemLayout={dataItemLayout}
-                                                  currentDataItemInfo={currentUserDataItemInfo}
-                                              />
-                                          </Form.Item>
-                                      )
+                                      <Form.Item
+                                          name={dataItemLayout.propertyName}
+                                          rules={[{ required: dataItemLayout.required }]}
+                                      >
+                                          <Select
+                                              form={form}
+                                              dataItemLayout={dataItemLayout}
+                                              currentDataItemInfo={currentUserDataItemInfo}
+                                          />
+                                      </Form.Item>
                                   ) : (
                                       <Form.Item
                                           name={dataItemLayout.propertyName}
