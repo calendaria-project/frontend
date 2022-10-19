@@ -10,7 +10,8 @@ interface IInput {
 
 const Input: FC<IInput> = ({ form, dataItemLayout, currentDataItemInfo }) => {
     const [currentValue, setCurrentValue] = useState<string>(
-        currentDataItemInfo?.[dataItemLayout.propertyName]
+        currentDataItemInfo?.[dataItemLayout.propertyName] ??
+            currentDataItemInfo?.[0]?.[dataItemLayout.propertyName]
     );
     const handleChangeValue = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         form.setFieldsValue({
@@ -28,6 +29,7 @@ const Input: FC<IInput> = ({ form, dataItemLayout, currentDataItemInfo }) => {
     return (
         <AntdInput
             placeholder={dataItemLayout.placeholder}
+            pattern={dataItemLayout.pattern}
             onChange={handleChangeValue}
             value={currentValue}
         />

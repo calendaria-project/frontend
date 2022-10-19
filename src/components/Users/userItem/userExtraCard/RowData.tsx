@@ -1,9 +1,6 @@
-import React, { FC, memo, useContext } from "react";
+import React, { FC, memo, useState, useEffect } from "react";
 import { Row, Col, Divider } from "antd";
 import { TInputData, Types } from "./constants";
-import { AuthContext } from "context/AuthContextProvider";
-import { actionMethodResultSync } from "functions/actionMethodResult";
-import { getRequestHeader } from "functions/common";
 
 import "./styles.scss";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
@@ -12,37 +9,34 @@ import { getCurrentUserDataItemInfo } from "store/reducers/userReducer";
 
 interface IRowData {
     dataItem: TInputData;
+    usersId: string;
 }
 
-const RowData: FC<IRowData> = ({ dataItem }) => {
-    const authContext = useContext(AuthContext);
-
+const RowData: FC<IRowData> = ({ dataItem, usersId }) => {
+    const [displayedData, setDisplayedData] = useState<string>("");
     const currentUserDataItemInfo = useTypedSelector((state) =>
         getCurrentUserDataItemInfo(state.user)
     );
     const userMenuDataExists: boolean = isObjectNotEmpty(currentUserDataItemInfo);
 
-    const getDisplayedData = () => {
+    useEffect(() => {
         if (dataItem.type === Types.SELECT) {
-            const id = currentUserDataItemInfo?.[dataItem.propertyName]?.id;
-            if (id) {
-                const url = `simple/${dataItem.dictionaryCode}/item/${id}`;
-                actionMethodResultSync(
-                    "DICTIONARY",
-                    url,
-                    "get",
-                    getRequestHeader(authContext.token)
-                ).then((data) => data?.nameRu);
-            }
+            setDisplayedData(
+                currentUserDataItemInfo?.[dataItem.propertyName]?.nameRu ??
+                    currentUserDataItemInfo?.[0]?.[dataItem.propertyName]?.nameRu
+            );
         } else {
-            return currentUserDataItemInfo?.[dataItem.propertyName];
+            setDisplayedData(
+                currentUserDataItemInfo?.[dataItem.propertyName] ??
+                    currentUserDataItemInfo?.[0]?.[dataItem.propertyName]
+            );
         }
-    };
+    }, [currentUserDataItemInfo, dataItem, usersId]);
 
     return (
         <Row className="row-wrapper">
             <Col>{dataItem.placeholder}</Col>
-            <Col className="col-end-wrapper">{userMenuDataExists ? getDisplayedData() : ""}</Col>
+            <Col className="col-end-wrapper">{userMenuDataExists ? displayedData : ""}</Col>
             <Divider className={"userItem__extraCard-divider"} />
         </Row>
     );

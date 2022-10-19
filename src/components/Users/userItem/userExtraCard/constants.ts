@@ -25,6 +25,7 @@ export type TInputData = {
     inputType?: string;
     placeholder: string;
     required?: boolean;
+    pattern?: string;
 };
 
 type InputDataRecord = {
@@ -64,7 +65,8 @@ export const inputData: InputDataRecord = {
         {
             type: Types.INPUT,
             propertyName: "mobilePhoneNumber",
-            placeholder: "Внутренний номер"
+            placeholder: "Внутренний номер",
+            required: true
         },
         {
             type: Types.INPUT,
@@ -121,6 +123,14 @@ export const inputData: InputDataRecord = {
             propertyName: "issueAuthority",
             placeholder: "Орган выдачи",
             required: true
+        },
+        {
+            type: Types.INPUT,
+            propertyName: "issueDate",
+            placeholder: "Дата выдачи",
+            pattern:
+                "(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))",
+            required: true
         }
     ],
     [SelectedKeyTypes.ADDRESS_INFO]: [
@@ -153,6 +163,13 @@ export const inputData: InputDataRecord = {
     ],
     [SelectedKeyTypes.CONTRACT]: [
         {
+            type: Types.SELECT,
+            propertyName: "contractType",
+            dictionaryCode: "CONTRACT_TYPE",
+            placeholder: "Тип контракта",
+            required: true
+        },
+        {
             type: Types.INPUT,
             propertyName: "contractNum",
             placeholder: "Номер договора",
@@ -162,6 +179,8 @@ export const inputData: InputDataRecord = {
             type: Types.INPUT,
             propertyName: "contractDate",
             placeholder: "Дата договора",
+            pattern:
+                "(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))",
             required: true
         }
     ],
