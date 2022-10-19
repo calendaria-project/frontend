@@ -168,38 +168,15 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                 sendRequest(data);
             } else {
                 if (currentUserDataItemInfo instanceof Array) {
-                    //доделать
-                    if (!_.isEqual(currentUserDataItemInfo, [])) {
-                        if (selectedKey === SelectedKeyTypes.EDUCATION) {
-                            const data: Array<Object> = [];
-                            currentUserDataItemInfo.forEach((dataItemInfo) => {
-                                if (dataItemInfo.educationId === record?.educationId) {
-                                    data.push({ ...dataItemInfo, ...record });
-                                } else {
-                                    data.push(dataItemInfo);
-                                }
-                            });
-                            sendRequest(data);
-                        } else if (selectedKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE) {
-                            const data: Array<Object> = [];
-                            currentUserDataItemInfo.forEach((dataItemInfo) => {
-                                if (
-                                    dataItemInfo.languageKnowledgeId === record?.languageKnowledgeId
-                                ) {
-                                    data.push({ ...dataItemInfo, ...record });
-                                } else {
-                                    data.push(dataItemInfo);
-                                }
-                            });
-                            sendRequest(data);
-                        } else if (
-                            selectedKey === SelectedKeyTypes.INVENTORY ||
-                            selectedKey === SelectedKeyTypes.DOCUMENT
-                        ) {
-                            const dataObject = currentUserDataItemInfo?.[0] ?? {};
-                            const data = _.merge(dataObject, record);
-                            sendRequest(data);
-                        }
+                    if (
+                        selectedKey === SelectedKeyTypes.INVENTORY ||
+                        selectedKey === SelectedKeyTypes.DOCUMENT ||
+                        selectedKey === SelectedKeyTypes.EDUCATION ||
+                        selectedKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE
+                    ) {
+                        const dataObject = currentUserDataItemInfo?.[0] ?? {};
+                        const data = _.merge(dataObject, record);
+                        sendRequest(data);
                     }
                 } else {
                     const data = _.merge(currentUserDataItemInfo, record);
