@@ -10,6 +10,7 @@ import { SelectedKeyTypes, Types, TInputData } from "../constants";
 import "../styles.scss";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { getCurrentUserDataItemInfo, getSelectedKey } from "store/reducers/userReducer";
+import DatePicker from "./DatePicker";
 
 interface IUserItemModal {
     okText: string;
@@ -40,7 +41,11 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
     }, []);
 
     const [modalCurrentDataItemInfo] = useState(
-        currentUserDataItemInfo instanceof Array ? currentUserDataItemInfo : [{}]
+        currentUserDataItemInfo instanceof Array
+            ? currentUserDataItemInfo
+                ? currentUserDataItemInfo
+                : [{}]
+            : undefined
     );
 
     return (
@@ -58,7 +63,7 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
             >
                 <Row gutter={16}>
                     {selectedKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE
-                        ? modalCurrentDataItemInfo.map((dataItemInfo, index) => (
+                        ? (modalCurrentDataItemInfo || []).map((dataItemInfo, index) => (
                               <Col xl={24} xs={24} key={index}>
                                   {currentDataLayout.map((dataItemLayout) => (
                                       <Form.Item
@@ -75,7 +80,7 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                                   ))}
                               </Col>
                           ))
-                        : currentDataLayout.map((dataItemLayout, index) => (
+                        : (currentDataLayout || []).map((dataItemLayout, index) => (
                               <Col xl={24} xs={24} key={"" + index + dataItemLayout.propertyName}>
                                   {dataItemLayout.type === Types.SELECT ? (
                                       <Form.Item
@@ -88,7 +93,7 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                                               currentDataItemInfo={currentUserDataItemInfo}
                                           />
                                       </Form.Item>
-                                  ) : (
+                                  ) : dataItemLayout.type === Types.INPUT ? (
                                       <Form.Item
                                           name={dataItemLayout.propertyName}
                                           rules={[{ required: dataItemLayout.required }]}
@@ -99,7 +104,18 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                                               form={form}
                                           />
                                       </Form.Item>
-                                  )}
+                                  ) : dataItemLayout.type === Types.DATE ? (
+                                      <Form.Item
+                                          name={dataItemLayout.propertyName}
+                                          rules={[{ required: dataItemLayout.required }]}
+                                      >
+                                          <DatePicker
+                                              form={form}
+                                              dataItemLayout={dataItemLayout}
+                                              currentDataItemInfo={currentUserDataItemInfo}
+                                          />
+                                      </Form.Item>
+                                  ) : null}
                               </Col>
                           ))}
                     <Col xl={24} xs={24}>

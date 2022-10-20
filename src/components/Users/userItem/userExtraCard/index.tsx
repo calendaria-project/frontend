@@ -13,9 +13,7 @@ import {
     InfoCircleOutlined,
     KeyOutlined,
     PlusOutlined,
-    UserOutlined,
-    GlobalOutlined,
-    BellOutlined
+    UserOutlined
 } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { useTypedSelector } from "hooks/useTypedSelector";
@@ -46,7 +44,13 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
     const currentUserDataItemInfo = useTypedSelector((state) =>
         getCurrentUserDataItemInfo(state.user)
     );
+
     const userMenuDataExists: boolean = isObjectNotEmpty(currentUserDataItemInfo);
+    const additionalMenuExists: boolean =
+        selectedKey === SelectedKeyTypes.SHARED_INFO ||
+        selectedKey === SelectedKeyTypes.ADDITIONAL_INFO ||
+        selectedKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE ||
+        selectedKey === SelectedKeyTypes.EDUCATION;
 
     const title = useMemo(
         () =>
@@ -60,39 +64,44 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
     const [modalVisibleFlag, setModalVisibleFlag] = useState<boolean>(false);
 
     const [currentDataLayout, setCurrentDataLayout] = useState<Array<TInputData>>(
-        inputData[selectedKey]
+        inputData?.[selectedKey]
     );
+
+    useEffect(() => {
+        dispatch(SetUserSelectedKey(SelectedKeyTypes.USER));
+    }, [usersId]);
 
     useEffect(() => {
         setCurrentDataLayout(inputData[selectedKey]);
     }, [selectedKey]);
 
     useEffect(() => {
-        const url = `${
-            selectedKey === SelectedKeyTypes.CONTACT_PERSONAL ||
-            selectedKey === SelectedKeyTypes.CONTACT_BUSINESS
-                ? "contact"
-                : selectedKey
-        }/${usersId}${
-            selectedKey === SelectedKeyTypes.CONTACT_PERSONAL
-                ? "/personal"
-                : selectedKey === SelectedKeyTypes.CONTACT_BUSINESS
-                ? "/business"
-                : ""
-        }`;
+        if (selectedKey !== SelectedKeyTypes.SHARED_INFO) {
+            const url = `${
+                selectedKey === SelectedKeyTypes.CONTACT_PERSONAL ||
+                selectedKey === SelectedKeyTypes.CONTACT_BUSINESS
+                    ? "contact"
+                    : selectedKey
+            }/${usersId}${
+                selectedKey === SelectedKeyTypes.CONTACT_PERSONAL
+                    ? "/personal"
+                    : selectedKey === SelectedKeyTypes.CONTACT_BUSINESS
+                    ? "/business"
+                    : ""
+            }`;
 
-        actionMethodResultSync("USER", url, "get", getRequestHeader(authContext.token)).then(
-            (res) => {
-                if (isObjectNotEmpty(res)) {
-                    dispatch(SetCurrentUserDataItemInfo({ [selectedKey]: res }));
+            actionMethodResultSync("USER", url, "get", getRequestHeader(authContext.token)).then(
+                (res) => {
+                    if (isObjectNotEmpty(res)) {
+                        dispatch(SetCurrentUserDataItemInfo({ [selectedKey]: res }));
+                    }
                 }
-            }
-        );
-    }, [dispatch, usersId, selectedKey]);
+            );
+        }
+    }, [dispatch, selectedKey]);
 
     const handleMenuClick: MenuProps["onClick"] = useCallback(
         (e: any) => {
-            // console.log(e.key);
             dispatch(SetUserSelectedKey(e.key));
         },
         [dispatch]
@@ -106,10 +115,10 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
         setModalVisibleFlag(true);
     }, []);
 
-    const getIcon = (currentKey: string, Icon: JSX.Element): JSX.Element => {
+    const getIcon = (currentKey: string, Icon?: JSX.Element): JSX.Element => {
         return (
             <>
-                {Icon}
+                {Icon ? Icon : <></>}
                 {selectedKey === currentKey &&
                     (userMenuDataExists ? (
                         <EditOutlined onClick={handleIconClick} className="icon" />
@@ -122,6 +131,19 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
 
     const save = useCallback(
         (record: any) => {
+            if (record.issueDate) {
+                record = {
+                    ...record,
+                    issueDate: record.issueDate._i
+                };
+            }
+            if (record.contractDate) {
+                record = {
+                    ...record,
+                    contractDate: record.contractDate._i
+                };
+            }
+
             const reqMethod = isObjectNotEmpty(currentUserDataItemInfo) ? "put" : "post";
 
             const sendRequest = (data: Object) => {
@@ -231,29 +253,37 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
             label: "Договора"
         },
         {
-            key: SelectedKeyTypes.ADDITIONAL_INFO,
-            icon: getIcon(SelectedKeyTypes.ADDITIONAL_INFO, <InfoCircleOutlined />),
+            key: SelectedKeyTypes.SHARED_INFO,
+            icon: <InfoCircleOutlined />,
             label: "Информация"
-        },
+        }
+    ];
+    const memoizedItems = useMemo(() => items, [items]);
+
+    const additionalItems: MenuProps["items"] = [
         {
             key: SelectedKeyTypes.LANGUAGE_KNOWLEDGE,
-            icon: getIcon(SelectedKeyTypes.LANGUAGE_KNOWLEDGE, <GlobalOutlined />),
+            icon: getIcon(SelectedKeyTypes.LANGUAGE_KNOWLEDGE),
             label: "Иностранные языки"
         },
         {
             key: SelectedKeyTypes.EDUCATION,
-            icon: getIcon(SelectedKeyTypes.EDUCATION, <BellOutlined />),
+            icon: getIcon(SelectedKeyTypes.EDUCATION),
             label: "Образование"
+        },
+        {
+            key: SelectedKeyTypes.ADDITIONAL_INFO,
+            icon: getIcon(SelectedKeyTypes.ADDITIONAL_INFO),
+            label: "О себе"
         }
     ];
-
-    const memoizedItems = useMemo(() => items, [items]);
+    const memoizedAdditionalItems = useMemo(() => additionalItems, [additionalItems]);
 
     return (
         <Card className={"userItem__extraCard"} title="Дополнительная информация">
             <Form form={form} component={false}>
                 <Row className="row-wrapper">
-                    <Col span={8}>
+                    <Col span={6}>
                         <Menu
                             mode="inline"
                             selectedKeys={[selectedKey]}
@@ -261,7 +291,17 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                             items={memoizedItems}
                         />
                     </Col>
-                    <Col span={16}>
+                    {additionalMenuExists && (
+                        <Col span={6}>
+                            <Menu
+                                mode="inline"
+                                selectedKeys={[selectedKey]}
+                                onClick={handleMenuClick}
+                                items={memoizedAdditionalItems}
+                            />
+                        </Col>
+                    )}
+                    <Col span={additionalMenuExists ? 12 : 18}>
                         <Row className="row-container" gutter={[16, 16]}>
                             {currentDataLayout
                                 ? currentDataLayout.map((dataItem, index) => (

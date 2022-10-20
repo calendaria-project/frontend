@@ -103,7 +103,7 @@ const UserItem: FC = () => {
                 </Col>
             </Row>
             <Row className="row-wrapper" gutter={[16, 16]}>
-                <Col span={10}>
+                <Col span={8}>
                     <Card
                         className={"userItem__mainCard"}
                         title="Основная информация"
@@ -180,7 +180,7 @@ const UserItem: FC = () => {
                     companyName={currentUserData?.company?.nameRu}
                     onFinishCreatingUser={onFinishEditingUser}
                 />
-                <Col span={14}>
+                <Col span={16}>
                     <UserExtraCard usersId={usersId!} />
                 </Col>
             </Row>

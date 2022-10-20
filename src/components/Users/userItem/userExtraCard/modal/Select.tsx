@@ -43,13 +43,13 @@ const Select: FC<ISelect> = ({ form, dataItemLayout, currentDataItemInfo }) => {
                 getRequestHeader(authContext.token)
             ).then((data) => setSelectValue(data));
         }
-    }, [currentDataItemInfo]);
+    }, [currentDataItemInfo, dataItemLayout]);
 
     useEffect(() => {
         form.setFieldsValue({
             [dataItemLayout.propertyName]: selectValue
         });
-    }, []);
+    }, [dataItemLayout]);
 
     const handleChangeValue = useCallback(
         (v: any) => {
@@ -61,7 +61,7 @@ const Select: FC<ISelect> = ({ form, dataItemLayout, currentDataItemInfo }) => {
             });
             setSelectValue(currentValueObject);
         },
-        [selectValues]
+        [dataItemLayout, selectValues]
     );
 
     return (
