@@ -2,7 +2,7 @@ import { Button, Col, Form, FormInstance, Modal, Row } from "antd";
 import Select from "./Select";
 
 import Input from "./Input";
-import React, { FC, memo, useCallback, useState } from "react";
+import React, { FC, memo, useCallback } from "react";
 
 import { validateMessages } from "data/validateMessages";
 import { SelectedKeyTypes, Types, TInputData } from "../constants";
@@ -40,13 +40,12 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
         setIsVisible(false);
     }, []);
 
-    const [modalCurrentDataItemInfo] = useState(
+    const modalCurrentDataItemInfo =
         currentUserDataItemInfo instanceof Array
             ? currentUserDataItemInfo
                 ? currentUserDataItemInfo
                 : [{}]
-            : undefined
-    );
+            : undefined;
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
