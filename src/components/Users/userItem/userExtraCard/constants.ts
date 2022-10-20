@@ -1,7 +1,8 @@
 export enum Types {
     UNEDITABLE = "uneditable",
     SELECT = "select",
-    INPUT = "input"
+    INPUT = "input",
+    DATE = "date"
 }
 
 export enum SelectedKeyTypes {
@@ -13,6 +14,7 @@ export enum SelectedKeyTypes {
     ADDRESS_INFO = "addressInfo",
     CAR_INFO = "carInfo",
     CONTRACT = "contract",
+    SHARED_INFO = "sharedInfo",
     ADDITIONAL_INFO = "additionalInfo",
     EDUCATION = "education",
     LANGUAGE_KNOWLEDGE = "languageKnowledge"
@@ -25,7 +27,6 @@ export type TInputData = {
     inputType?: string;
     placeholder: string;
     required?: boolean;
-    pattern?: string;
 };
 
 type InputDataRecord = {
@@ -125,11 +126,9 @@ export const inputData: InputDataRecord = {
             required: true
         },
         {
-            type: Types.INPUT,
+            type: Types.DATE,
             propertyName: "issueDate",
             placeholder: "Дата выдачи",
-            pattern:
-                "(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))",
             required: true
         }
     ],
@@ -176,11 +175,9 @@ export const inputData: InputDataRecord = {
             required: true
         },
         {
-            type: Types.INPUT,
+            type: Types.DATE,
             propertyName: "contractDate",
             placeholder: "Дата договора",
-            pattern:
-                "(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))",
             required: true
         }
     ],

@@ -13,23 +13,26 @@ const Input: FC<IInput> = ({ form, dataItemLayout, currentDataItemInfo }) => {
         currentDataItemInfo?.[dataItemLayout.propertyName] ??
             currentDataItemInfo?.[0]?.[dataItemLayout.propertyName]
     );
-    const handleChangeValue = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        form.setFieldsValue({
-            [dataItemLayout.propertyName]: e.target.value
-        });
-        setCurrentValue(e.target.value);
-    }, []);
+
+    const handleChangeValue = useCallback(
+        (e: ChangeEvent<HTMLInputElement>) => {
+            form.setFieldsValue({
+                [dataItemLayout.propertyName]: e.target.value
+            });
+            setCurrentValue(e.target.value);
+        },
+        [dataItemLayout]
+    );
 
     useEffect(() => {
         form.setFieldsValue({
             [dataItemLayout.propertyName]: currentValue
         });
-    }, []);
+    }, [dataItemLayout]);
 
     return (
         <AntdInput
             placeholder={dataItemLayout.placeholder}
-            pattern={dataItemLayout.pattern}
             onChange={handleChangeValue}
             value={currentValue}
         />
