@@ -162,7 +162,7 @@ export const UserDrawer = ({
         });
         actionMethodResultSync(
             "FILE",
-            "file/uplaod",
+            "file/upload",
             "post",
             postFormDataHeader(authContext.token)
         ).then((res) => {
@@ -179,7 +179,7 @@ export const UserDrawer = ({
         fData.append("file", acceptedFiles[0]);
         actionMethodResultSync(
             "FILE",
-            "file/uplaod",
+            "file/upload",
             "post",
             postFormDataHeader(authContext.token)
         ).then((res) => {
