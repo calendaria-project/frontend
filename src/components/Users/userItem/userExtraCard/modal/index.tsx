@@ -20,6 +20,8 @@ interface IUserItemModal {
     onFinish: (values: Object) => void;
     form: FormInstance;
     currentDataLayout: Array<TInputData>;
+    currentCutInfo?: any;
+    index?: number;
 }
 
 const UserExtraCardModal: FC<IUserItemModal> = ({
@@ -29,7 +31,8 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
     setIsVisible,
     onFinish,
     form,
-    currentDataLayout
+    currentDataLayout,
+    index
 }) => {
     const selectedKey = useTypedSelector((state) => getSelectedKey(state.user));
     const currentUserDataItemInfo = useTypedSelector((state) =>
@@ -41,11 +44,16 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
     }, []);
 
     const modalCurrentDataItemInfo =
-        currentUserDataItemInfo instanceof Array
-            ? currentUserDataItemInfo
+        index === null || index === undefined
+            ? currentUserDataItemInfo instanceof Array
                 ? currentUserDataItemInfo
-                : [{}]
-            : undefined;
+                    ? currentUserDataItemInfo
+                    : [{}]
+                : undefined
+            : [currentUserDataItemInfo?.[index!]];
+
+    console.log(index);
+    console.log(modalCurrentDataItemInfo);
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
@@ -61,60 +69,71 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                 form={form}
             >
                 <Row gutter={16}>
-                    {selectedKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE
-                        ? (modalCurrentDataItemInfo || []).map((dataItemInfo, index) => (
-                              <Col xl={24} xs={24} key={index}>
-                                  {currentDataLayout.map((dataItemLayout) => (
-                                      <Form.Item
-                                          key={dataItemLayout.propertyName}
-                                          name={dataItemLayout.propertyName}
-                                          rules={[{ required: dataItemLayout.required }]}
-                                      >
-                                          <Select
-                                              form={form}
-                                              dataItemLayout={dataItemLayout}
-                                              currentDataItemInfo={dataItemInfo}
-                                          />
-                                      </Form.Item>
-                                  ))}
-                              </Col>
-                          ))
+                    {selectedKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE ||
+                    selectedKey === SelectedKeyTypes.EDUCATION ||
+                    selectedKey === SelectedKeyTypes.INVENTORY ||
+                    selectedKey === SelectedKeyTypes.DOCUMENT ||
+                    selectedKey === SelectedKeyTypes.CONTRACT
+                        ? (modalCurrentDataItemInfo || []).map(
+                              (dataItemInfo: any, index: number) => (
+                                  <Col xl={24} xs={24} key={index}>
+                                      {(currentDataLayout || []).map((dataItemLayout) => (
+                                          <Form.Item
+                                              key={dataItemLayout.propertyName}
+                                              name={dataItemLayout.propertyName}
+                                              rules={[{ required: dataItemLayout.required }]}
+                                          >
+                                              {dataItemLayout.type === Types.SELECT ? (
+                                                  <Select
+                                                      form={form}
+                                                      dataItemLayout={dataItemLayout}
+                                                      currentDataItemInfo={dataItemInfo}
+                                                  />
+                                              ) : dataItemLayout.type === Types.INPUT ? (
+                                                  <Input
+                                                      form={form}
+                                                      dataItemLayout={dataItemLayout}
+                                                      currentDataItemInfo={dataItemInfo}
+                                                  />
+                                              ) : dataItemLayout.type === Types.DATE ? (
+                                                  <DatePicker
+                                                      form={form}
+                                                      dataItemLayout={dataItemLayout}
+                                                      currentDataItemInfo={dataItemInfo}
+                                                  />
+                                              ) : null}
+                                          </Form.Item>
+                                      ))}
+                                  </Col>
+                              )
+                          )
                         : (currentDataLayout || []).map((dataItemLayout, index) => (
                               <Col xl={24} xs={24} key={"" + index + dataItemLayout.propertyName}>
-                                  {dataItemLayout.type === Types.SELECT ? (
-                                      <Form.Item
-                                          name={dataItemLayout.propertyName}
-                                          rules={[{ required: dataItemLayout.required }]}
-                                      >
+                                  <Form.Item
+                                      key={dataItemLayout.propertyName}
+                                      name={dataItemLayout.propertyName}
+                                      rules={[{ required: dataItemLayout.required }]}
+                                  >
+                                      {dataItemLayout.type === Types.SELECT ? (
                                           <Select
                                               form={form}
                                               dataItemLayout={dataItemLayout}
                                               currentDataItemInfo={currentUserDataItemInfo}
                                           />
-                                      </Form.Item>
-                                  ) : dataItemLayout.type === Types.INPUT ? (
-                                      <Form.Item
-                                          name={dataItemLayout.propertyName}
-                                          rules={[{ required: dataItemLayout.required }]}
-                                      >
+                                      ) : dataItemLayout.type === Types.INPUT ? (
                                           <Input
                                               dataItemLayout={dataItemLayout}
                                               currentDataItemInfo={currentUserDataItemInfo}
                                               form={form}
                                           />
-                                      </Form.Item>
-                                  ) : dataItemLayout.type === Types.DATE ? (
-                                      <Form.Item
-                                          name={dataItemLayout.propertyName}
-                                          rules={[{ required: dataItemLayout.required }]}
-                                      >
+                                      ) : dataItemLayout.type === Types.DATE ? (
                                           <DatePicker
                                               form={form}
                                               dataItemLayout={dataItemLayout}
                                               currentDataItemInfo={currentUserDataItemInfo}
                                           />
-                                      </Form.Item>
-                                  ) : null}
+                                      ) : null}
+                                  </Form.Item>
                               </Col>
                           ))}
                     <Col xl={24} xs={24}>

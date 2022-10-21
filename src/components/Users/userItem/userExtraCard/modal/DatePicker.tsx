@@ -14,15 +14,24 @@ interface IDatePicker {
 
 const DatePicker: FC<IDatePicker> = ({ form, dataItemLayout, currentDataItemInfo }) => {
     const [currentValue, setCurrentValue] = useState<Moment | null>(
-        currentDataItemInfo?.[dataItemLayout.propertyName] ||
-            currentDataItemInfo?.[0]?.[dataItemLayout.propertyName]
-            ? moment(
-                  currentDataItemInfo?.[dataItemLayout.propertyName] ??
-                      currentDataItemInfo?.[0]?.[dataItemLayout.propertyName],
-                  "YYYY-MM-DD"
-              )
+        currentDataItemInfo?.[dataItemLayout.propertyName]
+            ? moment(currentDataItemInfo?.[dataItemLayout.propertyName], "YYYY-MM-DD")
             : null
     );
+
+    useEffect(() => {
+        setCurrentValue(
+            currentDataItemInfo?.[dataItemLayout.propertyName]
+                ? moment(currentDataItemInfo?.[dataItemLayout.propertyName], "YYYY-MM-DD")
+                : null
+        );
+    }, [dataItemLayout, currentDataItemInfo]);
+
+    useEffect(() => {
+        form.setFieldsValue({
+            [dataItemLayout.propertyName]: currentValue
+        });
+    }, [currentValue]);
 
     const handleChangeValue = useCallback(
         (date: any, dateString: any) => {
@@ -31,14 +40,8 @@ const DatePicker: FC<IDatePicker> = ({ form, dataItemLayout, currentDataItemInfo
             });
             setCurrentValue(moment(dateString, "YYYY-MM-DD"));
         },
-        [dataItemLayout]
+        [dataItemLayout, currentValue]
     );
-
-    useEffect(() => {
-        form.setFieldsValue({
-            [dataItemLayout.propertyName]: currentValue
-        });
-    }, [dataItemLayout]);
 
     return (
         <AntdDatePicker

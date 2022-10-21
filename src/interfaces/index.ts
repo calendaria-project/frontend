@@ -135,8 +135,8 @@ export interface IStaffingItemViewModel {
     staffUnitCount: number;
     salary: number;
     salarySupplement: number;
-    createdAt: string
-    updatedAt: string
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface IDictionaryDtoModel {
@@ -144,7 +144,7 @@ export interface IDictionaryDtoModel {
     nameRu: string;
     nameEn: string;
     id: number;
-    description: string
+    description: string;
 }
 
 export interface ICompanyDtoModel {
@@ -153,7 +153,7 @@ export interface ICompanyDtoModel {
     nameKz: string;
     nameRu: string;
     nameEn: string;
-    parentId: number
+    parentId: number;
 }
 
 export interface IDivisionDtoModel {
@@ -163,7 +163,7 @@ export interface IDivisionDtoModel {
     nameKz: string;
     nameRu: string;
     nameEn: string;
-    parentId: number
+    parentId: number;
 }
 
 export interface IPositionDtoModel {
@@ -193,7 +193,7 @@ export interface IBusinessContactDtoModel {
     cabinetNumber: string;
     userId: string;
     createdAt: string;
-    updatedAt: string
+    updatedAt: string;
 }
 
 export interface IUsersDtoViewModel {
@@ -214,7 +214,7 @@ export interface IUsersDtoViewModel {
     personalContact: IPersonalContactDtoModel;
     businessContact: IBusinessContactDtoModel;
     createdAt: string;
-    updatedAt: string
+    updatedAt: string;
 }
 
 export interface IUsersTableModel {
@@ -238,4 +238,57 @@ export interface IUsersCardModel {
     profession: string;
     phone?: string;
     sign: any;
+}
+
+export interface IUsersDocumentModel {
+    id: string | number;
+    documentType: ISimpleDictionaryModel;
+    documentNum: string;
+    issueDate: string;
+    issueAuthority: string;
+    userId: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface IUsersContractModel {
+    contractId: string | number;
+    contractType: ISimpleDictionaryModel;
+    contractNum: string;
+    contractDate: string;
+    userId: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface IUsersInventoryModel {
+    inventoryId: string | number;
+    inventoryType: ISimpleDictionaryModel;
+    num: string;
+    serialNum: string;
+    modelNum: string;
+    note: string;
+    userId: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface IUsersEducationModel {
+    educationId: string | number;
+    institution: ISimpleDictionaryModel;
+    educationLevel: ISimpleDictionaryModel;
+    specialty: ISimpleDictionaryModel;
+    endYear: string | number;
+    userId: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface IUsersLanguageKnowledgeModel {
+    languageKnowledgeId: string | number;
+    language: ISimpleDictionaryModel;
+    knowledgeLevel: ISimpleDictionaryModel;
+    userId: string;
+    createdAt: string;
+    updatedAt: string;
 }

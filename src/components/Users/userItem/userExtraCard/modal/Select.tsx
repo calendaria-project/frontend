@@ -31,9 +31,7 @@ const Select: FC<ISelect> = ({ form, dataItemLayout, currentDataItemInfo }) => {
         actionMethodResultSync("DICTIONARY", url, "get", getRequestHeader(authContext.token)).then(
             (data) => setSelectValues(data)
         );
-        const id =
-            currentDataItemInfo?.[dataItemLayout.propertyName]?.id ??
-            currentDataItemInfo?.[0]?.[dataItemLayout.propertyName]?.id;
+        const id = currentDataItemInfo?.[dataItemLayout.propertyName]?.id;
         if (id) {
             const url = `simple/${dataItemLayout.dictionaryCode}/item/${id}`;
             actionMethodResultSync(
@@ -49,7 +47,7 @@ const Select: FC<ISelect> = ({ form, dataItemLayout, currentDataItemInfo }) => {
         form.setFieldsValue({
             [dataItemLayout.propertyName]: selectValue
         });
-    }, [dataItemLayout]);
+    }, [currentDataItemInfo, selectValue]);
 
     const handleChangeValue = useCallback(
         (v: any) => {
@@ -61,7 +59,7 @@ const Select: FC<ISelect> = ({ form, dataItemLayout, currentDataItemInfo }) => {
             });
             setSelectValue(currentValueObject);
         },
-        [dataItemLayout, selectValues]
+        [currentDataItemInfo, selectValue, selectValues]
     );
 
     return (
