@@ -22,7 +22,7 @@ import UserExtraCardModal from "./modal";
 import { getUserEditingNameByKey } from "utils/getUserEditingNameByKey";
 
 import "./styles.scss";
-import RowData from "./RowData";
+import RowData, { ListedRowData } from "./RowData";
 import { AuthContext } from "context/AuthContextProvider";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
@@ -31,6 +31,8 @@ import { removeEmptyObjectProperties } from "utils/removeEmptyObjectProperties";
 
 import { SetCurrentUserDataItemInfo, SetUserSelectedKey } from "store/actions";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
+import getUserRequestUrl from "functions/getUserRequestUrl";
+import UserExtraCardAdditionalModal from "./modal/simpleAdditionalModal";
 
 interface IUserExtraCard {
     usersId: string;
@@ -46,13 +48,26 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
     );
 
     const userMenuDataExists: boolean = isObjectNotEmpty(currentUserDataItemInfo);
-    const additionalMenuExists: boolean =
-        selectedKey === SelectedKeyTypes.SHARED_INFO ||
-        selectedKey === SelectedKeyTypes.ADDITIONAL_INFO ||
-        selectedKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE ||
-        selectedKey === SelectedKeyTypes.EDUCATION;
+    const additionalMenuExists: boolean = useMemo(
+        () =>
+            selectedKey === SelectedKeyTypes.SHARED_INFO ||
+            selectedKey === SelectedKeyTypes.ADDITIONAL_INFO ||
+            selectedKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE ||
+            selectedKey === SelectedKeyTypes.EDUCATION,
+        [selectedKey]
+    );
 
-    const title = useMemo(
+    const arrayTypesFlag = useMemo(
+        () =>
+            selectedKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE ||
+            selectedKey === SelectedKeyTypes.EDUCATION ||
+            selectedKey === SelectedKeyTypes.CONTRACT ||
+            selectedKey === SelectedKeyTypes.DOCUMENT ||
+            selectedKey === SelectedKeyTypes.INVENTORY,
+        [selectedKey]
+    );
+
+    const modalTitle = useMemo(
         () =>
             `${userMenuDataExists ? "Редактировать" : "Добавить"} ${getUserEditingNameByKey(
                 selectedKey
@@ -60,8 +75,14 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
         [selectedKey, userMenuDataExists]
     );
 
+    const additionalModalTitle = useMemo(
+        () => `Добавить ${getUserEditingNameByKey(selectedKey)}`,
+        [selectedKey]
+    );
+
     const [form] = Form.useForm();
     const [modalVisibleFlag, setModalVisibleFlag] = useState<boolean>(false);
+    const [additionalModalVisibleFlag, setAdditionalModalVisibleFlag] = useState<boolean>(false);
 
     const [currentDataLayout, setCurrentDataLayout] = useState<Array<TInputData>>(
         inputData?.[selectedKey]
@@ -77,19 +98,7 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
 
     useEffect(() => {
         if (selectedKey !== SelectedKeyTypes.SHARED_INFO) {
-            const url = `${
-                selectedKey === SelectedKeyTypes.CONTACT_PERSONAL ||
-                selectedKey === SelectedKeyTypes.CONTACT_BUSINESS
-                    ? "contact"
-                    : selectedKey
-            }/${usersId}${
-                selectedKey === SelectedKeyTypes.CONTACT_PERSONAL
-                    ? "/personal"
-                    : selectedKey === SelectedKeyTypes.CONTACT_BUSINESS
-                    ? "/business"
-                    : ""
-            }`;
-
+            const url = getUserRequestUrl(selectedKey, "get", usersId);
             actionMethodResultSync("USER", url, "get", getRequestHeader(authContext.token)).then(
                 (res) => {
                     if (isObjectNotEmpty(res)) {
@@ -111,8 +120,16 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
         setModalVisibleFlag(bool);
     }, []);
 
+    const onSetAdditionalModalVisibleFlag = useCallback((bool: boolean) => {
+        setAdditionalModalVisibleFlag(bool);
+    }, []);
+
     const handleIconClick = useCallback(() => {
         setModalVisibleFlag(true);
+    }, []);
+
+    const handleAdditionalIconClick = useCallback(() => {
+        setAdditionalModalVisibleFlag(true);
     }, []);
 
     const getIcon = (currentKey: string, Icon?: JSX.Element): JSX.Element => {
@@ -120,51 +137,34 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
             <>
                 {Icon ? Icon : <></>}
                 {selectedKey === currentKey &&
+                (currentKey === SelectedKeyTypes.EDUCATION ||
+                    currentKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE ||
+                    currentKey === SelectedKeyTypes.CONTRACT ||
+                    currentKey === SelectedKeyTypes.INVENTORY ||
+                    currentKey === SelectedKeyTypes.DOCUMENT) ? (
+                    <PlusOutlined onClick={handleAdditionalIconClick} className="icon" />
+                ) : (
+                    selectedKey === currentKey &&
                     (userMenuDataExists ? (
                         <EditOutlined onClick={handleIconClick} className="icon" />
                     ) : (
                         <PlusOutlined onClick={handleIconClick} className="icon" />
-                    ))}
+                    ))
+                )}
             </>
         );
     };
 
-    const save = useCallback(
+    const saveModal = useCallback(
         (record: any) => {
-            if (record.issueDate) {
-                record = {
-                    ...record,
-                    issueDate: record.issueDate._i
-                };
-            }
-            if (record.contractDate) {
-                record = {
-                    ...record,
-                    contractDate: record.contractDate._i
-                };
-            }
+            console.log(record);
 
             const reqMethod = isObjectNotEmpty(currentUserDataItemInfo) ? "put" : "post";
 
             const sendRequest = (data: Object) => {
-                const currentSelectedKey =
-                    selectedKey === SelectedKeyTypes.CONTACT_PERSONAL ||
-                    selectedKey === SelectedKeyTypes.CONTACT_BUSINESS
-                        ? "contact"
-                        : selectedKey;
-                const url = `${currentSelectedKey}${
-                    currentSelectedKey === "contact" && reqMethod === "post" ? `/${usersId}` : ""
-                }${
-                    selectedKey === SelectedKeyTypes.CONTACT_PERSONAL
-                        ? "/personal"
-                        : selectedKey === SelectedKeyTypes.CONTACT_BUSINESS
-                        ? "/business"
-                        : ""
-                }`;
-
                 actionMethodResultSync(
                     "USER",
-                    url,
+                    getUserRequestUrl(selectedKey, reqMethod, usersId),
                     reqMethod,
                     getRequestHeader(authContext.token),
                     data
@@ -180,33 +180,62 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
             };
 
             if (reqMethod === "post") {
-                const data =
-                    record instanceof Array
-                        ? record.map((item) => ({
-                              ...removeEmptyObjectProperties(item),
-                              userId: usersId
-                          }))
-                        : removeEmptyObjectProperties({ ...record, userId: usersId });
+                const data = removeEmptyObjectProperties({ ...record, userId: usersId });
                 sendRequest(data);
             } else {
-                if (currentUserDataItemInfo instanceof Array) {
-                    if (
-                        selectedKey === SelectedKeyTypes.INVENTORY ||
-                        selectedKey === SelectedKeyTypes.DOCUMENT ||
-                        selectedKey === SelectedKeyTypes.EDUCATION ||
-                        selectedKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE
-                    ) {
-                        const dataObject = currentUserDataItemInfo?.[0] ?? {};
-                        const data = _.merge(dataObject, record);
-                        sendRequest(data);
-                    }
-                } else {
-                    const data = _.merge(currentUserDataItemInfo, record);
-                    sendRequest(data);
-                }
+                const data = _.merge(currentUserDataItemInfo, record);
+                sendRequest(data);
             }
 
             setModalVisibleFlag(false);
+        },
+        [currentUserDataItemInfo, selectedKey, usersId]
+    );
+
+    const saveAdditionalModal = useCallback(
+        (record: any) => {
+            if (record.issueDate) {
+                record = {
+                    ...record,
+                    issueDate: record.issueDate._i
+                };
+            }
+            if (record.contractDate) {
+                record = {
+                    ...record,
+                    contractDate: record.contractDate._i
+                };
+            }
+
+            console.log(record);
+
+            const reqMethod = "post";
+
+            const sendRequest = (data: Object) => {
+                actionMethodResultSync(
+                    "USER",
+                    getUserRequestUrl(selectedKey, reqMethod, usersId),
+                    reqMethod,
+                    getRequestHeader(authContext.token),
+                    data
+                )
+                    .then((res) => {
+                        const currentData = isObjectNotEmpty(currentUserDataItemInfo)
+                            ? [...currentUserDataItemInfo, res]
+                            : [res];
+                        dispatch(SetCurrentUserDataItemInfo({ [selectedKey]: currentData }));
+                        message.success("Успешно сохранено");
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        message.error("Ошибка");
+                    });
+            };
+
+            const data = removeEmptyObjectProperties({ ...record, userId: usersId });
+            sendRequest(data);
+
+            setAdditionalModalVisibleFlag(false);
         },
         [currentUserDataItemInfo, selectedKey, usersId]
     );
@@ -302,21 +331,37 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                         </Col>
                     )}
                     <Col span={additionalMenuExists ? 12 : 18}>
-                        <Row className="row-container" gutter={[16, 16]}>
-                            {currentDataLayout
-                                ? currentDataLayout.map((dataItem, index) => (
-                                      <RowData key={index} dataItem={dataItem} usersId={usersId} />
-                                  ))
-                                : null}
+                        <Row className="row-container" gutter={[6, 6]}>
+                            {!arrayTypesFlag ? (
+                                currentDataLayout ? (
+                                    currentDataLayout.map((dataItem, index) => (
+                                        <RowData key={index} dataItem={dataItem} />
+                                    ))
+                                ) : null
+                            ) : (
+                                <ListedRowData
+                                    currentDataLayout={currentDataLayout}
+                                    usersId={usersId}
+                                />
+                            )}
                         </Row>
                     </Col>
                 </Row>
                 <UserExtraCardModal
                     okText={"Сохранить"}
-                    title={title}
+                    title={modalTitle}
                     isVisible={modalVisibleFlag}
                     setIsVisible={onSetModalVisibleFlag}
-                    onFinish={save}
+                    onFinish={saveModal}
+                    form={form}
+                    currentDataLayout={currentDataLayout}
+                />
+                <UserExtraCardAdditionalModal
+                    okText={"Сохранить"}
+                    title={additionalModalTitle}
+                    isVisible={additionalModalVisibleFlag}
+                    setIsVisible={onSetAdditionalModalVisibleFlag}
+                    onFinish={saveAdditionalModal}
                     form={form}
                     currentDataLayout={currentDataLayout}
                 />

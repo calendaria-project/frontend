@@ -9,10 +9,21 @@ interface IInput {
 }
 
 const Input: FC<IInput> = ({ form, dataItemLayout, currentDataItemInfo }) => {
+    console.log("Input", currentDataItemInfo);
+
     const [currentValue, setCurrentValue] = useState<string>(
-        currentDataItemInfo?.[dataItemLayout.propertyName] ??
-            currentDataItemInfo?.[0]?.[dataItemLayout.propertyName]
+        currentDataItemInfo?.[dataItemLayout.propertyName]
     );
+
+    useEffect(() => {
+        setCurrentValue(currentDataItemInfo?.[dataItemLayout.propertyName]);
+    }, [currentDataItemInfo, dataItemLayout]);
+
+    useEffect(() => {
+        form.setFieldsValue({
+            [dataItemLayout.propertyName]: currentValue
+        });
+    }, [currentValue]);
 
     const handleChangeValue = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {
@@ -23,12 +34,6 @@ const Input: FC<IInput> = ({ form, dataItemLayout, currentDataItemInfo }) => {
         },
         [dataItemLayout]
     );
-
-    useEffect(() => {
-        form.setFieldsValue({
-            [dataItemLayout.propertyName]: currentValue
-        });
-    }, [dataItemLayout]);
 
     return (
         <AntdInput
