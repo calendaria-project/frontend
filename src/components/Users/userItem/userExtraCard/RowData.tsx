@@ -1,12 +1,4 @@
-import React, {
-    FC,
-    useState,
-    useEffect,
-    memo,
-    useMemo,
-    useCallback,
-    useContext
-} from "react";
+import React, { FC, useState, useEffect, memo, useMemo, useCallback, useContext } from "react";
 import { Row, Col, Divider, Typography, Form, message } from "antd";
 import { TInputData, Types } from "./constants";
 import { SelectedKeyTypes } from "./constants";
