@@ -121,8 +121,8 @@ const Users: FC = () => {
     const showDrawer = () => setIsVisibleAddUserDrawer(true);
 
     return (
-        <Row style={{ padding: "20px", marginRight: 0, marginLeft: 0 }} gutter={[16, 16]}>
-            <Row style={{ marginRight: 0, marginLeft: 0, width: "100%" }} gutter={[16, 16]}>
+        <Row style={{ padding: "20px", marginRight: 0, marginLeft: 0 }} gutter={[16, 0]}>
+            <Row style={{ marginRight: 0, marginLeft: 0, width: "100%" }} gutter={[16, 0]}>
                 <Col>
                     <Header size="h2">Сотрудники</Header>
                 </Col>
@@ -144,7 +144,7 @@ const Users: FC = () => {
                     />
                 </Col>
             </Row>
-            <Row style={{ marginRight: 0, marginLeft: 0, width: "100%" }}>
+            <Row style={{ padding: "0 8px", marginRight: 0, marginLeft: 0, width: "100%" }}>
                 <div id="usersTable" />
             </Row>
             <UserDrawer
