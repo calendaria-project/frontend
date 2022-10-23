@@ -30,8 +30,6 @@ const UserItem: FC = () => {
         [currentUserData]
     );
 
-    console.log("USER ITEM", currentUserData);
-
     useEffect(() => {
         actionMethodResultSync(
             "USER",

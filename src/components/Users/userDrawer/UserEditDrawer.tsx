@@ -150,7 +150,6 @@ export const UserEditDrawer = ({
             }
         }
         parsedData.company = { companyId };
-        console.log("PARSED DATE", parsedData);
         return parsedData;
     };
 
@@ -163,7 +162,6 @@ export const UserEditDrawer = ({
     };
 
     const editUser = (data: any) => {
-        console.log("AFTER MERGE!", data);
         actionMethodResultSync(
             "USER",
             "user",
