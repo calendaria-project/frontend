@@ -11,7 +11,7 @@ import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { useNavigate } from "react-router";
 import { createTableViaTabulator } from "services/tabulator";
-import { UserDrawer, USER_ADD_DRAWER } from "./userDrawer";
+import { UserAddDrawer } from "./userDrawer/UserAddDrawer";
 import { ColumnDefinition } from "tabulator-tables";
 
 import questionImage from "assets/icons/question.png";
@@ -182,8 +182,7 @@ const Users: FC = () => {
             <Row style={{ padding: "0 8px", marginRight: 0, marginLeft: 0, width: "100%" }}>
                 <div id="usersTable" />
             </Row>
-            <UserDrawer
-                drawerType={USER_ADD_DRAWER}
+            <UserAddDrawer
                 companyId={companyId}
                 open={isVisibleAddUserDrawer}
                 setOpen={setIsVisibleAddUserDrawer}

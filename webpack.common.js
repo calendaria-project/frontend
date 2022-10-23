@@ -8,7 +8,7 @@ const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 module.exports = {
     target: "web",
     entry: {
-        app: "./src/index.tsx"
+        app: "./src/UserAddDrawer.tsx"
     },
     plugins: [
         // new CleanWebpackPlugin(['dist/*']) for < v2 versions of CleanWebpackPlugin
@@ -22,7 +22,7 @@ module.exports = {
         }),
         new webpack.ProvidePlugin({
             process: "process/browser",
-            React: "react",
+            React: "react"
         }),
         new HtmlWebpackPlugin({
             title: "Alageum",

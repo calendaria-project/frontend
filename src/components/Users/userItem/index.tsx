@@ -10,7 +10,7 @@ import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import Header from "ui/Header";
 import UserExtraCard from "./userExtraCard";
-import { UserDrawer, USER_EDIT_DRAWER } from "../userDrawer";
+import { UserEditDrawer } from "../userDrawer/UserEditDrawer";
 
 const { Title, Text } = Typography;
 
@@ -25,7 +25,12 @@ const UserItem: FC = () => {
 
     const [isVisibleEditUserDrawer, setIsVisibleEditUserDrawer] = useState(false);
     const onShowDrawer = useCallback(() => setIsVisibleEditUserDrawer(true), []);
-    const onFinishEditingUser = useCallback((data: any) => {}, []);
+    const onFinishEditingUser = useCallback(
+        (data: any) => setCurrentUserData(data),
+        [currentUserData]
+    );
+
+    console.log("USER ITEM", currentUserData);
 
     useEffect(() => {
         actionMethodResultSync(
@@ -141,8 +146,9 @@ const UserItem: FC = () => {
                                         )}
                                     </Title>
                                     <Text type="secondary">
-                                        {currentUserData?.mobilePhoneNumber}
+                                        {currentUserData?.personalContact?.mobilePhoneNumber}
                                     </Text>
+                                    <br />
                                     <Text type="secondary">
                                         {currentUserData?.personalContact?.email}
                                     </Text>
@@ -178,13 +184,15 @@ const UserItem: FC = () => {
                         </Row>
                     </Card>
                 </Col>
-                <UserDrawer
-                    drawerType={USER_EDIT_DRAWER}
+                <UserEditDrawer
+                    userPhoto={currentUserPhoto}
+                    userSign={currentUserSign}
+                    userData={currentUserData}
                     companyId={currentUserData?.company?.companyId}
                     open={isVisibleEditUserDrawer}
                     setOpen={setIsVisibleEditUserDrawer}
                     companyName={currentUserData?.company?.nameRu}
-                    onFinishCreatingUser={onFinishEditingUser}
+                    onFinishEditingUser={onFinishEditingUser}
                 />
                 <Col span={16}>
                     <UserExtraCard usersId={usersId!} />

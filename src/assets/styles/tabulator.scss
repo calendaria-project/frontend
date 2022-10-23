@@ -35,6 +35,8 @@ $grey200: #e4e7ec;
     // margin-top: -5px !important;
     // margin-bottom: 4px !important;
     width: fit-content !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
     font-size: 20px !important;
     font-weight: 400 !important;
     color: black !important;

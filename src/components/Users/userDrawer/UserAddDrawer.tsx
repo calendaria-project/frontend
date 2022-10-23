@@ -29,7 +29,6 @@ const getBase64 = (img: File, callback: (url: string) => void) => {
 };
 
 export interface IUserAddDrawer {
-    drawerType: string;
     companyId: string | undefined;
     companyName: string | undefined;
     open: boolean;
@@ -37,11 +36,7 @@ export interface IUserAddDrawer {
     onFinishCreatingUser: (data: any) => void;
 }
 
-export const USER_ADD_DRAWER = "add";
-export const USER_EDIT_DRAWER = "edit";
-
-export const UserDrawer = ({
-    drawerType,
+export const UserAddDrawer = ({
     open,
     setOpen,
     companyName,
@@ -119,6 +114,7 @@ export const UserDrawer = ({
             if (key.includes(".")) {
                 let arrData = key.split(".");
                 parsedData[arrData[0]] = {
+                    ...(parsedData[arrData[0]] ? parsedData[arrData[0]] : {}),
                     [arrData[1]]: data[key]
                 };
             } else if (key.includes("Date")) {
@@ -243,7 +239,7 @@ export const UserDrawer = ({
                                     return (
                                         <div {...getRootProps()}>
                                             <input {...getInputProps()} />
-                                            <Button color="green" className="uplaodBtn" type="text">
+                                            <Button color="green" className="uploadBtn" type="text">
                                                 Добавить
                                             </Button>
                                         </div>
@@ -357,7 +353,7 @@ export const UserDrawer = ({
                                                 return (
                                                     <div {...getRootProps()}>
                                                         <input {...getInputProps()} />
-                                                        <Button className="uplaodBtn" type="text">
+                                                        <Button className="uploadBtn" type="text">
                                                             Загрузить
                                                         </Button>
                                                     </div>
@@ -395,7 +391,7 @@ export const UserDrawer = ({
                             <div className="avatarWrap">
                                 <PlusOutlined color="#fff" />
                             </div>
-                            <Button className="uplaodBtn" color="red" type="text">
+                            <Button className="uploadBtn" color="red" type="text">
                                 Добавить
                             </Button>
                             <Button className="deleteBtn" color="red" type="text">
