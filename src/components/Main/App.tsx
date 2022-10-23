@@ -22,6 +22,7 @@ import Spinner from "ui/Spinner";
 
 import { Provider } from "react-redux";
 import store from "store";
+import "./styles.scss";
 
 const { Header, Sider, Content } = Layout;
 
@@ -45,7 +46,7 @@ const items: MenuProps["items"] = [
 
 const App = () => {
     const authContext = useContext(AuthContext);
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
     const [current, setCurrent] = useState("dictionary");
     const navigate = useNavigate();
 
@@ -61,10 +62,15 @@ const App = () => {
             {authContext.isAuthenticated ? (
                 <Provider store={store}>
                     <Layout style={{ minHeight: "100vh" }}>
-                        <Sider trigger={null} collapsible collapsed={collapsed}>
-                            <div style={{ height: 32, margin: 16 }} />
+                        <Sider
+                            style={{ background: "white" }}
+                            trigger={null}
+                            collapsible
+                            collapsed={collapsed}
+                        >
+                            <div style={{ height: 27, margin: 16 }} />
                             <Menu
-                                theme="dark"
+                                theme="light"
                                 mode="inline"
                                 onClick={onClick}
                                 selectedKeys={[current]}
@@ -72,14 +78,21 @@ const App = () => {
                             />
                         </Sider>
                         <Layout className="site-layout">
-                            <Header style={{ display: "flex", padding: "0 10px" }}>
+                            <Header
+                                style={{
+                                    display: "flex",
+                                    padding: "0 10px",
+                                    background: "white",
+                                    borderBottom: "1px solid #C2C2C2"
+                                }}
+                            >
                                 {createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
                                     className: "trigger",
                                     style: {
-                                        color: "white",
+                                        color: "black",
                                         marginTop: "auto",
                                         marginBottom: "auto",
-                                        fontSize: "x-large"
+                                        fontSize: "20px"
                                     },
                                     onClick: () => setCollapsed(!collapsed)
                                 })}
@@ -101,7 +114,7 @@ const App = () => {
                 </Button> */}
                                 </ButtonGroup>
                             </Header>
-                            <Content>
+                            <Content style={{ background: "white" }}>
                                 <Routes>
                                     <Route
                                         key="dictionary-route"

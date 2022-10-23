@@ -8,6 +8,10 @@
     justify-content: center;
 }
 
+button.ant-btn.ant-btn-default {
+    border-radius: 6px !important;
+}
+
 .treeList {
     .ant-tree-iconEle {
         margin-right: 10px;

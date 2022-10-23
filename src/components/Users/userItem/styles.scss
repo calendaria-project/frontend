@@ -11,9 +11,25 @@
       background: #2F80ED;
     }
     &-divider.ant-divider {
-        margin: 14px 0;
+        margin: 10px 0;
     }
   }
+}
+
+.fio-wrapper {
+  word-break: normal;
+}
+
+.image-wrapper {
+  & > .anticon svg {
+    color: #C2C2C2;
+    height: 100px;
+    width: 100px;
+  }
+}
+
+.user-image {
+  border-radius: 50%;
 }
 
 .container {

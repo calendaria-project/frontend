@@ -32,7 +32,7 @@ export const staffingItemColumns: ColumnDefinition[] = [
     {
         title: "Надбавка к окладу",
         field: "salarySupplement"
-    },
+    }
 ];
 
 export const divisionsColumns: ColumnDefinition[] = [
@@ -61,14 +61,17 @@ export const usersColumns: ColumnDefinition[] = [
         title: "ФИО",
         field: "fullName",
         formatter: (cell) => {
-            const data: any = cell.getData()
-            return `${data.lastname ? data.lastname : ""} ${data.firstname ? data.firstname : ""} ${data.patronymic ? data.patronymic : ""}`
+            const data: any = cell.getData();
+            console.log(data);
+            return `${data.lastname ? data.lastname : ""} ${data.firstname ? data.firstname : ""} ${
+                data.patronymic ? data.patronymic : ""
+            }`;
         }
     },
     {
         headerSort: false,
         title: "E-mail",
-        field: "personalContact.email",
+        field: "personalContact.email"
     },
     {
         headerSort: false,
@@ -84,5 +87,5 @@ export const usersColumns: ColumnDefinition[] = [
         headerSort: false,
         title: "Номер телефона",
         field: "personalContact.mobilePhoneNumber"
-    },
-]
+    }
+];
