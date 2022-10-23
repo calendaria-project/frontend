@@ -10,7 +10,7 @@ import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import Header from "ui/Header";
 import UserExtraCard from "./userExtraCard";
-import { UserDrawer, USER_EDIT_DRAWER } from "../userDrawer";
+import { UserEditDrawer } from "../userDrawer/UserEditDrawer";
 
 const { Title, Text } = Typography;
 
@@ -25,7 +25,10 @@ const UserItem: FC = () => {
 
     const [isVisibleEditUserDrawer, setIsVisibleEditUserDrawer] = useState(false);
     const onShowDrawer = useCallback(() => setIsVisibleEditUserDrawer(true), []);
-    const onFinishEditingUser = useCallback((data: any) => {}, []);
+    const onFinishEditingUser = useCallback(
+        (data: any) => setCurrentUserData(data),
+        [currentUserData]
+    );
 
     useEffect(() => {
         actionMethodResultSync(
@@ -90,7 +93,7 @@ const UserItem: FC = () => {
                     <LeftOutlined /> Вернуться назад
                 </Col>
             </Row>
-            <Row className="row-wrapper" align={"middle"} gutter={[32, 16]}>
+            <Row className="row-wrapper user-item-line-row" align={"middle"} gutter={[32, 16]}>
                 <Col>
                     <Header size="h2">{currentUserData?.company?.nameRu}</Header>
                 </Col>
@@ -141,21 +144,14 @@ const UserItem: FC = () => {
                                         )}
                                     </Title>
                                     <Text type="secondary">
-                                        {currentUserData?.mobilePhoneNumber}
+                                        {currentUserData?.personalContact?.mobilePhoneNumber}
                                     </Text>
+                                    <br />
                                     <Text type="secondary">
                                         {currentUserData?.personalContact?.email}
                                     </Text>
                                 </Col>
                             </Row>
-                            {/*<Col span={24}>*/}
-                            {/*    <Text type="secondary">*/}
-                            {/*        {currentUserData?.personalContact?.email}*/}
-                            {/*    </Text>*/}
-                            {/*</Col>*/}
-                            {/*<Col className="mobile-number-wrapper" span={24}>*/}
-                            {/*    <Text type="secondary">{currentUserData?.mobilePhoneNumber}</Text>*/}
-                            {/*</Col>*/}
                             <Col span={24}>
                                 <Divider className={"userItem__mainCard-divider"} />
                                 <Text>ИИН</Text>
@@ -186,13 +182,15 @@ const UserItem: FC = () => {
                         </Row>
                     </Card>
                 </Col>
-                <UserDrawer
-                    drawerType={USER_EDIT_DRAWER}
+                <UserEditDrawer
+                    userPhoto={currentUserPhoto}
+                    userSign={currentUserSign}
+                    userData={currentUserData}
                     companyId={currentUserData?.company?.companyId}
                     open={isVisibleEditUserDrawer}
                     setOpen={setIsVisibleEditUserDrawer}
                     companyName={currentUserData?.company?.nameRu}
-                    onFinishCreatingUser={onFinishEditingUser}
+                    onFinishEditingUser={onFinishEditingUser}
                 />
                 <Col span={16}>
                     <UserExtraCard usersId={usersId!} />

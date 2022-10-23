@@ -19,8 +19,10 @@ import { getRequestHeader, postFormDataHeader } from "functions/common";
 import { IDivisionDtoModel, IPositionDtoModel, ISimpleDictionaryModel } from "interfaces";
 import { useContext, useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
+import moment from "moment";
 const { Option } = Select;
 const { Title } = Typography;
+import _ from "lodash";
 
 const getBase64 = (img: File, callback: (url: string) => void) => {
     const reader = new FileReader();
@@ -28,39 +30,58 @@ const getBase64 = (img: File, callback: (url: string) => void) => {
     reader.readAsDataURL(img);
 };
 
-export interface IUserAddDrawer {
-    drawerType: string;
+export interface IUserEditDrawer {
+    userPhoto: any;
+    userSign: any;
+    userData: any;
     companyId: string | undefined;
     companyName: string | undefined;
     open: boolean;
     setOpen: (val: boolean) => void;
-    onFinishCreatingUser: (data: any) => void;
+    onFinishEditingUser: (data: any) => void;
 }
 
-export const USER_ADD_DRAWER = "add";
-export const USER_EDIT_DRAWER = "edit";
-
-export const UserDrawer = ({
-    drawerType,
+export const UserEditDrawer = ({
+    userPhoto,
+    userSign,
+    userData,
     open,
     setOpen,
     companyName,
-    onFinishCreatingUser,
+    onFinishEditingUser,
     companyId
-}: IUserAddDrawer) => {
+}: IUserEditDrawer) => {
     const [form] = Form.useForm();
     const authContext = useContext(AuthContext);
     const [divisions, setDivisions] = useState<IDivisionDtoModel[]>([]);
     const [positions, setPositions] = useState<IPositionDtoModel[]>([]);
     const [sexes, setSexes] = useState<ISimpleDictionaryModel[]>([]);
     const [loading, setLoading] = useState(false);
-    const [avatarUrl, setAvatarUrl] = useState<string>();
-    const [signFileName, setSignFileName] = useState<string>();
+    const [avatarUrl, setAvatarUrl] = useState<string | undefined>(userPhoto);
+    const [signFileName, setSignFileName] = useState<string | undefined>(userSign);
 
     useEffect(() => {
         getPositionOptions();
         getSexOptions();
     }, []);
+
+    useEffect(() => {
+        form.setFieldsValue({
+            lastname: userData.lastname,
+            firstname: userData.firstname,
+            patronymic: userData.patronymic,
+            iin: userData.iin,
+            "personalContact.email": userData?.personalContact?.email,
+            "personalContact.mobilePhoneNumber": userData?.personalContact?.mobilePhoneNumber,
+            "sex.id": userData?.sex?.id,
+            birthDate: moment(userData?.birthDate, "YYYY-MM-DD"),
+            employmentDate: moment(userData?.employmentDate, "YYYY-MM-DD"),
+            "division.divisionId": userData?.division?.divisionId,
+            "position.positionId": userData?.position?.positionId,
+            profilePhotoId: userPhoto,
+            signFileId: userSign
+        });
+    }, [userData]);
 
     useEffect(() => {
         if (companyId && divisions.length === 0) {
@@ -119,6 +140,7 @@ export const UserDrawer = ({
             if (key.includes(".")) {
                 let arrData = key.split(".");
                 parsedData[arrData[0]] = {
+                    ...(parsedData[arrData[0]] ? parsedData[arrData[0]] : {}),
                     [arrData[1]]: data[key]
                 };
             } else if (key.includes("Date")) {
@@ -131,24 +153,25 @@ export const UserDrawer = ({
         return parsedData;
     };
 
-    const handleCreateUser = () => {
+    const handleEditUser = () => {
         form.validateFields().then((e) => {
             let data = parsePointObjectKey(e);
-            createUser(data);
+            const currentData = _.merge(userData, data);
+            editUser(currentData);
         });
     };
 
-    const createUser = (data: any) => {
+    const editUser = (data: any) => {
         actionMethodResultSync(
             "USER",
             "user",
-            "post",
+            "put",
             getRequestHeader(authContext.token),
             data
         ).then((data) => {
-            message.success("Успешно создано");
+            message.success("Успешно отредактирован");
             onClose();
-            onFinishCreatingUser(data);
+            onFinishEditingUser(data);
         });
     };
 
@@ -209,7 +232,7 @@ export const UserDrawer = ({
             extra={
                 <Space>
                     <Button onClick={onClose}>Отменить</Button>
-                    <Button onClick={handleCreateUser} type="primary">
+                    <Button onClick={handleEditUser} type="primary">
                         Сохранить
                     </Button>
                 </Space>
@@ -220,7 +243,7 @@ export const UserDrawer = ({
                     <Col>
                         <Space>
                             <DownOutlined />
-                            <Title level={2}>Добавить нового сотрудника *</Title>
+                            <Title level={2}>Редактировать текущего сотрудника *</Title>
                         </Space>
                     </Col>
                 </Row>
@@ -243,7 +266,7 @@ export const UserDrawer = ({
                                     return (
                                         <div {...getRootProps()}>
                                             <input {...getInputProps()} />
-                                            <Button color="green" className="uplaodBtn" type="text">
+                                            <Button color="green" className="uploadBtn" type="text">
                                                 Добавить
                                             </Button>
                                         </div>
@@ -314,7 +337,10 @@ export const UserDrawer = ({
                                     label="Дата рождения"
                                     rules={[{ required: true, message: "Дата рождения" }]}
                                 >
-                                    <DatePicker style={{ width: "100%" }} />
+                                    <DatePicker
+                                        value={moment(userData?.birthDate, "YYYY-MM-DD")}
+                                        style={{ width: "100%" }}
+                                    />
                                 </Form.Item>
                             </Col>
                             <Col span={8}>
@@ -346,7 +372,7 @@ export const UserDrawer = ({
                                     label="Подпись"
                                     shouldUpdate={() => signFileName !== undefined}
                                 >
-                                    <Input readOnly value={signFileName} />
+                                    <Input readOnly />
                                     {!signFileName ? (
                                         <Dropzone
                                             accept={"image/jpeg, image/png"}
@@ -357,7 +383,7 @@ export const UserDrawer = ({
                                                 return (
                                                     <div {...getRootProps()}>
                                                         <input {...getInputProps()} />
-                                                        <Button className="uplaodBtn" type="text">
+                                                        <Button className="uploadBtn" type="text">
                                                             Загрузить
                                                         </Button>
                                                     </div>
@@ -383,7 +409,7 @@ export const UserDrawer = ({
                     <Col>
                         <Space>
                             <DownOutlined />
-                            <Title level={2}>Добавить информацию о подразделении *</Title>
+                            <Title level={2}>Редактировать информацию о подразделении *</Title>
                         </Space>
                     </Col>
                 </Row>
@@ -395,7 +421,7 @@ export const UserDrawer = ({
                             <div className="avatarWrap">
                                 <PlusOutlined color="#fff" />
                             </div>
-                            <Button className="uplaodBtn" color="red" type="text">
+                            <Button className="uploadBtn" color="red" type="text">
                                 Добавить
                             </Button>
                             <Button className="deleteBtn" color="red" type="text">

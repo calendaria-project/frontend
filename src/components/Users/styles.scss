@@ -11,9 +11,23 @@
   border-radius: 6px !important;
 }
 
+.fullNameWrap {
+   display: flex;
+   align-items: center;
+   row-gap: 6px;
+   flex-direction: row;
+}
+
+.fullNameText {
+  margin-left: 15px;
+  color: #333333 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
 .addUserFormWrap {
   padding: 0 70px;
-  .uplaodBtn {
+  .uploadBtn {
     font-family: "Inter";
     font-style: normal;
     font-weight: 400;

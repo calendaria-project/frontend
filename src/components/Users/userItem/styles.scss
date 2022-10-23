@@ -34,8 +34,8 @@
 
 .container {
   padding: 20px;
-  margin-right: 0;
-  margin-left: 0;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
 
   &-backText {
     cursor: pointer;
@@ -43,8 +43,8 @@
 }
 
 .row-wrapper {
-  margin-right: 0;
-  margin-left: 0;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
   width: 100%
 }
 
