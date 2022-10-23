@@ -244,8 +244,8 @@ const Staffing: FC = () => {
             </Col>
             <Col span={24}>
                 <Form form={form} component={false}>
-                    <Row gutter={24}>
-                        <Col span={12}>
+                    <Row align={"middle"} gutter={24}>
+                        <Col style={{ marginBottom: "10px" }} span={12}>
                             <Select
                                 placeholder="Выберите компанию"
                                 style={{ width: 250 }}
@@ -266,7 +266,8 @@ const Staffing: FC = () => {
                                 style={{
                                     background: `${!selectedCompanyId ? "lightgrey" : "#1890ff"}`,
                                     color: "#fff",
-                                    marginBottom: 10
+                                    marginLeft: "6px",
+                                    borderRadius: "6px"
                                 }}
                                 onClick={() => setIsModalVisible(true)}
                             >

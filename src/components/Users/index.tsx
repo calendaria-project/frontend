@@ -41,29 +41,31 @@ const Users: FC = () => {
 
     const initData = async () => {
         createTableViaTabulator("#usersTable", usersColumns, [], () => {}, true, customGroupHeader);
-        const currentUserData = await getCurrentUserData();
+        const currentUserData: any = await getCurrentUserData();
         if (currentUserData) {
             const companyId = currentUserData.company.companyId;
             const companyName = currentUserData.company.nameRu;
             setCompanyId(companyId);
             setCompanyName(companyName);
-            actionMethodResultSync(
+            const userData = await actionMethodResultSync(
                 "USER",
                 `user?companyId=${companyId}`,
                 "get",
                 getRequestHeader(authContext.token)
-            ).then((data) => {
-                setTable(
-                    createTableViaTabulator(
-                        "#usersTable",
-                        usersColumns,
-                        data,
-                        handleFioClick,
-                        undefined,
-                        customGroupHeader
-                    )
-                );
-            });
+            ).then((data) => data);
+
+            const userDataWithPhoto = await getUsersWithPhotoId(userData);
+
+            await setTable(
+                createTableViaTabulator(
+                    "#usersTable",
+                    usersColumns,
+                    userDataWithPhoto,
+                    handleFioClick,
+                    undefined,
+                    customGroupHeader
+                )
+            );
         }
     };
 
@@ -74,6 +76,28 @@ const Users: FC = () => {
             "get",
             getRequestHeader(authContext.token)
         ).then((data) => data);
+    };
+
+    const getUsersWithPhotoId = async (data: any) => {
+        const usersWithPhotoId = [];
+        for (let i = 0; i < data.length; ++i) {
+            const profilePhotoId = data[i].profilePhotoId;
+            let currentUserPhotoId;
+            if (profilePhotoId) {
+                currentUserPhotoId = await actionMethodResultSync(
+                    "FILE",
+                    `file/download/${profilePhotoId}`,
+                    "get",
+                    getRequestHeader(authContext.token)
+                )
+                    .then((res) => res)
+                    .catch(() => undefined);
+            }
+
+            usersWithPhotoId.push({ ...data[i], currentUserPhotoId });
+        }
+
+        return usersWithPhotoId;
     };
 
     const handleFioClick = (e: UIEvent, row: Tabulator.RowComponent) =>
@@ -97,8 +121,8 @@ const Users: FC = () => {
     const showDrawer = () => setIsVisibleAddUserDrawer(true);
 
     return (
-        <Row style={{ padding: "20px", marginRight: 0, marginLeft: 0 }} gutter={[16, 16]}>
-            <Row style={{ marginRight: 0, marginLeft: 0, width: "100%" }} gutter={[16, 16]}>
+        <Row style={{ padding: "20px", marginRight: 0, marginLeft: 0 }} gutter={[16, 0]}>
+            <Row style={{ marginRight: 0, marginLeft: 0, width: "100%" }} gutter={[16, 0]}>
                 <Col>
                     <Header size="h2">Сотрудники</Header>
                 </Col>
@@ -120,7 +144,7 @@ const Users: FC = () => {
                     />
                 </Col>
             </Row>
-            <Row style={{ marginRight: 0, marginLeft: 0, width: "100%" }}>
+            <Row style={{ padding: "0 8px", marginRight: 0, marginLeft: 0, width: "100%" }}>
                 <div id="usersTable" />
             </Row>
             <UserDrawer

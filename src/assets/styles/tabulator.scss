@@ -6,10 +6,14 @@ $grey200: #e4e7ec;
     border: none !important;
 }
 
+.tabulator-col-title {
+    font-size: 20px !important;
+}
+
 .tabulator .tabulator-header,
 .tabulator .tabulator-header .tabulator-col {
     // height: 68px !important;
-    background: rgba(0, 90, 196, 0.65) !important;
+    background: #E0E0E0 !important;
 }
 
 // .tabulator .tabulator-header .tabulator-col:first-child > div {
@@ -22,7 +26,7 @@ $grey200: #e4e7ec;
 
 .tabulator .tabulator-header,
 .tabulator .tabulator-header .tabulator-col {
-    background-color: #2f80ed !important;
+    background-color: #E0E0E0 !important;
     min-height: 50px !important;
     border: none !important;
 }
@@ -30,8 +34,10 @@ $grey200: #e4e7ec;
 .tabulator-col-title-holder {
     // margin-top: -5px !important;
     // margin-bottom: 4px !important;
-    font-size: 15px !important;
-    color: #fff !important;
+    width: fit-content !important;
+    font-size: 20px !important;
+    font-weight: 400 !important;
+    color: black !important;
 }
 
 .tabulator-header-filter input {
@@ -97,16 +103,16 @@ $grey200: #e4e7ec;
     display: none !important;
 }
 
-// .tabulator-row-odd {
-//     background: #f6f5f6a4 !important;
-// }
+.tabulator-row.tabulator-selectable.tabulator-row-even:hover {
+     background: #fafafa !important;
+ }
 
-// .tabulator-row-even {
-//     background: transparent !important;
-// }
+.tabulator-row.tabulator-selectable.tabulator-row-odd:hover {
+     background: #fafafa !important;
+ }
 
 .tabulator-cell {
-    font-family: 'Inter';
+    font-family: "Inter";
     font-style: normal;
     font-weight: 400;
     font-size: 16px;
@@ -166,7 +172,7 @@ $grey200: #e4e7ec;
         // background-size: cover;
         // background-position: center center;
         // display: none !important;
-        border-bottom-color: #0ea5e9 !important;
+        left: 2px !important;
     }
 }
 
@@ -246,14 +252,14 @@ $grey200: #e4e7ec;
 #usersTable {
     .tabulator {
         .tabulator-header {
-            background-color: #2f80ed !important;
+            background-color: #fff !important;
         }
     }
     .userGroupHeaderWrap {
         font-family: "Inter";
         font-style: normal;
         font-weight: 500;
-        font-size: 24px;
+        font-size: 20px;
         line-height: 30px;
         color: #000000;
         margin-left: 20px;

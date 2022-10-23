@@ -1,6 +1,6 @@
 import React, { FC, memo, useCallback, useContext, useEffect, useState } from "react";
 import { Col, Row, Typography, Button, Card, Divider, Image, message } from "antd";
-import { LeftOutlined } from "@ant-design/icons";
+import { LeftOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router";
 import getFullName from "utils/getFullName";
 
@@ -43,7 +43,7 @@ const UserItem: FC = () => {
         if (fileId) {
             actionMethodResultSync(
                 "FILE",
-                `file/download${fileId}`,
+                `file/download/${fileId}`,
                 "get",
                 getRequestHeader(authContext.token)
             ).then((res) => {
@@ -54,7 +54,7 @@ const UserItem: FC = () => {
         if (photoId) {
             actionMethodResultSync(
                 "FILE",
-                `file/download${photoId}`,
+                `file/download/${photoId}`,
                 "get",
                 getRequestHeader(authContext.token)
             ).then((res) => {
@@ -119,12 +119,20 @@ const UserItem: FC = () => {
                     >
                         <Row className="row-wrapper">
                             <Row align={"middle"} className="row-wrapper">
-                                <Col>
-                                    {currentUserPhoto && (
-                                        <Image width={60} src={currentUserPhoto} />
-                                    )}
+                                <Col span={10}>
+                                    <div className="image-wrapper">
+                                        {currentUserPhoto ? (
+                                            <Image
+                                                className="user-image"
+                                                width={100}
+                                                src={currentUserPhoto}
+                                            />
+                                        ) : (
+                                            <QuestionCircleOutlined />
+                                        )}
+                                    </div>
                                 </Col>
-                                <Col>
+                                <Col span={14} className="fio-wrapper">
                                     <Title level={5}>
                                         {getFullName(
                                             currentUserData.firstname,
@@ -132,16 +140,22 @@ const UserItem: FC = () => {
                                             currentUserData?.patronymic
                                         )}
                                     </Title>
+                                    <Text type="secondary">
+                                        {currentUserData?.mobilePhoneNumber}
+                                    </Text>
+                                    <Text type="secondary">
+                                        {currentUserData?.personalContact?.email}
+                                    </Text>
                                 </Col>
                             </Row>
-                            <Col span={24}>
-                                <Text type="secondary">
-                                    {currentUserData?.personalContact?.email}
-                                </Text>
-                            </Col>
-                            <Col className="mobile-number-wrapper" span={24}>
-                                <Text type="secondary">{currentUserData?.mobilePhoneNumber}</Text>
-                            </Col>
+                            {/*<Col span={24}>*/}
+                            {/*    <Text type="secondary">*/}
+                            {/*        {currentUserData?.personalContact?.email}*/}
+                            {/*    </Text>*/}
+                            {/*</Col>*/}
+                            {/*<Col className="mobile-number-wrapper" span={24}>*/}
+                            {/*    <Text type="secondary">{currentUserData?.mobilePhoneNumber}</Text>*/}
+                            {/*</Col>*/}
                             <Col span={24}>
                                 <Divider className={"userItem__mainCard-divider"} />
                                 <Text>ИИН</Text>

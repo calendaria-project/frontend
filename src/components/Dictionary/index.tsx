@@ -4,6 +4,8 @@ import { CompanyTreeView } from "./companiesTreeView";
 import { DivisionTreeView } from "./divisionTreeView";
 import PositionList from "./positionTable";
 
+import "./styles.scss";
+
 const Dictionary = () => {
     const [tabActiveKey, setTabActiveKey] = useState(
         sessionStorage.getItem("directoriesActiveTabId") || "1"

@@ -8,7 +8,9 @@ export function createTableViaTabulator(
     data: any[],
     myRowclick: (e: UIEvent, row: Tabulator.RowComponent) => void,
     isLoading?: boolean,
-    groupHeader?: ((value: any, count: number, data: any, group: Tabulator.GroupComponent) => string) | undefined,
+    groupHeader?:
+        | ((value: any, count: number, data: any, group: Tabulator.GroupComponent) => string)
+        | undefined
 ): Tabulator {
     const token = sessionStorage.getItem("token");
     const table = new Tabulator(tagId, {

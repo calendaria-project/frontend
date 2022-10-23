@@ -52,7 +52,6 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                 : undefined
             : [currentUserDataItemInfo?.[index!]];
 
-    console.log(index);
     console.log(modalCurrentDataItemInfo);
 
     return (

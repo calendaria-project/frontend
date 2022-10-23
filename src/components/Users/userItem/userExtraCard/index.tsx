@@ -207,8 +207,6 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                 };
             }
 
-            console.log(record);
-
             const reqMethod = "post";
 
             const sendRequest = (data: Object) => {
