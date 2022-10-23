@@ -58,18 +58,6 @@ export const divisionsColumns: ColumnDefinition[] = [
 export const usersColumns: ColumnDefinition[] = [
     {
         headerSort: false,
-        title: "ФИО",
-        field: "fullName",
-        formatter: (cell) => {
-            const data: any = cell.getData();
-            console.log(data);
-            return `${data.lastname ? data.lastname : ""} ${data.firstname ? data.firstname : ""} ${
-                data.patronymic ? data.patronymic : ""
-            }`;
-        }
-    },
-    {
-        headerSort: false,
         title: "E-mail",
         field: "personalContact.email"
     },

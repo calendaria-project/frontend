@@ -157,8 +157,6 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
 
     const saveModal = useCallback(
         (record: any) => {
-            console.log(record);
-
             const reqMethod = isObjectNotEmpty(currentUserDataItemInfo) ? "put" : "post";
 
             const sendRequest = (data: Object) => {

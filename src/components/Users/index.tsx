@@ -1,3 +1,5 @@
+import React from "react";
+
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, Col, Input, Row } from "antd";
 import { FC, useContext, useEffect, useState } from "react";
@@ -10,6 +12,9 @@ import { getRequestHeader } from "functions/common";
 import { useNavigate } from "react-router";
 import { createTableViaTabulator } from "services/tabulator";
 import { UserDrawer, USER_ADD_DRAWER } from "./userDrawer";
+import { ColumnDefinition } from "tabulator-tables";
+
+import questionImage from "assets/icons/question.png";
 
 const Users: FC = () => {
     const navigate = useNavigate();
@@ -22,6 +27,29 @@ const Users: FC = () => {
     useEffect(() => {
         initData();
     }, []);
+
+    const fullNameTableActionsFormatter = (cell: Tabulator.CellComponent) => {
+        const data: any = cell.getData();
+
+        const userPhoto = data.currentUserPhotoId;
+
+        let photoElement = document.createElement("img");
+        photoElement.setAttribute("src", userPhoto ? userPhoto : questionImage);
+        photoElement.setAttribute("width", "30px");
+        photoElement.setAttribute("height", "30px");
+
+        let textElement = document.createElement("span");
+        textElement.setAttribute("class", "fullNameText");
+        textElement.textContent = `${data.lastname ?? ""} ${data.firstname ?? ""} ${
+            data.patronymic ?? ""
+        }`;
+
+        let wrap = document.createElement("div");
+        wrap.setAttribute("class", "fullNameWrap");
+        wrap.appendChild(photoElement);
+        wrap.appendChild(textElement);
+        return wrap;
+    };
 
     const customGroupHeader = (
         value: any,
@@ -56,10 +84,17 @@ const Users: FC = () => {
 
             const userDataWithPhoto = await getUsersWithPhotoId(userData);
 
+            const actionsSell: ColumnDefinition = {
+                headerSort: false,
+                title: "ФИО",
+                field: "fullName",
+                formatter: fullNameTableActionsFormatter
+            };
+
             await setTable(
                 createTableViaTabulator(
                     "#usersTable",
-                    usersColumns,
+                    [actionsSell, ...usersColumns],
                     userDataWithPhoto,
                     handleFioClick,
                     undefined,

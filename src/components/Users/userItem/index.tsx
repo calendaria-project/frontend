@@ -90,7 +90,7 @@ const UserItem: FC = () => {
                     <LeftOutlined /> Вернуться назад
                 </Col>
             </Row>
-            <Row className="row-wrapper" align={"middle"} gutter={[32, 16]}>
+            <Row className="row-wrapper user-item-line-row" align={"middle"} gutter={[32, 16]}>
                 <Col>
                     <Header size="h2">{currentUserData?.company?.nameRu}</Header>
                 </Col>
@@ -148,14 +148,6 @@ const UserItem: FC = () => {
                                     </Text>
                                 </Col>
                             </Row>
-                            {/*<Col span={24}>*/}
-                            {/*    <Text type="secondary">*/}
-                            {/*        {currentUserData?.personalContact?.email}*/}
-                            {/*    </Text>*/}
-                            {/*</Col>*/}
-                            {/*<Col className="mobile-number-wrapper" span={24}>*/}
-                            {/*    <Text type="secondary">{currentUserData?.mobilePhoneNumber}</Text>*/}
-                            {/*</Col>*/}
                             <Col span={24}>
                                 <Divider className={"userItem__mainCard-divider"} />
                                 <Text>ИИН</Text>

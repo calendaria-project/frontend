@@ -49,7 +49,7 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
     const currentSelectedKey = useTypedSelector((state) => getSelectedKey(state.user));
     const userMenuDataExists: boolean = isObjectNotEmpty(currentUserDataItemInfo);
 
-    const [currentItemIndex, setCurrentItemIndex] = useState(0);
+    const [currentItemIndex, setCurrentItemIndex] = useState<number>(0);
 
     const [modalVisibleFlag, setModalVisibleFlag] = useState<boolean>(false);
 
@@ -273,6 +273,9 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
     );
 };
 
+const ListedRowData = React.memo(ListRowData);
+export { ListedRowData };
+
 const RowData: FC<IRowData> = ({ dataItem }) => {
     const [displayedData, setDisplayedData] = useState<string>("");
     const currentUserDataItemInfo = useTypedSelector((state) =>
@@ -297,6 +300,3 @@ const RowData: FC<IRowData> = ({ dataItem }) => {
     );
 };
 export default memo(RowData);
-
-const ListedRowData = React.memo(ListRowData);
-export { ListedRowData };
