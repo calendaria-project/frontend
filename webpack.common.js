@@ -8,7 +8,7 @@ const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 module.exports = {
     target: "web",
     entry: {
-        app: "./src/UserAddDrawer.tsx"
+        app: "./src/index.tsx"
     },
     plugins: [
         // new CleanWebpackPlugin(['dist/*']) for < v2 versions of CleanWebpackPlugin
