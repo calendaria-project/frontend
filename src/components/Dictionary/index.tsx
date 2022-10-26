@@ -2,9 +2,10 @@ import { Col, Row, Tabs } from "antd";
 import { useEffect, useState } from "react";
 import { CompanyTreeView } from "./companiesTreeView";
 import { DivisionTreeView } from "./divisionTreeView";
-import PositionList from "./positionTable";
+import PositionList from "./Tables/positionTable";
 
 import "./styles.scss";
+import { Tables } from "./Tables";
 
 const Dictionary = () => {
     const [tabActiveKey, setTabActiveKey] = useState(
@@ -36,6 +37,61 @@ const Dictionary = () => {
                             label: "Должности",
                             key: "3",
                             children: <PositionList />
+                        },
+                        {
+                            label: "Пол",
+                            key: "4",
+                            children: Tables.genderTable
+                        },
+                        {
+                            label: "Города",
+                            key: "5",
+                            children: Tables.cityTable
+                        },
+                        {
+                            label: "Марки машин",
+                            key: "6",
+                            children: Tables.carTable
+                        },
+                        {
+                            label: "Языки",
+                            key: "7",
+                            children: Tables.languageTable
+                        },
+                        {
+                            label: "Уровень знания языков",
+                            key: "8",
+                            children: Tables.languageKnowledgeTable
+                        },
+                        {
+                            label: "Типы договоров",
+                            key: "9",
+                            children: Tables.contractTypeTable
+                        },
+                        {
+                            label: "Типы докуметов",
+                            key: "10",
+                            children: Tables.documentTypeTable
+                        },
+                        {
+                            label: "Органы выдачи документов",
+                            key: "11",
+                            children: Tables.issueAuthorityTable
+                        },
+                        {
+                            label: "Учебные заведения",
+                            key: "12",
+                            children: Tables.educationTable
+                        },
+                        {
+                            label: "Уровень образования",
+                            key: "13",
+                            children: Tables.educationLevelTable
+                        },
+                        {
+                            label: "Специальность",
+                            key: "14",
+                            children: Tables.specialtyTable
                         }
                     ]}
                 />

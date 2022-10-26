@@ -189,7 +189,7 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                                   key={"" + index + dataInfo.documentType.nameRu}
                                   index={index}
                                   title={dataInfo.documentType.nameRu}
-                                  additionalInfo={dataInfo.issueAuthority}
+                                  additionalInfo={dataInfo.issueAuthority.nameRu}
                                   extraAdditionalInfo={dataInfo.documentNum}
                               />
                           )
