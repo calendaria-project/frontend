@@ -4,8 +4,8 @@ import { Button, Col, Form, Input, Row, Table } from "antd";
 import { AuthContext } from "context/AuthContextProvider";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
-import { IPositionViewModel } from "interfaces";
-import { PositionDirectoryModal } from "./modal";
+import { ISimpleDictionaryViewModel } from "interfaces";
+import { SharedModal } from "./SharedModal";
 import "./styles.scss";
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
@@ -13,7 +13,7 @@ interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     dataIndex: string;
     title: any;
     inputType: "text";
-    record: IPositionViewModel;
+    record: ISimpleDictionaryViewModel;
     index: number;
     children: React.ReactNode;
 }
@@ -50,26 +50,29 @@ const EditableCell: React.FC<EditableCellProps> = ({
     );
 };
 
-const PositionList: FC = () => {
-    const [data, setData] = useState<IPositionViewModel[]>([]);
+const SharedList: FC<{ dictionaryCode: string; modalTitle: string }> = ({
+    dictionaryCode,
+    modalTitle
+}) => {
+    const [data, setData] = useState<ISimpleDictionaryViewModel[]>([]);
     const authContext = useContext(AuthContext);
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState(-1);
     const [isModalVisible, setIsModalVisible] = useState(false);
 
-    const isEditing = (record: IPositionViewModel) => record.positionId === editingKey;
+    const isEditing = (record: ISimpleDictionaryViewModel) => record.id === editingKey;
 
-    const edit = (record: Partial<IPositionViewModel>) => {
+    const edit = (record: Partial<ISimpleDictionaryViewModel>) => {
         form.setFieldsValue({ code: "", nameKz: "", nameRu: "", nameEn: "", ...record });
-        setEditingKey(record.positionId || -1);
+        setEditingKey(record.id || -1);
     };
 
-    const save = async (record: IPositionViewModel) => {
+    const save = async (record: ISimpleDictionaryViewModel) => {
         try {
-            const row = (await form.validateFields()) as IPositionViewModel;
+            const row = (await form.validateFields()) as ISimpleDictionaryViewModel;
 
             const newData = [...data];
-            const index = newData.findIndex((item) => record.positionId === item.positionId);
+            const index = newData.findIndex((item) => record.id === item.id);
             if (index > -1) {
                 const item = newData[index];
                 newData.splice(index, 1, {
@@ -78,7 +81,7 @@ const PositionList: FC = () => {
                 });
                 actionMethodResultSync(
                     "DICTIONARY",
-                    "position",
+                    `simple/${dictionaryCode}/update`,
                     "put",
                     getRequestHeader(authContext.token),
                     newData[index]
@@ -89,12 +92,12 @@ const PositionList: FC = () => {
             } else {
                 actionMethodResultSync(
                     "DICTIONARY",
-                    "position",
+                    `simple/${dictionaryCode}/create`,
                     "post",
                     getRequestHeader(authContext.token),
                     record
                 ).then(() => {
-                    newData.push({ ...record, positionId: 0 });
+                    newData.push({ ...record, id: 0 });
                     setData(newData);
                     setIsModalVisible(false);
                 });
@@ -133,7 +136,7 @@ const PositionList: FC = () => {
             title: "Действие",
             dataIndex: "operation",
             width: 300,
-            render: (_: any, record: IPositionViewModel) => {
+            render: (_: any, record: ISimpleDictionaryViewModel) => {
                 const editable = isEditing(record);
                 return editable ? (
                     <>
@@ -166,7 +169,7 @@ const PositionList: FC = () => {
         }
         return {
             ...col,
-            onCell: (record: IPositionViewModel) => ({
+            onCell: (record: ISimpleDictionaryViewModel) => ({
                 record,
                 inputType: "text",
                 dataIndex: col.dataIndex,
@@ -177,11 +180,14 @@ const PositionList: FC = () => {
     });
 
     useEffect(() => {
-        actionMethodResultSync("DICTIONARY", "position", "get", getRequestHeader(authContext.token)).then(
-            (res) => {
-                setData(res.content);
-            }
-        );
+        actionMethodResultSync(
+            "DICTIONARY",
+            `simple/${dictionaryCode}`,
+            "get",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            setData(data);
+        });
     }, []);
 
     return (
@@ -205,7 +211,7 @@ const PositionList: FC = () => {
                 bordered
                 columns={mergedColumns}
                 dataSource={data}
-                rowKey="positionId"
+                rowKey="id"
                 rowClassName="editable-row"
                 pagination={{
                     onChange: () => setEditingKey(-1),
@@ -213,9 +219,9 @@ const PositionList: FC = () => {
                     position: ["bottomCenter"]
                 }}
             />
-            <PositionDirectoryModal
+            <SharedModal
                 okText="Создать"
-                title="Новая позиция"
+                title={modalTitle}
                 onFinish={save}
                 isVisible={isModalVisible}
                 setIsVisible={setIsModalVisible}
@@ -225,4 +231,4 @@ const PositionList: FC = () => {
     );
 };
 
-export default PositionList;
+export default SharedList;

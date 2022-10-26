@@ -1,3 +1,5 @@
+import { dictionaryCodesEnum } from "data/enums";
+
 export enum Types {
     UNEDITABLE = "uneditable",
     SELECT = "select",
@@ -84,7 +86,7 @@ export const inputData: InputDataRecord = {
     [SelectedKeyTypes.INVENTORY]: [
         {
             type: Types.SELECT,
-            dictionaryCode: "INVENTORY_TYPE",
+            dictionaryCode: dictionaryCodesEnum.INVENTORY_TYPE,
             propertyName: "inventoryType",
             placeholder: "Тип инвентаря"
         },
@@ -110,7 +112,7 @@ export const inputData: InputDataRecord = {
         {
             type: Types.SELECT,
             propertyName: "documentType",
-            dictionaryCode: "DOCUMENT_TYPE",
+            dictionaryCode: dictionaryCodesEnum.DOCUMENT_TYPE,
             placeholder: "Тип документа"
         },
         {
@@ -120,8 +122,9 @@ export const inputData: InputDataRecord = {
             required: true
         },
         {
-            type: Types.INPUT,
+            type: Types.SELECT,
             propertyName: "issueAuthority",
+            dictionaryCode: dictionaryCodesEnum.ISSUE_AUTHORITY,
             placeholder: "Орган выдачи",
             required: true
         },
@@ -136,7 +139,7 @@ export const inputData: InputDataRecord = {
         {
             type: Types.SELECT,
             propertyName: "city",
-            dictionaryCode: "CITY",
+            dictionaryCode: dictionaryCodesEnum.CITY,
             placeholder: "Город",
             required: true
         },
@@ -148,7 +151,7 @@ export const inputData: InputDataRecord = {
         {
             type: Types.SELECT,
             propertyName: "carModel",
-            dictionaryCode: "CAR_MODEL",
+            dictionaryCode: dictionaryCodesEnum.CAR_MODEL,
             placeholder: "Марка",
             required: true
         },
@@ -164,7 +167,7 @@ export const inputData: InputDataRecord = {
         {
             type: Types.SELECT,
             propertyName: "contractType",
-            dictionaryCode: "CONTRACT_TYPE",
+            dictionaryCode: dictionaryCodesEnum.CONTRACT_TYPE,
             placeholder: "Тип контракта",
             required: true
         },
@@ -190,21 +193,21 @@ export const inputData: InputDataRecord = {
         {
             type: Types.SELECT,
             propertyName: "institution",
-            dictionaryCode: "EDUCATION_INSTITUTION",
+            dictionaryCode: dictionaryCodesEnum.EDUCATION_INSTITUTION,
             placeholder: "Учебное заведение"
         },
         //GET - array, POST - object
         {
             type: Types.SELECT,
             propertyName: "educationLevel",
-            dictionaryCode: "EDUCATION_LEVEL",
+            dictionaryCode: dictionaryCodesEnum.EDUCATION_LEVEL,
             placeholder: "Уровень образования"
         },
         //GET - array, POST - object
         {
             type: Types.SELECT,
             propertyName: "specialty",
-            dictionaryCode: "SPECIALTY",
+            dictionaryCode: dictionaryCodesEnum.SPECIALTY,
             placeholder: "Специальность"
         }
     ],
@@ -212,13 +215,13 @@ export const inputData: InputDataRecord = {
         {
             type: Types.SELECT,
             propertyName: "language",
-            dictionaryCode: "LANGUAGE",
+            dictionaryCode: dictionaryCodesEnum.LANGUAGE,
             placeholder: "Язык"
         },
         {
             type: Types.SELECT,
             propertyName: "knowledgeLevel",
-            dictionaryCode: "LANGUAGE_KNOWLEDGE_LEVEL",
+            dictionaryCode: dictionaryCodesEnum.LANGUAGE_KNOWLEDGE_LEVEL,
             placeholder: "Уровень владения"
         }
     ]

@@ -1,35 +1,31 @@
 import { Modal, Form, Input, Button, Row, Col } from "antd";
-import { IPositionViewModel } from "interfaces";
 import { FormInstance } from "antd/es/form/Form";
+import { validateMessages } from "data/validateMessages";
 
-export interface IPositionDirectoryModal {
+export interface ISharedModal {
     okText: string;
     title: string;
     setIsVisible: (val: boolean) => void;
-    onFinish: (values: IPositionViewModel) => void;
+    onFinish: (values: any) => void;
     isVisible: boolean;
-    form: FormInstance<IPositionViewModel>;
+    form: FormInstance;
 }
 
-const validateMessages = {
-    required: "Обязательное поле!"
-};
-
-export const PositionDirectoryModal = ({
+export const SharedModal = ({
     title,
     okText,
     onFinish,
     isVisible,
     setIsVisible,
     form
-}: IPositionDirectoryModal) => {
+}: ISharedModal) => {
     const handleCancel = () => {
         setIsVisible(false);
     };
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
-            <Form<IPositionViewModel>
+            <Form
                 form={form}
                 name="basic"
                 validateMessages={validateMessages}

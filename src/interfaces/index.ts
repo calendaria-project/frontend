@@ -15,6 +15,10 @@ export interface ISimpleDictionaryModel {
     id: number;
 }
 
+export interface ISimpleDictionaryViewModel extends ISimpleDictionaryModel {
+    code: string;
+}
+
 export interface ICompanyTreeNodeModel extends ICompanyBaseModel {
     id: number;
     nodeType: string;
@@ -245,7 +249,7 @@ export interface IUsersDocumentModel {
     documentType: ISimpleDictionaryModel;
     documentNum: string;
     issueDate: string;
-    issueAuthority: string;
+    issueAuthority: ISimpleDictionaryModel;
     userId: string;
     createdAt: string;
     updatedAt: string;
