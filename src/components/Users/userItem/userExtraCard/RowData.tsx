@@ -126,18 +126,46 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
         [currentUserDataItemInfo, currentSelectedKey, usersId, currentItemIndex]
     );
 
-    const Modal = (
-        <UserExtraCardModal
-            okText={"Сохранить"}
-            title={additionalModalTitle}
-            isVisible={modalVisibleFlag}
-            setIsVisible={onSetModalVisibleFlag}
-            onFinish={saveModal}
-            form={form}
-            currentDataLayout={currentDataLayout}
-            index={currentItemIndex}
-        />
-    );
+    const ListItem: FC<{
+        index: number;
+        title: string;
+        additionalInfo: string;
+        extraAdditionalInfo?: string | number;
+    }> = ({ index, title, additionalInfo, extraAdditionalInfo }) => {
+        return (
+            <Form key={index} form={form} component={false}>
+                <Row className="row-wrapper">
+                    <Col>
+                        <Text strong>{title}</Text>
+                    </Col>
+                    <Col className="col-end-wrapper">
+                        <EditOutlined
+                            style={{ top: "4px" }}
+                            onClick={handleIconClick(index)}
+                            className="icon"
+                        />
+                    </Col>
+                </Row>
+                <Row className="row-wrapper">
+                    <Col>{additionalInfo}</Col>
+                    {extraAdditionalInfo && (
+                        <Col className="col-end-wrapper">{extraAdditionalInfo}</Col>
+                    )}
+                </Row>
+                <Divider className="userItem__extraCard-divider" />
+                <UserExtraCardModal
+                    okText={"Сохранить"}
+                    title={additionalModalTitle}
+                    isVisible={modalVisibleFlag}
+                    setIsVisible={onSetModalVisibleFlag}
+                    onFinish={saveModal}
+                    form={form}
+                    currentDataLayout={currentDataLayout}
+                    index={currentItemIndex}
+                />
+            </Form>
+        );
+    };
 
     return (
         <>
@@ -145,127 +173,60 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                 (currentSelectedKey === SelectedKeyTypes.CONTRACT
                     ? (currentUserDataItemInfo || []).map(
                           (dataInfo: IUsersContractModel, index: number) => (
-                              <Form key={index} form={form} component={false}>
-                                  <Row className="row-wrapper">
-                                      <Col>
-                                          <Text strong>{dataInfo.contractType.nameRu}</Text>
-                                      </Col>
-                                      <Col className="col-end-wrapper">
-                                          <EditOutlined
-                                              style={{ top: "4px" }}
-                                              onClick={handleIconClick(index)}
-                                              className="icon"
-                                          />
-                                      </Col>
-                                  </Row>
-                                  <Row className="row-wrapper">
-                                      <Col>
-                                          <Text type="secondary">{dataInfo.contractNum}</Text>
-                                      </Col>
-                                      <Col className="col-end-wrapper">{dataInfo.contractDate}</Col>
-                                  </Row>
-                                  <Divider className="userItem__extraCard-divider" />
-                                  {Modal}
-                              </Form>
+                              <ListItem
+                                  key={"" + index + dataInfo.contractType.nameRu}
+                                  index={index}
+                                  title={dataInfo.contractType.nameRu}
+                                  additionalInfo={dataInfo.contractNum}
+                                  extraAdditionalInfo={dataInfo.contractDate}
+                              />
                           )
                       )
                     : currentSelectedKey === SelectedKeyTypes.DOCUMENT
                     ? (currentUserDataItemInfo || []).map(
                           (dataInfo: IUsersDocumentModel, index: number) => (
-                              <Form key={index} form={form} component={false}>
-                                  <Row className="row-wrapper">
-                                      <Col>
-                                          <Text strong>{dataInfo.documentType.nameRu}</Text>
-                                      </Col>
-                                      <Col className="col-end-wrapper">
-                                          <EditOutlined
-                                              style={{ top: "4px" }}
-                                              onClick={handleIconClick(index)}
-                                              className="icon"
-                                          />
-                                      </Col>
-                                  </Row>
-                                  <Row className="row-wrapper">
-                                      <Col>{dataInfo.issueAuthority}</Col>
-                                      <Col className="col-end-wrapper">{dataInfo.documentNum}</Col>
-                                  </Row>
-                                  <Divider className="userItem__extraCard-divider" />
-                                  {Modal}
-                              </Form>
+                              <ListItem
+                                  key={"" + index + dataInfo.documentType.nameRu}
+                                  index={index}
+                                  title={dataInfo.documentType.nameRu}
+                                  additionalInfo={dataInfo.issueAuthority}
+                                  extraAdditionalInfo={dataInfo.documentNum}
+                              />
                           )
                       )
                     : currentSelectedKey === SelectedKeyTypes.INVENTORY
                     ? (currentUserDataItemInfo || []).map(
                           (dataInfo: IUsersInventoryModel, index: number) => (
-                              <Form key={index} form={form} component={false}>
-                                  <Row className="row-wrapper">
-                                      <Col>
-                                          <Text strong>{dataInfo.inventoryType.nameRu}</Text>
-                                      </Col>
-                                      <Col className="col-end-wrapper">
-                                          <EditOutlined
-                                              style={{ top: "4px" }}
-                                              onClick={handleIconClick(index)}
-                                              className="icon"
-                                          />
-                                      </Col>
-                                  </Row>
-                                  <Row className="row-wrapper">
-                                      <Col>{dataInfo.serialNum}</Col>
-                                      <Col className="col-end-wrapper">{dataInfo.modelNum}</Col>
-                                  </Row>
-                                  <Divider className="userItem__extraCard-divider" />
-                                  {Modal}
-                              </Form>
+                              <ListItem
+                                  key={"" + index + dataInfo.inventoryType.nameRu}
+                                  index={index}
+                                  title={dataInfo.inventoryType.nameRu}
+                                  additionalInfo={dataInfo.serialNum}
+                                  extraAdditionalInfo={dataInfo.modelNum}
+                              />
                           )
                       )
                     : currentSelectedKey === SelectedKeyTypes.EDUCATION
                     ? (currentUserDataItemInfo || []).map(
                           (dataInfo: IUsersEducationModel, index: number) => (
-                              <Form key={index} form={form} component={false}>
-                                  <Row className="row-wrapper">
-                                      <Col>
-                                          <Text strong>{dataInfo.institution.nameRu}</Text>
-                                      </Col>
-                                      <Col className="col-end-wrapper">
-                                          <EditOutlined
-                                              style={{ top: "4px" }}
-                                              onClick={handleIconClick(index)}
-                                              className="icon"
-                                          />
-                                      </Col>
-                                  </Row>
-                                  <Row className="row-wrapper">
-                                      <Col>{dataInfo.educationLevel.nameRu}</Col>
-                                      <Col className="col-end-wrapper">{dataInfo.endYear}</Col>
-                                  </Row>
-                                  <Divider className="userItem__extraCard-divider" />
-                                  {Modal}
-                              </Form>
+                              <ListItem
+                                  key={"" + index + dataInfo.institution.nameRu}
+                                  index={index}
+                                  title={dataInfo.institution.nameRu}
+                                  additionalInfo={dataInfo.educationLevel.nameRu}
+                                  extraAdditionalInfo={dataInfo.endYear}
+                              />
                           )
                       )
                     : currentSelectedKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE
                     ? (currentUserDataItemInfo || []).map(
                           (dataInfo: IUsersLanguageKnowledgeModel, index: number) => (
-                              <Form key={index} form={form} component={false}>
-                                  <Row className="row-wrapper">
-                                      <Col>
-                                          <Text strong>{dataInfo.language.nameRu}</Text>
-                                      </Col>
-                                      <Col className="col-end-wrapper">
-                                          <EditOutlined
-                                              style={{ top: "4px" }}
-                                              onClick={handleIconClick(index)}
-                                              className="icon"
-                                          />
-                                      </Col>
-                                  </Row>
-                                  <Row className="row-wrapper">
-                                      <Col>{dataInfo.knowledgeLevel.nameRu}</Col>
-                                  </Row>
-                                  <Divider className="userItem__extraCard-divider" />
-                                  {Modal}
-                              </Form>
+                              <ListItem
+                                  key={"" + index + dataInfo.language.nameRu}
+                                  index={index}
+                                  title={dataInfo.language.nameRu}
+                                  additionalInfo={dataInfo.knowledgeLevel.nameRu}
+                              />
                           )
                       )
                     : null)}

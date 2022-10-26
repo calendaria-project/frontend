@@ -71,8 +71,6 @@ export const UserEditDrawer = ({
             firstname: userData.firstname,
             patronymic: userData.patronymic,
             iin: userData.iin,
-            "personalContact.email": userData?.personalContact?.email,
-            "personalContact.mobilePhoneNumber": userData?.personalContact?.mobilePhoneNumber,
             "sex.id": userData?.sex?.id,
             birthDate: moment(userData?.birthDate, "YYYY-MM-DD"),
             employmentDate: moment(userData?.employmentDate, "YYYY-MM-DD"),
@@ -313,20 +311,6 @@ export const UserEditDrawer = ({
                                     name="iin"
                                     label="ИИН"
                                     rules={[{ required: true, message: "ИИН" }]}
-                                >
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                            <Col span={24}>
-                                <Form.Item name="personalContact.email" label="Почта">
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                            <Col span={24}>
-                                <Form.Item
-                                    name="personalContact.mobilePhoneNumber"
-                                    rules={[{ required: true, message: "Номер" }]}
-                                    label="Номер"
                                 >
                                     <Input />
                                 </Form.Item>
