@@ -287,6 +287,11 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
 
     const additionalItems: MenuProps["items"] = [
         {
+            key: SelectedKeyTypes.ADDITIONAL_INFO,
+            icon: getIcon(SelectedKeyTypes.ADDITIONAL_INFO),
+            label: "О себе"
+        },
+        {
             key: SelectedKeyTypes.LANGUAGE_KNOWLEDGE,
             icon: getIcon(SelectedKeyTypes.LANGUAGE_KNOWLEDGE),
             label: "Иностранные языки"
@@ -295,11 +300,6 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
             key: SelectedKeyTypes.EDUCATION,
             icon: getIcon(SelectedKeyTypes.EDUCATION),
             label: "Образование"
-        },
-        {
-            key: SelectedKeyTypes.ADDITIONAL_INFO,
-            icon: getIcon(SelectedKeyTypes.ADDITIONAL_INFO),
-            label: "О себе"
         }
     ];
     const memoizedAdditionalItems = useMemo(() => additionalItems, [additionalItems]);

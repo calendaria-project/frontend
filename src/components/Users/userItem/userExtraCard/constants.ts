@@ -4,6 +4,7 @@ export enum Types {
     UNEDITABLE = "uneditable",
     SELECT = "select",
     INPUT = "input",
+    TEXTAREA = "textArea",
     DATE = "date"
 }
 
@@ -27,6 +28,8 @@ export type TInputData = {
     propertyName: string;
     dictionaryCode?: string;
     inputType?: string;
+    pattern?: string;
+    title?: string;
     placeholder: string;
     required?: boolean;
 };
@@ -34,6 +37,12 @@ export type TInputData = {
 type InputDataRecord = {
     [key: string]: Array<TInputData>;
 };
+
+const phonePattern = "\\+7\\(\\d{3}\\)\\d{3}-\\d{2}-\\d{2}";
+const mailPattern =
+    "^[\\w]{1,}[\\w.+-]{0,}@[\\w-]{1,}([.][a-zA-Z]{1,}|[.][\\w-]{1,}[.][a-zA-Z]{1,})$";
+const mailTitle = "Введите почту в формате example@google.com";
+const phoneTitle = "Введите номер в формате +7(xxx)xxx-xx-xx";
 
 export const inputData: InputDataRecord = {
     [SelectedKeyTypes.USER]: [
@@ -43,18 +52,26 @@ export const inputData: InputDataRecord = {
         {
             type: Types.INPUT,
             propertyName: "mobilePhoneNumber",
+            inputType: "tel",
+            pattern: phonePattern,
+            title: phoneTitle,
             placeholder: "Мобильный номер",
             required: true
         },
         {
             type: Types.INPUT,
             inputType: "email",
+            title: mailTitle,
+            pattern: mailPattern,
             propertyName: "email",
             placeholder: "Личный e-mail"
         },
         {
             type: Types.INPUT,
             propertyName: "homePhoneNumber",
+            inputType: "tel",
+            title: phoneTitle,
+            pattern: phonePattern,
             placeholder: "Домашний телефон"
         }
     ],
@@ -68,17 +85,22 @@ export const inputData: InputDataRecord = {
         {
             type: Types.INPUT,
             propertyName: "mobilePhoneNumber",
-            placeholder: "Внутренний номер",
-            required: true
+            inputType: "number",
+            placeholder: "Внутренний номер"
         },
         {
             type: Types.INPUT,
             propertyName: "internalPhoneNumber",
+            inputType: "tel",
+            title: phoneTitle,
+            pattern: phonePattern,
             placeholder: "Корпоративный мобильный номер"
         },
         {
             type: Types.INPUT,
             inputType: "email",
+            title: mailTitle,
+            pattern: mailPattern,
             propertyName: "email",
             placeholder: "Корпоративный e-mail"
         }
@@ -186,8 +208,8 @@ export const inputData: InputDataRecord = {
     ],
 
     [SelectedKeyTypes.ADDITIONAL_INFO]: [
-        { type: Types.INPUT, propertyName: "description", placeholder: "Примечание" },
-        { type: Types.INPUT, propertyName: "aboutMe", placeholder: "О себе" }
+        { type: Types.TEXTAREA, propertyName: "aboutMe", placeholder: "О себе" },
+        { type: Types.TEXTAREA, propertyName: "description", placeholder: "Примечание" }
     ],
     [SelectedKeyTypes.EDUCATION]: [
         {
