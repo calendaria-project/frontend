@@ -1,5 +1,5 @@
 import React, { FC, memo, useCallback, useContext, useEffect, useState } from "react";
-import { Col, Row, Typography, Button, Card, Divider, Image, message } from "antd";
+import { Col, Row, Typography, Button, Card, Divider, Image, message, Tooltip } from "antd";
 import { LeftOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router";
 import getFullName from "utils/getFullName";
@@ -154,23 +154,27 @@ const UserItem: FC = () => {
                             </Row>
                             <Col span={24}>
                                 <Divider className={"userItem__mainCard-divider"} />
-                                <Text>ИИН</Text>
+                                <Tooltip title={"ИИН"}>
+                                    <Text>{currentUserData?.iin}</Text>
+                                </Tooltip>
                                 <Divider className={"userItem__mainCard-divider"} />
                             </Col>
                             <Col span={24}>
-                                <Text>{currentUserData?.iin}</Text>
+                                <Tooltip title={"Дата рождения"}>
+                                    <Text>{currentUserData?.birthDate}</Text>
+                                </Tooltip>
                                 <Divider className={"userItem__mainCard-divider"} />
                             </Col>
                             <Col span={24}>
-                                <Text>{currentUserData?.birthDate}</Text>
+                                <Tooltip title={"Пол"}>
+                                    <Text>{currentUserData?.sex?.nameRu}</Text>
+                                </Tooltip>
                                 <Divider className={"userItem__mainCard-divider"} />
                             </Col>
                             <Col span={24}>
-                                <Text>{currentUserData?.sex?.nameRu}</Text>
-                                <Divider className={"userItem__mainCard-divider"} />
-                            </Col>
-                            <Col span={24}>
-                                <Text>{currentUserData?.employmentDate}</Text>
+                                <Tooltip title={"Дата приема на работу"}>
+                                    <Text>{currentUserData?.employmentDate}</Text>
+                                </Tooltip>
                                 <Divider className={"userItem__mainCard-divider"} />
                             </Col>
                             <Row className="row-wrapper" align="middle">

@@ -1,12 +1,14 @@
 import React, { FC, useState, useEffect, ChangeEvent, useCallback } from "react";
 import { FormInstance, Input as AntdInput } from "antd";
-import { TInputData } from "../constants";
+import { Types, TInputData } from "../constants";
 
 interface IInput {
     form: FormInstance;
     dataItemLayout: TInputData;
     currentDataItemInfo: any;
 }
+
+const { TextArea } = AntdInput;
 
 const Input: FC<IInput> = ({ form, dataItemLayout, currentDataItemInfo }) => {
     console.log("Input", currentDataItemInfo);
@@ -26,17 +28,41 @@ const Input: FC<IInput> = ({ form, dataItemLayout, currentDataItemInfo }) => {
     }, [currentValue]);
 
     const handleChangeValue = useCallback(
-        (e: ChangeEvent<HTMLInputElement>) => {
+        (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+            let newValue = e.target.value;
+            if (dataItemLayout.inputType === "email" && dataItemLayout.pattern) {
+                if (
+                    newValue.length > 2 &&
+                    newValue[newValue.length - 2] === "." &&
+                    newValue[newValue.length - 1] === "."
+                ) {
+                    newValue = newValue.substring(0, newValue.length - 1);
+                }
+            }
+
             form.setFieldsValue({
-                [dataItemLayout.propertyName]: e.target.value
+                [dataItemLayout.propertyName]: newValue
             });
-            setCurrentValue(e.target.value);
+            setCurrentValue(newValue);
         },
         [dataItemLayout]
     );
 
+    if (dataItemLayout.type === Types.INPUT) {
+        return (
+            <AntdInput
+                type={dataItemLayout.inputType}
+                placeholder={dataItemLayout.placeholder}
+                title={dataItemLayout.title}
+                pattern={dataItemLayout.pattern}
+                onChange={handleChangeValue}
+                value={currentValue}
+            />
+        );
+    }
+
     return (
-        <AntdInput
+        <TextArea
             placeholder={dataItemLayout.placeholder}
             onChange={handleChangeValue}
             value={currentValue}

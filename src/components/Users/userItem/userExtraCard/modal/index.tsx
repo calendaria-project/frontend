@@ -88,7 +88,8 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                                                       dataItemLayout={dataItemLayout}
                                                       currentDataItemInfo={dataItemInfo}
                                                   />
-                                              ) : dataItemLayout.type === Types.INPUT ? (
+                                              ) : dataItemLayout.type === Types.INPUT ||
+                                                dataItemLayout.type === Types.TEXTAREA ? (
                                                   <Input
                                                       form={form}
                                                       dataItemLayout={dataItemLayout}
@@ -119,7 +120,8 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                                               dataItemLayout={dataItemLayout}
                                               currentDataItemInfo={currentUserDataItemInfo}
                                           />
-                                      ) : dataItemLayout.type === Types.INPUT ? (
+                                      ) : dataItemLayout.type === Types.INPUT ||
+                                        dataItemLayout.type === Types.TEXTAREA ? (
                                           <Input
                                               dataItemLayout={dataItemLayout}
                                               currentDataItemInfo={currentUserDataItemInfo}
@@ -135,12 +137,19 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                                   </Form.Item>
                               </Col>
                           ))}
-                    <Col xl={24} xs={24}>
-                        <Form.Item>
+                </Row>
+                <Row align={"middle"} justify={"center"} gutter={[16, 16]}>
+                    <Col>
+                        <Form.Item className="ok-btn-wrapper">
                             <Button className="ok-btn" type="primary" htmlType="submit">
                                 {okText}
                             </Button>
                         </Form.Item>
+                    </Col>
+                    <Col>
+                        <Button className="cancel-btn" onClick={handleCancel}>
+                            Отмена
+                        </Button>
                     </Col>
                 </Row>
             </Form>

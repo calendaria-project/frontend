@@ -58,8 +58,15 @@ export const CompanyDirectoryModal = ({
                     <Form.Item hidden name="createdAt" />
 
                     <Col xl={12} xs={24}>
-                        <Form.Item name="bin" label="БИН" rules={[{ required: true }]}>
-                            <Input />
+                        <Form.Item
+                            name="bin"
+                            label="БИН"
+                            rules={[
+                                { required: true },
+                                { pattern: /.{12}/, message: "Необходимо 12 символов" }
+                            ]}
+                        >
+                            <Input type="number" />
                         </Form.Item>
                     </Col>
                     <Col xl={12} xs={24}>

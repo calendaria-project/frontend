@@ -11,7 +11,7 @@
     }
   }
   &__extraCard li.ant-menu-item, &__extraCard .ant-menu-submenu-title {
-    height: 30px !important;
+    height: 40px !important;
     padding-left: 6px !important;
     padding-right: 40px !important;
   }
@@ -45,9 +45,18 @@
 }
 
 .ok-btn {
-  margin-top: 16px;
   display: flex;
   justify-content: center
+}
+
+.ok-btn-wrapper {
+  margin-top:10px !important;
+}
+
+.cancel-btn {
+  display: flex;
+  justify-content: center;
+  background: white;
 }
 
 .add-text {
