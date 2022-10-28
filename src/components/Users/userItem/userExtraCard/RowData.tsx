@@ -128,15 +128,15 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
 
     const ListItem: FC<{
         index: number;
-        title: string;
-        additionalInfo: string;
-        extraAdditionalInfo?: string | number;
+        title: string | undefined;
+        additionalInfo: string | undefined;
+        extraAdditionalInfo?: string | number | undefined;
     }> = ({ index, title, additionalInfo, extraAdditionalInfo }) => {
         return (
             <Form key={index} form={form} component={false}>
                 <Row className="row-wrapper">
                     <Col>
-                        <Text strong>{title}</Text>
+                        <Text strong>{title || ""}</Text>
                     </Col>
                     <Col className="col-end-wrapper">
                         <EditOutlined
@@ -147,7 +147,7 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                     </Col>
                 </Row>
                 <Row className="row-wrapper">
-                    <Col>{additionalInfo}</Col>
+                    <Col>{additionalInfo || ""}</Col>
                     {extraAdditionalInfo && (
                         <Col className="col-end-wrapper">{extraAdditionalInfo}</Col>
                     )}
@@ -174,9 +174,9 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                     ? (currentUserDataItemInfo || []).map(
                           (dataInfo: IUsersContractModel, index: number) => (
                               <ListItem
-                                  key={"" + index + dataInfo.contractType.nameRu}
+                                  key={"" + index + dataInfo.contractType?.nameRu}
                                   index={index}
-                                  title={dataInfo.contractType.nameRu}
+                                  title={dataInfo.contractType?.nameRu}
                                   additionalInfo={dataInfo.contractNum}
                                   extraAdditionalInfo={dataInfo.contractDate}
                               />
@@ -186,10 +186,10 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                     ? (currentUserDataItemInfo || []).map(
                           (dataInfo: IUsersDocumentModel, index: number) => (
                               <ListItem
-                                  key={"" + index + dataInfo.documentType.nameRu}
+                                  key={"" + index + dataInfo.documentType?.nameRu}
                                   index={index}
-                                  title={dataInfo.documentType.nameRu}
-                                  additionalInfo={dataInfo.issueAuthority.nameRu}
+                                  title={dataInfo.documentType?.nameRu}
+                                  additionalInfo={dataInfo.issueAuthority?.nameRu}
                                   extraAdditionalInfo={dataInfo.documentNum}
                               />
                           )
@@ -198,9 +198,9 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                     ? (currentUserDataItemInfo || []).map(
                           (dataInfo: IUsersInventoryModel, index: number) => (
                               <ListItem
-                                  key={"" + index + dataInfo.inventoryType.nameRu}
+                                  key={"" + index + dataInfo.inventoryType?.nameRu}
                                   index={index}
-                                  title={dataInfo.inventoryType.nameRu}
+                                  title={dataInfo.inventoryType?.nameRu}
                                   additionalInfo={dataInfo.serialNum}
                                   extraAdditionalInfo={dataInfo.modelNum}
                               />
@@ -210,10 +210,10 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                     ? (currentUserDataItemInfo || []).map(
                           (dataInfo: IUsersEducationModel, index: number) => (
                               <ListItem
-                                  key={"" + index + dataInfo.institution.nameRu}
+                                  key={"" + index + dataInfo.institution?.nameRu}
                                   index={index}
-                                  title={dataInfo.institution.nameRu}
-                                  additionalInfo={dataInfo.educationLevel.nameRu}
+                                  title={dataInfo.institution?.nameRu}
+                                  additionalInfo={dataInfo.educationLevel?.nameRu}
                                   extraAdditionalInfo={dataInfo.endYear}
                               />
                           )
@@ -222,10 +222,10 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                     ? (currentUserDataItemInfo || []).map(
                           (dataInfo: IUsersLanguageKnowledgeModel, index: number) => (
                               <ListItem
-                                  key={"" + index + dataInfo.language.nameRu}
+                                  key={"" + index + dataInfo.language?.nameRu}
                                   index={index}
-                                  title={dataInfo.language.nameRu}
-                                  additionalInfo={dataInfo.knowledgeLevel.nameRu}
+                                  title={dataInfo.language?.nameRu}
+                                  additionalInfo={dataInfo.knowledgeLevel?.nameRu}
                               />
                           )
                       )

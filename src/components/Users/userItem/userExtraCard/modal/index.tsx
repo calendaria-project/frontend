@@ -12,6 +12,28 @@ import { useTypedSelector } from "hooks/useTypedSelector";
 import { getCurrentUserDataItemInfo, getSelectedKey } from "store/reducers/userReducer";
 import DatePicker from "./DatePicker";
 
+const WithFormItem: FC<{ dataItemLayout: TInputData; children: any }> = ({
+    dataItemLayout,
+    children
+}) => {
+    const formItemRules: Array<{}> =
+        dataItemLayout.pattern && dataItemLayout.patternMessage
+            ? [
+                  { required: dataItemLayout.required },
+                  { pattern: dataItemLayout.pattern, message: dataItemLayout.patternMessage }
+              ]
+            : [{ required: dataItemLayout.required }];
+    return (
+        <Form.Item
+            key={dataItemLayout.propertyName}
+            name={dataItemLayout.propertyName}
+            rules={formItemRules}
+        >
+            {children}
+        </Form.Item>
+    );
+};
+
 interface IUserItemModal {
     okText: string;
     title: string;
@@ -77,11 +99,7 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                               (dataItemInfo: any, index: number) => (
                                   <Col xl={24} xs={24} key={index}>
                                       {(currentDataLayout || []).map((dataItemLayout) => (
-                                          <Form.Item
-                                              key={dataItemLayout.propertyName}
-                                              name={dataItemLayout.propertyName}
-                                              rules={[{ required: dataItemLayout.required }]}
-                                          >
+                                          <WithFormItem dataItemLayout={dataItemLayout}>
                                               {dataItemLayout.type === Types.SELECT ? (
                                                   <Select
                                                       form={form}
@@ -102,18 +120,14 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                                                       currentDataItemInfo={dataItemInfo}
                                                   />
                                               ) : null}
-                                          </Form.Item>
+                                          </WithFormItem>
                                       ))}
                                   </Col>
                               )
                           )
                         : (currentDataLayout || []).map((dataItemLayout, index) => (
                               <Col xl={24} xs={24} key={"" + index + dataItemLayout.propertyName}>
-                                  <Form.Item
-                                      key={dataItemLayout.propertyName}
-                                      name={dataItemLayout.propertyName}
-                                      rules={[{ required: dataItemLayout.required }]}
-                                  >
+                                  <WithFormItem dataItemLayout={dataItemLayout}>
                                       {dataItemLayout.type === Types.SELECT ? (
                                           <Select
                                               form={form}
@@ -134,7 +148,7 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                                               currentDataItemInfo={currentUserDataItemInfo}
                                           />
                                       ) : null}
-                                  </Form.Item>
+                                  </WithFormItem>
                               </Col>
                           ))}
                 </Row>

@@ -28,8 +28,8 @@ export type TInputData = {
     propertyName: string;
     dictionaryCode?: string;
     inputType?: string;
-    pattern?: string;
-    title?: string;
+    pattern?: RegExp;
+    patternMessage?: string;
     placeholder: string;
     required?: boolean;
 };
@@ -38,11 +38,12 @@ type InputDataRecord = {
     [key: string]: Array<TInputData>;
 };
 
-const phonePattern = "\\+7\\(\\d{3}\\)\\d{3}-\\d{2}-\\d{2}";
-const mailPattern =
-    "^[\\w]{1,}[\\w.+-]{0,}@[\\w-]{1,}([.][a-zA-Z]{1,}|[.][\\w-]{1,}[.][a-zA-Z]{1,})$";
-const mailTitle = "Введите почту в формате example@google.com";
-const phoneTitle = "Введите номер в формате +7(xxx)xxx-xx-xx";
+const phonePattern = new RegExp(/^\+7\(\d{3}\)\d{3}(-\d{2})(-\d{2})$/);
+const mailPattern = new RegExp(
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+);
+const mailMessage = "Введите почту в формате example@google.com";
+const phoneMessage = "Введите номер в формате +7(xxx)xxx-xx-xx";
 
 export const inputData: InputDataRecord = {
     [SelectedKeyTypes.USER]: [
@@ -52,16 +53,14 @@ export const inputData: InputDataRecord = {
         {
             type: Types.INPUT,
             propertyName: "mobilePhoneNumber",
-            inputType: "tel",
             pattern: phonePattern,
-            title: phoneTitle,
+            patternMessage: phoneMessage,
             placeholder: "Мобильный номер",
             required: true
         },
         {
             type: Types.INPUT,
-            inputType: "email",
-            title: mailTitle,
+            patternMessage: mailMessage,
             pattern: mailPattern,
             propertyName: "email",
             placeholder: "Личный e-mail"
@@ -69,8 +68,7 @@ export const inputData: InputDataRecord = {
         {
             type: Types.INPUT,
             propertyName: "homePhoneNumber",
-            inputType: "tel",
-            title: phoneTitle,
+            patternMessage: phoneMessage,
             pattern: phonePattern,
             placeholder: "Домашний телефон"
         }
@@ -91,15 +89,13 @@ export const inputData: InputDataRecord = {
         {
             type: Types.INPUT,
             propertyName: "internalPhoneNumber",
-            inputType: "tel",
-            title: phoneTitle,
+            patternMessage: phoneMessage,
             pattern: phonePattern,
             placeholder: "Корпоративный мобильный номер"
         },
         {
             type: Types.INPUT,
-            inputType: "email",
-            title: mailTitle,
+            patternMessage: phoneMessage,
             pattern: mailPattern,
             propertyName: "email",
             placeholder: "Корпоративный e-mail"
@@ -135,7 +131,8 @@ export const inputData: InputDataRecord = {
             type: Types.SELECT,
             propertyName: "documentType",
             dictionaryCode: dictionaryCodesEnum.DOCUMENT_TYPE,
-            placeholder: "Тип документа"
+            placeholder: "Тип документа",
+            required: true
         },
         {
             type: Types.INPUT,
