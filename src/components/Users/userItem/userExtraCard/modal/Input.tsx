@@ -53,8 +53,6 @@ const Input: FC<IInput> = ({ form, dataItemLayout, currentDataItemInfo }) => {
             <AntdInput
                 type={dataItemLayout.inputType}
                 placeholder={dataItemLayout.placeholder}
-                title={dataItemLayout.title}
-                pattern={dataItemLayout.pattern}
                 onChange={handleChangeValue}
                 value={currentValue}
             />
