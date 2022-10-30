@@ -129,7 +129,7 @@ const Dictionary = () => {
             overlay={dictionaryMenu}
             overlayStyle={{ maxHeight: "300px", height: "fit-content", overflowY: "scroll" }}
         >
-            <Button style={{ paddingLeft: "16px", border: 0 }}>
+            <Button type={"link"} style={{ color: "black", paddingLeft: "16px", border: 0 }}>
                 <EllipsisOutlined />
             </Button>
         </Dropdown>

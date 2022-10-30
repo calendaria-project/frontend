@@ -1,5 +1,6 @@
 import { FC, useContext, useEffect, useState } from "react";
 import { Button, Col, Form, Input, Row, Table } from "antd";
+import { SaveOutlined, DeleteOutlined, EditOutlined, CloseOutlined } from "@ant-design/icons";
 
 import { AuthContext } from "context/AuthContextProvider";
 import { actionMethodResultSync } from "functions/actionMethodResult";
@@ -67,6 +68,19 @@ const SharedList: FC<{ dictionaryCode: string; modalTitle: string }> = ({
         setEditingKey(record.id || -1);
     };
 
+    const remove = (record: Partial<ISimpleDictionaryViewModel>) => {
+        const newData = [...data];
+        actionMethodResultSync(
+            "DICTIONARY",
+            `simple/${dictionaryCode}/item/${record.id}`,
+            "delete",
+            getRequestHeader(authContext.token)
+        ).then(() => {
+            setData(newData.filter((dataItem) => dataItem.id !== record.id));
+            setEditingKey(-1);
+        });
+    };
+
     const save = async (record: ISimpleDictionaryViewModel) => {
         try {
             const row = (await form.validateFields()) as ISimpleDictionaryViewModel;
@@ -96,8 +110,8 @@ const SharedList: FC<{ dictionaryCode: string; modalTitle: string }> = ({
                     "post",
                     getRequestHeader(authContext.token),
                     record
-                ).then(() => {
-                    newData.push({ ...record, id: 0 });
+                ).then((res) => {
+                    newData.push({ ...record, id: res.id });
                     setData(newData);
                     setIsModalVisible(false);
                 });
@@ -138,26 +152,34 @@ const SharedList: FC<{ dictionaryCode: string; modalTitle: string }> = ({
             width: 300,
             render: (_: any, record: ISimpleDictionaryViewModel) => {
                 const editable = isEditing(record);
+                const disabled = editingKey !== -1;
                 return editable ? (
                     <>
                         <Button
-                            style={{ background: "#1890ff", color: "#fff", marginRight: 8 }}
+                            type={"link"}
+                            style={{ color: "green" }}
                             onClick={() => save(record)}
                         >
-                            Сохранить
+                            <SaveOutlined style={{ fontSize: 24 }} />
                         </Button>
-                        <Button style={{ background: "#e6d87e" }} onClick={() => setEditingKey(-1)}>
-                            Отмена
+                        <Button type={"link"} onClick={() => setEditingKey(-1)}>
+                            <CloseOutlined style={{ fontSize: 24 }} />
                         </Button>
                     </>
                 ) : (
-                    <Button
-                        style={{ background: "#e6d87e" }}
-                        disabled={editingKey !== -1}
-                        onClick={() => edit(record)}
-                    >
-                        Изменить
-                    </Button>
+                    <>
+                        <Button type={"link"} disabled={disabled} onClick={() => edit(record)}>
+                            <EditOutlined style={{ fontSize: 24 }} />
+                        </Button>
+                        <Button
+                            type={"link"}
+                            style={!disabled ? { color: "red" } : {}}
+                            disabled={disabled}
+                            onClick={() => remove(record)}
+                        >
+                            <DeleteOutlined style={{ fontSize: 24 }} />
+                        </Button>
+                    </>
                 );
             }
         }
