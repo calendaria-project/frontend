@@ -7,6 +7,7 @@ import { getRequestHeader } from "functions/common";
 import { IPositionViewModel } from "interfaces";
 import { SharedModal } from "../SharedModal";
 import "../styles.scss";
+import { CloseOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     editing: boolean;
@@ -96,8 +97,8 @@ const PositionList: FC = () => {
                     "post",
                     getRequestHeader(authContext.token),
                     record
-                ).then(() => {
-                    newData.push({ ...record, positionId: 0 });
+                ).then((res) => {
+                    newData.push({ ...record, positionId: res.positionId });
                     setData(newData);
                     setIsModalVisible(false);
                 });
@@ -138,26 +139,26 @@ const PositionList: FC = () => {
             width: 300,
             render: (_: any, record: IPositionViewModel) => {
                 const editable = isEditing(record);
+                const disabled = editingKey !== -1;
                 return editable ? (
                     <>
                         <Button
-                            style={{ background: "#1890ff", color: "#fff", marginRight: 8 }}
+                            type={"link"}
+                            style={{ color: "green" }}
                             onClick={() => save(record)}
                         >
-                            Сохранить
+                            <SaveOutlined style={{ fontSize: 24 }} />
                         </Button>
-                        <Button style={{ background: "#e6d87e" }} onClick={() => setEditingKey(-1)}>
-                            Отмена
+                        <Button type={"link"} onClick={() => setEditingKey(-1)}>
+                            <CloseOutlined style={{ fontSize: 24 }} />
                         </Button>
                     </>
                 ) : (
-                    <Button
-                        style={{ background: "#e6d87e" }}
-                        disabled={editingKey !== -1}
-                        onClick={() => edit(record)}
-                    >
-                        Изменить
-                    </Button>
+                    <>
+                        <Button type={"link"} disabled={disabled} onClick={() => edit(record)}>
+                            <EditOutlined style={{ fontSize: 24 }} />
+                        </Button>
+                    </>
                 );
             }
         }
