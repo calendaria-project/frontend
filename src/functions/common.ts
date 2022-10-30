@@ -8,12 +8,11 @@ export const postFormDataHeader = (token: string): AxiosRequestConfig => {
     return {
         headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-            Accept: 'multipart/form-data',
-        },
+            "Content-Type": "application/json",
+            Accept: "*/*"
+        }
     };
 };
-
 
 export const getRequestHeader = (token: string): AxiosRequestConfig => {
     return {

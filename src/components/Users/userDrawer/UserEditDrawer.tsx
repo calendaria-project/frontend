@@ -185,7 +185,8 @@ export const UserEditDrawer = ({
             "FILE",
             "file/upload",
             "post",
-            postFormDataHeader(authContext.token)
+            postFormDataHeader(authContext.token),
+            fData
         ).then((res) => {
             form.setFieldValue("profilePhotoId", res.id);
             getBase64(acceptedFiles[0], (url) => {
@@ -202,7 +203,8 @@ export const UserEditDrawer = ({
             "FILE",
             "file/upload",
             "post",
-            postFormDataHeader(authContext.token)
+            postFormDataHeader(authContext.token),
+            fData
         ).then((res) => {
             form.setFieldValue("signFileId", res.id);
             setSignFileName(acceptedFiles[0].name);
@@ -256,7 +258,7 @@ export const UserEditDrawer = ({
                                 uploadButton
                             )}
                             <Dropzone
-                                accept={"image/jpeg, image/png"}
+                                accept={"image/jpg, image/jpeg, image/png"}
                                 onDrop={uploadAvatarFile}
                                 maxSize={20000000000}
                             >
@@ -359,7 +361,7 @@ export const UserEditDrawer = ({
                                     <Input readOnly />
                                     {!signFileName ? (
                                         <Dropzone
-                                            accept={"image/jpeg, image/png"}
+                                            accept={"image/jpg, image/jpeg, image/png"}
                                             onDrop={uploadSignFile}
                                             maxSize={20000000000}
                                         >

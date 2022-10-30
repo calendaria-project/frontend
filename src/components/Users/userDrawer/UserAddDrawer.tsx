@@ -22,6 +22,13 @@ import Dropzone from "react-dropzone";
 const { Option } = Select;
 const { Title } = Typography;
 
+import {
+    mailPattern,
+    phonePattern,
+    mailMessage,
+    phoneMessage
+} from "../userItem/userExtraCard/constants";
+
 const getBase64 = (img: File, callback: (url: string) => void) => {
     const reader = new FileReader();
     reader.addEventListener("load", () => callback(reader.result as string));
@@ -160,7 +167,8 @@ export const UserAddDrawer = ({
             "FILE",
             "file/upload",
             "post",
-            postFormDataHeader(authContext.token)
+            postFormDataHeader(authContext.token),
+            fData
         ).then((res) => {
             form.setFieldValue("profilePhotoId", res.id);
             getBase64(acceptedFiles[0], (url) => {
@@ -177,7 +185,8 @@ export const UserAddDrawer = ({
             "FILE",
             "file/upload",
             "post",
-            postFormDataHeader(authContext.token)
+            postFormDataHeader(authContext.token),
+            fData
         ).then((res) => {
             form.setFieldValue("signFileId", res.id);
             setSignFileName(acceptedFiles[0].name);
@@ -231,7 +240,7 @@ export const UserAddDrawer = ({
                                 uploadButton
                             )}
                             <Dropzone
-                                accept={"image/jpeg, image/png"}
+                                accept={"image/jpg, image/jpeg, image/png"}
                                 onDrop={uploadAvatarFile}
                                 maxSize={20000000000}
                             >
@@ -291,14 +300,21 @@ export const UserAddDrawer = ({
                                 </Form.Item>
                             </Col>
                             <Col span={24}>
-                                <Form.Item name="personalContact.email" label="Почта">
+                                <Form.Item
+                                    rules={[{ pattern: mailPattern, message: mailMessage }]}
+                                    name="personalContact.email"
+                                    label="Почта"
+                                >
                                     <Input />
                                 </Form.Item>
                             </Col>
                             <Col span={24}>
                                 <Form.Item
                                     name="personalContact.mobilePhoneNumber"
-                                    rules={[{ required: true, message: "Номер" }]}
+                                    rules={[
+                                        { required: true, message: "Номер" },
+                                        { pattern: phonePattern, message: phoneMessage }
+                                    ]}
                                     label="Номер"
                                 >
                                     <Input />
@@ -345,7 +361,7 @@ export const UserAddDrawer = ({
                                     <Input readOnly value={signFileName} />
                                     {!signFileName ? (
                                         <Dropzone
-                                            accept={"image/jpeg, image/png"}
+                                            accept={"image/jpg, image/jpeg, image/png"}
                                             onDrop={uploadSignFile}
                                             maxSize={20000000000}
                                         >
