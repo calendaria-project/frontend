@@ -22,6 +22,8 @@ import Dropzone from "react-dropzone";
 const { Option } = Select;
 const { Title } = Typography;
 
+import "./styles.scss";
+
 import {
     mailPattern,
     phonePattern,
@@ -56,8 +58,8 @@ export const UserAddDrawer = ({
     const [positions, setPositions] = useState<IPositionDtoModel[]>([]);
     const [sexes, setSexes] = useState<ISimpleDictionaryModel[]>([]);
     const [loading, setLoading] = useState(false);
-    const [avatarUrl, setAvatarUrl] = useState<string>();
-    const [signFileName, setSignFileName] = useState<string>();
+    const [avatarUrl, setAvatarUrl] = useState<string | null>();
+    const [signFileName, setSignFileName] = useState<string | null>();
 
     useEffect(() => {
         getPositionOptions();
@@ -97,10 +99,6 @@ export const UserAddDrawer = ({
         ).then(setSexes);
     };
 
-    const showDrawer = () => {
-        setOpen(true);
-    };
-
     const onClose = () => {
         setOpen(false);
     };
@@ -111,26 +109,26 @@ export const UserAddDrawer = ({
         </div>
     );
 
-    const onFinish = (values: any) => {
-        console.log({ values });
-    };
-
     const parsePointObjectKey = (data: any) => {
         let parsedData: any = {};
         for (let key in data) {
-            if (key.includes(".")) {
-                let arrData = key.split(".");
-                parsedData[arrData[0]] = {
-                    ...(parsedData[arrData[0]] ? parsedData[arrData[0]] : {}),
-                    [arrData[1]]: data[key]
-                };
-            } else if (key.includes("Date")) {
-                parsedData[key] = data[key].format("YYYY-MM-DD");
-            } else {
-                parsedData[key] = data[key];
+            if (data.hasOwnProperty(key)) {
+                if (key.includes(".")) {
+                    let arrData = key.split(".");
+                    parsedData[arrData[0]] = {
+                        ...(parsedData[arrData[0]] ? parsedData[arrData[0]] : {}),
+                        [arrData[1]]: data[key]
+                    };
+                } else if (key.includes("Date")) {
+                    parsedData[key] = data[key].format("YYYY-MM-DD");
+                } else {
+                    parsedData[key] = data[key];
+                }
             }
         }
         parsedData.company = { companyId };
+        parsedData.signFileId = form.getFieldValue("signFileId");
+        parsedData.profilePhotoId = form.getFieldValue("profilePhotoId");
         return parsedData;
     };
 
@@ -194,12 +192,12 @@ export const UserAddDrawer = ({
     };
 
     const deleteAvatar = () => {
-        setAvatarUrl(undefined);
+        setAvatarUrl(null);
         form.setFieldValue("profilePhotoId", undefined);
     };
 
     const deleteSignFile = () => {
-        setSignFileName(undefined);
+        setSignFileName(null);
         form.setFieldValue("signFileId", undefined);
     };
 
@@ -220,7 +218,7 @@ export const UserAddDrawer = ({
                 </Space>
             }
         >
-            <Form form={form} onFinish={onFinish} layout="vertical" className="addUserFormWrap">
+            <Form form={form} layout="vertical" className="addUserFormWrap">
                 <Row gutter={24} className="infoTitleRow">
                     <Col>
                         <Space>
@@ -358,7 +356,11 @@ export const UserAddDrawer = ({
                                     label="Подпись"
                                     shouldUpdate={() => signFileName !== undefined}
                                 >
-                                    <Input readOnly value={signFileName} />
+                                    <Input
+                                        className={"sign-upload-input"}
+                                        readOnly
+                                        value={signFileName ? signFileName : undefined}
+                                    />
                                     {!signFileName ? (
                                         <Dropzone
                                             accept={"image/jpg, image/jpeg, image/png"}

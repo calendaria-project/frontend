@@ -122,8 +122,7 @@ const Users: FC = () => {
                 currentUserPhotoId = await actionMethodResultSync(
                     "FILE",
                     `file/download/${profilePhotoId}`,
-                    "get",
-                    getRequestHeader(authContext.token)
+                    "get"
                 )
                     .then((res) => res)
                     .catch(() => undefined);

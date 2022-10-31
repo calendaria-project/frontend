@@ -20,13 +20,16 @@ const UserItem: FC = () => {
     const { usersId } = useParams();
 
     const [currentUserData, setCurrentUserData] = useState<any>({});
-    const [currentUserSign, setCurrentUserSign] = useState<string>("");
-    const [currentUserPhoto, setCurrentUserPhoto] = useState<string>("");
+    const [currentUserSign, setCurrentUserSign] = useState<string | null>(null);
+    const [currentUserPhoto, setCurrentUserPhoto] = useState<string | null>(null);
 
     const [isVisibleEditUserDrawer, setIsVisibleEditUserDrawer] = useState(false);
     const onShowDrawer = useCallback(() => setIsVisibleEditUserDrawer(true), []);
     const onFinishEditingUser = useCallback(
-        (data: any) => setCurrentUserData(data),
+        (data: any) => {
+            console.log("DATA:", data);
+            setCurrentUserData(data);
+        },
         [currentUserData]
     );
 
@@ -44,25 +47,19 @@ const UserItem: FC = () => {
     useEffect(() => {
         const fileId = currentUserData?.signFileId;
         if (fileId) {
-            actionMethodResultSync(
-                "FILE",
-                `file/download/${fileId}`,
-                "get",
-                getRequestHeader(authContext.token)
-            ).then((res) => {
+            actionMethodResultSync("FILE", `file/download/${fileId}`, "get").then((res) => {
                 setCurrentUserSign(res);
             });
+        } else {
+            setCurrentUserSign(null);
         }
         const photoId = currentUserData?.profilePhotoId;
         if (photoId) {
-            actionMethodResultSync(
-                "FILE",
-                `file/download/${photoId}`,
-                "get",
-                getRequestHeader(authContext.token)
-            ).then((res) => {
+            actionMethodResultSync("FILE", `file/download/${photoId}`, "get").then((res) => {
                 setCurrentUserPhoto(res);
             });
+        } else {
+            setCurrentUserPhoto(null);
         }
     }, [currentUserData]);
 
@@ -85,6 +82,9 @@ const UserItem: FC = () => {
                 return {};
             });
     }, [usersId]);
+
+    console.log(currentUserSign);
+    console.log(currentUserPhoto);
 
     return (
         <Row className="container" gutter={[16, 16]}>

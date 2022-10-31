@@ -24,6 +24,8 @@ const { Option } = Select;
 const { Title } = Typography;
 import _ from "lodash";
 
+import "./styles.scss";
+
 const getBase64 = (img: File, callback: (url: string) => void) => {
     const reader = new FileReader();
     reader.addEventListener("load", () => callback(reader.result as string));
@@ -31,8 +33,8 @@ const getBase64 = (img: File, callback: (url: string) => void) => {
 };
 
 export interface IUserEditDrawer {
-    userPhoto: any;
-    userSign: any;
+    userPhoto: string | null;
+    userSign: string | null;
     userData: any;
     companyId: string | undefined;
     companyName: string | undefined;
@@ -57,13 +59,21 @@ export const UserEditDrawer = ({
     const [positions, setPositions] = useState<IPositionDtoModel[]>([]);
     const [sexes, setSexes] = useState<ISimpleDictionaryModel[]>([]);
     const [loading, setLoading] = useState(false);
-    const [avatarUrl, setAvatarUrl] = useState<string | undefined>(userPhoto);
-    const [signFileName, setSignFileName] = useState<string | undefined>(userSign);
+    const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+    const [signFileName, setSignFileName] = useState<string | null>(null);
 
     useEffect(() => {
         getPositionOptions();
         getSexOptions();
     }, []);
+
+    useEffect(() => {
+        setAvatarUrl(userPhoto);
+    }, [userPhoto]);
+
+    useEffect(() => {
+        setSignFileName(userSign);
+    }, [userSign]);
 
     useEffect(() => {
         form.setFieldsValue({
@@ -76,8 +86,8 @@ export const UserEditDrawer = ({
             employmentDate: moment(userData?.employmentDate, "YYYY-MM-DD"),
             "division.divisionId": userData?.division?.divisionId,
             "position.positionId": userData?.position?.positionId,
-            profilePhotoId: userPhoto,
-            signFileId: userSign
+            profilePhotoId: userData?.profilePhotoId,
+            signFileId: userData?.signFileId
         });
     }, [userData]);
 
@@ -114,10 +124,6 @@ export const UserEditDrawer = ({
         ).then(setSexes);
     };
 
-    const showDrawer = () => {
-        setOpen(true);
-    };
-
     const onClose = () => {
         setOpen(false);
     };
@@ -128,26 +134,28 @@ export const UserEditDrawer = ({
         </div>
     );
 
-    const onFinish = (values: any) => {
-        console.log({ values });
-    };
-
     const parsePointObjectKey = (data: any) => {
+        console.log("parsePointObjectKey", data);
         let parsedData: any = {};
         for (let key in data) {
-            if (key.includes(".")) {
-                let arrData = key.split(".");
-                parsedData[arrData[0]] = {
-                    ...(parsedData[arrData[0]] ? parsedData[arrData[0]] : {}),
-                    [arrData[1]]: data[key]
-                };
-            } else if (key.includes("Date")) {
-                parsedData[key] = data[key].format("YYYY-MM-DD");
-            } else {
-                parsedData[key] = data[key];
+            if (data.hasOwnProperty(key)) {
+                if (key.includes(".")) {
+                    let arrData = key.split(".");
+                    parsedData[arrData[0]] = {
+                        ...(parsedData[arrData[0]] ? parsedData[arrData[0]] : {}),
+                        [arrData[1]]: data[key]
+                    };
+                } else if (key.includes("Date")) {
+                    parsedData[key] = data[key].format("YYYY-MM-DD");
+                } else {
+                    parsedData[key] = data[key];
+                }
             }
         }
         parsedData.company = { companyId };
+
+        parsedData.signFileId = form.getFieldValue("signFileId");
+        parsedData.profilePhotoId = form.getFieldValue("profilePhotoId");
         return parsedData;
     };
 
@@ -160,6 +168,7 @@ export const UserEditDrawer = ({
     };
 
     const editUser = (data: any) => {
+        console.log(data);
         actionMethodResultSync(
             "USER",
             "user",
@@ -212,13 +221,13 @@ export const UserEditDrawer = ({
     };
 
     const deleteAvatar = () => {
-        setAvatarUrl(undefined);
-        form.setFieldValue("profilePhotoId", undefined);
+        setAvatarUrl(null);
+        form.setFieldValue("profilePhotoId", null);
     };
 
     const deleteSignFile = () => {
-        setSignFileName(undefined);
-        form.setFieldValue("signFileId", undefined);
+        setSignFileName(null);
+        form.setFieldValue("signFileId", null);
     };
 
     return (
@@ -238,7 +247,7 @@ export const UserEditDrawer = ({
                 </Space>
             }
         >
-            <Form form={form} onFinish={onFinish} layout="vertical" className="addUserFormWrap">
+            <Form form={form} layout="vertical" className="addUserFormWrap">
                 <Row gutter={24} className="infoTitleRow">
                     <Col>
                         <Space>
@@ -358,7 +367,11 @@ export const UserEditDrawer = ({
                                     label="Подпись"
                                     shouldUpdate={() => signFileName !== undefined}
                                 >
-                                    <Input readOnly />
+                                    <Input
+                                        className={"sign-upload-input"}
+                                        readOnly
+                                        value={signFileName ? signFileName : undefined}
+                                    />
                                     {!signFileName ? (
                                         <Dropzone
                                             accept={"image/jpg, image/jpeg, image/png"}
