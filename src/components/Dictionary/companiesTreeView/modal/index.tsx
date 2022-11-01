@@ -1,6 +1,6 @@
 import React from "react";
-import { Modal, Form, Input, Checkbox, Button, Row, Col, Select } from "antd";
-import { ICompanyCreateViewModel, ICompanyViewModel, IFormItem } from "interfaces";
+import { Modal, Form, Input, Button, Row, Col, Select } from "antd";
+import { ICompanyCreateViewModel, ICompanyViewModel } from "interfaces";
 import { FormInstance } from "antd/es/form/Form";
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import FormItemLabel from "antd/es/form/FormItemLabel";
@@ -63,7 +63,7 @@ export const CompanyDirectoryModal = ({
                             label="БИН"
                             rules={[
                                 { required: true },
-                                { pattern: /.{12}/, message: "Необходимо 12 символов" }
+                                { pattern: new RegExp(/^\d{12}$/), message: "Введите 12 цифр" }
                             ]}
                         >
                             <Input type="number" />

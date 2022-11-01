@@ -16,6 +16,7 @@ import {
 import { createTableViaTabulator } from "services/tabulator";
 import { DivisionDirectoryModal } from "./modal";
 import "./styles.scss";
+import { removeEmptyValuesFromAnyLevelObject } from "../../../utils/removeObjectProperties";
 
 const { Option } = Select;
 
@@ -86,23 +87,18 @@ export const DivisionTreeView: React.FC = () => {
         );
     };
 
-    const hanldeAddDivision = async (data: IDivisionCreateViewModel) => {
+    const hanldeAddDivision = (data: IDivisionCreateViewModel) => {
         if (selectedDivisionRow) {
             data.parentId = selectedDivisionRow?.getData().divisionId;
         }
-        const newChild = await createDivision(data);
-        if (selectedDivisionRow) {
-            selectedDivisionRow?.addTreeChild(newChild);
-        } else {
-            table?.addData(newChild);
-        }
+        createDivision(removeEmptyValuesFromAnyLevelObject(data));
         setSelectedDivisionRow(undefined);
         setIsModalVisible(false);
         form.resetFields();
     };
 
     const hanldeUpdateDivision = async (data: any) => {
-        const division = await updateDivisionById(data);
+        const division = await updateDivisionById(removeEmptyValuesFromAnyLevelObject(data));
         selectedDivisionRow?.update({
             ...division,
             _children: selectedDivisionRow.getData()._children
@@ -125,9 +121,14 @@ export const DivisionTreeView: React.FC = () => {
     };
 
     const updateDivisionById = (data: IDivisionViewModel) => {
-        let url = `${process.env.DICTIONARY_URL}division`;
         data.companyId = selectedCompanyId || 0;
-        return actionMethodResultSync("DICTIONARY", url, "put", getRequestHeader(authContext.token), data)
+        return actionMethodResultSync(
+            "DICTIONARY",
+            "division",
+            "put",
+            getRequestHeader(authContext.token),
+            data
+        )
             .then((data) => {
                 message.success("Успешно обновлено");
                 return data;
@@ -139,12 +140,21 @@ export const DivisionTreeView: React.FC = () => {
     };
 
     const createDivision = (data: IDivisionCreateViewModel) => {
-        let url = `${process.env.DICTIONARY_URL}division`;
         data.companyId = selectedCompanyId || 0;
-        return actionMethodResultSync("DICTIONARY", url, "post", getRequestHeader(authContext.token), data)
+        actionMethodResultSync(
+            "DICTIONARY",
+            "division",
+            "post",
+            getRequestHeader(authContext.token),
+            data
+        )
             .then((data) => {
                 message.success("Успешно создано");
-                return data;
+                if (selectedDivisionRow) {
+                    selectedDivisionRow?.addTreeChild(data);
+                } else {
+                    table?.addData(data);
+                }
             })
             .catch((err) => {
                 console.log(err);
@@ -166,7 +176,6 @@ export const DivisionTreeView: React.FC = () => {
     };
 
     const onEdit = async (row: any) => {
-        console.log("edit");
         const division = row.getData();
         const data = await getDivisionById(division.divisionId);
         editForm.setFieldsValue(data);
