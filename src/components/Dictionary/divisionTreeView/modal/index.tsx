@@ -1,6 +1,7 @@
 import { Modal, Form, Input, Button, Row, Col } from "antd";
 import { IDivisionCreateViewModel, IDivisionViewModel } from "interfaces";
 import { FormInstance } from "antd/es/form/Form";
+import { validateMessages } from "data/validateMessages";
 
 export interface IDivisionDirectoryModal {
     okText: string;
@@ -10,10 +11,6 @@ export interface IDivisionDirectoryModal {
     isVisible: boolean;
     form: FormInstance<IDivisionCreateViewModel | IDivisionViewModel>;
 }
-
-const validateMessages = {
-    required: "Обязательное поле!"
-};
 
 export const DivisionDirectoryModal = ({
     title,
