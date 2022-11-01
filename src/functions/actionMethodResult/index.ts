@@ -76,7 +76,7 @@ export const actionMethodResultSync = async (
     /**
      * axios config
      */
-    config: AxiosRequestConfig,
+    config?: AxiosRequestConfig,
     /**
      * axios data (post, patch, put, delete)
      */

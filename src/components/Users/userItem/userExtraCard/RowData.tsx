@@ -24,7 +24,7 @@ import { actionMethodResultSync } from "functions/actionMethodResult";
 import getUserRequestUrl from "functions/getUserRequestUrl";
 import { getRequestHeader } from "functions/common";
 import { SetCurrentUserDataItemInfo } from "store/actions";
-import { removeEmptyObjectProperties } from "utils/removeEmptyObjectProperties";
+import { removeObjectProperties } from "utils/removeObjectProperties";
 import { AuthContext } from "context/AuthContextProvider";
 import { useDispatch } from "react-redux";
 
@@ -116,7 +116,7 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                     });
             };
 
-            const data = removeEmptyObjectProperties(
+            const data = removeObjectProperties(
                 _.merge(currentUserDataItemInfo[currentItemIndex], record)
             );
             sendRequest(data);

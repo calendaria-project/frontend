@@ -20,13 +20,15 @@ const UserItem: FC = () => {
     const { usersId } = useParams();
 
     const [currentUserData, setCurrentUserData] = useState<any>({});
-    const [currentUserSign, setCurrentUserSign] = useState<string>("");
-    const [currentUserPhoto, setCurrentUserPhoto] = useState<string>("");
+    const [currentUserSign, setCurrentUserSign] = useState<string | null>(null);
+    const [currentUserPhoto, setCurrentUserPhoto] = useState<string | null>(null);
 
     const [isVisibleEditUserDrawer, setIsVisibleEditUserDrawer] = useState(false);
     const onShowDrawer = useCallback(() => setIsVisibleEditUserDrawer(true), []);
     const onFinishEditingUser = useCallback(
-        (data: any) => setCurrentUserData(data),
+        (data: any) => {
+            setCurrentUserData(data);
+        },
         [currentUserData]
     );
 
@@ -44,25 +46,19 @@ const UserItem: FC = () => {
     useEffect(() => {
         const fileId = currentUserData?.signFileId;
         if (fileId) {
-            actionMethodResultSync(
-                "FILE",
-                `file/download/${fileId}`,
-                "get",
-                getRequestHeader(authContext.token)
-            ).then((res) => {
+            actionMethodResultSync("FILE", `file/download/${fileId}`, "get").then((res) => {
                 setCurrentUserSign(res);
             });
+        } else {
+            setCurrentUserSign(null);
         }
         const photoId = currentUserData?.profilePhotoId;
         if (photoId) {
-            actionMethodResultSync(
-                "FILE",
-                `file/download/${photoId}`,
-                "get",
-                getRequestHeader(authContext.token)
-            ).then((res) => {
+            actionMethodResultSync("FILE", `file/download/${photoId}`, "get").then((res) => {
                 setCurrentUserPhoto(res);
             });
+        } else {
+            setCurrentUserPhoto(null);
         }
     }, [currentUserData]);
 
@@ -87,25 +83,45 @@ const UserItem: FC = () => {
     }, [usersId]);
 
     return (
-        <Row className="container" gutter={[16, 16]}>
-            <Row style={{ marginRight: 0, marginLeft: 0, width: "100%" }} gutter={[16, 16]}>
+        <Row
+            className="container"
+            style={{ padding: "20px", marginRight: 0, marginLeft: 0, width: "100%" }}
+            gutter={[16, 16]}
+        >
+            <Row
+                style={{ padding: "0", marginRight: 0, marginLeft: 0, width: "100%" }}
+                gutter={[16, 0]}
+            >
                 <Col className="container-backText" onClick={handleBackClick}>
                     <LeftOutlined /> Вернуться назад
                 </Col>
             </Row>
-            <Row className="row-wrapper user-item-line-row" align={"middle"} gutter={[32, 16]}>
-                <Col>
+            <Row
+                style={{
+                    marginRight: "8px",
+                    marginLeft: "8px",
+                    width: "100%",
+                    borderBottom: "1px solid #C2C2C2"
+                }}
+                align={"middle"}
+                gutter={[16, 16]}
+            >
+                <Col style={{ padding: "0 8px 0 0" }}>
                     <Header size="h2">{currentUserData?.company?.nameRu}</Header>
                 </Col>
                 <Col>Подразделение: {currentUserData?.division?.nameRu}</Col>
                 <Col>Должность: {currentUserData?.position?.nameRu}</Col>
-                <Col className="col-end-wrapper">
+                <Col style={{ padding: 0 }} className="col-end-wrapper">
                     <Button onClick={handleDeleteBtnClick} className="delete-btn">
                         Удалить сотрудника
                     </Button>
                 </Col>
             </Row>
-            <Row className="row-wrapper" gutter={[16, 16]}>
+            <Row
+                className="row-wrapper"
+                style={{ marginRight: 0, marginLeft: 0, width: "100%" }}
+                gutter={[16, 16]}
+            >
                 <Col span={8}>
                     <Card
                         className={"userItem__mainCard"}
