@@ -27,7 +27,7 @@ import { AuthContext } from "context/AuthContextProvider";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { getCurrentUserDataItemInfo, getSelectedKey } from "store/reducers/userReducer";
-import { removeEmptyObjectProperties } from "utils/removeEmptyObjectProperties";
+import { removeObjectProperties } from "utils/removeObjectProperties";
 
 import { SetCurrentUserDataItemInfo, SetUserSelectedKey } from "store/actions";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
@@ -178,7 +178,7 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
             };
 
             if (reqMethod === "post") {
-                const data = removeEmptyObjectProperties({ ...record, userId: usersId });
+                const data = removeObjectProperties({ ...record, userId: usersId });
                 sendRequest(data);
             } else {
                 const data = _.merge(currentUserDataItemInfo, record);
@@ -228,7 +228,7 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                     });
             };
 
-            const data = removeEmptyObjectProperties({ ...record, userId: usersId });
+            const data = removeObjectProperties({ ...record, userId: usersId });
             sendRequest(data);
 
             setAdditionalModalVisibleFlag(false);
