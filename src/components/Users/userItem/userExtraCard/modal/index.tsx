@@ -5,7 +5,7 @@ import Input from "./Input";
 import React, { FC, memo, useCallback } from "react";
 
 import { validateMessages } from "data/validateMessages";
-import { SelectedKeyTypes, Types, TInputData } from "../constants";
+import { Types, TInputData, arrayKeyTypes } from "../constants";
 
 import "../styles.scss";
 import { useTypedSelector } from "hooks/useTypedSelector";
@@ -90,11 +90,7 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                 form={form}
             >
                 <Row gutter={16}>
-                    {selectedKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE ||
-                    selectedKey === SelectedKeyTypes.EDUCATION ||
-                    selectedKey === SelectedKeyTypes.INVENTORY ||
-                    selectedKey === SelectedKeyTypes.DOCUMENT ||
-                    selectedKey === SelectedKeyTypes.CONTRACT
+                    {arrayKeyTypes.includes(selectedKey)
                         ? (modalCurrentDataItemInfo || []).map(
                               (dataItemInfo: any, index: number) => (
                                   <Col xl={24} xs={24} key={index}>

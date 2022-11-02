@@ -10,6 +10,7 @@ import { IssueAuthorityTable } from "./issueAuthorityTable";
 import { LanguageKnowledgeTable } from "./languageKnowledgeTable";
 import { LanguageTable } from "./languageTable";
 import { SpecialtyTable } from "./specialtyTable";
+import { AddressTypeTable } from "./addressTypeTable";
 
 export const Tables = {
     carTable: <CarTable />,
@@ -23,5 +24,6 @@ export const Tables = {
     issueAuthorityTable: <IssueAuthorityTable />,
     languageKnowledgeTable: <LanguageKnowledgeTable />,
     languageTable: <LanguageTable />,
-    specialtyTable: <SpecialtyTable />
+    specialtyTable: <SpecialtyTable />,
+    addressTypeTable: <AddressTypeTable />
 };

@@ -6,6 +6,7 @@ export enum StaffingNodeTypesEnum {
 }
 
 export enum dictionaryCodesEnum {
+    ADDRESS_TYPE = "ADDRESS_TYPE",
     SEX = "SEX",
     CAR_MODEL = "CAR_MODEL",
     CITY = "CITY",

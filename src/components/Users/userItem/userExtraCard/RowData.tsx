@@ -10,6 +10,7 @@ import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { getCurrentUserDataItemInfo, getSelectedKey } from "store/reducers/userReducer";
 import {
+    IUsersAddressInfoModel,
     IUsersContractModel,
     IUsersDocumentModel,
     IUsersEducationModel,
@@ -226,6 +227,17 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                                   index={index}
                                   title={dataInfo.language?.nameRu}
                                   additionalInfo={dataInfo.knowledgeLevel?.nameRu}
+                              />
+                          )
+                      )
+                    : currentSelectedKey === SelectedKeyTypes.ADDRESS_INFO
+                    ? (currentUserDataItemInfo || []).map(
+                          (dataInfo: IUsersAddressInfoModel, index: number) => (
+                              <ListItem
+                                  index={index}
+                                  title={dataInfo.addressType?.nameRu}
+                                  additionalInfo={dataInfo.city?.nameRu}
+                                  extraAdditionalInfo={dataInfo.street}
                               />
                           )
                       )

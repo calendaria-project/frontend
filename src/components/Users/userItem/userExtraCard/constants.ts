@@ -23,6 +23,22 @@ export enum SelectedKeyTypes {
     LANGUAGE_KNOWLEDGE = "languageKnowledge"
 }
 
+export const arrayKeyTypes: Array<string> = [
+    SelectedKeyTypes.EDUCATION,
+    SelectedKeyTypes.LANGUAGE_KNOWLEDGE,
+    SelectedKeyTypes.CONTRACT,
+    SelectedKeyTypes.INVENTORY,
+    SelectedKeyTypes.DOCUMENT,
+    SelectedKeyTypes.ADDRESS_INFO
+];
+
+export const additionalMenuTypes: Array<string> = [
+    SelectedKeyTypes.SHARED_INFO,
+    SelectedKeyTypes.ADDITIONAL_INFO,
+    SelectedKeyTypes.LANGUAGE_KNOWLEDGE,
+    SelectedKeyTypes.EDUCATION
+];
+
 export type TInputData = {
     type: string;
     propertyName: string;
@@ -155,6 +171,13 @@ export const inputData: InputDataRecord = {
         }
     ],
     [SelectedKeyTypes.ADDRESS_INFO]: [
+        {
+            type: Types.SELECT,
+            propertyName: "addressType",
+            dictionaryCode: dictionaryCodesEnum.ADDRESS_TYPE,
+            placeholder: "Тип адреса",
+            required: true
+        },
         {
             type: Types.SELECT,
             propertyName: "city",

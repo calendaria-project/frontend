@@ -88,6 +88,11 @@ const Dictionary = () => {
             label: "Специальность",
             key: "14",
             children: Tables.specialtyTable
+        },
+        {
+            label: "Адрес",
+            key: "15",
+            children: Tables.addressTypeTable
         }
     ];
 

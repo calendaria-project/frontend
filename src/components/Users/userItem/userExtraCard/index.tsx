@@ -1,7 +1,13 @@
 import { Card, Col, Form, Menu, MenuProps, message, Row } from "antd";
 import React, { FC, memo, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import _ from "lodash";
-import { SelectedKeyTypes, TInputData, inputData } from "./constants";
+import {
+    SelectedKeyTypes,
+    TInputData,
+    inputData,
+    arrayKeyTypes,
+    additionalMenuTypes
+} from "./constants";
 import {
     CarOutlined,
     CodeSandboxOutlined,
@@ -49,23 +55,11 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
 
     const userMenuDataExists: boolean = isObjectNotEmpty(currentUserDataItemInfo);
     const additionalMenuExists: boolean = useMemo(
-        () =>
-            selectedKey === SelectedKeyTypes.SHARED_INFO ||
-            selectedKey === SelectedKeyTypes.ADDITIONAL_INFO ||
-            selectedKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE ||
-            selectedKey === SelectedKeyTypes.EDUCATION,
+        () => additionalMenuTypes.includes(selectedKey),
         [selectedKey]
     );
 
-    const arrayTypesFlag = useMemo(
-        () =>
-            selectedKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE ||
-            selectedKey === SelectedKeyTypes.EDUCATION ||
-            selectedKey === SelectedKeyTypes.CONTRACT ||
-            selectedKey === SelectedKeyTypes.DOCUMENT ||
-            selectedKey === SelectedKeyTypes.INVENTORY,
-        [selectedKey]
-    );
+    const arrayTypesFlag = useMemo(() => arrayKeyTypes.includes(selectedKey), [selectedKey]);
 
     const modalTitle = useMemo(
         () =>
@@ -136,12 +130,7 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
         return (
             <>
                 {Icon ? Icon : <></>}
-                {selectedKey === currentKey &&
-                (currentKey === SelectedKeyTypes.EDUCATION ||
-                    currentKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE ||
-                    currentKey === SelectedKeyTypes.CONTRACT ||
-                    currentKey === SelectedKeyTypes.INVENTORY ||
-                    currentKey === SelectedKeyTypes.DOCUMENT) ? (
+                {selectedKey === currentKey && arrayKeyTypes.includes(currentKey) ? (
                     <PlusOutlined onClick={handleAdditionalIconClick} className="icon" />
                 ) : (
                     selectedKey === currentKey &&
