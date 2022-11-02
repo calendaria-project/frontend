@@ -1,6 +1,6 @@
 import Tabulator, { ColumnDefinition } from "tabulator-tables";
 import "tabulator-tables/dist/css/semantic-ui/tabulator_semantic-ui.css"; // theme
-import "../assets/styles/tabulator.scss";
+// import "../assets/styles/tabulator.scss";
 
 export function createTableViaTabulator(
     tagId: string,
