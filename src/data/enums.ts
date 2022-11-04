@@ -1,3 +1,5 @@
+import { IdcardOutlined, OrderedListOutlined, ScheduleOutlined } from "@ant-design/icons";
+
 export enum StaffingNodeTypesEnum {
     COMPANY = "COMPANY",
     DIVISION = "DIVISION",
@@ -19,4 +21,11 @@ export enum dictionaryCodesEnum {
     EDUCATION_LEVEL = "EDUCATION_LEVEL",
     EDUCATION_INSTITUTION = "EDUCATION_INSTITUTION",
     SPECIALTY = "SPECIALTY"
+}
+
+export enum mainMenuEnum {
+    mainMenu = "mainMenu",
+    dictionary = "dictionary",
+    staffing = "staffing",
+    users = "users"
 }

@@ -1,45 +1,58 @@
-const sharedTheme = {
+import { ITheme } from "./interface";
+
+const sharedTheme: ITheme = {
     color: {
         primary: "#FFFFFF",
         secondary: "#2C2C2C",
-        black: "#000000",
+        boldText: "#000000",
         mainText: "#333333",
         extraText: "#828282",
-        canceling: "#EB5757",
+        regular: "#016FC0",
+        removing: "#EB5757",
         successful: "#27AE60",
+        arrow: "#000000",
         lines: "#C2C2C2"
     },
     background: {
-        light: "#FFFFFF",
-        dark: "#2C2C2C"
+        primary: "#FFFFFF",
+        secondary: "#2C2C2C",
+        regular: "#016FC0"
     },
+    border: "1px solid",
+    borderRadius: "6px",
     fontWeight: {
+        btn: 400,
         primary: 500,
         bold: 600
     },
     selection: {
         background: {
-            dark: "#2C2C2C",
-            light: "#F0F0F0"
+            primary: "#2C2C2C",
+            secondary: "#F0F0F0"
         }
     },
-    fill: {
-        light: "#FFFFFF",
-        dark: "#2C2C2C",
-        transparency: "#C2C2C2"
+    image: {
+        fontSize: "20px",
+        color: {
+            primary: "#FFFFFF",
+            secondary: "#2C2C2C",
+            regular: "#016FC0",
+            transparency: "#C2C2C2"
+        }
     },
     button: {
         colors: {
-            light: "#FFFFFF",
-            dark: "#2C2C2C"
+            primary: "#FFFFFF",
+            secondary: "#2C2C2C",
+            regular: "#016FC0"
         },
         border: {
-            dark: "#2C2C2C",
-            light: "#C2C2C2"
+            primary: "#2C2C2C",
+            secondary: "#C2C2C2"
         },
         background: {
-            light: "#FFFFFF",
-            dark: "#2C2C2C"
+            primary: "#FFFFFF",
+            secondary: "#2C2C2C"
         }
     },
     table: {
@@ -52,6 +65,13 @@ const sharedTheme = {
     },
     notifications: {
         color: "#000000"
+    },
+    layout: {
+        header: {
+            height: "64px"
+        },
+        padding: "20px",
+        margin: "12px"
     }
 };
 export default sharedTheme;

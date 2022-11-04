@@ -22,15 +22,8 @@ export default createUseStyles({
             fontSize: "16px !important",
             borderRadius: "6px !important"
         },
-        //перенести
         "#root": {
             overflowX: "auto"
-        },
-        "#tree-list-demo": {
-            minHeight: "700px"
-        },
-        "#employees": {
-            maxHeight: "700px"
         }
     }
 });

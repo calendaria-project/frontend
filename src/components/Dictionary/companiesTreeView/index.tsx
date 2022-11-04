@@ -1,5 +1,5 @@
-import { Form, message } from "antd";
-import React, { useContext, useEffect, useState } from "react";
+import { Button, Col, Form, Input, message } from "antd";
+import React, { FC, useContext, useEffect, useState } from "react";
 import { ColumnDefinition } from "tabulator-tables";
 
 import { AuthContext } from "context/AuthContextProvider";
@@ -11,10 +11,13 @@ import { createTableViaTabulator } from "services/tabulator";
 import { CompanyDirectoryModal } from "./modal";
 import "./styles.scss";
 import { DataNode } from "antd/es/tree";
+import { ITable } from "../Tables/ITable";
+import { SearchOutlined } from "@ant-design/icons";
+import SelectTable from "../Tables/SelectTable";
 
 export type DataNodeItem = DataNode & ICompanyTreeNodeModel & { children: DataNodeItem[] };
 
-export const CompanyTreeView: React.FC = ({}) => {
+export const CompanyTreeView: FC<ITable> = ({ selectionItems, onSetTabActiveKey }) => {
     const authContext = useContext(AuthContext);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
@@ -91,7 +94,13 @@ export const CompanyTreeView: React.FC = ({}) => {
 
     const updateCompanyById = (data: ICompanyViewModel) => {
         let url = `company`;
-        return actionMethodResultSync("DICTIONARY", url, "put", getRequestHeader(authContext.token), data)
+        return actionMethodResultSync(
+            "DICTIONARY",
+            url,
+            "put",
+            getRequestHeader(authContext.token),
+            data
+        )
             .then((data) => {
                 message.success("Успешно обновлено");
                 return data;
@@ -104,7 +113,13 @@ export const CompanyTreeView: React.FC = ({}) => {
 
     const createCompany = (data: ICompanyCreateViewModel) => {
         let url = `company`;
-        return actionMethodResultSync("DICTIONARY", url, "post", getRequestHeader(authContext.token), data)
+        return actionMethodResultSync(
+            "DICTIONARY",
+            url,
+            "post",
+            getRequestHeader(authContext.token),
+            data
+        )
             .then((data) => {
                 message.success("Успешно создано");
                 return data;
@@ -159,6 +174,20 @@ export const CompanyTreeView: React.FC = ({}) => {
                 setIsVisible={setIsEditModalVisible}
                 form={editForm}
             />
+            <Col>
+                <Input
+                    style={{ width: 200, borderRadius: "6px" }}
+                    // onChange={handleFiltrationChange}
+                    placeholder="Поиск"
+                    suffix={<SearchOutlined style={{ color: "#828282" }} />}
+                />
+            </Col>
+            <Col>
+                <SelectTable
+                    selectionItems={selectionItems}
+                    onSetTabActiveKey={onSetTabActiveKey}
+                />
+            </Col>
             <div id="companiesTable" />
         </>
     );

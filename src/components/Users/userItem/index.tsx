@@ -11,6 +11,7 @@ import { getRequestHeader } from "functions/common";
 import Header from "ui/Header";
 import UserExtraCard from "./userExtraCard";
 import { UserEditDrawer } from "../userDrawer/UserEditDrawer";
+import Spinner from "../../../ui/Spinner";
 
 const { Title, Text } = Typography;
 
@@ -22,6 +23,9 @@ const UserItem: FC = () => {
     const [currentUserData, setCurrentUserData] = useState<any>({});
     const [currentUserSign, setCurrentUserSign] = useState<string | null>(null);
     const [currentUserPhoto, setCurrentUserPhoto] = useState<string | null>(null);
+
+    const [photoLoading, setPhotoLoading] = useState<boolean>(false);
+    const [signLoading, setSignLoading] = useState<boolean>(false);
 
     const [isVisibleEditUserDrawer, setIsVisibleEditUserDrawer] = useState(false);
     const onShowDrawer = useCallback(() => setIsVisibleEditUserDrawer(true), []);
@@ -45,19 +49,26 @@ const UserItem: FC = () => {
 
     useEffect(() => {
         const fileId = currentUserData?.signFileId;
+        setSignLoading(true);
         if (fileId) {
-            actionMethodResultSync("FILE", `file/download/${fileId}`, "get").then((res) => {
+            actionMethodResultSync("FILE", `file/download/${fileId}/base64`, "get").then((res) => {
+                setSignLoading(false);
                 setCurrentUserSign(res);
             });
         } else {
+            setSignLoading(false);
             setCurrentUserSign(null);
         }
+
         const photoId = currentUserData?.profilePhotoId;
+        setPhotoLoading(true);
         if (photoId) {
-            actionMethodResultSync("FILE", `file/download/${photoId}`, "get").then((res) => {
+            actionMethodResultSync("FILE", `file/download/${photoId}/base64`, "get").then((res) => {
+                setPhotoLoading(false);
                 setCurrentUserPhoto(res);
             });
         } else {
+            setPhotoLoading(false);
             setCurrentUserPhoto(null);
         }
     }, [currentUserData]);
@@ -140,10 +151,13 @@ const UserItem: FC = () => {
                             <Row align={"middle"} className="row-wrapper">
                                 <Col span={10}>
                                     <div className="image-wrapper">
-                                        {currentUserPhoto ? (
+                                        {photoLoading ? (
+                                            <Spinner size={20} />
+                                        ) : currentUserPhoto ? (
                                             <Image
                                                 className="user-image"
                                                 width={100}
+                                                height={100}
                                                 src={currentUserPhoto}
                                             />
                                         ) : (
@@ -196,7 +210,11 @@ const UserItem: FC = () => {
                             <Row className="row-wrapper" align="middle">
                                 <Col>Подпись:</Col>
                                 <Col className="col-end-wrapper">
-                                    {currentUserSign && <Image width={40} src={currentUserSign} />}
+                                    {signLoading ? (
+                                        <Spinner size={20} />
+                                    ) : currentUserSign ? (
+                                        <Image width={40} src={currentUserSign} />
+                                    ) : null}
                                 </Col>
                             </Row>
                         </Row>

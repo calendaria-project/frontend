@@ -21,6 +21,11 @@
 }
 
 .image-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 20px;
+  border-radius: 50%;
   & > .anticon svg {
     color: #C2C2C2;
     height: 100px;

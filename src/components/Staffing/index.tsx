@@ -10,6 +10,9 @@ import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { StaffingScheduleModal } from "./modal";
 import "./styles.scss";
+import { SetCurrentOpenedMenu } from "store/actions";
+import { mainMenuEnum } from "data/enums";
+import { useDispatch } from "react-redux";
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     editing: boolean;
@@ -63,6 +66,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
 const { Option } = Select;
 
 const Staffing: FC = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [data, setData] = useState<IStaffingModel[]>([]);
     const authContext = useContext(AuthContext);
@@ -73,6 +77,10 @@ const Staffing: FC = () => {
     const [selectedCompanyId, setSelectedCompanyId] = useState<number | undefined>(
         Number(localStorage.getItem("staffing_company_id"))
     );
+
+    useEffect(() => {
+        dispatch(SetCurrentOpenedMenu(mainMenuEnum.staffing));
+    }, []);
 
     const isEditing = (record: IStaffingModel) => record.staffingId === editingKey;
 
@@ -239,9 +247,6 @@ const Staffing: FC = () => {
 
     return (
         <Row style={{ padding: "20px", marginRight: 0, marginLeft: 0 }} gutter={[16, 16]}>
-            <Col span={24}>
-                <Header size="h2">Штатные расписания</Header>
-            </Col>
             <Col span={24}>
                 <Form form={form} component={false}>
                     <Row align={"middle"} gutter={24}>

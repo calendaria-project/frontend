@@ -21,3 +21,10 @@ export const SetCurrentUserDataItemInfo = (payload: { [selectedKey: string]: any
         payload
     };
 };
+
+export const SetCurrentOpenedMenu = (payload: string): IAction => {
+    return {
+        type: MainActionTypes.SET_CURRENT_OPENED_MENU,
+        payload
+    };
+};

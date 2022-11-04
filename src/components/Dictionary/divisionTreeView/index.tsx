@@ -1,6 +1,6 @@
-import { Button, Form, message, Select } from "antd";
+import { Button, Col, Form, Input, message, Select } from "antd";
 import type { DataNode } from "antd/es/tree";
-import React, { useContext, useEffect, useState } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import { ColumnDefinition } from "tabulator-tables";
 
 import { AuthContext } from "context/AuthContextProvider";
@@ -17,12 +17,15 @@ import { createTableViaTabulator } from "services/tabulator";
 import { DivisionDirectoryModal } from "./modal";
 import "./styles.scss";
 import { removeEmptyValuesFromAnyLevelObject } from "../../../utils/removeObjectProperties";
+import { ITable } from "../Tables/ITable";
+import { SearchOutlined } from "@ant-design/icons";
+import SelectTable from "../Tables/SelectTable";
 
 const { Option } = Select;
 
 export type DataNodeItem = DataNode & IDivisionTreeNodeViewModel & { children: DataNodeItem[] };
 
-export const DivisionTreeView: React.FC = () => {
+export const DivisionTreeView: FC<ITable> = ({ selectionItems, onSetTabActiveKey }) => {
     const authContext = useContext(AuthContext);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
@@ -227,6 +230,20 @@ export const DivisionTreeView: React.FC = () => {
                 setIsVisible={setIsEditModalVisible}
                 form={editForm}
             />
+            <Col>
+                <Input
+                    style={{ width: 200, borderRadius: "6px" }}
+                    // onChange={handleFiltrationChange}
+                    placeholder="Поиск"
+                    suffix={<SearchOutlined style={{ color: "#828282" }} />}
+                />
+            </Col>
+            <Col>
+                <SelectTable
+                    selectionItems={selectionItems}
+                    onSetTabActiveKey={onSetTabActiveKey}
+                />
+            </Col>
             <div id="divisionsTable" />
         </div>
     );

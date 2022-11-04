@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect, useState } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import { Button, Col, Form, Input, Row, Table } from "antd";
 
 import { AuthContext } from "context/AuthContextProvider";
@@ -7,7 +7,9 @@ import { getRequestHeader } from "functions/common";
 import { IPositionViewModel } from "interfaces";
 import { SharedModal } from "../SharedModal";
 import "../styles.scss";
-import { CloseOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
+import { CloseOutlined, EditOutlined, SaveOutlined, SearchOutlined } from "@ant-design/icons";
+import { ITable } from "../ITable";
+import SelectTable from "../SelectTable";
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     editing: boolean;
@@ -52,7 +54,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
     );
 };
 
-const PositionList: FC = () => {
+const PositionList: FC<ITable> = ({ selectionItems, onSetTabActiveKey }) => {
     const [data, setData] = useState<IPositionViewModel[]>([]);
     const authContext = useContext(AuthContext);
     const [form] = Form.useForm();
@@ -194,7 +196,21 @@ const PositionList: FC = () => {
     return (
         <Form form={form} component={false}>
             <Row gutter={24}>
-                <Col span={4}>
+                <Col>
+                    <Input
+                        style={{ width: 200, borderRadius: "6px" }}
+                        // onChange={handleFiltrationChange}
+                        placeholder="Поиск"
+                        suffix={<SearchOutlined style={{ color: "#828282" }} />}
+                    />
+                </Col>
+                <Col>
+                    <SelectTable
+                        selectionItems={selectionItems}
+                        onSetTabActiveKey={onSetTabActiveKey}
+                    />
+                </Col>
+                <Col className={"col-end-wrapper"}>
                     <Button
                         style={{ background: "#1890ff", color: "#fff", marginBottom: 10 }}
                         onClick={() => setIsModalVisible(true)}

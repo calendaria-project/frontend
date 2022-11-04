@@ -1,6 +1,12 @@
-import { FC, useContext, useEffect, useState } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import { Button, Col, Form, Input, Row, Table } from "antd";
-import { SaveOutlined, DeleteOutlined, EditOutlined, CloseOutlined } from "@ant-design/icons";
+import {
+    SaveOutlined,
+    DeleteOutlined,
+    EditOutlined,
+    CloseOutlined,
+    SearchOutlined
+} from "@ant-design/icons";
 
 import { AuthContext } from "context/AuthContextProvider";
 import { actionMethodResultSync } from "functions/actionMethodResult";
@@ -8,6 +14,8 @@ import { getRequestHeader } from "functions/common";
 import { ISimpleDictionaryViewModel } from "interfaces";
 import { SharedModal } from "./SharedModal";
 import "./styles.scss";
+import { ITable } from "./ITable";
+import SelectTable from "./SelectTable";
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     editing: boolean;
@@ -51,9 +59,16 @@ const EditableCell: React.FC<EditableCellProps> = ({
     );
 };
 
-const SharedList: FC<{ dictionaryCode: string; modalTitle: string }> = ({
+interface ISharedList extends ITable {
+    dictionaryCode: string;
+    modalTitle: string;
+}
+
+const SharedList: FC<ISharedList> = ({
     dictionaryCode,
-    modalTitle
+    modalTitle,
+    selectionItems,
+    onSetTabActiveKey
 }) => {
     const [data, setData] = useState<ISimpleDictionaryViewModel[]>([]);
     const authContext = useContext(AuthContext);
@@ -215,7 +230,21 @@ const SharedList: FC<{ dictionaryCode: string; modalTitle: string }> = ({
     return (
         <Form form={form} component={false}>
             <Row gutter={24}>
-                <Col span={4}>
+                <Col>
+                    <Input
+                        style={{ width: 200, borderRadius: "6px" }}
+                        // onChange={handleFiltrationChange}
+                        placeholder="Поиск"
+                        suffix={<SearchOutlined style={{ color: "#828282" }} />}
+                    />
+                </Col>
+                <Col>
+                    <SelectTable
+                        selectionItems={selectionItems}
+                        onSetTabActiveKey={onSetTabActiveKey}
+                    />
+                </Col>
+                <Col className={"col-end-wrapper"}>
                     <Button
                         style={{ background: "#1890ff", color: "#fff", marginBottom: 10 }}
                         onClick={() => setIsModalVisible(true)}

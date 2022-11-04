@@ -1,10 +1,13 @@
 import SharedList from "../SharedList";
 import { dictionaryCodesEnum } from "data/enums";
 import { FC } from "react";
+import { ITable } from "../ITable";
 
-export const EducationTable: FC = () => (
+export const EducationTable: FC<ITable> = ({ selectionItems, onSetTabActiveKey }) => (
     <SharedList
         dictionaryCode={dictionaryCodesEnum.EDUCATION_INSTITUTION}
         modalTitle={"Новое учебное заведение"}
+        selectionItems={selectionItems}
+        onSetTabActiveKey={onSetTabActiveKey}
     />
 );

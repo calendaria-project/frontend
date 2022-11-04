@@ -3,7 +3,6 @@ import React from "react";
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, Col, Input, Row } from "antd";
 import { FC, useContext, useEffect, useState } from "react";
-import Header from "ui/Header";
 import "./styles.scss";
 import { AuthContext } from "context/AuthContextProvider";
 import { usersColumns } from "data/columns";
@@ -15,14 +14,22 @@ import { UserAddDrawer } from "./userDrawer/UserAddDrawer";
 import { ColumnDefinition } from "tabulator-tables";
 
 import questionImage from "assets/icons/question.png";
+import { useDispatch } from "react-redux";
+import { SetCurrentOpenedMenu } from "store/actions";
+import { mainMenuEnum } from "data/enums";
 
 const Users: FC = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const authContext = useContext(AuthContext);
     const [companyId, setCompanyId] = useState<string | undefined>();
     const [companyName, setCompanyName] = useState<string | undefined>();
     const [isVisibleAddUserDrawer, setIsVisibleAddUserDrawer] = useState(false);
     const [table, setTable] = useState<Tabulator | undefined>();
+
+    useEffect(() => {
+        dispatch(SetCurrentOpenedMenu(mainMenuEnum.users));
+    }, []);
 
     useEffect(() => {
         initData();
@@ -121,7 +128,7 @@ const Users: FC = () => {
             if (profilePhotoId) {
                 currentUserPhotoId = await actionMethodResultSync(
                     "FILE",
-                    `file/download/${profilePhotoId}`,
+                    `file/download/${profilePhotoId}/base64`,
                     "get"
                 )
                     .then((res) => res)
@@ -157,9 +164,6 @@ const Users: FC = () => {
     return (
         <Row style={{ padding: "20px", marginRight: 0, marginLeft: 0 }} gutter={[16, 0]}>
             <Row style={{ marginRight: 0, marginLeft: 0, width: "100%" }} gutter={[16, 0]}>
-                <Col>
-                    <Header size="h2">Сотрудники</Header>
-                </Col>
                 <Col>
                     <Button
                         style={{ background: "#1890ff", color: "#fff", borderRadius: "6px" }}
