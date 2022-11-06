@@ -9,7 +9,8 @@ export default createUseStyles({
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        columnGap: (theme: ITheme) => theme.layout.margin
+        columnGap: (theme: ITheme) => theme.layout.margin,
+        boxShadow: "0px 4px 19px rgba(0, 0, 0, 0.06)"
     },
     selections: {
         height: "100%",
@@ -25,6 +26,9 @@ export default createUseStyles({
         color: (theme: ITheme) => `${theme.image.color.regular} !important`
     },
     langSelection: {
+        "& .ant-select-selector": {
+            borderColor: (theme: ITheme) => `${theme.color.lines} !important`
+        },
         "& span.ant-select-arrow": {
             color: (theme: ITheme) => `${theme.color.arrow} !important`
         }

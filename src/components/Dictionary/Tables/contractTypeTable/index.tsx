@@ -3,11 +3,10 @@ import SharedList from "../SharedList";
 import { dictionaryCodesEnum } from "data/enums";
 import { ITable } from "../ITable";
 
-export const ContractTypeTable: FC<ITable> = ({ selectionItems, onSetTabActiveKey }) => (
+export const ContractTypeTable: FC<ITable> = ({ selectionItems }) => (
     <SharedList
         dictionaryCode={dictionaryCodesEnum.CONTRACT_TYPE}
         modalTitle={"Новый договор"}
         selectionItems={selectionItems}
-        onSetTabActiveKey={onSetTabActiveKey}
     />
 );

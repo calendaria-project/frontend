@@ -1,9 +1,10 @@
 import React from "react";
 
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import { Button, Col, Input, Row } from "antd";
+import { Col, Input, Row } from "antd";
+import Button from "ui/Button";
 import { FC, useContext, useEffect, useState } from "react";
-import "./styles.scss";
+import "./stylesCSS.scss";
 import { AuthContext } from "context/AuthContextProvider";
 import { usersColumns } from "data/columns";
 import { actionMethodResultSync } from "functions/actionMethodResult";
@@ -17,11 +18,18 @@ import questionImage from "assets/icons/question.png";
 import { useDispatch } from "react-redux";
 import { SetCurrentOpenedMenu } from "store/actions";
 import { mainMenuEnum } from "data/enums";
+import { useTheme } from "react-jss";
+import { ITheme } from "styles/theme/interface";
+import useStyles from "./styles";
 
 const Users: FC = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const authContext = useContext(AuthContext);
+
+    const theme = useTheme<ITheme>();
+    const classes = useStyles(theme);
+
     const [companyId, setCompanyId] = useState<string | undefined>();
     const [companyName, setCompanyName] = useState<string | undefined>();
     const [isVisibleAddUserDrawer, setIsVisibleAddUserDrawer] = useState(false);
@@ -69,7 +77,7 @@ const Users: FC = () => {
             divisionName = data[0].division.nameRu;
         }
         let groupWrap = document.createElement("div");
-        groupWrap.setAttribute("class", "userGroupHeaderWrap");
+        groupWrap.setAttribute("class", classes.userGroupHeaderWrap);
         groupWrap.appendChild(document.createTextNode(divisionName));
         return groupWrap;
     };
@@ -163,27 +171,27 @@ const Users: FC = () => {
 
     return (
         <Row style={{ padding: "20px", marginRight: 0, marginLeft: 0 }} gutter={[16, 0]}>
-            <Row style={{ marginRight: 0, marginLeft: 0, width: "100%" }} gutter={[16, 0]}>
+            <Row className={classes.searchingWrapper} gutter={[16, 0]}>
+                <Col>
+                    <Input
+                        className={classes.input}
+                        placeholder="Поиск"
+                        suffix={<SearchOutlined className={classes.searchIcon} />}
+                    />
+                </Col>
                 <Col>
                     <Button
-                        style={{ background: "#1890ff", color: "#fff", borderRadius: "6px" }}
+                        className={classes.button}
+                        customType={"regular"}
                         icon={<PlusOutlined />}
                         onClick={showDrawer}
                     >
                         Добавить нового сотрудника
                     </Button>
                 </Col>
-                <Col>
-                    <Input
-                        style={{ width: 200, borderRadius: "6px" }}
-                        // onChange={handleFiltrationChange}
-                        placeholder="Поиск"
-                        suffix={<SearchOutlined style={{ color: "#828282" }} />}
-                    />
-                </Col>
             </Row>
-            <Row style={{ padding: "0 8px", marginRight: 0, marginLeft: 0, width: "100%" }}>
-                <div id="usersTable" />
+            <Row style={{ padding: "0", marginRight: 0, marginLeft: 0, width: "100%" }}>
+                <div className={classes.usersTable} id="usersTable" />
             </Row>
             <UserAddDrawer
                 companyId={companyId}

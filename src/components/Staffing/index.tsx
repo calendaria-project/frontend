@@ -1,11 +1,11 @@
-import { FC, useContext, useEffect, useState } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { Col, Row, Form, Button, Table, Select, DatePicker } from "antd";
+import { Col, Row, Button, Form, Table, Select, DatePicker } from "antd";
 import moment from "moment";
 
 import { AuthContext } from "context/AuthContextProvider";
 import { ICompanyViewModel, IStaffingModel } from "interfaces";
-import Header from "ui/Header";
+import UIButton from "ui/Button";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { StaffingScheduleModal } from "./modal";
@@ -13,6 +13,7 @@ import "./styles.scss";
 import { SetCurrentOpenedMenu } from "store/actions";
 import { mainMenuEnum } from "data/enums";
 import { useDispatch } from "react-redux";
+import { PlusOutlined } from "@ant-design/icons";
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     editing: boolean;
@@ -194,9 +195,6 @@ const Staffing: FC = () => {
                         >
                             Изменить
                         </Button>
-                        <Button style={{ background: "#cd4731" }} disabled>
-                            Удалить
-                        </Button>
                     </>
                 );
             }
@@ -250,7 +248,7 @@ const Staffing: FC = () => {
             <Col span={24}>
                 <Form form={form} component={false}>
                     <Row align={"middle"} gutter={24}>
-                        <Col style={{ marginBottom: "10px" }} span={12}>
+                        <Col style={{ marginBottom: "14px" }} span={12}>
                             <Select
                                 placeholder="Выберите компанию"
                                 style={{ width: 250 }}
@@ -266,18 +264,15 @@ const Staffing: FC = () => {
                                     </Option>
                                 ))}
                             </Select>
-                            <Button
+                            <UIButton
+                                className={"uibtn"}
+                                customType={"regular"}
                                 disabled={!selectedCompanyId}
-                                style={{
-                                    background: `${!selectedCompanyId ? "lightgrey" : "#1890ff"}`,
-                                    color: "#fff",
-                                    marginLeft: "6px",
-                                    borderRadius: "6px"
-                                }}
                                 onClick={() => setIsModalVisible(true)}
+                                icon={<PlusOutlined />}
                             >
                                 Добавить
-                            </Button>
+                            </UIButton>
                         </Col>
                     </Row>
                     <Table

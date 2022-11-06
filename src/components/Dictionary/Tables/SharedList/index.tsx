@@ -1,21 +1,21 @@
-import React, { FC, useContext, useEffect, useState } from "react";
-import { Button, Col, Form, Input, Row, Table } from "antd";
-import {
-    SaveOutlined,
-    DeleteOutlined,
-    EditOutlined,
-    CloseOutlined,
-    SearchOutlined
-} from "@ant-design/icons";
+import React, { FC, useCallback, useContext, useEffect, useState } from "react";
+import { Button, Form, Input, Table } from "antd";
 
 import { AuthContext } from "context/AuthContextProvider";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { ISimpleDictionaryViewModel } from "interfaces";
-import { SharedModal } from "./SharedModal";
-import "./styles.scss";
-import { ITable } from "./ITable";
-import SelectTable from "./SelectTable";
+import { SharedModal } from "../SharedModal";
+import { ITable } from "../ITable";
+import SearchingRow from "../SearchingRow";
+import SaveIcon from "assets/svgComponents/SaveIcon";
+import CancelIcon from "assets/svgComponents/CancelIcon";
+import EditIcon from "assets/svgComponents/EditIcon";
+import RemoveIcon from "assets/svgComponents/RemoveIcon";
+import { useTheme } from "react-jss";
+import { ITheme } from "styles/theme/interface";
+
+import useStyles from "./styles";
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     editing: boolean;
@@ -64,17 +64,21 @@ interface ISharedList extends ITable {
     modalTitle: string;
 }
 
-const SharedList: FC<ISharedList> = ({
-    dictionaryCode,
-    modalTitle,
-    selectionItems,
-    onSetTabActiveKey
-}) => {
+const SharedList: FC<ISharedList> = ({ dictionaryCode, modalTitle, selectionItems }) => {
     const [data, setData] = useState<ISimpleDictionaryViewModel[]>([]);
     const authContext = useContext(AuthContext);
+
+    const theme = useTheme<ITheme>();
+    //@ts-ignore
+    const classes = useStyles(theme);
+
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState(-1);
     const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const onSetIsModalVisible = useCallback((bool: boolean) => {
+        setIsModalVisible(bool);
+    }, []);
 
     const isEditing = (record: ISimpleDictionaryViewModel) => record.id === editingKey;
 
@@ -172,27 +176,48 @@ const SharedList: FC<ISharedList> = ({
                     <>
                         <Button
                             type={"link"}
-                            style={{ color: "green" }}
                             onClick={() => save(record)}
+                            className={classes.imagedBtn}
                         >
-                            <SaveOutlined style={{ fontSize: 24 }} />
+                            <SaveIcon color={theme.color.successful as string} />
                         </Button>
-                        <Button type={"link"} onClick={() => setEditingKey(-1)}>
-                            <CloseOutlined style={{ fontSize: 24 }} />
+                        <Button
+                            className={classes.imagedBtn}
+                            type={"link"}
+                            onClick={() => setEditingKey(-1)}
+                        >
+                            <CancelIcon color={theme.color.regular as string} />
                         </Button>
                     </>
                 ) : (
                     <>
-                        <Button type={"link"} disabled={disabled} onClick={() => edit(record)}>
-                            <EditOutlined style={{ fontSize: 24 }} />
+                        <Button
+                            className={classes.imagedBtn}
+                            type={"link"}
+                            disabled={disabled}
+                            onClick={() => edit(record)}
+                        >
+                            <EditIcon
+                                color={
+                                    disabled
+                                        ? (theme.color.disabled as string)
+                                        : (theme.color.regular as string)
+                                }
+                            />
                         </Button>
                         <Button
                             type={"link"}
-                            style={!disabled ? { color: "red" } : {}}
                             disabled={disabled}
+                            className={classes.imagedBtn}
                             onClick={() => remove(record)}
                         >
-                            <DeleteOutlined style={{ fontSize: 24 }} />
+                            <RemoveIcon
+                                color={
+                                    disabled
+                                        ? (theme.color.disabled as string)
+                                        : (theme.color.removing as string)
+                                }
+                            />
                         </Button>
                     </>
                 );
@@ -229,30 +254,10 @@ const SharedList: FC<ISharedList> = ({
 
     return (
         <Form form={form} component={false}>
-            <Row gutter={24}>
-                <Col>
-                    <Input
-                        style={{ width: 200, borderRadius: "6px" }}
-                        // onChange={handleFiltrationChange}
-                        placeholder="Поиск"
-                        suffix={<SearchOutlined style={{ color: "#828282" }} />}
-                    />
-                </Col>
-                <Col>
-                    <SelectTable
-                        selectionItems={selectionItems}
-                        onSetTabActiveKey={onSetTabActiveKey}
-                    />
-                </Col>
-                <Col className={"col-end-wrapper"}>
-                    <Button
-                        style={{ background: "#1890ff", color: "#fff", marginBottom: 10 }}
-                        onClick={() => setIsModalVisible(true)}
-                    >
-                        Добавить
-                    </Button>
-                </Col>
-            </Row>
+            <SearchingRow
+                selectionItems={selectionItems}
+                onSetIsModalVisible={onSetIsModalVisible}
+            />
             <Table
                 components={{
                     body: {

@@ -11,7 +11,8 @@ const sharedTheme: ITheme = {
         removing: "#EB5757",
         successful: "#27AE60",
         arrow: "#000000",
-        lines: "#C2C2C2"
+        lines: "#C2C2C2",
+        disabled: "rgba(0, 0, 0, 0.25)"
     },
     background: {
         primary: "#FFFFFF",
@@ -41,6 +42,7 @@ const sharedTheme: ITheme = {
         }
     },
     button: {
+        height: "34px",
         colors: {
             primary: "#FFFFFF",
             secondary: "#2C2C2C",
@@ -54,6 +56,12 @@ const sharedTheme: ITheme = {
             primary: "#FFFFFF",
             secondary: "#2C2C2C"
         }
+    },
+    select: {
+        width: "200px"
+    },
+    input: {
+        width: "300px"
     },
     table: {
         header: {
@@ -71,7 +79,9 @@ const sharedTheme: ITheme = {
             height: "64px"
         },
         padding: "20px",
-        margin: "12px"
+        margin: "14px",
+        smallMargin: "4px",
+        smallPadding: "4px"
     }
 };
 export default sharedTheme;

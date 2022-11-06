@@ -14,10 +14,13 @@ export interface ITheme {
         color: TSimpleThemeRecord;
     };
     button: {
+        height: string;
         colors: TSimpleThemeRecord;
         border: TSimpleThemeRecord;
         background: TSimpleThemeRecord;
     };
+    select: TSimpleThemeRecord;
+    input: TSimpleThemeRecord;
     table: {
         header: TSimpleThemeRecord;
         background: string;
@@ -29,5 +32,7 @@ export interface ITheme {
         header: TSimpleThemeRecord;
         padding: string;
         margin: string;
+        smallMargin: string;
+        smallPadding: string;
     };
 }

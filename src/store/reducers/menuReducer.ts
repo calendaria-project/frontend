@@ -3,13 +3,15 @@ import { IAction } from "../interfaces";
 
 interface IMenuState {
     openedMenu: string | null;
+    tabActiveKey: string;
 }
 
 const initialState: IMenuState = {
-    openedMenu: null
+    openedMenu: null,
+    tabActiveKey: sessionStorage.getItem("directoriesActiveTabId") || "1"
 };
 
-const tokenReducer = (state = initialState, action: IAction): IMenuState => {
+const menuReducer = (state = initialState, action: IAction): IMenuState => {
     switch (action.type) {
         case MainActionTypes.SET_CURRENT_OPENED_MENU: {
             return {
@@ -17,8 +19,14 @@ const tokenReducer = (state = initialState, action: IAction): IMenuState => {
                 openedMenu: action.payload as string
             };
         }
+        case MainActionTypes.SET_DICTIONARY_TAB_ACTIVE_KEY: {
+            return {
+                ...state,
+                tabActiveKey: action.payload as string
+            };
+        }
         default:
             return { ...state };
     }
 };
-export default tokenReducer;
+export default menuReducer;

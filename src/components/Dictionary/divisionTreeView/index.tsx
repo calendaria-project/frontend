@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, message, Select } from "antd";
+import { Form, message, Select } from "antd";
 import type { DataNode } from "antd/es/tree";
 import React, { FC, useContext, useEffect, useState } from "react";
 import { ColumnDefinition } from "tabulator-tables";
@@ -15,18 +15,29 @@ import {
 } from "interfaces";
 import { createTableViaTabulator } from "services/tabulator";
 import { DivisionDirectoryModal } from "./modal";
-import "./styles.scss";
-import { removeEmptyValuesFromAnyLevelObject } from "../../../utils/removeObjectProperties";
+import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
 import { ITable } from "../Tables/ITable";
-import { SearchOutlined } from "@ant-design/icons";
-import SelectTable from "../Tables/SelectTable";
+import SearchingRow from "../Tables/SearchingRow";
+
+import editIcon from "assets/svg/editIcon.svg";
+import addIcon from "assets/svg/addIcon.svg";
+
+import useStyles from "./styles";
+import { useTheme } from "react-jss";
+import { ITheme } from "styles/theme/interface";
+import Button from "ui/Button";
+import { PlusOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 
 export type DataNodeItem = DataNode & IDivisionTreeNodeViewModel & { children: DataNodeItem[] };
 
-export const DivisionTreeView: FC<ITable> = ({ selectionItems, onSetTabActiveKey }) => {
+export const DivisionTreeView: FC<ITable> = ({ selectionItems }) => {
     const authContext = useContext(AuthContext);
+
+    const theme = useTheme<ITheme>();
+    const classes = useStyles(theme);
+
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [selectedDivisionRow, setSelectedDivisionRow] = useState<Tabulator.RowComponent>();
@@ -53,22 +64,25 @@ export const DivisionTreeView: FC<ITable> = ({ selectionItems, onSetTabActiveKey
         ).then((data) => setCompanies(data.content));
     };
 
-    const nestedTableActionsFormatter = (cell: Tabulator.CellComponent) => {
-        let editBtn = document.createElement("button");
-        editBtn.textContent = "Изменить";
-        editBtn.setAttribute("class", "editBtn ant-btn ant-btn-default");
-        editBtn.addEventListener("click", () => onEdit(cell.getRow()));
+    // <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    //     <path d="M17 3C17.2626 2.73735 17.5744 2.52901 17.9176 2.38687C18.2608 2.24473 18.6286 2.17157 19 2.17157C19.3714 2.17157 19.7392 2.24473 20.0824 2.38687C20.4256 2.52901 20.7374 2.73735 21 3C21.2626 3.26264 21.471 3.57444 21.6131 3.9176C21.7553 4.26077 21.8284 4.62856 21.8284 5C21.8284 5.37143 21.7553 5.73923 21.6131 6.08239C21.471 6.42555 21.2626 6.73735 21 7L7.5 20.5L2 22L3.5 16.5L17 3Z" stroke="#343A3F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    // </svg>
 
-        let addBtn = document.createElement("button");
-        addBtn.textContent = "Добавить";
-        addBtn.setAttribute("class", "addBtn ant-btn ant-btn-primary");
-        addBtn.addEventListener("click", () => onAdd(cell.getRow()));
+    const nestedTableActionsFormatter = (cell: Tabulator.CellComponent) => {
+        let editBtnIcon = document.createElement("img");
+        editBtnIcon.setAttribute("src", editIcon);
+        editBtnIcon.addEventListener("click", () => onEdit(cell.getRow()));
+
+        let addBtnIcon = document.createElement("img");
+        addBtnIcon.setAttribute("src", addIcon);
+        addBtnIcon.setAttribute("style", "margin-left: 28px");
+        addBtnIcon.addEventListener("click", () => onAdd(cell.getRow()));
 
         let wrap = document.createElement("div");
         wrap.setAttribute("class", "actionsWrap");
 
-        wrap.appendChild(editBtn);
-        wrap.appendChild(addBtn);
+        wrap.appendChild(editBtnIcon);
+        wrap.appendChild(addBtnIcon);
         return wrap;
     };
 
@@ -192,27 +206,31 @@ export const DivisionTreeView: FC<ITable> = ({ selectionItems, onSetTabActiveKey
 
     return (
         <div>
-            <div>
-                <Select
-                    placeholder="Выберите компанию"
-                    style={{ width: 250 }}
-                    value={selectedCompanyId || null}
-                    onChange={(val) => setSelectedCompanyId(+val)}
-                >
-                    {companies.map((el, i) => (
-                        <Option key={i} value={el.companyId}>
-                            {el.nameRu}
-                        </Option>
-                    ))}
-                </Select>
-                <Button
-                    disabled={!selectedCompanyId}
-                    onClick={() => onAdd(undefined)}
-                    style={{ marginLeft: "10px" }}
-                    type="primary"
-                >
-                    Добавить
-                </Button>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <SearchingRow selectionItems={selectionItems} />
+                <div>
+                    <Select
+                        placeholder="Выберите компанию"
+                        className={classes.select}
+                        value={selectedCompanyId || null}
+                        onChange={(val) => setSelectedCompanyId(+val)}
+                    >
+                        {companies.map((el, i) => (
+                            <Option key={i} value={el.companyId}>
+                                {el.nameRu}
+                            </Option>
+                        ))}
+                    </Select>
+                    <Button
+                        className={classes.button}
+                        disabled={!selectedCompanyId}
+                        onClick={() => onAdd(undefined)}
+                        icon={<PlusOutlined />}
+                        customType={"regular"}
+                    >
+                        Добавить
+                    </Button>
+                </div>
             </div>
             <DivisionDirectoryModal
                 okText="Создать"
@@ -230,20 +248,6 @@ export const DivisionTreeView: FC<ITable> = ({ selectionItems, onSetTabActiveKey
                 setIsVisible={setIsEditModalVisible}
                 form={editForm}
             />
-            <Col>
-                <Input
-                    style={{ width: 200, borderRadius: "6px" }}
-                    // onChange={handleFiltrationChange}
-                    placeholder="Поиск"
-                    suffix={<SearchOutlined style={{ color: "#828282" }} />}
-                />
-            </Col>
-            <Col>
-                <SelectTable
-                    selectionItems={selectionItems}
-                    onSetTabActiveKey={onSetTabActiveKey}
-                />
-            </Col>
             <div id="divisionsTable" />
         </div>
     );

@@ -1,12 +1,10 @@
-import { ChangeEvent, cloneElement, useCallback, ReactElement, SyntheticEvent } from "react";
-import { Col, Dropdown, Row, Menu, Button, Input } from "antd";
-import { useEffect, useState } from "react";
+import { cloneElement, ReactElement } from "react";
+import { Col, Row } from "antd";
+import { useEffect } from "react";
 import { CompanyTreeView } from "./companiesTreeView";
 import { DivisionTreeView } from "./divisionTreeView";
 import PositionList from "./Tables/positionTable";
-import { EllipsisOutlined, SearchOutlined } from "@ant-design/icons";
 
-import "./styles.scss";
 import { useDispatch } from "react-redux";
 import { SetCurrentOpenedMenu } from "store/actions";
 import { mainMenuEnum } from "data/enums";
@@ -22,21 +20,16 @@ import { EducationTable } from "./Tables/educationTable";
 import { EducationLevelTable } from "./Tables/educationLevelTable";
 import { SpecialtyTable } from "./Tables/specialtyTable";
 import { AddressTypeTable } from "./Tables/addressTypeTable";
+import { useTypedSelector } from "hooks/useTypedSelector";
 
 const Dictionary = () => {
     const dispatch = useDispatch();
 
-    const [tabActiveKey, setTabActiveKey] = useState(
-        sessionStorage.getItem("directoriesActiveTabId") || "1"
-    );
-
-    const onSetTabActiveKey = useCallback((key: string) => {
-        setTabActiveKey(key);
-    }, []);
-
     useEffect(() => {
         dispatch(SetCurrentOpenedMenu(mainMenuEnum.dictionary));
     }, []);
+
+    const tabActiveKey = useTypedSelector((state) => state.menu.tabActiveKey);
 
     useEffect(() => {
         sessionStorage.setItem("directoriesActiveTabId", tabActiveKey);
@@ -122,55 +115,12 @@ const Dictionary = () => {
 
     const selectionItems = items.map(({ key, label }) => ({ key, label }));
     const currentSelectedItem = items.find((item) => item.key === tabActiveKey)?.children;
-    // const [searchableItems, setSearchableItems] =
-    //     useState<Array<{ key: string; label: string }>>(itemsWithoutChildren);
-    //
-    // const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    //     setSearchableItems(
-    //         itemsWithoutChildren.filter(({ label }) =>
-    //             label.toLowerCase().includes(e.target.value.toLowerCase())
-    //         )
-    //     );
-    // };
-    //
-    // const handleInputClick = (e: SyntheticEvent) => {
-    //     e.stopPropagation();
-    // };
-
-    // const dictionaryMenu = (
-    //     <Menu>
-    //         <Menu.Item>
-    //             <Input
-    //                 onClick={handleInputClick}
-    //                 onChange={handleInputChange}
-    //                 suffix={
-    //                     <SearchOutlined style={{ cursor: "default" }} onClick={handleInputClick} />
-    //                 }
-    //             />
-    //         </Menu.Item>
-    //         {searchableItems.map(({ key, label }) => (
-    //             <Menu.Item onClick={() => setTabActiveKey(key)}>{label}</Menu.Item>
-    //         ))}
-    //     </Menu>
-    // );
-    //
-    // const DropdownBar = (
-    //     <Dropdown
-    //         overlay={dictionaryMenu}
-    //         overlayStyle={{ maxHeight: "300px", height: "fit-content", overflowY: "scroll" }}
-    //     >
-    //         <Button type={"link"} style={{ color: "black", paddingLeft: "16px", border: 0 }}>
-    //             <EllipsisOutlined />
-    //         </Button>
-    //     </Dropdown>
-    // );
 
     return (
         <Row style={{ padding: "20px", marginRight: 0, marginLeft: 0 }} gutter={[16, 16]}>
             <Col span={24}>
                 {cloneElement(currentSelectedItem as ReactElement, {
-                    selectionItems,
-                    onSetTabActiveKey
+                    selectionItems
                 })}
             </Col>
         </Row>

@@ -1,6 +1,10 @@
-import { Modal, Form, Input, Button, Row, Col } from "antd";
+import { Modal, Form, Input, Row, Col } from "antd";
+import Button from "ui/Button";
 import { FormInstance } from "antd/es/form/Form";
 import { validateMessages } from "data/validateMessages";
+import { useTheme } from "react-jss";
+import { ITheme } from "styles/theme/interface";
+import useStyles from "./styles";
 
 export interface ISharedModal {
     okText: string;
@@ -23,6 +27,10 @@ export const SharedModal = ({
         setIsVisible(false);
     };
 
+    const theme = useTheme<ITheme>();
+    //@ts-ignore
+    const classes = useStyles(theme);
+
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
             <Form
@@ -38,30 +46,49 @@ export const SharedModal = ({
                 className="directoryModal"
             >
                 <Row gutter={16}>
-                    <Col xl={12} xs={24}>
-                        <Form.Item name="code" label="Код" rules={[{ required: true }]}>
+                    <Col span={12}>
+                        <Form.Item
+                            className={classes.leftFormItem}
+                            name="code"
+                            label="Код"
+                            rules={[{ required: true }]}
+                        >
                             <Input />
                         </Form.Item>
                     </Col>
-                    <Col xl={12} xs={24}>
-                        <Form.Item name="nameKz" label="На Казахском" rules={[{ required: true }]}>
+                    <Col span={12}>
+                        <Form.Item
+                            className={classes.rightFormItem}
+                            name="nameKz"
+                            label="На Казахском"
+                            rules={[{ required: true }]}
+                        >
                             <Input />
                         </Form.Item>
                     </Col>
-                    <Col xl={12} xs={24}>
-                        <Form.Item name="nameRu" label="На русском" rules={[{ required: true }]}>
+                    <Col span={12}>
+                        <Form.Item
+                            className={classes.leftFormItem}
+                            name="nameRu"
+                            label="На русском"
+                            rules={[{ required: true }]}
+                        >
                             <Input />
                         </Form.Item>
                     </Col>
 
-                    <Col xl={12} xs={24}>
-                        <Form.Item name="nameEn" label="На английском">
+                    <Col span={12}>
+                        <Form.Item
+                            className={classes.rightFormItem}
+                            name="nameEn"
+                            label="На английском"
+                        >
                             <Input />
                         </Form.Item>
                     </Col>
-                    <Col xl={24} xs={24}>
-                        <Form.Item style={{ display: "flex", justifyContent: "center" }}>
-                            <Button type="primary" htmlType="submit">
+                    <Col span={24}>
+                        <Form.Item className={classes.btnFormItem}>
+                            <Button customType="regular" htmlType="submit">
                                 {okText}
                             </Button>
                         </Form.Item>

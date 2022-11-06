@@ -28,3 +28,10 @@ export const SetCurrentOpenedMenu = (payload: string): IAction => {
         payload
     };
 };
+
+export const SetDictionaryTabActiveKey = (payload: string): IAction => {
+    return {
+        type: MainActionTypes.SET_DICTIONARY_TAB_ACTIVE_KEY,
+        payload
+    };
+};

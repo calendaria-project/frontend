@@ -6,7 +6,8 @@ export default createUseStyles({
     "@global": {
         ".tabulator": {
             backgroundColor: "transparent !important",
-            border: "none !important"
+            border: "none !important",
+            margin: "0 !important"
         },
         ".tabulator-selected": {
             width: "100% !important",

@@ -2,40 +2,31 @@ import { createUseStyles } from "react-jss";
 
 export default createUseStyles({
     "@global": {
+        ".ant-col": {
+            paddingLeft: "0 !important",
+            paddingRight: "0 !important"
+        },
+        ".ant-row": {
+            marginLeft: "0 !important",
+            marginRight: "0 !important"
+        },
         "span.ant-select-selection-item": {
             fontSize: "15px !important"
         },
-        ".menuIconItem": {
-            backgroundColor: "#0ea5e9",
-            width: "4px",
-            height: "4px",
-            borderRadius: "4px",
-            margin: "2px 5px"
+        "th.ant-table-cell": {
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            maxWidth: "200px"
         },
-        ".menuIconWrap": {
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            alignItems: "center"
-        },
-        ".editBtn": {
-            marginRight: "10px"
-        },
-        "#usersTable": {
-            ".tabulator": {
-                ".tabulator-header": {
-                    backgroundColor: "#fff !important"
-                }
+        ".ant-input, .ant-select-selector, .ant-picker, .ant-pagination-item, .ant-pagination-prev .ant-pagination-next":
+            {
+                borderRadius: "6px !important",
+                borderColor: "#C2C2C2 !important"
             },
-            ".userGroupHeaderWrap": {
-                fontFamily: "Inter, sans-serif",
-                fontStyle: "normal",
-                fontWeight: 500,
-                fontSize: "20px",
-                lineHeight: "30px",
-                color: "#000", //из темы?
-                marginLeft: "20px"
-            }
+        ".ant-modal-title": {
+            fontSize: "20px !important",
+            fontWeight: "600 !important"
         }
     }
 });

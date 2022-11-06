@@ -3,20 +3,26 @@ import { ITheme } from "styles/theme/interface";
 
 export default createUseStyles({
     button: {
-        borderColor: (theme: ITheme) => `${theme.color.lines} !important`,
-        borderRadius: (theme: ITheme) => `${theme.borderRadius} !important`,
-        fontWeight: (theme: ITheme) => `${theme.fontWeight.btn} !important`,
+        borderColor: ({ theme }: { theme: ITheme }) => `${theme.color.lines} !important`,
+        borderRadius: ({ theme }: { theme: ITheme }) => `${theme.borderRadius} !important`,
+        fontWeight: ({ theme }: { theme: ITheme }) => `${theme.fontWeight.btn} !important`,
         "&.regular": {
-            background: (theme: ITheme) => `${theme.background.regular} !important`,
-            color: (theme: ITheme) => `${theme.color.primary} !important`
+            background: ({ theme, disabled }: { theme: ITheme; disabled: boolean }) =>
+                !disabled ? `${theme.background.regular} !important` : "",
+            color: ({ theme, disabled }: { theme: ITheme; disabled: boolean }) =>
+                !disabled ? `${theme.color.primary} !important` : ""
         },
         "&.removing": {
-            background: (theme: ITheme) => `${theme.background.primary} !important`,
-            color: (theme: ITheme) => `${theme.color.removing} !important`
+            background: ({ theme, disabled }: { theme: ITheme; disabled: boolean }) =>
+                !disabled ? `${theme.background.primary} !important` : "",
+            color: ({ theme, disabled }: { theme: ITheme; disabled: boolean }) =>
+                !disabled ? `${theme.color.removing} !important` : ""
         },
         "&.primary": {
-            background: (theme: ITheme) => `${theme.background.primary} !important`,
-            color: (theme: ITheme) => `${theme.color.secondary} !important`
+            background: ({ theme, disabled }: { theme: ITheme; disabled: boolean }) =>
+                !disabled ? `${theme.background.primary} !important` : "",
+            color: ({ theme, disabled }: { theme: ITheme; disabled: boolean }) =>
+                !disabled ? `${theme.color.secondary} !important` : ""
         }
     }
 });
