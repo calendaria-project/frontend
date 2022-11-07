@@ -1,10 +1,9 @@
 import React from "react";
 
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import { Button, Col, Input, Row } from "antd";
+import { Col, Input, Row } from "antd";
+import Button from "ui/Button";
 import { FC, useContext, useEffect, useState } from "react";
-import Header from "ui/Header";
-import "./styles.scss";
 import { AuthContext } from "context/AuthContextProvider";
 import { usersColumns } from "data/columns";
 import { actionMethodResultSync } from "functions/actionMethodResult";
@@ -15,14 +14,29 @@ import { UserAddDrawer } from "./userDrawer/UserAddDrawer";
 import { ColumnDefinition } from "tabulator-tables";
 
 import questionImage from "assets/icons/question.png";
+import { useDispatch } from "react-redux";
+import { SetCurrentOpenedMenu } from "store/actions";
+import { mainMenuEnum } from "data/enums";
+import { useTheme } from "react-jss";
+import { ITheme } from "styles/theme/interface";
+import useStyles from "./styles";
 
 const Users: FC = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const authContext = useContext(AuthContext);
+
+    const theme = useTheme<ITheme>();
+    const classes = useStyles(theme);
+
     const [companyId, setCompanyId] = useState<string | undefined>();
     const [companyName, setCompanyName] = useState<string | undefined>();
     const [isVisibleAddUserDrawer, setIsVisibleAddUserDrawer] = useState(false);
     const [table, setTable] = useState<Tabulator | undefined>();
+
+    useEffect(() => {
+        dispatch(SetCurrentOpenedMenu(mainMenuEnum.users));
+    }, []);
 
     useEffect(() => {
         initData();
@@ -35,17 +49,18 @@ const Users: FC = () => {
 
         let photoElement = document.createElement("img");
         photoElement.setAttribute("src", userPhoto ? userPhoto : questionImage);
+        photoElement.setAttribute("class", classes.userPhoto);
         photoElement.setAttribute("width", "30px");
         photoElement.setAttribute("height", "30px");
 
         let textElement = document.createElement("span");
-        textElement.setAttribute("class", "fullNameText");
+        textElement.setAttribute("class", classes.fullNameText);
         textElement.textContent = `${data.lastname ?? ""} ${data.firstname ?? ""} ${
             data.patronymic ?? ""
         }`;
 
         let wrap = document.createElement("div");
-        wrap.setAttribute("class", "fullNameWrap");
+        wrap.setAttribute("class", classes.fullNameWrap);
         wrap.appendChild(photoElement);
         wrap.appendChild(textElement);
         return wrap;
@@ -62,7 +77,7 @@ const Users: FC = () => {
             divisionName = data[0].division.nameRu;
         }
         let groupWrap = document.createElement("div");
-        groupWrap.setAttribute("class", "userGroupHeaderWrap");
+        groupWrap.setAttribute("class", classes.userGroupHeaderWrap);
         groupWrap.appendChild(document.createTextNode(divisionName));
         return groupWrap;
     };
@@ -121,7 +136,7 @@ const Users: FC = () => {
             if (profilePhotoId) {
                 currentUserPhotoId = await actionMethodResultSync(
                     "FILE",
-                    `file/download/${profilePhotoId}`,
+                    `file/download/${profilePhotoId}/base64`,
                     "get"
                 )
                     .then((res) => res)
@@ -155,30 +170,27 @@ const Users: FC = () => {
     const showDrawer = () => setIsVisibleAddUserDrawer(true);
 
     return (
-        <Row style={{ padding: "20px", marginRight: 0, marginLeft: 0 }} gutter={[16, 0]}>
-            <Row style={{ marginRight: 0, marginLeft: 0, width: "100%" }} gutter={[16, 0]}>
-                <Col>
-                    <Header size="h2">Сотрудники</Header>
+        <Row className={classes.container}>
+            <Row className={classes.searchingWrapper}>
+                <Col className={classes.searchingCol}>
+                    <Input
+                        className={classes.input}
+                        placeholder="Поиск"
+                        suffix={<SearchOutlined className={classes.searchIcon} />}
+                    />
                 </Col>
-                <Col>
+                <Col className={classes.searchingCol}>
                     <Button
-                        style={{ background: "#1890ff", color: "#fff", borderRadius: "6px" }}
+                        className={classes.button}
+                        customType={"regular"}
                         icon={<PlusOutlined />}
                         onClick={showDrawer}
                     >
                         Добавить нового сотрудника
                     </Button>
                 </Col>
-                <Col>
-                    <Input
-                        style={{ width: 200, borderRadius: "6px" }}
-                        // onChange={handleFiltrationChange}
-                        placeholder="Поиск"
-                        suffix={<SearchOutlined style={{ color: "#828282" }} />}
-                    />
-                </Col>
             </Row>
-            <Row style={{ padding: "0 8px", marginRight: 0, marginLeft: 0, width: "100%" }}>
+            <Row className={classes.usersTableWrapper}>
                 <div id="usersTable" />
             </Row>
             <UserAddDrawer

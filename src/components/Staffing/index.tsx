@@ -1,15 +1,19 @@
-import { FC, useContext, useEffect, useState } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { Col, Row, Form, Button, Table, Select, DatePicker } from "antd";
+import { Col, Row, Button, Form, Table, Select, DatePicker } from "antd";
 import moment from "moment";
 
 import { AuthContext } from "context/AuthContextProvider";
 import { ICompanyViewModel, IStaffingModel } from "interfaces";
-import Header from "ui/Header";
+import UIButton from "ui/Button";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { StaffingScheduleModal } from "./modal";
 import "./styles.scss";
+import { SetCurrentOpenedMenu } from "store/actions";
+import { mainMenuEnum } from "data/enums";
+import { useDispatch } from "react-redux";
+import { PlusOutlined } from "@ant-design/icons";
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     editing: boolean;
@@ -63,6 +67,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
 const { Option } = Select;
 
 const Staffing: FC = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [data, setData] = useState<IStaffingModel[]>([]);
     const authContext = useContext(AuthContext);
@@ -73,6 +78,10 @@ const Staffing: FC = () => {
     const [selectedCompanyId, setSelectedCompanyId] = useState<number | undefined>(
         Number(localStorage.getItem("staffing_company_id"))
     );
+
+    useEffect(() => {
+        dispatch(SetCurrentOpenedMenu(mainMenuEnum.staffing));
+    }, []);
 
     const isEditing = (record: IStaffingModel) => record.staffingId === editingKey;
 
@@ -186,9 +195,6 @@ const Staffing: FC = () => {
                         >
                             Изменить
                         </Button>
-                        <Button style={{ background: "#cd4731" }} disabled>
-                            Удалить
-                        </Button>
                     </>
                 );
             }
@@ -239,13 +245,13 @@ const Staffing: FC = () => {
 
     return (
         <Row style={{ padding: "20px", marginRight: 0, marginLeft: 0 }} gutter={[16, 16]}>
-            <Col span={24}>
-                <Header size="h2">Штатные расписания</Header>
-            </Col>
-            <Col span={24}>
+            <Col style={{ paddingLeft: 0, paddingRight: 0 }} span={24}>
                 <Form form={form} component={false}>
                     <Row align={"middle"} gutter={24}>
-                        <Col style={{ marginBottom: "10px" }} span={12}>
+                        <Col
+                            style={{ marginBottom: "14px", paddingLeft: 0, paddingRight: 0 }}
+                            span={12}
+                        >
                             <Select
                                 placeholder="Выберите компанию"
                                 style={{ width: 250 }}
@@ -261,18 +267,15 @@ const Staffing: FC = () => {
                                     </Option>
                                 ))}
                             </Select>
-                            <Button
+                            <UIButton
+                                customType={"regular"}
+                                className={"uibtn endedCol"}
                                 disabled={!selectedCompanyId}
-                                style={{
-                                    background: `${!selectedCompanyId ? "lightgrey" : "#1890ff"}`,
-                                    color: "#fff",
-                                    marginLeft: "6px",
-                                    borderRadius: "6px"
-                                }}
                                 onClick={() => setIsModalVisible(true)}
+                                icon={<PlusOutlined />}
                             >
                                 Добавить
-                            </Button>
+                            </UIButton>
                         </Col>
                     </Row>
                     <Table

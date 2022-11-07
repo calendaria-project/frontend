@@ -6,6 +6,7 @@ export enum StaffingNodeTypesEnum {
 }
 
 export enum dictionaryCodesEnum {
+    ADDRESS_TYPE = "ADDRESS_TYPE",
     SEX = "SEX",
     CAR_MODEL = "CAR_MODEL",
     CITY = "CITY",
@@ -18,4 +19,12 @@ export enum dictionaryCodesEnum {
     EDUCATION_LEVEL = "EDUCATION_LEVEL",
     EDUCATION_INSTITUTION = "EDUCATION_INSTITUTION",
     SPECIALTY = "SPECIALTY"
+}
+
+export enum mainMenuEnum {
+    mainMenu = "mainMenu",
+    dictionary = "dictionary",
+    staffing = "staffing",
+    users = "users",
+    userItem = "userItem"
 }

@@ -1,9 +1,13 @@
 import React from "react";
-import { Modal, Form, Input, Button, Row, Col, Select } from "antd";
+import { Modal, Form, Input, Row, Col, Select } from "antd";
+import Button from "ui/Button";
 import { ICompanyCreateViewModel, ICompanyViewModel } from "interfaces";
 import { FormInstance } from "antd/es/form/Form";
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import FormItemLabel from "antd/es/form/FormItemLabel";
+import { useTheme } from "react-jss";
+import { ITheme } from "styles/theme/interface";
+import useStyles from "./styles";
 
 const { Option } = Select;
 
@@ -28,18 +32,15 @@ export const CompanyDirectoryModal = ({
     setIsVisible,
     form
 }: ICompanyDirectoryModal) => {
+    const theme = useTheme<ITheme>();
+    const classes = useStyles(theme);
+
     const handleCancel = () => {
         setIsVisible(false);
     };
 
     return (
-        <Modal
-            title={title}
-            open={isVisible}
-            footer={null}
-            onCancel={handleCancel}
-            // okText={okText}
-        >
+        <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
             <Form<ICompanyCreateViewModel>
                 form={form}
                 validateMessages={validateMessages}
@@ -50,15 +51,16 @@ export const CompanyDirectoryModal = ({
                 onFinish={onFinish}
                 autoComplete="off"
                 layout="vertical"
-                className="directoryModal"
+                className={classes.directoryModal}
             >
-                <Row gutter={16}>
+                <Row gutter={16} justify={"space-between"}>
                     <Form.Item hidden name="companyId" />
                     <Form.Item hidden name="parentId" />
                     <Form.Item hidden name="createdAt" />
 
-                    <Col xl={12} xs={24}>
+                    <Col span={12}>
                         <Form.Item
+                            className={classes.leftFormItem}
                             name="bin"
                             label="БИН"
                             rules={[
@@ -69,23 +71,36 @@ export const CompanyDirectoryModal = ({
                             <Input type="number" />
                         </Form.Item>
                     </Col>
-                    <Col xl={12} xs={24}>
-                        <Form.Item name="nameKz" label="На Казахском" rules={[{ required: true }]}>
+                    <Col span={12}>
+                        <Form.Item
+                            className={classes.rightFormItem}
+                            name="nameKz"
+                            label="На Казахском"
+                            rules={[{ required: true }]}
+                        >
                             <Input />
                         </Form.Item>
                     </Col>
-                    <Col xl={12} xs={24}>
-                        <Form.Item name="nameRu" label="На русском" rules={[{ required: true }]}>
+                    <Col span={12}>
+                        <Form.Item
+                            className={classes.leftFormItem}
+                            name="nameRu"
+                            label="На русском"
+                            rules={[{ required: true }]}
+                        >
                             <Input />
                         </Form.Item>
                     </Col>
-
-                    <Col xl={12} xs={24}>
-                        <Form.Item name="nameEn" label="На английском">
+                    <Col span={12}>
+                        <Form.Item
+                            className={classes.rightFormItem}
+                            name="nameEn"
+                            label="На английском"
+                        >
                             <Input />
                         </Form.Item>
                     </Col>
-                    <Col xl={24} xs={24}>
+                    <Col span={24}>
                         <FormItemLabel prefixCls="" required={false} label="Адреса" />
                     </Col>
                     <Form.List name={["companyAddresses"]}>
@@ -96,8 +111,9 @@ export const CompanyDirectoryModal = ({
                                         <React.Fragment key={key}>
                                             <Form.Item hidden name="companyAddressId" />
                                             <Form.Item hidden name="companyId" />
-                                            <Col xl={10} xs={24}>
+                                            <Col span={11}>
                                                 <Form.Item
+                                                    className={classes.leftFormItem}
                                                     label="Адрес"
                                                     name={[name, "address"]}
                                                     rules={[{ required: true }]}
@@ -105,8 +121,9 @@ export const CompanyDirectoryModal = ({
                                                     <Input />
                                                 </Form.Item>
                                             </Col>
-                                            <Col xl={10} xs={24}>
+                                            <Col span={11}>
                                                 <Form.Item
+                                                    className={classes.rightFormItem}
                                                     label="Тип"
                                                     name={[name, "type"]}
                                                     rules={[{ required: true }]}
@@ -118,36 +135,46 @@ export const CompanyDirectoryModal = ({
                                                     </Select>
                                                 </Form.Item>
                                             </Col>
-                                            <Col xl={4} xs={24}>
+                                            <Col span={2} className={classes.minusCol}>
                                                 <Button
                                                     onClick={() => remove(name)}
                                                     size="small"
-                                                    className="redCircleBtn"
                                                     shape="circle"
-                                                    icon={<MinusOutlined color="#fff" />}
+                                                    icon={
+                                                        <MinusOutlined
+                                                            className={classes.minusBtnIcon}
+                                                        />
+                                                    }
                                                 />
                                             </Col>
                                         </React.Fragment>
                                     );
                                 })}
-                                <Col xl={24} xs={24}>
+                                <Col span={24}>
                                     <Button
+                                        className={classes.plusCol}
                                         onClick={() => add({ type: "", address: "" })}
                                         size="small"
-                                        className="greenCircleBtn"
                                         shape="circle"
-                                        icon={<PlusOutlined color="#fff" />}
+                                        icon={<PlusOutlined className={classes.plusBtnIcon} />}
                                     />
                                 </Col>
                             </>
                         )}
                     </Form.List>
-                    <Col xl={24} xs={24}>
-                        <Form.Item style={{ display: "flex", justifyContent: "center" }}>
-                            <Button type="primary" htmlType="submit">
+                </Row>
+                <Row align={"middle"} justify={"center"} gutter={[16, 16]}>
+                    <Col>
+                        <Form.Item className={classes.okBtnFormItem}>
+                            <Button customType={"regular"} htmlType="submit">
                                 {okText}
                             </Button>
                         </Form.Item>
+                    </Col>
+                    <Col>
+                        <Button customType={"primary"} onClick={handleCancel}>
+                            Отмена
+                        </Button>
                     </Col>
                 </Row>
             </Form>

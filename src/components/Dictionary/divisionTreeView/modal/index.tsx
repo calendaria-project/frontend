@@ -1,7 +1,12 @@
-import { Modal, Form, Input, Button, Row, Col } from "antd";
+import { Modal, Form, Input, Row, Col } from "antd";
+import Button from "ui/Button";
 import { IDivisionCreateViewModel, IDivisionViewModel } from "interfaces";
 import { FormInstance } from "antd/es/form/Form";
 import { validateMessages } from "data/validateMessages";
+import { useTheme } from "react-jss";
+import { ITheme } from "styles/theme/interface";
+import useStyles from "./styles";
+import React from "react";
 
 export interface IDivisionDirectoryModal {
     okText: string;
@@ -24,6 +29,9 @@ export const DivisionDirectoryModal = ({
         setIsVisible(false);
     };
 
+    const theme = useTheme<ITheme>();
+    const classes = useStyles(theme);
+
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
             <Form<IDivisionCreateViewModel>
@@ -36,7 +44,7 @@ export const DivisionDirectoryModal = ({
                 onFinish={onFinish}
                 autoComplete="off"
                 layout="vertical"
-                className="directoryModal"
+                className={classes.directoryModal}
             >
                 <Row gutter={16}>
                     <Form.Item hidden name="companyId" />
@@ -44,33 +52,59 @@ export const DivisionDirectoryModal = ({
                     <Form.Item hidden name="divisionId" />
                     <Form.Item hidden name="createdAt" />
 
-                    <Col xl={12} xs={24}>
-                        <Form.Item name="code" label="Код" rules={[{ required: true }]}>
+                    <Col span={12}>
+                        <Form.Item
+                            className={classes.leftFormItem}
+                            name="code"
+                            label="Код"
+                            rules={[{ required: true }]}
+                        >
                             <Input />
                         </Form.Item>
                     </Col>
-                    <Col xl={12} xs={24}>
-                        <Form.Item name="nameKz" label="На Казахском" rules={[{ required: true }]}>
+                    <Col span={12}>
+                        <Form.Item
+                            className={classes.rightFormItem}
+                            name="nameKz"
+                            label="На Казахском"
+                            rules={[{ required: true }]}
+                        >
                             <Input />
                         </Form.Item>
                     </Col>
-                    <Col xl={12} xs={24}>
-                        <Form.Item name="nameRu" label="На русском" rules={[{ required: true }]}>
+                    <Col span={12}>
+                        <Form.Item
+                            className={classes.leftFormItem}
+                            name="nameRu"
+                            label="На русском"
+                            rules={[{ required: true }]}
+                        >
                             <Input />
                         </Form.Item>
                     </Col>
 
-                    <Col xl={12} xs={24}>
-                        <Form.Item name="nameEn" label="На английском">
+                    <Col span={12}>
+                        <Form.Item
+                            className={classes.rightFormItem}
+                            name="nameEn"
+                            label="На английском"
+                        >
                             <Input />
                         </Form.Item>
                     </Col>
-                    <Col xl={24} xs={24}>
-                        <Form.Item style={{ display: "flex", justifyContent: "center" }}>
-                            <Button type="primary" htmlType="submit">
+                </Row>
+                <Row align={"middle"} justify={"center"} gutter={[16, 16]}>
+                    <Col>
+                        <Form.Item className={classes.okBtnFormItem}>
+                            <Button customType={"regular"} htmlType="submit">
                                 {okText}
                             </Button>
                         </Form.Item>
+                    </Col>
+                    <Col>
+                        <Button customType={"primary"} onClick={handleCancel}>
+                            Отмена
+                        </Button>
                     </Col>
                 </Row>
             </Form>

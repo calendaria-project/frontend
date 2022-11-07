@@ -4,7 +4,7 @@ import { TInputData } from "../constants";
 
 import moment, { Moment } from "moment";
 
-import "../styles.scss";
+import useStyles from "./styles";
 
 interface IDatePicker {
     form: FormInstance;
@@ -13,6 +13,8 @@ interface IDatePicker {
 }
 
 const DatePicker: FC<IDatePicker> = ({ form, dataItemLayout, currentDataItemInfo }) => {
+    const classes = useStyles();
+
     const [currentValue, setCurrentValue] = useState<Moment | null>(
         currentDataItemInfo?.[dataItemLayout.propertyName]
             ? moment(currentDataItemInfo?.[dataItemLayout.propertyName], "YYYY-MM-DD")
@@ -47,7 +49,7 @@ const DatePicker: FC<IDatePicker> = ({ form, dataItemLayout, currentDataItemInfo
         <AntdDatePicker
             value={currentValue}
             onChange={handleChangeValue}
-            className="date-picker"
+            className={classes.datePicker}
             placeholder={dataItemLayout.placeholder}
         />
     );

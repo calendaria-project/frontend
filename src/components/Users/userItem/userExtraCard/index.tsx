@@ -1,7 +1,13 @@
 import { Card, Col, Form, Menu, MenuProps, message, Row } from "antd";
 import React, { FC, memo, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import _ from "lodash";
-import { SelectedKeyTypes, TInputData, inputData } from "./constants";
+import {
+    SelectedKeyTypes,
+    TInputData,
+    inputData,
+    arrayKeyTypes,
+    additionalMenuTypes
+} from "./constants";
 import {
     CarOutlined,
     CodeSandboxOutlined,
@@ -21,7 +27,6 @@ import { useTypedSelector } from "hooks/useTypedSelector";
 import UserExtraCardModal from "./modal";
 import { getUserEditingNameByKey } from "utils/getUserEditingNameByKey";
 
-import "./styles.scss";
 import RowData, { ListedRowData } from "./RowData";
 import { AuthContext } from "context/AuthContextProvider";
 import { actionMethodResultSync } from "functions/actionMethodResult";
@@ -33,6 +38,9 @@ import { SetCurrentUserDataItemInfo, SetUserSelectedKey } from "store/actions";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
 import getUserRequestUrl from "functions/getUserRequestUrl";
 import UserExtraCardAdditionalModal from "./modal/simpleAdditionalModal";
+import { useTheme } from "react-jss";
+import { ITheme } from "styles/theme/interface";
+import useStyles from "./styles";
 
 interface IUserExtraCard {
     usersId: string;
@@ -42,6 +50,9 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
     const authContext = useContext(AuthContext);
     const dispatch = useDispatch();
 
+    const theme = useTheme<ITheme>();
+    const classes = useStyles(theme);
+
     const selectedKey = useTypedSelector((state) => getSelectedKey(state.user));
     const currentUserDataItemInfo = useTypedSelector((state) =>
         getCurrentUserDataItemInfo(state.user)
@@ -49,23 +60,11 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
 
     const userMenuDataExists: boolean = isObjectNotEmpty(currentUserDataItemInfo);
     const additionalMenuExists: boolean = useMemo(
-        () =>
-            selectedKey === SelectedKeyTypes.SHARED_INFO ||
-            selectedKey === SelectedKeyTypes.ADDITIONAL_INFO ||
-            selectedKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE ||
-            selectedKey === SelectedKeyTypes.EDUCATION,
+        () => additionalMenuTypes.includes(selectedKey),
         [selectedKey]
     );
 
-    const arrayTypesFlag = useMemo(
-        () =>
-            selectedKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE ||
-            selectedKey === SelectedKeyTypes.EDUCATION ||
-            selectedKey === SelectedKeyTypes.CONTRACT ||
-            selectedKey === SelectedKeyTypes.DOCUMENT ||
-            selectedKey === SelectedKeyTypes.INVENTORY,
-        [selectedKey]
-    );
+    const arrayTypesFlag = useMemo(() => arrayKeyTypes.includes(selectedKey), [selectedKey]);
 
     const modalTitle = useMemo(
         () =>
@@ -136,19 +135,14 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
         return (
             <>
                 {Icon ? Icon : <></>}
-                {selectedKey === currentKey &&
-                (currentKey === SelectedKeyTypes.EDUCATION ||
-                    currentKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE ||
-                    currentKey === SelectedKeyTypes.CONTRACT ||
-                    currentKey === SelectedKeyTypes.INVENTORY ||
-                    currentKey === SelectedKeyTypes.DOCUMENT) ? (
-                    <PlusOutlined onClick={handleAdditionalIconClick} className="icon" />
+                {selectedKey === currentKey && arrayKeyTypes.includes(currentKey) ? (
+                    <PlusOutlined onClick={handleAdditionalIconClick} className={classes.icon} />
                 ) : (
                     selectedKey === currentKey &&
                     (userMenuDataExists ? (
-                        <EditOutlined onClick={handleIconClick} className="icon" />
+                        <EditOutlined onClick={handleIconClick} className={classes.icon} />
                     ) : (
-                        <PlusOutlined onClick={handleIconClick} className="icon" />
+                        <PlusOutlined onClick={handleIconClick} className={classes.icon} />
                     ))
                 )}
             </>
@@ -305,7 +299,7 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
     const memoizedAdditionalItems = useMemo(() => additionalItems, [additionalItems]);
 
     return (
-        <Card className={"userItem__extraCard"} title="Дополнительная информация">
+        <Card className={classes.extraCard} title="Дополнительная информация">
             <Form form={form} component={false}>
                 <Row className="row-wrapper">
                     <Col span={6}>
@@ -327,7 +321,7 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                         </Col>
                     )}
                     <Col span={additionalMenuExists ? 12 : 18}>
-                        <Row className="row-container" gutter={[6, 6]}>
+                        <Row className={classes.rowDataContainer} gutter={[6, 6]}>
                             {!arrayTypesFlag ? (
                                 currentDataLayout ? (
                                     currentDataLayout.map((dataItem, index) => (

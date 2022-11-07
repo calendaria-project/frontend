@@ -1,13 +1,20 @@
-import { FC, useContext, useEffect, useState } from "react";
-import { Button, Col, Form, Input, Row, Table } from "antd";
+import React, { FC, useCallback, useContext, useEffect, useState } from "react";
+import { Button, Form, Input, Table } from "antd";
 
 import { AuthContext } from "context/AuthContextProvider";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { IPositionViewModel } from "interfaces";
 import { SharedModal } from "../SharedModal";
-import "../styles.scss";
-import { CloseOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
+import { ITable } from "../ITable";
+import SearchingRow from "../SearchingRow";
+
+import SaveIcon from "assets/svgComponents/SaveIcon";
+import CancelIcon from "assets/svgComponents/CancelIcon";
+import EditIcon from "assets/svgComponents/EditIcon";
+import { ITheme } from "styles/theme/interface";
+
+import { useTheme } from "react-jss";
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     editing: boolean;
@@ -52,12 +59,18 @@ const EditableCell: React.FC<EditableCellProps> = ({
     );
 };
 
-const PositionList: FC = () => {
+const PositionList: FC<ITable> = ({ selectionItems }) => {
     const [data, setData] = useState<IPositionViewModel[]>([]);
     const authContext = useContext(AuthContext);
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState(-1);
     const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const theme = useTheme<ITheme>();
+
+    const onSetIsModalVisible = useCallback((bool: boolean) => {
+        setIsModalVisible(bool);
+    }, []);
 
     const isEditing = (record: IPositionViewModel) => record.positionId === editingKey;
 
@@ -142,23 +155,23 @@ const PositionList: FC = () => {
                 const disabled = editingKey !== -1;
                 return editable ? (
                     <>
-                        <Button
-                            type={"link"}
-                            style={{ color: "green" }}
-                            onClick={() => save(record)}
-                        >
-                            <SaveOutlined style={{ fontSize: 24 }} />
+                        <Button type={"link"} onClick={() => save(record)}>
+                            <SaveIcon color={theme.color.successful as string} />
                         </Button>
                         <Button type={"link"} onClick={() => setEditingKey(-1)}>
-                            <CloseOutlined style={{ fontSize: 24 }} />
+                            <CancelIcon color={theme.color.regular as string} />
                         </Button>
                     </>
                 ) : (
-                    <>
-                        <Button type={"link"} disabled={disabled} onClick={() => edit(record)}>
-                            <EditOutlined style={{ fontSize: 24 }} />
-                        </Button>
-                    </>
+                    <Button type={"link"} disabled={disabled} onClick={() => edit(record)}>
+                        <EditIcon
+                            color={
+                                disabled
+                                    ? (theme.color.disabled as string)
+                                    : (theme.color.regular as string)
+                            }
+                        />
+                    </Button>
                 );
             }
         }
@@ -193,16 +206,10 @@ const PositionList: FC = () => {
 
     return (
         <Form form={form} component={false}>
-            <Row gutter={24}>
-                <Col span={4}>
-                    <Button
-                        style={{ background: "#1890ff", color: "#fff", marginBottom: 10 }}
-                        onClick={() => setIsModalVisible(true)}
-                    >
-                        Добавить
-                    </Button>
-                </Col>
-            </Row>
+            <SearchingRow
+                selectionItems={selectionItems}
+                onSetIsModalVisible={onSetIsModalVisible}
+            />
             <Table
                 components={{
                     body: {

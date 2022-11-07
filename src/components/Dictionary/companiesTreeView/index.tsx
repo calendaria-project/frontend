@@ -1,5 +1,5 @@
 import { Form, message } from "antd";
-import React, { useContext, useEffect, useState } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import { ColumnDefinition } from "tabulator-tables";
 
 import { AuthContext } from "context/AuthContextProvider";
@@ -9,12 +9,15 @@ import { getRequestHeader } from "functions/common";
 import { ICompanyCreateViewModel, ICompanyViewModel, ICompanyTreeNodeModel } from "interfaces";
 import { createTableViaTabulator } from "services/tabulator";
 import { CompanyDirectoryModal } from "./modal";
-import "./styles.scss";
 import { DataNode } from "antd/es/tree";
+import { ITable } from "../Tables/ITable";
+import SearchingRow from "../Tables/SearchingRow";
+import editIcon from "assets/svg/editIcon.svg";
+import addIcon from "assets/svg/addIcon.svg";
 
 export type DataNodeItem = DataNode & ICompanyTreeNodeModel & { children: DataNodeItem[] };
 
-export const CompanyTreeView: React.FC = ({}) => {
+export const CompanyTreeView: FC<ITable> = ({ selectionItems }) => {
     const authContext = useContext(AuthContext);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
@@ -28,21 +31,20 @@ export const CompanyTreeView: React.FC = ({}) => {
     }, []);
 
     const nestedTableActionsFormatter = (cell: Tabulator.CellComponent) => {
-        let editBtn = document.createElement("button");
-        editBtn.textContent = "Изменить";
-        editBtn.setAttribute("class", "editBtn ant-btn ant-btn-secondary");
-        editBtn.addEventListener("click", () => onEdit(cell.getRow()));
+        let editBtnIcon = document.createElement("img");
+        editBtnIcon.setAttribute("src", editIcon);
+        editBtnIcon.addEventListener("click", () => onEdit(cell.getRow()));
 
-        let addBtn = document.createElement("button");
-        addBtn.textContent = "Добавить";
-        addBtn.setAttribute("class", "addBtn ant-btn ant-btn-primary");
-        addBtn.addEventListener("click", () => onAdd(cell.getRow()));
+        let addBtnIcon = document.createElement("img");
+        addBtnIcon.setAttribute("src", addIcon);
+        addBtnIcon.setAttribute("style", "margin-left: 28px");
+        addBtnIcon.addEventListener("click", () => onAdd(cell.getRow()));
 
         let wrap = document.createElement("div");
         wrap.setAttribute("class", "actionsWrap");
 
-        wrap.appendChild(editBtn);
-        wrap.appendChild(addBtn);
+        wrap.appendChild(editBtnIcon);
+        wrap.appendChild(addBtnIcon);
         return wrap;
     };
 
@@ -70,7 +72,7 @@ export const CompanyTreeView: React.FC = ({}) => {
             });
     };
 
-    const hanldeAddCompany = async (data: ICompanyCreateViewModel) => {
+    const handleAddCompany = async (data: ICompanyCreateViewModel) => {
         const company = selectedRow?.getData();
         data.parentId = company.companyId;
         let newChild = await createCompany(data);
@@ -80,7 +82,7 @@ export const CompanyTreeView: React.FC = ({}) => {
         form.resetFields();
     };
 
-    const hanldeUpdateCompany = async (data: any) => {
+    const handleUpdateCompany = async (data: any) => {
         let updatedData = await updateCompanyById(data);
         selectedRow?.update({ ...updatedData, _children: selectedRow.getData()._children });
         createCompamyNestedTable();
@@ -91,7 +93,13 @@ export const CompanyTreeView: React.FC = ({}) => {
 
     const updateCompanyById = (data: ICompanyViewModel) => {
         let url = `company`;
-        return actionMethodResultSync("DICTIONARY", url, "put", getRequestHeader(authContext.token), data)
+        return actionMethodResultSync(
+            "DICTIONARY",
+            url,
+            "put",
+            getRequestHeader(authContext.token),
+            data
+        )
             .then((data) => {
                 message.success("Успешно обновлено");
                 return data;
@@ -104,7 +112,13 @@ export const CompanyTreeView: React.FC = ({}) => {
 
     const createCompany = (data: ICompanyCreateViewModel) => {
         let url = `company`;
-        return actionMethodResultSync("DICTIONARY", url, "post", getRequestHeader(authContext.token), data)
+        return actionMethodResultSync(
+            "DICTIONARY",
+            url,
+            "post",
+            getRequestHeader(authContext.token),
+            data
+        )
             .then((data) => {
                 message.success("Успешно создано");
                 return data;
@@ -146,19 +160,20 @@ export const CompanyTreeView: React.FC = ({}) => {
             <CompanyDirectoryModal
                 okText="Создать"
                 title="Новая компания"
-                onFinish={hanldeAddCompany}
+                onFinish={handleAddCompany}
                 isVisible={isModalVisible}
                 setIsVisible={setIsModalVisible}
                 form={form}
             />
             <CompanyDirectoryModal
                 okText="Сохранить"
-                title="Изменение данные"
-                onFinish={hanldeUpdateCompany}
+                title="Изменить данные"
+                onFinish={handleUpdateCompany}
                 isVisible={isEditModalVisible}
                 setIsVisible={setIsEditModalVisible}
                 form={editForm}
             />
+            <SearchingRow selectionItems={selectionItems} />
             <div id="companiesTable" />
         </>
     );

@@ -21,3 +21,17 @@ export const SetCurrentUserDataItemInfo = (payload: { [selectedKey: string]: any
         payload
     };
 };
+
+export const SetCurrentOpenedMenu = (payload: string): IAction => {
+    return {
+        type: MainActionTypes.SET_CURRENT_OPENED_MENU,
+        payload
+    };
+};
+
+export const SetDictionaryTabActiveKey = (payload: string): IAction => {
+    return {
+        type: MainActionTypes.SET_DICTIONARY_TAB_ACTIVE_KEY,
+        payload
+    };
+};

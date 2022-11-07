@@ -1,7 +1,12 @@
 import SharedList from "../SharedList";
 import { dictionaryCodesEnum } from "data/enums";
+import { ITable } from "../ITable";
 import { FC } from "react";
 
-export const GenderTable: FC = () => (
-    <SharedList dictionaryCode={dictionaryCodesEnum.SEX} modalTitle={"Новый пол"} />
+export const GenderTable: FC<ITable> = ({ selectionItems }) => (
+    <SharedList
+        dictionaryCode={dictionaryCodesEnum.SEX}
+        modalTitle={"Новый пол"}
+        selectionItems={selectionItems}
+    />
 );
