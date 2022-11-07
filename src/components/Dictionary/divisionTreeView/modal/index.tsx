@@ -6,6 +6,7 @@ import { validateMessages } from "data/validateMessages";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
+import React from "react";
 
 export interface IDivisionDirectoryModal {
     okText: string;
@@ -91,12 +92,19 @@ export const DivisionDirectoryModal = ({
                             <Input />
                         </Form.Item>
                     </Col>
-                    <Col span={24}>
-                        <Form.Item className={classes.btnFormItem}>
-                            <Button customType="regular" htmlType="submit">
+                </Row>
+                <Row align={"middle"} justify={"center"} gutter={[16, 16]}>
+                    <Col>
+                        <Form.Item className={classes.okBtnFormItem}>
+                            <Button customType={"regular"} htmlType="submit">
                                 {okText}
                             </Button>
                         </Form.Item>
+                    </Col>
+                    <Col>
+                        <Button customType={"primary"} onClick={handleCancel}>
+                            Отмена
+                        </Button>
                     </Col>
                 </Row>
             </Form>

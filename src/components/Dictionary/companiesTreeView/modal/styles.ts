@@ -35,5 +35,8 @@ export default createUseStyles({
     },
     plusBtnIcon: {
         color: (theme: ITheme) => `${theme.color.successful} !important`
+    },
+    okBtnFormItem: {
+        marginTop: "14px !important"
     }
 });

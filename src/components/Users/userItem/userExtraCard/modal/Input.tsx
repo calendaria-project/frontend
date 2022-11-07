@@ -11,8 +11,6 @@ interface IInput {
 const { TextArea } = AntdInput;
 
 const Input: FC<IInput> = ({ form, dataItemLayout, currentDataItemInfo }) => {
-    console.log("Input", currentDataItemInfo);
-
     const [currentValue, setCurrentValue] = useState<string>(
         currentDataItemInfo?.[dataItemLayout.propertyName]
     );

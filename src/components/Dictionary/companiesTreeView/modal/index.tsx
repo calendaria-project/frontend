@@ -162,12 +162,19 @@ export const CompanyDirectoryModal = ({
                             </>
                         )}
                     </Form.List>
-                    <Col xl={24} xs={24}>
-                        <Form.Item style={{ display: "flex", justifyContent: "center" }}>
-                            <Button customType="regular" htmlType="submit">
+                </Row>
+                <Row align={"middle"} justify={"center"} gutter={[16, 16]}>
+                    <Col>
+                        <Form.Item className={classes.okBtnFormItem}>
+                            <Button customType={"regular"} htmlType="submit">
                                 {okText}
                             </Button>
                         </Form.Item>
+                    </Col>
+                    <Col>
+                        <Button customType={"primary"} onClick={handleCancel}>
+                            Отмена
+                        </Button>
                     </Col>
                 </Row>
             </Form>

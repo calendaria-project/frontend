@@ -2,10 +2,10 @@ import { createUseStyles } from "react-jss";
 
 export default createUseStyles({
     "@global": {
-        ".ant-col": {
-            paddingLeft: "0 !important",
-            paddingRight: "0 !important"
-        },
+        // ".ant-col": {
+        //     paddingLeft: "0 !important",
+        //     paddingRight: "0 !important"
+        // },
         ".ant-row": {
             marginLeft: "0 !important",
             marginRight: "0 !important"
@@ -19,14 +19,29 @@ export default createUseStyles({
             textOverflow: "ellipsis",
             maxWidth: "200px"
         },
-        ".ant-input, .ant-select-selector, .ant-picker, .ant-pagination-item, .ant-pagination-prev .ant-pagination-next":
+        ".ant-input, .ant-input-affix-wrapper, .ant-select-selector, .ant-picker, .ant-pagination-item, .ant-pagination-prev, .ant-pagination-next, .ant-card-bordered":
             {
                 borderRadius: "6px !important",
                 borderColor: "#C2C2C2 !important"
             },
+        ".ant-table-container": {
+            borderRadius: "6px !important",
+            border: "1px solid #C2C2C2 !important"
+        },
         ".ant-modal-title": {
             fontSize: "20px !important",
             fontWeight: "600 !important"
+        },
+        ".ant-card-head": {
+            height: "64px"
+        },
+        ".ant-card-head-wrapper": {
+            height: "100%"
+        },
+        ".ant-modal-header": {
+            borderBottom: "none !important",
+            textAlign: "center !important",
+            padding: "30px 0px 10px 0px !important"
         }
     }
 });

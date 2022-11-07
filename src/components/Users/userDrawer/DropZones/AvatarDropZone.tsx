@@ -8,6 +8,9 @@ import { useContext, useState } from "react";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { AuthContext } from "context/AuthContextProvider";
 import { acceptedFiles } from "./acceptedFiles";
+import { useTheme } from "react-jss";
+import { ITheme } from "styles/theme/interface";
+import useStyles from "./styles";
 
 const { Title } = Typography;
 
@@ -16,6 +19,11 @@ const AvatarDropZone: FC<{ form: FormInstance; userPhoto?: string | null }> = ({
     userPhoto
 }) => {
     const authContext = useContext(AuthContext);
+
+    const theme = useTheme<ITheme>();
+    // @ts-ignore
+    const classes = useStyles(theme);
+
     const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
@@ -26,8 +34,8 @@ const AvatarDropZone: FC<{ form: FormInstance; userPhoto?: string | null }> = ({
     }, [userPhoto]);
 
     const uploadButton = (
-        <div className="avatarWrap">
-            {loading ? <LoadingOutlined /> : <PlusOutlined color="#fff" />}
+        <div className={classes.avatarWrap}>
+            {loading ? <LoadingOutlined /> : <PlusOutlined className={classes.plusIcon} />}
         </div>
     );
 
@@ -60,10 +68,10 @@ const AvatarDropZone: FC<{ form: FormInstance; userPhoto?: string | null }> = ({
     };
 
     return (
-        <Space className="userTitleSpace" direction="vertical" align="center">
+        <Space className={classes.userTitleSpace} direction="vertical" align="center">
             <Title level={3}>Основная информация</Title>
             {avatarUrl ? (
-                <img src={avatarUrl} alt="avatar" style={{ width: "100%" }} />
+                <img src={avatarUrl} alt="avatar" className={classes.avatarIcon} />
             ) : (
                 uploadButton
             )}
@@ -72,14 +80,14 @@ const AvatarDropZone: FC<{ form: FormInstance; userPhoto?: string | null }> = ({
                     return (
                         <div {...getRootProps()}>
                             <input {...getInputProps()} />
-                            <Button color="green" className="uploadBtn" type="text">
+                            <Button className={classes.uploadBtn} type="text">
                                 Добавить
                             </Button>
                         </div>
                     );
                 }}
             </Dropzone>
-            <Button onClick={deleteAvatar} className="deleteBtn" color="red" type="text">
+            <Button onClick={deleteAvatar} className={classes.deleteBtn} type="text">
                 Удалить
             </Button>
         </Space>

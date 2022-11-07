@@ -45,7 +45,7 @@ const Button: FC<IButton> = ({
 }) => {
     const theme = useTheme<ITheme>();
     // @ts-ignore
-    const classes = useStyles({ theme, disabled });
+    const classes = useStyles({ theme, disabled, size });
 
     return (
         <AntdButton

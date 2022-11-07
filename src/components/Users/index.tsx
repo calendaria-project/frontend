@@ -4,7 +4,6 @@ import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { Col, Input, Row } from "antd";
 import Button from "ui/Button";
 import { FC, useContext, useEffect, useState } from "react";
-import "./stylesCSS.scss";
 import { AuthContext } from "context/AuthContextProvider";
 import { usersColumns } from "data/columns";
 import { actionMethodResultSync } from "functions/actionMethodResult";
@@ -50,17 +49,18 @@ const Users: FC = () => {
 
         let photoElement = document.createElement("img");
         photoElement.setAttribute("src", userPhoto ? userPhoto : questionImage);
+        photoElement.setAttribute("class", classes.userPhoto);
         photoElement.setAttribute("width", "30px");
         photoElement.setAttribute("height", "30px");
 
         let textElement = document.createElement("span");
-        textElement.setAttribute("class", "fullNameText");
+        textElement.setAttribute("class", classes.fullNameText);
         textElement.textContent = `${data.lastname ?? ""} ${data.firstname ?? ""} ${
             data.patronymic ?? ""
         }`;
 
         let wrap = document.createElement("div");
-        wrap.setAttribute("class", "fullNameWrap");
+        wrap.setAttribute("class", classes.fullNameWrap);
         wrap.appendChild(photoElement);
         wrap.appendChild(textElement);
         return wrap;
@@ -170,16 +170,16 @@ const Users: FC = () => {
     const showDrawer = () => setIsVisibleAddUserDrawer(true);
 
     return (
-        <Row style={{ padding: "20px", marginRight: 0, marginLeft: 0 }} gutter={[16, 0]}>
-            <Row className={classes.searchingWrapper} gutter={[16, 0]}>
-                <Col>
+        <Row className={classes.container}>
+            <Row className={classes.searchingWrapper}>
+                <Col className={classes.searchingCol}>
                     <Input
                         className={classes.input}
                         placeholder="Поиск"
                         suffix={<SearchOutlined className={classes.searchIcon} />}
                     />
                 </Col>
-                <Col>
+                <Col className={classes.searchingCol}>
                     <Button
                         className={classes.button}
                         customType={"regular"}
@@ -190,8 +190,8 @@ const Users: FC = () => {
                     </Button>
                 </Col>
             </Row>
-            <Row style={{ padding: "0", marginRight: 0, marginLeft: 0, width: "100%" }}>
-                <div className={classes.usersTable} id="usersTable" />
+            <Row className={classes.usersTableWrapper}>
+                <div id="usersTable" />
             </Row>
             <UserAddDrawer
                 companyId={companyId}

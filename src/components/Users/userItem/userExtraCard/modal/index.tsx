@@ -1,5 +1,7 @@
-import { Button, Col, Form, FormInstance, Modal, Row } from "antd";
+import { Col, Form, FormInstance, Modal, Row } from "antd";
 import Select from "./Select";
+
+import Button from "ui/Button";
 
 import Input from "./Input";
 import React, { FC, memo, useCallback } from "react";
@@ -7,7 +9,8 @@ import React, { FC, memo, useCallback } from "react";
 import { validateMessages } from "data/validateMessages";
 import { Types, TInputData, arrayKeyTypes } from "../constants";
 
-import "../styles.scss";
+import useStyles from "./styles";
+
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { getCurrentUserDataItemInfo, getSelectedKey } from "store/reducers/userReducer";
 import DatePicker from "./DatePicker";
@@ -56,6 +59,8 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
     currentDataLayout,
     index
 }) => {
+    const classes = useStyles();
+
     const selectedKey = useTypedSelector((state) => getSelectedKey(state.user));
     const currentUserDataItemInfo = useTypedSelector((state) =>
         getCurrentUserDataItemInfo(state.user)
@@ -150,8 +155,8 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                 </Row>
                 <Row align={"middle"} justify={"center"} gutter={[16, 16]}>
                     <Col>
-                        <Form.Item className="ok-btn-wrapper">
-                            <Button className="ok-btn" type="primary" htmlType="submit">
+                        <Form.Item className={classes.okBtnFormItem}>
+                            <Button customType={"regular"} htmlType="submit">
                                 {okText}
                             </Button>
                         </Form.Item>

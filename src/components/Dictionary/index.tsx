@@ -21,9 +21,16 @@ import { EducationLevelTable } from "./Tables/educationLevelTable";
 import { SpecialtyTable } from "./Tables/specialtyTable";
 import { AddressTypeTable } from "./Tables/addressTypeTable";
 import { useTypedSelector } from "hooks/useTypedSelector";
+import { useTheme } from "react-jss";
+import { ITheme } from "styles/theme/interface";
+import useStyles from "./styles";
 
 const Dictionary = () => {
     const dispatch = useDispatch();
+
+    const theme = useTheme<ITheme>();
+    //@ts-ignore
+    const classes = useStyles(theme);
 
     useEffect(() => {
         dispatch(SetCurrentOpenedMenu(mainMenuEnum.dictionary));
@@ -117,7 +124,7 @@ const Dictionary = () => {
     const currentSelectedItem = items.find((item) => item.key === tabActiveKey)?.children;
 
     return (
-        <Row style={{ padding: "20px", marginRight: 0, marginLeft: 0 }} gutter={[16, 16]}>
+        <Row className={classes.row}>
             <Col span={24}>
                 {cloneElement(currentSelectedItem as ReactElement, {
                     selectionItems

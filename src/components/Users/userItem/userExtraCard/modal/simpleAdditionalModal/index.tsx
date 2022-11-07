@@ -1,5 +1,7 @@
-import { Button, Col, Form, FormInstance, Modal, Row } from "antd";
+import { Col, Form, FormInstance, Modal, Row } from "antd";
 import Select from "../Select";
+
+import Button from "ui/Button";
 
 import Input from "../Input";
 import React, { FC, memo, useCallback } from "react";
@@ -7,7 +9,7 @@ import React, { FC, memo, useCallback } from "react";
 import { validateMessages } from "data/validateMessages";
 import { Types, TInputData } from "../../constants";
 
-import "../../styles.scss";
+import useStyles from "../styles";
 import DatePicker from "../DatePicker";
 
 interface IUserItemModal {
@@ -32,6 +34,8 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
     const handleCancel = useCallback(() => {
         setIsVisible(false);
     }, []);
+
+    const classes = useStyles();
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
@@ -79,14 +83,14 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
                 </Row>
                 <Row align={"middle"} justify={"center"} gutter={[16, 16]}>
                     <Col>
-                        <Form.Item className="ok-btn-wrapper">
-                            <Button className="ok-btn" type="primary" htmlType="submit">
+                        <Form.Item className={classes.okBtnFormItem}>
+                            <Button customType={"regular"} htmlType="submit">
                                 {okText}
                             </Button>
                         </Form.Item>
                     </Col>
                     <Col>
-                        <Button className="cancel-btn" onClick={handleCancel}>
+                        <Button customType={"primary"} onClick={handleCancel}>
                             Отмена
                         </Button>
                     </Col>

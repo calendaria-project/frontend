@@ -6,12 +6,20 @@ import { postFormDataHeader } from "functions/common";
 import { useContext, useState } from "react";
 import { AuthContext } from "context/AuthContextProvider";
 import { acceptedFiles } from "./acceptedFiles";
+import { useTheme } from "react-jss";
+import { ITheme } from "styles/theme/interface";
+import useStyles from "./styles";
 
 const AvatarDropZone: FC<{ form: FormInstance; userSign?: string | null }> = ({
     form,
     userSign
 }) => {
     const authContext = useContext(AuthContext);
+
+    const theme = useTheme<ITheme>();
+    // @ts-ignore
+    const classes = useStyles(theme);
+
     const [signFileName, setSignFileName] = useState<string | null>(null);
 
     useEffect(() => {
@@ -43,12 +51,12 @@ const AvatarDropZone: FC<{ form: FormInstance; userSign?: string | null }> = ({
     return (
         <Form.Item
             // noStyle
-            className="uploadItem"
+            className={classes.uploadItem}
             label="Подпись"
             shouldUpdate={() => signFileName !== null}
         >
             <Input
-                className={"sign-upload-input"}
+                className={classes['signUploadInput[type="text"]']}
                 readOnly
                 value={signFileName ? signFileName : undefined}
             />
@@ -58,7 +66,7 @@ const AvatarDropZone: FC<{ form: FormInstance; userSign?: string | null }> = ({
                         return (
                             <div {...getRootProps()}>
                                 <input {...getInputProps()} />
-                                <Button className="uploadBtn" type="text">
+                                <Button className={classes.uploadBtn} type="text">
                                     Загрузить
                                 </Button>
                             </div>
@@ -66,7 +74,7 @@ const AvatarDropZone: FC<{ form: FormInstance; userSign?: string | null }> = ({
                     }}
                 </Dropzone>
             ) : (
-                <Button className="deleteBtn" onClick={deleteSignFile} type="text">
+                <Button className={classes.deleteBtn} onClick={deleteSignFile} type="text">
                     Удалить
                 </Button>
             )}

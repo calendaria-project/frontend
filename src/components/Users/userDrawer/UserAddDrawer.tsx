@@ -20,7 +20,7 @@ import { useContext } from "react";
 const { Option } = Select;
 const { Title } = Typography;
 
-import "./styles.scss";
+import UIButton from "ui/Button";
 
 import {
     mailPattern,
@@ -33,6 +33,9 @@ import AvatarDropZone from "./DropZones/AvatarDropZone";
 import SignDropZone from "./DropZones/SignDropZone";
 import { useInitialData } from "./hooks/useInitialData";
 import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
+import { useTheme } from "react-jss";
+import { ITheme } from "styles/theme/interface";
+import useStyles from "./styles";
 
 export interface IUserAddDrawer {
     companyId: string | undefined;
@@ -51,6 +54,10 @@ export const UserAddDrawer = ({
 }: IUserAddDrawer) => {
     const [form] = Form.useForm();
     const authContext = useContext(AuthContext);
+
+    const theme = useTheme<ITheme>();
+    // @ts-ignore
+    const classes = useStyles(theme);
 
     const { divisions, positions, sexes } = useInitialData(companyId);
 
@@ -86,15 +93,17 @@ export const UserAddDrawer = ({
             closeIcon={<LeftOutlined />}
             extra={
                 <Space>
-                    <Button onClick={onClose}>Отменить</Button>
-                    <Button onClick={handleCreateUser} type="primary">
+                    <UIButton customType={"primary"} onClick={onClose}>
+                        Отменить
+                    </UIButton>
+                    <UIButton customType={"regular"} onClick={handleCreateUser} type="primary">
                         Сохранить
-                    </Button>
+                    </UIButton>
                 </Space>
             }
         >
-            <Form form={form} layout="vertical" className="userFormWrap">
-                <Row gutter={24} className="infoTitleRow">
+            <Form form={form} layout="vertical" className={classes.userForm}>
+                <Row gutter={24} className={classes.infoTitleRow}>
                     <Col>
                         <Space>
                             <DownOutlined />
@@ -168,7 +177,7 @@ export const UserAddDrawer = ({
                                     label="Дата рождения"
                                     rules={[{ required: true, message: "Дата рождения" }]}
                                 >
-                                    <DatePicker style={{ width: "100%" }} />
+                                    <DatePicker className={classes.datePicker} />
                                 </Form.Item>
                             </Col>
                             <Col span={8}>
@@ -190,7 +199,7 @@ export const UserAddDrawer = ({
                                     label="Дата приема на работу"
                                     rules={[{ required: true, message: "Дата приема на работу" }]}
                                 >
-                                    <DatePicker style={{ width: "100%" }} />
+                                    <DatePicker className={classes.datePicker} />
                                 </Form.Item>
                             </Col>
                             <Col span={8}>
@@ -200,7 +209,7 @@ export const UserAddDrawer = ({
                     </Col>
                 </Row>
                 <Divider />
-                <Row gutter={24} className="infoTitleRow">
+                <Row gutter={24} className={classes.infoTitleRow}>
                     <Col>
                         <Space>
                             <DownOutlined />
@@ -211,15 +220,19 @@ export const UserAddDrawer = ({
                 <Divider />
                 <Row gutter={16}>
                     <Col span={8}>
-                        <Space className="userTitleSpace" direction="vertical" align="center">
+                        <Space
+                            className={classes.userTitleSpace}
+                            direction="vertical"
+                            align="center"
+                        >
                             <Title level={3}>Информация о компании</Title>
-                            <div className="avatarWrap">
-                                <PlusOutlined color="#fff" />
+                            <div className={classes.avatarWrap}>
+                                <PlusOutlined className={classes.plusIcon} />
                             </div>
-                            <Button className="uploadBtn" color="red" type="text">
+                            <Button className={classes.uploadBtn} type="text">
                                 Добавить
                             </Button>
-                            <Button className="deleteBtn" color="red" type="text">
+                            <Button className={classes.deleteBtn} type="text">
                                 Удалить
                             </Button>
                         </Space>

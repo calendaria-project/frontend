@@ -35,7 +35,7 @@ const SearchingRow: FC<ISearchingRow> = ({ selectionItems, onSetIsModalVisible }
     };
 
     return (
-        <Row className={classes.wrapper} gutter={24}>
+        <Row className={classes.wrapper}>
             <Col>
                 <Input
                     className={classes.input}
@@ -57,7 +57,7 @@ const SearchingRow: FC<ISearchingRow> = ({ selectionItems, onSetIsModalVisible }
                 </Select>
             </Col>
             {onSetIsModalVisible && (
-                <Col className={"col-end-wrapper"}>
+                <Col className={classes.endedColWrapper}>
                     <Button customType={"regular"} onClick={handleAdd} icon={<PlusOutlined />}>
                         Добавить
                     </Button>

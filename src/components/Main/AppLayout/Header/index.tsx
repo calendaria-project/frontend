@@ -1,7 +1,7 @@
 import { Dropdown, Image, Layout, Menu, Select, Space } from "antd";
 import Button from "ui/Button";
-import { BellOutlined, DownOutlined } from "@ant-design/icons";
-import { FC, memo, useContext, useEffect, useState } from "react";
+import { BellOutlined, DownOutlined, LeftOutlined } from "@ant-design/icons";
+import React, { FC, memo, useContext, useEffect, useState } from "react";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { AuthContext } from "context/AuthContextProvider";
@@ -11,11 +11,13 @@ import useStyles from "./styles";
 import UIHeader from "ui/Header";
 import { mainMenuEnum } from "data/enums";
 import { useTypedSelector } from "hooks/useTypedSelector";
+import { useNavigate } from "react-router";
 
 const { Header: AntdHeader } = Layout;
 
 const Header: FC = () => {
     const authContext = useContext(AuthContext);
+    const navigate = useNavigate();
     const selectedMainMenuPoint = useTypedSelector((state) => state.menu.openedMenu);
     const theme = useTheme<ITheme>();
     const classes = useStyles(theme);
@@ -55,6 +57,12 @@ const Header: FC = () => {
                     <UIHeader size="h2">Справочники</UIHeader>
                 ) : selectedMainMenuPoint === mainMenuEnum.users ? (
                     <UIHeader size="h2">Сотрудники</UIHeader>
+                ) : selectedMainMenuPoint === mainMenuEnum.userItem ? (
+                    <div className={classes.userItemHeader} onClick={() => navigate("/users")}>
+                        <UIHeader size="h2">
+                            <LeftOutlined /> Сотрудники
+                        </UIHeader>
+                    </div>
                 ) : null}
             </div>
             <div className={classes.selections}>

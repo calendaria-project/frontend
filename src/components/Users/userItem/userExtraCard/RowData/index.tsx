@@ -1,11 +1,10 @@
 import React, { FC, useState, useEffect, memo, useMemo, useCallback, useContext } from "react";
 import { Row, Col, Divider, Typography, Form, message } from "antd";
-import { TInputData, Types } from "./constants";
-import { SelectedKeyTypes } from "./constants";
+import { TInputData, Types } from "../constants";
+import { SelectedKeyTypes } from "../constants";
 
 import _ from "lodash";
 
-import "./styles.scss";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { getCurrentUserDataItemInfo, getSelectedKey } from "store/reducers/userReducer";
@@ -19,7 +18,7 @@ import {
 } from "interfaces";
 import { EditOutlined } from "@ant-design/icons";
 
-import UserExtraCardModal from "./modal";
+import UserExtraCardModal from "../modal";
 import { getUserEditingNameByKey } from "utils/getUserEditingNameByKey";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import getUserRequestUrl from "functions/getUserRequestUrl";
@@ -28,6 +27,7 @@ import { SetCurrentUserDataItemInfo } from "store/actions";
 import { removeObjectProperties } from "utils/removeObjectProperties";
 import { AuthContext } from "context/AuthContextProvider";
 import { useDispatch } from "react-redux";
+import useStyles from "./styles";
 
 interface IRowData {
     dataItem: TInputData;
@@ -43,6 +43,8 @@ const { Text } = Typography;
 const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
     const authContext = useContext(AuthContext);
     const dispatch = useDispatch();
+
+    const classes = useStyles();
 
     const currentUserDataItemInfo = useTypedSelector((state) =>
         getCurrentUserDataItemInfo(state.user)
@@ -135,25 +137,21 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
     }> = ({ index, title, additionalInfo, extraAdditionalInfo }) => {
         return (
             <Form key={index} form={form} component={false}>
-                <Row className="row-wrapper">
+                <Row className={classes.rowWrapper}>
                     <Col>
                         <Text strong>{title || ""}</Text>
                     </Col>
-                    <Col className="col-end-wrapper">
-                        <EditOutlined
-                            style={{ top: "4px" }}
-                            onClick={handleIconClick(index)}
-                            className="icon"
-                        />
+                    <Col className={classes.endedColWrapper}>
+                        <EditOutlined onClick={handleIconClick(index)} className={classes.icon} />
                     </Col>
                 </Row>
-                <Row className="row-wrapper">
+                <Row className={classes.rowWrapper}>
                     <Col>{additionalInfo || ""}</Col>
                     {extraAdditionalInfo && (
-                        <Col className="col-end-wrapper">{extraAdditionalInfo}</Col>
+                        <Col className={classes.endedColWrapper}>{extraAdditionalInfo}</Col>
                     )}
                 </Row>
-                <Divider className="userItem__extraCard-divider" />
+                <Divider />
                 <UserExtraCardModal
                     okText={"Сохранить"}
                     title={additionalModalTitle}
@@ -250,6 +248,8 @@ const ListedRowData = React.memo(ListRowData);
 export { ListedRowData };
 
 const RowData: FC<IRowData> = ({ dataItem }) => {
+    const classes = useStyles();
+
     const [displayedData, setDisplayedData] = useState<string>("");
     const currentUserDataItemInfo = useTypedSelector((state) =>
         getCurrentUserDataItemInfo(state.user)
@@ -265,10 +265,10 @@ const RowData: FC<IRowData> = ({ dataItem }) => {
     }, [currentUserDataItemInfo, dataItem]);
 
     return (
-        <Row className="row-wrapper">
+        <Row className={classes.rowWrapper}>
             <Col>{dataItem.placeholder}</Col>
-            <Col className="col-end-wrapper">{userMenuDataExists ? displayedData : ""}</Col>
-            <Divider className="userItem__extraCard-divider" />
+            <Col className={classes.endedColWrapper}>{userMenuDataExists ? displayedData : ""}</Col>
+            <Divider />
         </Row>
     );
 };

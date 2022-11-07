@@ -29,7 +29,8 @@ const sharedTheme: ITheme = {
     selection: {
         background: {
             primary: "#2C2C2C",
-            secondary: "#F0F0F0"
+            secondary: "#F0F0F0",
+            transparency: "#F0F0F0"
         }
     },
     image: {
@@ -65,7 +66,9 @@ const sharedTheme: ITheme = {
     },
     table: {
         header: {
-            background: "#F2F2F2"
+            background: "#F2F2F2",
+            slight: "#F4F6FB",
+            secondary: "#C2C2C2"
         },
         background: "#E0E0E0",
         color: "#333333",
@@ -81,6 +84,7 @@ const sharedTheme: ITheme = {
         padding: "20px",
         margin: "14px",
         smallMargin: "4px",
+        mediumPadding: "8px",
         smallPadding: "4px"
     }
 };

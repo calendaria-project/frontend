@@ -16,5 +16,10 @@ export default createUseStyles({
         "& .ant-select-selector": {
             borderColor: (theme: ITheme) => `${theme.color.lines} !important`
         }
+    },
+    endedColWrapper: {
+        display: "flex",
+        flex: "1 1 auto",
+        justifyContent: "end"
     }
 });

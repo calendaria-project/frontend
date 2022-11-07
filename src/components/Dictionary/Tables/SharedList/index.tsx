@@ -15,8 +15,6 @@ import RemoveIcon from "assets/svgComponents/RemoveIcon";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 
-import useStyles from "./styles";
-
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     editing: boolean;
     dataIndex: string;
@@ -69,8 +67,6 @@ const SharedList: FC<ISharedList> = ({ dictionaryCode, modalTitle, selectionItem
     const authContext = useContext(AuthContext);
 
     const theme = useTheme<ITheme>();
-    //@ts-ignore
-    const classes = useStyles(theme);
 
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState(-1);
@@ -174,29 +170,16 @@ const SharedList: FC<ISharedList> = ({ dictionaryCode, modalTitle, selectionItem
                 const disabled = editingKey !== -1;
                 return editable ? (
                     <>
-                        <Button
-                            type={"link"}
-                            onClick={() => save(record)}
-                            className={classes.imagedBtn}
-                        >
+                        <Button type={"link"} onClick={() => save(record)}>
                             <SaveIcon color={theme.color.successful as string} />
                         </Button>
-                        <Button
-                            className={classes.imagedBtn}
-                            type={"link"}
-                            onClick={() => setEditingKey(-1)}
-                        >
+                        <Button type={"link"} onClick={() => setEditingKey(-1)}>
                             <CancelIcon color={theme.color.regular as string} />
                         </Button>
                     </>
                 ) : (
                     <>
-                        <Button
-                            className={classes.imagedBtn}
-                            type={"link"}
-                            disabled={disabled}
-                            onClick={() => edit(record)}
-                        >
+                        <Button type={"link"} disabled={disabled} onClick={() => edit(record)}>
                             <EditIcon
                                 color={
                                     disabled
@@ -205,12 +188,7 @@ const SharedList: FC<ISharedList> = ({ dictionaryCode, modalTitle, selectionItem
                                 }
                             />
                         </Button>
-                        <Button
-                            type={"link"}
-                            disabled={disabled}
-                            className={classes.imagedBtn}
-                            onClick={() => remove(record)}
-                        >
+                        <Button type={"link"} disabled={disabled} onClick={() => remove(record)}>
                             <RemoveIcon
                                 color={
                                     disabled

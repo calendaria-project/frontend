@@ -21,9 +21,7 @@ export default createUseStyles({
     rightFormItem: {
         paddingLeft: (theme: ITheme) => `${theme.layout.smallPadding} !important`
     },
-    btnFormItem: {
-        display: "flex",
-        justifyContent: "center",
-        marginTop: (theme: ITheme) => `${theme.layout.margin} !important`
+    okBtnFormItem: {
+        marginTop: "14px !important"
     }
 });

@@ -245,10 +245,13 @@ const Staffing: FC = () => {
 
     return (
         <Row style={{ padding: "20px", marginRight: 0, marginLeft: 0 }} gutter={[16, 16]}>
-            <Col span={24}>
+            <Col style={{ paddingLeft: 0, paddingRight: 0 }} span={24}>
                 <Form form={form} component={false}>
                     <Row align={"middle"} gutter={24}>
-                        <Col style={{ marginBottom: "14px" }} span={12}>
+                        <Col
+                            style={{ marginBottom: "14px", paddingLeft: 0, paddingRight: 0 }}
+                            span={12}
+                        >
                             <Select
                                 placeholder="Выберите компанию"
                                 style={{ width: 250 }}
@@ -265,8 +268,8 @@ const Staffing: FC = () => {
                                 ))}
                             </Select>
                             <UIButton
-                                className={"uibtn"}
                                 customType={"regular"}
+                                className={"uibtn endedCol"}
                                 disabled={!selectedCompanyId}
                                 onClick={() => setIsModalVisible(true)}
                                 icon={<PlusOutlined />}

@@ -33,6 +33,7 @@ export interface ITheme {
         padding: string;
         margin: string;
         smallMargin: string;
+        mediumPadding: string;
         smallPadding: string;
     };
 }

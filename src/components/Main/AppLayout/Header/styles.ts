@@ -33,6 +33,9 @@ export default createUseStyles({
             color: (theme: ITheme) => `${theme.color.arrow} !important`
         }
     },
+    userItemHeader: {
+        cursor: "pointer"
+    },
     userDropdown: {},
     userDropdownInfo: {}
 });

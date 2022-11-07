@@ -6,9 +6,15 @@ import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { IPositionViewModel } from "interfaces";
 import { SharedModal } from "../SharedModal";
-import { CloseOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
 import { ITable } from "../ITable";
 import SearchingRow from "../SearchingRow";
+
+import SaveIcon from "assets/svgComponents/SaveIcon";
+import CancelIcon from "assets/svgComponents/CancelIcon";
+import EditIcon from "assets/svgComponents/EditIcon";
+import { ITheme } from "styles/theme/interface";
+
+import { useTheme } from "react-jss";
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     editing: boolean;
@@ -59,6 +65,8 @@ const PositionList: FC<ITable> = ({ selectionItems }) => {
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState(-1);
     const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const theme = useTheme<ITheme>();
 
     const onSetIsModalVisible = useCallback((bool: boolean) => {
         setIsModalVisible(bool);
@@ -147,23 +155,23 @@ const PositionList: FC<ITable> = ({ selectionItems }) => {
                 const disabled = editingKey !== -1;
                 return editable ? (
                     <>
-                        <Button
-                            type={"link"}
-                            style={{ color: "green" }}
-                            onClick={() => save(record)}
-                        >
-                            <SaveOutlined style={{ fontSize: 24 }} />
+                        <Button type={"link"} onClick={() => save(record)}>
+                            <SaveIcon color={theme.color.successful as string} />
                         </Button>
                         <Button type={"link"} onClick={() => setEditingKey(-1)}>
-                            <CloseOutlined style={{ fontSize: 24 }} />
+                            <CancelIcon color={theme.color.regular as string} />
                         </Button>
                     </>
                 ) : (
-                    <>
-                        <Button type={"link"} disabled={disabled} onClick={() => edit(record)}>
-                            <EditOutlined style={{ fontSize: 24 }} />
-                        </Button>
-                    </>
+                    <Button type={"link"} disabled={disabled} onClick={() => edit(record)}>
+                        <EditIcon
+                            color={
+                                disabled
+                                    ? (theme.color.disabled as string)
+                                    : (theme.color.regular as string)
+                            }
+                        />
+                    </Button>
                 );
             }
         }

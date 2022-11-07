@@ -5,8 +5,10 @@ const grey200 = "#e4e7ec";
 export default createUseStyles({
     "@global": {
         ".tabulator": {
-            backgroundColor: "transparent !important",
-            border: "none !important",
+            // backgroundColor: "transparent !important",
+            // border: "none !important",
+            borderRadius: "6px !important",
+            border: "1px solid #C2C2C2 !important",
             margin: "0 !important"
         },
         ".tabulator-selected": {
