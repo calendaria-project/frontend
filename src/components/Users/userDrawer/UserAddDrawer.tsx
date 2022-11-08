@@ -36,6 +36,7 @@ import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectPropertie
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
+import PhoneInput from "./PhoneInput";
 
 export interface IUserAddDrawer {
     companyId: string | undefined;
@@ -76,9 +77,9 @@ export const UserAddDrawer = ({
         console.log(data);
         actionMethodResultSync("USER", "user", "post", getRequestHeader(authContext.token), data)
             .then((data) => {
+                onFinishCreatingUser(data);
                 message.success("Успешно создано");
                 onClose();
-                onFinishCreatingUser(data);
             })
             .catch(() => message.error("Ошибка создания"));
     };
@@ -168,7 +169,7 @@ export const UserAddDrawer = ({
                                     ]}
                                     label="Номер"
                                 >
-                                    <Input />
+                                    <PhoneInput form={form} />
                                 </Form.Item>
                             </Col>
                             <Col span={16}>

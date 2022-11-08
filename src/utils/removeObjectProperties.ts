@@ -1,4 +1,4 @@
-export const removeObjectProperties = (obj: Object): Object =>
+export const removeEmptyObjectProperties = (obj: Object): Object =>
     Object.fromEntries(Object.entries(obj).filter(([_, v]) => v !== null && v !== undefined));
 
 export function removeEmptyValuesFromAnyLevelObject(obj: any) {

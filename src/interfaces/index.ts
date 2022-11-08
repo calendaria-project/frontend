@@ -308,3 +308,16 @@ export interface IUsersAddressInfoModel {
     createdAt: string;
     updatedAt: string;
 }
+
+export interface IUsersRelationshipModel {
+    familyRelationshipId: string | number;
+    sex: ISimpleDictionaryModel;
+    relationshipType: ISimpleDictionaryModel;
+    birthDate: string;
+    lastname: string;
+    firstname: string;
+    patronymic: string;
+    userId: string;
+    createdAt: string;
+    updatedAt: string;
+}

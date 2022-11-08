@@ -1,4 +1,5 @@
 import { createUseStyles } from "react-jss";
+import { ITheme } from "styles/theme/interface";
 
 export default createUseStyles({
     rowWrapper: {
@@ -14,5 +15,8 @@ export default createUseStyles({
         position: "absolute",
         right: "6px",
         top: "4px"
+    },
+    extraInfo: {
+        color: (theme: ITheme) => theme?.color?.extraText
     }
 });

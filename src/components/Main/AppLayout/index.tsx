@@ -1,14 +1,14 @@
-import { useState, createElement } from "react";
+import { useState, useEffect, createElement } from "react";
 import { useNavigate } from "react-router-dom";
 import { Layout, Menu, MenuProps } from "antd";
 import { mainMenuEnum } from "data/enums";
 import {
-    OrderedListOutlined,
     AppstoreOutlined,
     MenuUnfoldOutlined,
     MenuFoldOutlined,
     ScheduleOutlined,
-    IdcardOutlined
+    IdcardOutlined,
+    ReadOutlined
 } from "@ant-design/icons";
 
 import "antd/dist/antd.css";
@@ -23,18 +23,29 @@ import Header from "./Header";
 const { Sider, Content } = Layout;
 
 const AppLayout = () => {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const savedLocation = sessionStorage.getItem("location");
+        if (savedLocation && savedLocation !== "/") {
+            navigate(savedLocation);
+        }
+    }, []);
+
     const theme = useTheme<ITheme>();
     const classes = useStyles(theme);
 
     const [collapsed, setCollapsed] = useState(true);
-    const [current, setCurrent] = useState<string>(mainMenuEnum.mainMenu);
-
-    const navigate = useNavigate();
+    const [current, setCurrent] = useState<string>(
+        sessionStorage.getItem("mainMenuTab") || mainMenuEnum.mainMenu
+    );
 
     const onClick: MenuProps["onClick"] = (e) => {
-        setCurrent(e.key);
-        if (e.key === mainMenuEnum.mainMenu) navigate("/");
-        else navigate(`/${e.key}`);
+        const menuKey = e.key;
+        setCurrent(menuKey);
+        sessionStorage.setItem("mainMenuTab", menuKey);
+        if (menuKey === mainMenuEnum.mainMenu) navigate("/");
+        else navigate(`/${menuKey}`);
     };
 
     const items: MenuProps["items"] = [
@@ -45,7 +56,7 @@ const AppLayout = () => {
         },
         {
             key: mainMenuEnum.dictionary,
-            icon: <OrderedListOutlined className={classes.icon} />,
+            icon: <ReadOutlined className={classes.icon} />,
             label: "Справочники"
         },
         {

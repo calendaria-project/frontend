@@ -95,9 +95,9 @@ export const UserEditDrawer = ({
     const editUser = (data: any) => {
         actionMethodResultSync("USER", "user", "put", getRequestHeader(authContext.token), data)
             .then((data) => {
+                onFinishEditingUser(data);
                 message.success("Успешно отредактирован");
                 onClose();
-                onFinishEditingUser(data);
             })
             .catch(() => message.error("Ошибка редактирования"));
     };

@@ -14,7 +14,8 @@ import {
     IUsersDocumentModel,
     IUsersEducationModel,
     IUsersInventoryModel,
-    IUsersLanguageKnowledgeModel
+    IUsersLanguageKnowledgeModel,
+    IUsersRelationshipModel
 } from "interfaces";
 import { EditOutlined } from "@ant-design/icons";
 
@@ -24,9 +25,11 @@ import { actionMethodResultSync } from "functions/actionMethodResult";
 import getUserRequestUrl from "functions/getUserRequestUrl";
 import { getRequestHeader } from "functions/common";
 import { SetCurrentUserDataItemInfo } from "store/actions";
-import { removeObjectProperties } from "utils/removeObjectProperties";
+import { removeEmptyObjectProperties } from "utils/removeObjectProperties";
 import { AuthContext } from "context/AuthContextProvider";
 import { useDispatch } from "react-redux";
+import { useTheme } from "react-jss";
+import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 
 interface IRowData {
@@ -44,7 +47,8 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
     const authContext = useContext(AuthContext);
     const dispatch = useDispatch();
 
-    const classes = useStyles();
+    const theme = useTheme<ITheme>();
+    const classes = useStyles(theme);
 
     const currentUserDataItemInfo = useTypedSelector((state) =>
         getCurrentUserDataItemInfo(state.user)
@@ -77,18 +81,13 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
 
     const saveModal = useCallback(
         (record: any) => {
-            if (record.issueDate) {
-                record = {
-                    ...record,
-                    issueDate: record.issueDate._i
-                };
-            }
-            if (record.contractDate) {
-                record = {
-                    ...record,
-                    contractDate: record.contractDate._i
-                };
-            }
+            record = Object.fromEntries(
+                Object.entries(record).map(([key, value]: [string, any]) => {
+                    if (key.includes("Date")) {
+                        return [key, value._i];
+                    } else return [key, value];
+                })
+            );
 
             const reqMethod = "put";
             const sendRequest = (data: Object) => {
@@ -119,7 +118,7 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                     });
             };
 
-            const data = removeObjectProperties(
+            const data = removeEmptyObjectProperties(
                 _.merge(currentUserDataItemInfo[currentItemIndex], record)
             );
             sendRequest(data);
@@ -148,7 +147,9 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                 <Row className={classes.rowWrapper}>
                     <Col>{additionalInfo || ""}</Col>
                     {extraAdditionalInfo && (
-                        <Col className={classes.endedColWrapper}>{extraAdditionalInfo}</Col>
+                        <Col className={classes.endedColWrapper}>
+                            <span className={classes.extraInfo}>{extraAdditionalInfo}</span>
+                        </Col>
                     )}
                 </Row>
                 <Divider />
@@ -236,6 +237,17 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                                   title={dataInfo.addressType?.nameRu}
                                   additionalInfo={dataInfo.city?.nameRu}
                                   extraAdditionalInfo={dataInfo.street}
+                              />
+                          )
+                      )
+                    : currentSelectedKey === SelectedKeyTypes.RELATIONSHIP
+                    ? (currentUserDataItemInfo || []).map(
+                          (dataInfo: IUsersRelationshipModel, index: number) => (
+                              <ListItem
+                                  index={index}
+                                  title={dataInfo.relationshipType?.nameRu}
+                                  additionalInfo={`Пол: ${dataInfo.sex?.nameRu || ""}`}
+                                  extraAdditionalInfo={dataInfo.birthDate}
                               />
                           )
                       )

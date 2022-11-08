@@ -79,7 +79,7 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                 : undefined
             : [currentUserDataItemInfo?.[index!]];
 
-    console.log(modalCurrentDataItemInfo);
+    // console.log(modalCurrentDataItemInfo);
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
