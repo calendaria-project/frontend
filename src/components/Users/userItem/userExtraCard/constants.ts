@@ -312,7 +312,7 @@ export const inputData: InputDataRecord = {
         {
             type: Types.DATE,
             propertyName: "enlistmentDate",
-            placeholder: "Дата получения",
+            placeholder: "Дата приема на службу",
             required: true
         }
     ]

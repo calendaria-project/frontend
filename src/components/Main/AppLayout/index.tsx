@@ -1,11 +1,12 @@
-import { useState, useEffect, createElement } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Layout, Menu, MenuProps } from "antd";
 import { mainMenuEnum } from "data/enums";
 import {
     AppstoreOutlined,
-    MenuUnfoldOutlined,
-    MenuFoldOutlined,
+    // MenuUnfoldOutlined,
+    // MenuFoldOutlined,
+    MenuOutlined,
     ScheduleOutlined,
     IdcardOutlined,
     ReadOutlined
@@ -25,17 +26,10 @@ const { Sider, Content } = Layout;
 const AppLayout = () => {
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const savedLocation = sessionStorage.getItem("location");
-        if (savedLocation && savedLocation !== "/") {
-            navigate(savedLocation);
-        }
-    }, []);
-
     const theme = useTheme<ITheme>();
     const classes = useStyles(theme);
 
-    const [collapsed, setCollapsed] = useState(true);
+    // const [collapsed, setCollapsed] = useState(true);
     const [current, setCurrent] = useState<string>(
         sessionStorage.getItem("mainMenuTab") || mainMenuEnum.mainMenu
     );
@@ -73,12 +67,13 @@ const AppLayout = () => {
 
     return (
         <Layout className={classes.layout}>
-            <Sider className={classes.sider} trigger={null} collapsible collapsed={collapsed}>
+            <Sider className={classes.sider} trigger={null} collapsible collapsed={true}>
                 <div className={classes.triggerContainer}>
-                    {createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-                        className: classes.trigger,
-                        onClick: () => setCollapsed(!collapsed)
-                    })}
+                    {/*{createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {*/}
+                    {/*    className: classes.trigger,*/}
+                    {/*    onClick: () => setCollapsed(!collapsed)*/}
+                    {/*})}*/}
+                    <MenuOutlined className={classes.trigger} />
                 </div>
                 <Menu
                     className={classes.menu}

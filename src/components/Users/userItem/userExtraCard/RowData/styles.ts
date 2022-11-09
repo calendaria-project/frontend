@@ -17,6 +17,17 @@ export default createUseStyles({
         top: "4px"
     },
     extraInfo: {
-        color: (theme: ITheme) => theme?.color?.extraText
+        color: ({ theme }: { theme: ITheme } = {} as any) => theme?.color?.extraText
+    },
+    additionalInfo: {
+        color: (
+            {
+                theme,
+                additionalInfoExtraColor
+            }: {
+                theme: ITheme;
+                additionalInfoExtraColor: boolean | undefined;
+            } = {} as any
+        ) => (additionalInfoExtraColor ? theme?.color?.extraText : theme?.color?.mainText)
     }
 });

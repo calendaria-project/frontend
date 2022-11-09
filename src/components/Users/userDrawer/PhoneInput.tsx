@@ -42,7 +42,7 @@ const PhoneInput: FC<IPhoneInput> = ({ form }) => {
         <Input
             value={currentValue}
             onChange={handleChangeValue}
-            onKeyDown={handleAutoCompleteValue}
+            onKeyUp={handleAutoCompleteValue}
         />
     );
 };

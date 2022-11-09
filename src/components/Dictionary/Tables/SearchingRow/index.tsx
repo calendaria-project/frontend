@@ -1,4 +1,4 @@
-import React, { FC, memo } from "react";
+import React, { FC, memo, useCallback, useEffect, useState } from "react";
 import { ITable } from "../ITable";
 import { Col, Input, Row, Select } from "antd";
 import useStyles from "./styles";
@@ -10,29 +10,48 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 
 import Button from "ui/Button";
+import useDelayedInputSearch from "hooks/useDelayedInputSearch";
 
 const { Option } = Select;
 
 interface ISearchingRow extends ITable {
     onSetIsModalVisible?: (v: boolean) => void;
+    onSetSearchStr?: (v: string) => void;
 }
 
-const SearchingRow: FC<ISearchingRow> = ({ selectionItems, onSetIsModalVisible }) => {
+const SearchingRow: FC<ISearchingRow> = ({
+    selectionItems,
+    onSetIsModalVisible,
+    onSetSearchStr
+}) => {
     const theme = useTheme<ITheme>();
     const classes = useStyles(theme);
 
     const dispatch = useDispatch();
     const tabActiveKey = useTypedSelector((state) => state.menu.tabActiveKey);
 
+    const [query, setQuery] = useState("");
+    const { searchStr } = useDelayedInputSearch(query);
+
+    useEffect(() => {
+        if (onSetSearchStr) {
+            onSetSearchStr(searchStr);
+        }
+    }, [searchStr]);
+
+    const handleFiltrationChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setQuery(e.target.value);
+    }, []);
+
     const handleChangeValue = (v: string) => {
         dispatch(SetDictionaryTabActiveKey(v));
     };
 
-    const handleAdd = () => {
+    const handleAdd = useCallback(() => {
         if (onSetIsModalVisible) {
             onSetIsModalVisible(true);
         }
-    };
+    }, [onSetIsModalVisible]);
 
     return (
         <Row className={classes.wrapper}>
@@ -40,11 +59,14 @@ const SearchingRow: FC<ISearchingRow> = ({ selectionItems, onSetIsModalVisible }
                 <Input
                     className={classes.input}
                     placeholder="Поиск"
-                    suffix={<SearchOutlined style={{ color: "#828282" }} />}
+                    onChange={handleFiltrationChange}
+                    suffix={<SearchOutlined className={classes.suffix} />}
                 />
             </Col>
             <Col>
                 <Select
+                    showSearch
+                    optionFilterProp="children"
                     className={classes.select}
                     value={tabActiveKey}
                     onChange={handleChangeValue}

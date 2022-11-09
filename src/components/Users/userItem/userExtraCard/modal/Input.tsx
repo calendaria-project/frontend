@@ -63,7 +63,7 @@ const Input: FC<IInput> = ({ form, dataItemLayout, currentDataItemInfo }) => {
                 type={dataItemLayout.inputType}
                 placeholder={dataItemLayout.placeholder}
                 onChange={handleChangeValue}
-                onKeyDown={handleAutoCompleteValue}
+                onKeyUp={handleAutoCompleteValue}
                 value={currentValue}
             />
         );

@@ -76,6 +76,12 @@ const SharedList: FC<ISharedList> = ({ dictionaryCode, modalTitle, selectionItem
         setIsModalVisible(bool);
     }, []);
 
+    const [searchStr, setSearchStr] = useState("");
+
+    const onSetSearchStr = useCallback((v: string) => {
+        setSearchStr(v);
+    }, []);
+
     const isEditing = (record: ISimpleDictionaryViewModel) => record.id === editingKey;
 
     const edit = (record: Partial<ISimpleDictionaryViewModel>) => {
@@ -226,14 +232,23 @@ const SharedList: FC<ISharedList> = ({ dictionaryCode, modalTitle, selectionItem
             "get",
             getRequestHeader(authContext.token)
         ).then((data) => {
-            setData(data);
+            const filteredData = data.filter((dataItem: any) => {
+                const tableDataStr =
+                    (dataItem.nameKz || "") +
+                    (dataItem.nameRu || "") +
+                    (dataItem.nameEn || "") +
+                    (dataItem.code || "");
+                return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
+            });
+            setData(filteredData);
         });
-    }, []);
+    }, [searchStr]);
 
     return (
         <Form form={form} component={false}>
             <SearchingRow
                 selectionItems={selectionItems}
+                onSetSearchStr={onSetSearchStr}
                 onSetIsModalVisible={onSetIsModalVisible}
             />
             <Table

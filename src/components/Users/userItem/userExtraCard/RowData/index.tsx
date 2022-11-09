@@ -47,9 +47,6 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
     const authContext = useContext(AuthContext);
     const dispatch = useDispatch();
 
-    const theme = useTheme<ITheme>();
-    const classes = useStyles(theme);
-
     const currentUserDataItemInfo = useTypedSelector((state) =>
         getCurrentUserDataItemInfo(state.user)
     );
@@ -131,9 +128,22 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
     const ListItem: FC<{
         index: number;
         title: string | undefined;
+        extraTitle?: string | undefined;
         additionalInfo: string | undefined;
+        additionalInfoExtraColor?: boolean | undefined;
         extraAdditionalInfo?: string | number | undefined;
-    }> = ({ index, title, additionalInfo, extraAdditionalInfo }) => {
+    }> = ({
+        index,
+        title,
+        extraTitle,
+        additionalInfo,
+        additionalInfoExtraColor,
+        extraAdditionalInfo
+    }) => {
+        const theme = useTheme<ITheme>();
+        // @ts-ignore
+        const classes = useStyles({ theme, additionalInfoExtraColor });
+
         return (
             <Form key={index} form={form} component={false}>
                 <Row className={classes.rowWrapper}>
@@ -144,11 +154,20 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                         <EditOutlined onClick={handleIconClick(index)} className={classes.icon} />
                     </Col>
                 </Row>
+                {extraTitle && (
+                    <Row className={classes.rowWrapper}>
+                        <Col>
+                            <Text>{extraTitle || ""}</Text>
+                        </Col>
+                    </Row>
+                )}
                 <Row className={classes.rowWrapper}>
-                    <Col>{additionalInfo || ""}</Col>
+                    <Col>
+                        <Text className={classes.additionalInfo}>{additionalInfo || ""}</Text>
+                    </Col>
                     {extraAdditionalInfo && (
                         <Col className={classes.endedColWrapper}>
-                            <span className={classes.extraInfo}>{extraAdditionalInfo}</span>
+                            <Text className={classes.extraInfo}>{extraAdditionalInfo}</Text>
                         </Col>
                     )}
                 </Row>
@@ -233,6 +252,7 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                     ? (currentUserDataItemInfo || []).map(
                           (dataInfo: IUsersAddressInfoModel, index: number) => (
                               <ListItem
+                                  key={"" + index + dataInfo.addressType?.nameRu}
                                   index={index}
                                   title={dataInfo.addressType?.nameRu}
                                   additionalInfo={dataInfo.city?.nameRu}
@@ -244,9 +264,14 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                     ? (currentUserDataItemInfo || []).map(
                           (dataInfo: IUsersRelationshipModel, index: number) => (
                               <ListItem
+                                  key={"" + index + dataInfo.relationshipType?.nameRu}
                                   index={index}
                                   title={dataInfo.relationshipType?.nameRu}
+                                  extraTitle={`${dataInfo.lastname || ""} ${
+                                      dataInfo.firstname || ""
+                                  } ${dataInfo.patronymic || ""}`}
                                   additionalInfo={`Пол: ${dataInfo.sex?.nameRu || ""}`}
+                                  additionalInfoExtraColor={true}
                                   extraAdditionalInfo={dataInfo.birthDate}
                               />
                           )
