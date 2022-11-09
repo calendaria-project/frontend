@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect, ChangeEvent, useCallback } from "react";
+import React, { FC, useState, useEffect, ChangeEvent, useCallback, KeyboardEvent } from "react";
 import { FormInstance, Input as AntdInput } from "antd";
 import { Types, TInputData } from "../constants";
 
@@ -28,15 +28,6 @@ const Input: FC<IInput> = ({ form, dataItemLayout, currentDataItemInfo }) => {
     const handleChangeValue = useCallback(
         (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
             let newValue = e.target.value;
-            if (dataItemLayout.inputType === "email" && dataItemLayout.pattern) {
-                if (
-                    newValue.length > 2 &&
-                    newValue[newValue.length - 2] === "." &&
-                    newValue[newValue.length - 1] === "."
-                ) {
-                    newValue = newValue.substring(0, newValue.length - 1);
-                }
-            }
 
             form.setFieldsValue({
                 [dataItemLayout.propertyName]: newValue
@@ -46,12 +37,33 @@ const Input: FC<IInput> = ({ form, dataItemLayout, currentDataItemInfo }) => {
         [dataItemLayout]
     );
 
+    const handleAutoCompleteValue = useCallback(
+        (e: KeyboardEvent<HTMLInputElement>) => {
+            if (dataItemLayout.customType && dataItemLayout.customType === "mobile") {
+                if (currentValue.length === 0) {
+                    setCurrentValue(`+${currentValue}`);
+                }
+                if (currentValue.length === 2) {
+                    setCurrentValue(currentValue + "(");
+                }
+                if (currentValue.length === 6) {
+                    setCurrentValue(currentValue + ")");
+                }
+                if (currentValue.length === 10 || currentValue.length === 13) {
+                    setCurrentValue(currentValue + "-");
+                }
+            }
+        },
+        [dataItemLayout, currentValue]
+    );
+
     if (dataItemLayout.type === Types.INPUT) {
         return (
             <AntdInput
                 type={dataItemLayout.inputType}
                 placeholder={dataItemLayout.placeholder}
                 onChange={handleChangeValue}
+                onKeyUp={handleAutoCompleteValue}
                 value={currentValue}
             />
         );

@@ -24,6 +24,8 @@ import { useTypedSelector } from "hooks/useTypedSelector";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
+import { RelationshipTypeTable } from "./Tables/relationshipTypeTable";
+import { MilitaryRankTable } from "./Tables/militaryRankTable";
 
 const Dictionary = () => {
     const dispatch = useDispatch();
@@ -117,6 +119,16 @@ const Dictionary = () => {
             label: "Адрес",
             key: "15",
             children: <AddressTypeTable />
+        },
+        {
+            label: "Степень родства",
+            key: "16",
+            children: <RelationshipTypeTable />
+        },
+        {
+            label: "Воинское звание",
+            key: "17",
+            children: <MilitaryRankTable />
         }
     ];
 

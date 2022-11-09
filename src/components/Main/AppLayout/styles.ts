@@ -6,6 +6,10 @@ export default createUseStyles({
         minHeight: "100vh"
     },
     sider: {
+        position: "fixed",
+        zIndex: 999999,
+        height: "100vh",
+        width: (theme: ITheme) => theme.layout.sider.width,
         background: (theme: ITheme) => theme.background.primary,
         "& .ant-layout-sider-children": {
             background: (theme: ITheme) => `${theme.background.secondary} !important`,
@@ -45,6 +49,8 @@ export default createUseStyles({
         fontSize: (theme: ITheme) => `${theme.image.fontSize} !important`
     },
     content: {
+        marginTop: (theme: ITheme) => theme.layout.header.height,
+        marginLeft: (theme: ITheme) => theme.layout.sider.width,
         background: (theme: ITheme) => theme.background.primary
     }
 });

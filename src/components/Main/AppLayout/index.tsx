@@ -1,14 +1,15 @@
-import { useState, createElement } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Layout, Menu, MenuProps } from "antd";
 import { mainMenuEnum } from "data/enums";
 import {
-    OrderedListOutlined,
     AppstoreOutlined,
-    MenuUnfoldOutlined,
-    MenuFoldOutlined,
+    // MenuUnfoldOutlined,
+    // MenuFoldOutlined,
+    MenuOutlined,
     ScheduleOutlined,
-    IdcardOutlined
+    IdcardOutlined,
+    ReadOutlined
 } from "@ant-design/icons";
 
 import "antd/dist/antd.css";
@@ -23,18 +24,22 @@ import Header from "./Header";
 const { Sider, Content } = Layout;
 
 const AppLayout = () => {
+    const navigate = useNavigate();
+
     const theme = useTheme<ITheme>();
     const classes = useStyles(theme);
 
-    const [collapsed, setCollapsed] = useState(true);
-    const [current, setCurrent] = useState<string>(mainMenuEnum.mainMenu);
-
-    const navigate = useNavigate();
+    // const [collapsed, setCollapsed] = useState(true);
+    const [current, setCurrent] = useState<string>(
+        sessionStorage.getItem("mainMenuTab") || mainMenuEnum.mainMenu
+    );
 
     const onClick: MenuProps["onClick"] = (e) => {
-        setCurrent(e.key);
-        if (e.key === mainMenuEnum.mainMenu) navigate("/");
-        else navigate(`/${e.key}`);
+        const menuKey = e.key;
+        setCurrent(menuKey);
+        sessionStorage.setItem("mainMenuTab", menuKey);
+        if (menuKey === mainMenuEnum.mainMenu) navigate("/");
+        else navigate(`/${menuKey}`);
     };
 
     const items: MenuProps["items"] = [
@@ -45,7 +50,7 @@ const AppLayout = () => {
         },
         {
             key: mainMenuEnum.dictionary,
-            icon: <OrderedListOutlined className={classes.icon} />,
+            icon: <ReadOutlined className={classes.icon} />,
             label: "Справочники"
         },
         {
@@ -62,12 +67,13 @@ const AppLayout = () => {
 
     return (
         <Layout className={classes.layout}>
-            <Sider className={classes.sider} trigger={null} collapsible collapsed={collapsed}>
+            <Sider className={classes.sider} trigger={null} collapsible collapsed={true}>
                 <div className={classes.triggerContainer}>
-                    {createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-                        className: classes.trigger,
-                        onClick: () => setCollapsed(!collapsed)
-                    })}
+                    {/*{createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {*/}
+                    {/*    className: classes.trigger,*/}
+                    {/*    onClick: () => setCollapsed(!collapsed)*/}
+                    {/*})}*/}
+                    <MenuOutlined className={classes.trigger} />
                 </div>
                 <Menu
                     className={classes.menu}

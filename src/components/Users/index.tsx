@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { Col, Input, Row } from "antd";
@@ -12,6 +12,8 @@ import { useNavigate } from "react-router";
 import { createTableViaTabulator } from "services/tabulator";
 import { UserAddDrawer } from "./userDrawer/UserAddDrawer";
 import { ColumnDefinition } from "tabulator-tables";
+
+import useDelayedInputSearch from "hooks/useDelayedInputSearch";
 
 import questionImage from "assets/icons/question.png";
 import { useDispatch } from "react-redux";
@@ -34,13 +36,16 @@ const Users: FC = () => {
     const [isVisibleAddUserDrawer, setIsVisibleAddUserDrawer] = useState(false);
     const [table, setTable] = useState<Tabulator | undefined>();
 
+    const [query, setQuery] = useState("");
+    const { searchStr } = useDelayedInputSearch(query);
+
     useEffect(() => {
         dispatch(SetCurrentOpenedMenu(mainMenuEnum.users));
     }, []);
 
     useEffect(() => {
         initData();
-    }, []);
+    }, [searchStr]);
 
     const fullNameTableActionsFormatter = (cell: Tabulator.CellComponent) => {
         const data: any = cell.getData();
@@ -97,7 +102,20 @@ const Users: FC = () => {
                 getRequestHeader(authContext.token)
             ).then((data) => data);
 
-            const userDataWithPhoto = await getUsersWithPhotoId(userData);
+            const searchedUserData = userData.filter((userItem: any) => {
+                console.log(userItem);
+                const tableDataStr =
+                    (userItem.lastname || "") +
+                    (userItem.firstname || "") +
+                    (userItem.patronymic || "") +
+                    (userItem.personalContact?.email || "") +
+                    (userItem.status || "") +
+                    (userItem.position?.nameRu || "") +
+                    (userItem.personalContact?.mobilePhoneNumber || "");
+                return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
+            });
+
+            const userDataWithPhoto = await getUsersWithPhotoId(searchedUserData);
 
             const actionsSell: ColumnDefinition = {
                 headerSort: false,
@@ -157,15 +175,9 @@ const Users: FC = () => {
         table?.redraw(true);
     };
 
-    // const handleFiltrationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     setData(
-    //         usersTableData.filter((dataItem) =>
-    //             Object.values(dataItem).some((value) =>
-    //                 (value + "").toLowerCase().includes(e.target.value.toLowerCase())
-    //             )
-    //         )
-    //     );
-    // };
+    const handleFiltrationChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setQuery(e.target.value);
+    }, []);
 
     const showDrawer = () => setIsVisibleAddUserDrawer(true);
 
@@ -175,6 +187,7 @@ const Users: FC = () => {
                 <Col className={classes.searchingCol}>
                     <Input
                         className={classes.input}
+                        onChange={handleFiltrationChange}
                         placeholder="Поиск"
                         suffix={<SearchOutlined className={classes.searchIcon} />}
                     />

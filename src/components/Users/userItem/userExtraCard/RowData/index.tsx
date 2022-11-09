@@ -14,7 +14,8 @@ import {
     IUsersDocumentModel,
     IUsersEducationModel,
     IUsersInventoryModel,
-    IUsersLanguageKnowledgeModel
+    IUsersLanguageKnowledgeModel,
+    IUsersRelationshipModel
 } from "interfaces";
 import { EditOutlined } from "@ant-design/icons";
 
@@ -24,9 +25,11 @@ import { actionMethodResultSync } from "functions/actionMethodResult";
 import getUserRequestUrl from "functions/getUserRequestUrl";
 import { getRequestHeader } from "functions/common";
 import { SetCurrentUserDataItemInfo } from "store/actions";
-import { removeObjectProperties } from "utils/removeObjectProperties";
+import { removeEmptyObjectProperties } from "utils/removeObjectProperties";
 import { AuthContext } from "context/AuthContextProvider";
 import { useDispatch } from "react-redux";
+import { useTheme } from "react-jss";
+import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 
 interface IRowData {
@@ -43,8 +46,6 @@ const { Text } = Typography;
 const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
     const authContext = useContext(AuthContext);
     const dispatch = useDispatch();
-
-    const classes = useStyles();
 
     const currentUserDataItemInfo = useTypedSelector((state) =>
         getCurrentUserDataItemInfo(state.user)
@@ -77,18 +78,13 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
 
     const saveModal = useCallback(
         (record: any) => {
-            if (record.issueDate) {
-                record = {
-                    ...record,
-                    issueDate: record.issueDate._i
-                };
-            }
-            if (record.contractDate) {
-                record = {
-                    ...record,
-                    contractDate: record.contractDate._i
-                };
-            }
+            record = Object.fromEntries(
+                Object.entries(record).map(([key, value]: [string, any]) => {
+                    if (key.includes("Date")) {
+                        return [key, value._i];
+                    } else return [key, value];
+                })
+            );
 
             const reqMethod = "put";
             const sendRequest = (data: Object) => {
@@ -119,7 +115,7 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                     });
             };
 
-            const data = removeObjectProperties(
+            const data = removeEmptyObjectProperties(
                 _.merge(currentUserDataItemInfo[currentItemIndex], record)
             );
             sendRequest(data);
@@ -132,9 +128,22 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
     const ListItem: FC<{
         index: number;
         title: string | undefined;
+        extraTitle?: string | undefined;
         additionalInfo: string | undefined;
+        additionalInfoExtraColor?: boolean | undefined;
         extraAdditionalInfo?: string | number | undefined;
-    }> = ({ index, title, additionalInfo, extraAdditionalInfo }) => {
+    }> = ({
+        index,
+        title,
+        extraTitle,
+        additionalInfo,
+        additionalInfoExtraColor,
+        extraAdditionalInfo
+    }) => {
+        const theme = useTheme<ITheme>();
+        // @ts-ignore
+        const classes = useStyles({ theme, additionalInfoExtraColor });
+
         return (
             <Form key={index} form={form} component={false}>
                 <Row className={classes.rowWrapper}>
@@ -145,10 +154,21 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                         <EditOutlined onClick={handleIconClick(index)} className={classes.icon} />
                     </Col>
                 </Row>
+                {extraTitle && (
+                    <Row className={classes.rowWrapper}>
+                        <Col>
+                            <Text>{extraTitle || ""}</Text>
+                        </Col>
+                    </Row>
+                )}
                 <Row className={classes.rowWrapper}>
-                    <Col>{additionalInfo || ""}</Col>
+                    <Col>
+                        <Text className={classes.additionalInfo}>{additionalInfo || ""}</Text>
+                    </Col>
                     {extraAdditionalInfo && (
-                        <Col className={classes.endedColWrapper}>{extraAdditionalInfo}</Col>
+                        <Col className={classes.endedColWrapper}>
+                            <Text className={classes.extraInfo}>{extraAdditionalInfo}</Text>
+                        </Col>
                     )}
                 </Row>
                 <Divider />
@@ -232,10 +252,27 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                     ? (currentUserDataItemInfo || []).map(
                           (dataInfo: IUsersAddressInfoModel, index: number) => (
                               <ListItem
+                                  key={"" + index + dataInfo.addressType?.nameRu}
                                   index={index}
                                   title={dataInfo.addressType?.nameRu}
                                   additionalInfo={dataInfo.city?.nameRu}
                                   extraAdditionalInfo={dataInfo.street}
+                              />
+                          )
+                      )
+                    : currentSelectedKey === SelectedKeyTypes.RELATIONSHIP
+                    ? (currentUserDataItemInfo || []).map(
+                          (dataInfo: IUsersRelationshipModel, index: number) => (
+                              <ListItem
+                                  key={"" + index + dataInfo.relationshipType?.nameRu}
+                                  index={index}
+                                  title={dataInfo.relationshipType?.nameRu}
+                                  extraTitle={`${dataInfo.lastname || ""} ${
+                                      dataInfo.firstname || ""
+                                  } ${dataInfo.patronymic || ""}`}
+                                  additionalInfo={`Пол: ${dataInfo.sex?.nameRu || ""}`}
+                                  additionalInfoExtraColor={true}
+                                  extraAdditionalInfo={dataInfo.birthDate}
                               />
                           )
                       )

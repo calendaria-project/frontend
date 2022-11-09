@@ -1,5 +1,5 @@
 import { Form, message } from "antd";
-import React, { FC, useContext, useEffect, useState } from "react";
+import React, { FC, useCallback, useContext, useEffect, useState } from "react";
 import { ColumnDefinition } from "tabulator-tables";
 
 import { AuthContext } from "context/AuthContextProvider";
@@ -26,9 +26,15 @@ export const CompanyTreeView: FC<ITable> = ({ selectionItems }) => {
     const [editForm] = Form.useForm<ICompanyViewModel>();
     const [table, setTable] = useState<Tabulator>();
 
+    const [searchStr, setSearchStr] = useState("");
+
+    const onSetSearchStr = useCallback((v: string) => {
+        setSearchStr(v);
+    }, []);
+
     useEffect(() => {
         createCompamyNestedTable();
-    }, []);
+    }, [searchStr]);
 
     const nestedTableActionsFormatter = (cell: Tabulator.CellComponent) => {
         let editBtnIcon = document.createElement("img");
@@ -58,11 +64,21 @@ export const CompanyTreeView: FC<ITable> = ({ selectionItems }) => {
                     headerSort: false,
                     formatter: nestedTableActionsFormatter
                 };
+
+                const filteredData = data.filter((dataItem: any) => {
+                    const tableDataStr =
+                        (dataItem.nameKz || "") +
+                        (dataItem.nameRu || "") +
+                        (dataItem.nameEn || "") +
+                        (dataItem.bin || "");
+                    return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
+                });
+
                 setTable(
                     createTableViaTabulator(
                         "#companiesTable",
                         [...companiesColumns, actionsCell],
-                        data,
+                        filteredData,
                         () => {}
                     )
                 );
@@ -173,7 +189,7 @@ export const CompanyTreeView: FC<ITable> = ({ selectionItems }) => {
                 setIsVisible={setIsEditModalVisible}
                 form={editForm}
             />
-            <SearchingRow selectionItems={selectionItems} />
+            <SearchingRow selectionItems={selectionItems} onSetSearchStr={onSetSearchStr} />
             <div id="companiesTable" />
         </>
     );

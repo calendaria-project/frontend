@@ -50,12 +50,9 @@ const UserItem: FC = () => {
 
     const [isVisibleEditUserDrawer, setIsVisibleEditUserDrawer] = useState(false);
     const onShowDrawer = useCallback(() => setIsVisibleEditUserDrawer(true), []);
-    const onFinishEditingUser = useCallback(
-        (data: any) => {
-            setCurrentUserData(data);
-        },
-        [currentUserData]
-    );
+    const onFinishEditingUser = (data: any) => {
+        setCurrentUserData(data);
+    };
 
     useEffect(() => {
         actionMethodResultSync(

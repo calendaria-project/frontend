@@ -23,7 +23,7 @@ const keycloakInitOptions: KeycloakInitOptions = {
     // Configure that Keycloak will check if a user is already authenticated (when opening the app or reloading the page). If not authenticated the user will be send to the login form. If already authenticated the webapp will open.
     onLoad: "login-required",
     // checkLoginIframe: false,
-    redirectUri: `${baseUrl}/`
+    redirectUri: `${baseUrl}${sessionStorage.getItem("location") || "/"}`
 };
 
 // Create the Keycloak client instance

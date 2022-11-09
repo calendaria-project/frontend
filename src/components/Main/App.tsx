@@ -13,6 +13,10 @@ import sharedTheme from "styles/theme/sharedTheme";
 import AppLayout from "./AppLayout";
 import extraStyles from "styles/extraStyles";
 
+window.onbeforeunload = () => {
+    sessionStorage.setItem("location", window.location.pathname);
+};
+
 const App = () => {
     defaultStyles();
     extraStyles();

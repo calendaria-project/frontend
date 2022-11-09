@@ -1,6 +1,6 @@
 import { Form, message, Select } from "antd";
 import type { DataNode } from "antd/es/tree";
-import React, { FC, useContext, useEffect, useState } from "react";
+import React, { FC, useCallback, useContext, useEffect, useState } from "react";
 import { ColumnDefinition } from "tabulator-tables";
 
 import { AuthContext } from "context/AuthContextProvider";
@@ -47,9 +47,15 @@ export const DivisionTreeView: FC<ITable> = ({ selectionItems }) => {
     const [companies, setCompanies] = useState<ICompanyViewModel[]>([]);
     const [selectedCompanyId, setSelectedCompanyId] = useState<number | undefined>(undefined);
 
+    const [searchStr, setSearchStr] = useState("");
+
+    const onSetSearchStr = useCallback((v: string) => {
+        setSearchStr(v);
+    }, []);
+
     useEffect(() => {
         initDivisionsTabulator();
-    }, [selectedCompanyId]);
+    }, [selectedCompanyId, searchStr]);
 
     useEffect(() => {
         getCompanies();
@@ -63,10 +69,6 @@ export const DivisionTreeView: FC<ITable> = ({ selectionItems }) => {
             getRequestHeader(authContext.token)
         ).then((data) => setCompanies(data.content));
     };
-
-    // <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    //     <path d="M17 3C17.2626 2.73735 17.5744 2.52901 17.9176 2.38687C18.2608 2.24473 18.6286 2.17157 19 2.17157C19.3714 2.17157 19.7392 2.24473 20.0824 2.38687C20.4256 2.52901 20.7374 2.73735 21 3C21.2626 3.26264 21.471 3.57444 21.6131 3.9176C21.7553 4.26077 21.8284 4.62856 21.8284 5C21.8284 5.37143 21.7553 5.73923 21.6131 6.08239C21.471 6.42555 21.2626 6.73735 21 7L7.5 20.5L2 22L3.5 16.5L17 3Z" stroke="#343A3F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    // </svg>
 
     const nestedTableActionsFormatter = (cell: Tabulator.CellComponent) => {
         let editBtnIcon = document.createElement("img");
@@ -94,11 +96,21 @@ export const DivisionTreeView: FC<ITable> = ({ selectionItems }) => {
             headerSort: false,
             formatter: nestedTableActionsFormatter
         };
+
+        const filteredData = data.filter((dataItem: any) => {
+            const tableDataStr =
+                (dataItem.nameKz || "") +
+                (dataItem.nameRu || "") +
+                (dataItem.nameEn || "") +
+                (dataItem.code || "");
+            return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
+        });
+
         setTable(
             createTableViaTabulator(
                 "#divisionsTable",
                 [...divisionsColumns, actionsCell],
-                data,
+                filteredData,
                 () => {}
             )
         );
@@ -207,7 +219,7 @@ export const DivisionTreeView: FC<ITable> = ({ selectionItems }) => {
     return (
         <div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <SearchingRow selectionItems={selectionItems} />
+                <SearchingRow selectionItems={selectionItems} onSetSearchStr={onSetSearchStr} />
                 <div>
                     <Select
                         placeholder="Выберите компанию"

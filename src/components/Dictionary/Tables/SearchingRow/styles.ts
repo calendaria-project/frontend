@@ -17,6 +17,9 @@ export default createUseStyles({
             borderColor: (theme: ITheme) => `${theme.color.lines} !important`
         }
     },
+    suffix: {
+        color: (theme: ITheme) => theme.color.lines
+    },
     endedColWrapper: {
         display: "flex",
         flex: "1 1 auto",

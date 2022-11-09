@@ -2,11 +2,11 @@ import { Card, Col, Form, Menu, MenuProps, message, Row } from "antd";
 import React, { FC, memo, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import _ from "lodash";
 import {
-    SelectedKeyTypes,
-    TInputData,
-    inputData,
+    additionalMenuTypes,
     arrayKeyTypes,
-    additionalMenuTypes
+    inputData,
+    SelectedKeyTypes,
+    TInputData
 } from "./constants";
 import {
     CarOutlined,
@@ -32,12 +32,12 @@ import { AuthContext } from "context/AuthContextProvider";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { getCurrentUserDataItemInfo, getSelectedKey } from "store/reducers/userReducer";
-import { removeObjectProperties } from "utils/removeObjectProperties";
+import { removeEmptyObjectProperties } from "utils/removeObjectProperties";
 
 import { SetCurrentUserDataItemInfo, SetUserSelectedKey } from "store/actions";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
 import getUserRequestUrl from "functions/getUserRequestUrl";
-import UserExtraCardAdditionalModal from "./modal/simpleAdditionalModal";
+import SimpleUserExtraCardAdditionalModal from "./modal/simpleAdditionalModal";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
@@ -151,6 +151,15 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
 
     const saveModal = useCallback(
         (record: any) => {
+            console.log("RECORD", record);
+            record = Object.fromEntries(
+                Object.entries(record).map(([key, value]: [string, any]) => {
+                    if (key.includes("Date")) {
+                        return [key, value._i];
+                    } else return [key, value];
+                })
+            );
+            console.log("RECORD", record);
             const reqMethod = isObjectNotEmpty(currentUserDataItemInfo) ? "put" : "post";
 
             const sendRequest = (data: Object) => {
@@ -172,10 +181,12 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
             };
 
             if (reqMethod === "post") {
-                const data = removeObjectProperties({ ...record, userId: usersId });
+                const data = removeEmptyObjectProperties({ ...record, userId: usersId });
+                console.log("DATA", data);
                 sendRequest(data);
             } else {
                 const data = _.merge(currentUserDataItemInfo, record);
+                console.log("DATA", data);
                 sendRequest(data);
             }
 
@@ -186,18 +197,13 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
 
     const saveAdditionalModal = useCallback(
         (record: any) => {
-            if (record.issueDate) {
-                record = {
-                    ...record,
-                    issueDate: record.issueDate._i
-                };
-            }
-            if (record.contractDate) {
-                record = {
-                    ...record,
-                    contractDate: record.contractDate._i
-                };
-            }
+            record = Object.fromEntries(
+                Object.entries(record).map(([key, value]: [string, any]) => {
+                    if (key.includes("Date")) {
+                        return [key, value._i];
+                    } else return [key, value];
+                })
+            );
 
             const reqMethod = "post";
 
@@ -222,7 +228,7 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                     });
             };
 
-            const data = removeObjectProperties({ ...record, userId: usersId });
+            const data = removeEmptyObjectProperties({ ...record, userId: usersId });
             sendRequest(data);
 
             setAdditionalModalVisibleFlag(false);
@@ -294,6 +300,16 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
             key: SelectedKeyTypes.EDUCATION,
             icon: getIcon(SelectedKeyTypes.EDUCATION),
             label: "Образование"
+        },
+        {
+            key: SelectedKeyTypes.RELATIONSHIP,
+            icon: getIcon(SelectedKeyTypes.RELATIONSHIP),
+            label: "Родственные связи"
+        },
+        {
+            key: SelectedKeyTypes.MILITARY_INFO,
+            icon: getIcon(SelectedKeyTypes.MILITARY_INFO),
+            label: "Воинский учет"
         }
     ];
     const memoizedAdditionalItems = useMemo(() => additionalItems, [additionalItems]);
@@ -346,7 +362,7 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                     form={form}
                     currentDataLayout={currentDataLayout}
                 />
-                <UserExtraCardAdditionalModal
+                <SimpleUserExtraCardAdditionalModal
                     okText={"Сохранить"}
                     title={additionalModalTitle}
                     isVisible={additionalModalVisibleFlag}

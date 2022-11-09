@@ -20,7 +20,9 @@ export enum SelectedKeyTypes {
     SHARED_INFO = "sharedInfo",
     ADDITIONAL_INFO = "additionalInfo",
     EDUCATION = "education",
-    LANGUAGE_KNOWLEDGE = "languageKnowledge"
+    LANGUAGE_KNOWLEDGE = "languageKnowledge",
+    RELATIONSHIP = "relationship",
+    MILITARY_INFO = "militaryInfo"
 }
 
 export const arrayKeyTypes: Array<string> = [
@@ -29,14 +31,17 @@ export const arrayKeyTypes: Array<string> = [
     SelectedKeyTypes.CONTRACT,
     SelectedKeyTypes.INVENTORY,
     SelectedKeyTypes.DOCUMENT,
-    SelectedKeyTypes.ADDRESS_INFO
+    SelectedKeyTypes.ADDRESS_INFO,
+    SelectedKeyTypes.RELATIONSHIP
 ];
 
 export const additionalMenuTypes: Array<string> = [
     SelectedKeyTypes.SHARED_INFO,
     SelectedKeyTypes.ADDITIONAL_INFO,
     SelectedKeyTypes.LANGUAGE_KNOWLEDGE,
-    SelectedKeyTypes.EDUCATION
+    SelectedKeyTypes.EDUCATION,
+    SelectedKeyTypes.RELATIONSHIP,
+    SelectedKeyTypes.MILITARY_INFO
 ];
 
 export type TInputData = {
@@ -44,6 +49,7 @@ export type TInputData = {
     propertyName: string;
     dictionaryCode?: string;
     inputType?: string;
+    customType?: "mobile";
     pattern?: RegExp;
     patternMessage?: string;
     placeholder: string;
@@ -69,6 +75,7 @@ export const inputData: InputDataRecord = {
         {
             type: Types.INPUT,
             propertyName: "mobilePhoneNumber",
+            customType: "mobile",
             pattern: phonePattern,
             patternMessage: phoneMessage,
             placeholder: "Мобильный номер",
@@ -84,6 +91,7 @@ export const inputData: InputDataRecord = {
         {
             type: Types.INPUT,
             propertyName: "homePhoneNumber",
+            customType: "mobile",
             patternMessage: phoneMessage,
             pattern: phonePattern,
             placeholder: "Домашний телефон"
@@ -105,6 +113,7 @@ export const inputData: InputDataRecord = {
         {
             type: Types.INPUT,
             propertyName: "internalPhoneNumber",
+            customType: "mobile",
             patternMessage: phoneMessage,
             pattern: phonePattern,
             placeholder: "Корпоративный мобильный номер"
@@ -265,6 +274,46 @@ export const inputData: InputDataRecord = {
             propertyName: "knowledgeLevel",
             dictionaryCode: dictionaryCodesEnum.LANGUAGE_KNOWLEDGE_LEVEL,
             placeholder: "Уровень владения"
+        }
+    ],
+    [SelectedKeyTypes.RELATIONSHIP]: [
+        {
+            type: Types.SELECT,
+            propertyName: "sex",
+            dictionaryCode: dictionaryCodesEnum.SEX,
+            placeholder: "Пол",
+            required: true
+        },
+        {
+            type: Types.SELECT,
+            propertyName: "relationshipType",
+            dictionaryCode: dictionaryCodesEnum.RELATIONSHIP_TYPE,
+            placeholder: "Родство",
+            required: true
+        },
+        {
+            type: Types.DATE,
+            propertyName: "birthDate",
+            placeholder: "Дата рождения",
+            required: true
+        },
+        { type: Types.INPUT, propertyName: "firstname", placeholder: "Имя", required: true },
+        { type: Types.INPUT, propertyName: "lastname", placeholder: "Фамилия", required: true },
+        { type: Types.INPUT, propertyName: "patronymic", placeholder: "Отчество" }
+    ],
+    [SelectedKeyTypes.MILITARY_INFO]: [
+        {
+            type: Types.SELECT,
+            propertyName: "militaryRank",
+            dictionaryCode: dictionaryCodesEnum.MILITARY_RANK,
+            placeholder: "Военное звание",
+            required: true
+        },
+        {
+            type: Types.DATE,
+            propertyName: "enlistmentDate",
+            placeholder: "Дата приема на службу",
+            required: true
         }
     ]
 };

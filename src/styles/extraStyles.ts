@@ -33,7 +33,9 @@ export default createUseStyles({
             fontWeight: "600 !important"
         },
         ".ant-card-head": {
-            height: "64px"
+            height: "64px",
+            borderTopLeftRadius: "6px !important",
+            borderTopRightRadius: "6px !important"
         },
         ".ant-card-head-wrapper": {
             height: "100%"
@@ -42,6 +44,17 @@ export default createUseStyles({
             borderBottom: "none !important",
             textAlign: "center !important",
             padding: "30px 0px 10px 0px !important"
+        },
+        ".ant-modal-mask": {
+            zIndex: "9999999 !important",
+            backgroundColor: "rgba(0, 0, 0, 0.20) !important"
+        },
+        ".ant-modal-header, .ant-modal-content": {
+            borderRadius: "6px !important"
+        },
+        ".ant-modal-wrap": {
+            zIndex: "9999999 !important",
+            backgroundColor: "rgba(0, 0, 0, 0.20) !important"
         }
     }
 });

@@ -3,6 +3,10 @@ import { ITheme } from "styles/theme/interface";
 
 export default createUseStyles({
     header: {
+        position: "fixed",
+        width: "-webkit-fill-available",
+        zIndex: 99999,
+        marginLeft: (theme: ITheme) => theme.layout.sider.width,
         background: (theme: ITheme) => theme.background.primary,
         borderBottom: (theme: ITheme) => `${theme.border} ${theme.color.lines}`,
         padding: (theme: ITheme) => `0 ${theme.layout.padding}`,

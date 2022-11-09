@@ -30,6 +30,7 @@ export interface ITheme {
     notifications: TSimpleThemeRecord;
     layout: {
         header: TSimpleThemeRecord;
+        sider: TSimpleThemeRecord;
         padding: string;
         margin: string;
         smallMargin: string;

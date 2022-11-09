@@ -22,7 +22,7 @@ export default createUseStyles({
         },
         "& .ant-menu-title-content": {
             color: (theme: ITheme) => `${theme.color.secondary} !important`,
-            marginLeft: "6px !important"
+            marginLeft: "10px !important"
         },
         "& .anticon": {
             color: (theme: ITheme) => `${theme.image.color.regular} !important`
