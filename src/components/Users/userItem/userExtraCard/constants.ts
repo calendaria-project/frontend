@@ -50,6 +50,7 @@ export type TInputData = {
     dictionaryCode?: string;
     inputType?: string;
     customType?: "mobile";
+    withSearch?: boolean;
     pattern?: RegExp;
     patternMessage?: string;
     placeholder: string;
@@ -62,7 +63,7 @@ type InputDataRecord = {
 
 export const phonePattern = new RegExp(/^\+7\(\d{3}\)\d{3}(-\d{2})(-\d{2})$/);
 export const mailPattern = new RegExp(
-    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    /^(([^<>()\[\]\\.,;:ЁёА-я\s@"]+(\.[^<>()\[\]\\.,;:ЁёА-я\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([A-Za-z\-0-9]+\.)+[A-Za-z]{2,}))$/
 );
 export const mailMessage = "Введите почту в формате example@google.com";
 export const phoneMessage = "Введите номер в формате +7(xxx)xxx-xx-xx";
@@ -131,7 +132,8 @@ export const inputData: InputDataRecord = {
             type: Types.SELECT,
             dictionaryCode: dictionaryCodesEnum.INVENTORY_TYPE,
             propertyName: "inventoryType",
-            placeholder: "Тип инвентаря"
+            placeholder: "Тип инвентаря",
+            withSearch: true
         },
         {
             type: Types.INPUT,
@@ -245,14 +247,16 @@ export const inputData: InputDataRecord = {
             type: Types.SELECT,
             propertyName: "institution",
             dictionaryCode: dictionaryCodesEnum.EDUCATION_INSTITUTION,
-            placeholder: "Учебное заведение"
+            placeholder: "Учебное заведение",
+            withSearch: true
         },
         //GET - array, POST - object
         {
             type: Types.SELECT,
             propertyName: "educationLevel",
             dictionaryCode: dictionaryCodesEnum.EDUCATION_LEVEL,
-            placeholder: "Уровень образования"
+            placeholder: "Уровень образования",
+            withSearch: true
         },
         //GET - array, POST - object
         {
@@ -267,7 +271,8 @@ export const inputData: InputDataRecord = {
             type: Types.SELECT,
             propertyName: "language",
             dictionaryCode: dictionaryCodesEnum.LANGUAGE,
-            placeholder: "Язык"
+            placeholder: "Язык",
+            withSearch: true
         },
         {
             type: Types.SELECT,
