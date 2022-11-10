@@ -46,18 +46,13 @@ export default createUseStyles({
             padding: "30px 0px 10px 0px !important"
         },
         ".ant-modal-mask": {
-            zIndex: "9999999 !important",
             backgroundColor: "rgba(0, 0, 0, 0.20) !important"
         },
         ".ant-modal-header, .ant-modal-content": {
             borderRadius: "6px !important"
         },
         ".ant-modal-wrap": {
-            zIndex: "9999999 !important",
             backgroundColor: "rgba(0, 0, 0, 0.20) !important"
-        },
-        ".ant-message, .ant-drawer": {
-            zIndex: "9999999 !important"
         }
     }
 });
