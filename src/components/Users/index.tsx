@@ -103,7 +103,6 @@ const Users: FC = () => {
             ).then((data) => data);
 
             const searchedUserData = userData.filter((userItem: any) => {
-                console.log(userItem);
                 const tableDataStr =
                     (userItem.lastname || "") +
                     (userItem.firstname || "") +
