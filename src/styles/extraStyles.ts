@@ -55,6 +55,9 @@ export default createUseStyles({
         ".ant-modal-wrap": {
             zIndex: "9999999 !important",
             backgroundColor: "rgba(0, 0, 0, 0.20) !important"
+        },
+        ".ant-message, .ant-drawer": {
+            zIndex: "9999999 !important"
         }
     }
 });
