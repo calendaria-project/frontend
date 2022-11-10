@@ -64,6 +64,8 @@ const Select: FC<ISelect> = ({ form, dataItemLayout, currentDataItemInfo }) => {
 
     return (
         <AntdSelect
+            showSearch={!!dataItemLayout.withSearch}
+            optionFilterProp={dataItemLayout.withSearch ? "children" : undefined}
             value={selectValue?.nameRu}
             placeholder={dataItemLayout.placeholder}
             onChange={handleChangeValue}

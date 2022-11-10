@@ -1,6 +1,7 @@
 import React, { FC, useState, useEffect, ChangeEvent, useCallback, KeyboardEvent } from "react";
 import { FormInstance, Input as AntdInput } from "antd";
 import { Types, TInputData } from "../constants";
+import getValueWithoutReplacedSymbols from "../../../../../utils/getValueWithoutReplacedSymbols";
 
 interface IInput {
     form: FormInstance;
@@ -25,27 +26,52 @@ const Input: FC<IInput> = ({ form, dataItemLayout, currentDataItemInfo }) => {
         });
     }, [currentValue]);
 
+    const mobileInputFlag = dataItemLayout.customType && dataItemLayout.customType === "mobile";
+
     const handleChangeValue = useCallback(
         (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-            let newValue = e.target.value;
+            const setNewValue = (newValue: string) => {
+                form.setFieldsValue({
+                    [dataItemLayout.propertyName]: newValue
+                });
+                setCurrentValue(newValue);
+            };
 
-            form.setFieldsValue({
-                [dataItemLayout.propertyName]: newValue
-            });
-            setCurrentValue(newValue);
+            if (!mobileInputFlag) {
+                setNewValue(e.target.value);
+            } else {
+                const pureValue = getValueWithoutReplacedSymbols(e.target.value, [
+                    "+",
+                    "(",
+                    ")",
+                    "-",
+                    "-"
+                ]);
+                console.log(pureValue);
+                if (/^\d+$/.test(pureValue || "") || pureValue === "") {
+                    let newValue = e.target.value;
+                    if (newValue[0] !== "+") {
+                        newValue = `+${newValue}`;
+                    }
+                    if (newValue[1] !== "7") {
+                        newValue = newValue.slice(0, 1) + "7" + newValue.slice(1);
+                    }
+                    if (newValue[2] !== "(") {
+                        newValue = newValue.slice(0, 2) + "(" + newValue.slice(2);
+                    }
+                    form.setFieldsValue({
+                        "personalContact.mobilePhoneNumber": newValue
+                    });
+                    setCurrentValue(newValue);
+                }
+            }
         },
         [dataItemLayout]
     );
 
     const handleAutoCompleteValue = useCallback(
         (e: KeyboardEvent<HTMLInputElement>) => {
-            if (dataItemLayout.customType && dataItemLayout.customType === "mobile") {
-                if (currentValue.length === 0) {
-                    setCurrentValue(`+${currentValue}`);
-                }
-                if (currentValue.length === 2) {
-                    setCurrentValue(currentValue + "(");
-                }
+            if (mobileInputFlag && e.code !== "Backspace") {
                 if (currentValue.length === 6) {
                     setCurrentValue(currentValue + ")");
                 }
@@ -60,10 +86,11 @@ const Input: FC<IInput> = ({ form, dataItemLayout, currentDataItemInfo }) => {
     if (dataItemLayout.type === Types.INPUT) {
         return (
             <AntdInput
+                maxLength={mobileInputFlag ? 16 : undefined}
                 type={dataItemLayout.inputType}
                 placeholder={dataItemLayout.placeholder}
                 onChange={handleChangeValue}
-                onKeyUp={handleAutoCompleteValue}
+                onKeyDown={handleAutoCompleteValue}
                 value={currentValue}
             />
         );

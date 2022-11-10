@@ -3,7 +3,7 @@ import { SelectedKeyTypes } from "components/Users/userItem/userExtraCard/consta
 export const getUserEditingNameByKey = (key: string): string => {
     switch (key) {
         case SelectedKeyTypes.ADDITIONAL_INFO: {
-            return "информацию";
+            return "информацию о себе";
         }
         case SelectedKeyTypes.ADDRESS_INFO: {
             return "адрес";
@@ -31,6 +31,12 @@ export const getUserEditingNameByKey = (key: string): string => {
         }
         case SelectedKeyTypes.LANGUAGE_KNOWLEDGE: {
             return "иностранные языки";
+        }
+        case SelectedKeyTypes.RELATIONSHIP: {
+            return "родственные связи";
+        }
+        case SelectedKeyTypes.MILITARY_INFO: {
+            return "воинский учет";
         }
         default: {
             return "";
