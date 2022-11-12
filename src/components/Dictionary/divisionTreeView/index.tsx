@@ -8,7 +8,6 @@ import { divisionsColumns } from "data/columns";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import {
-    ICompanyViewModel,
     IDivisionCreateViewModel,
     IDivisionTreeNodeViewModel,
     IDivisionViewModel
@@ -27,6 +26,7 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import Button from "ui/Button";
 import { PlusOutlined } from "@ant-design/icons";
+import useCompaniesData from "hooks/useCompaniesData";
 
 const { Option } = Select;
 
@@ -44,8 +44,9 @@ export const DivisionTreeView: FC<ITable> = ({ selectionItems }) => {
     const [form] = Form.useForm<IDivisionCreateViewModel>();
     const [editForm] = Form.useForm<IDivisionViewModel>();
     const [table, setTable] = useState<Tabulator>();
-    const [companies, setCompanies] = useState<ICompanyViewModel[]>([]);
     const [selectedCompanyId, setSelectedCompanyId] = useState<number | undefined>(undefined);
+
+    const { companies } = useCompaniesData();
 
     const [searchStr, setSearchStr] = useState("");
 
@@ -56,19 +57,6 @@ export const DivisionTreeView: FC<ITable> = ({ selectionItems }) => {
     useEffect(() => {
         initDivisionsTabulator();
     }, [selectedCompanyId, searchStr]);
-
-    useEffect(() => {
-        getCompanies();
-    }, []);
-
-    const getCompanies = () => {
-        actionMethodResultSync(
-            "DICTIONARY",
-            "company?page=0&size=100&sortingRule=companyId%3AASC",
-            "get",
-            getRequestHeader(authContext.token)
-        ).then((data) => setCompanies(data.content));
-    };
 
     const nestedTableActionsFormatter = (cell: Tabulator.CellComponent) => {
         let editBtnIcon = document.createElement("img");

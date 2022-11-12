@@ -1,4 +1,5 @@
 import type { FormRule } from "antd";
+import { nodeTypeEnum } from "data/enums";
 
 export interface ICompanyBaseModel {
     bin: string;
@@ -320,4 +321,20 @@ export interface IUsersRelationshipModel {
     userId: string;
     createdAt: string;
     updatedAt: string;
+}
+
+export interface IOrgStructureTreeItem {
+    code: string;
+    id: number;
+    nameEn: string;
+    nameRu: string;
+    nodeType: nodeTypeEnum.DIVISION | nodeTypeEnum.DIVISION_UNIT | nodeTypeEnum.COMPANY;
+    parentId?: number;
+    children: Array<IOrgStructureTreeItem> | [];
+}
+
+export interface IExtendedOrgStructureTreeItem extends IOrgStructureTreeItem {
+    title: string;
+    key: string;
+    icon: JSX.Element;
 }

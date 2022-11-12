@@ -6,6 +6,7 @@ import StaffingItem from "components/Staffing/staffingItem";
 import Users from "components/Users";
 import UserItem from "components/Users/userItem";
 import MainMenu from "components/MainMenu";
+import OrganizationStructure from "../OrganizationStructure";
 
 const RoutesComponent = () => {
     return (
@@ -20,6 +21,11 @@ const RoutesComponent = () => {
             />
             <Route key="users-route" path="/users" element={<Users />} />
             <Route key="users-item-route" path="/users/:usersId" element={<UserItem />} />
+            <Route
+                key="organization-structure-route"
+                path="/organizationStructure"
+                element={<OrganizationStructure />}
+            />
         </Routes>
     );
 };

@@ -28,5 +28,12 @@ export enum mainMenuEnum {
     dictionary = "dictionary",
     staffing = "staffing",
     users = "users",
-    userItem = "userItem"
+    userItem = "userItem",
+    organizationStructure = "organizationStructure"
+}
+
+export enum nodeTypeEnum {
+    COMPANY = "COMPANY",
+    DIVISION = "DIVISION",
+    DIVISION_UNIT = "DIVISION_UNIT"
 }
