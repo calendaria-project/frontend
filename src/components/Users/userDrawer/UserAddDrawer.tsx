@@ -30,7 +30,7 @@ import {
 } from "../userItem/userExtraCard/constants";
 import { parsePointObjectKey } from "./utils/parsePointObjectKey";
 import AvatarDropZone from "./DropZones/AvatarDropZone";
-import SignDropZone from "./DropZones/SignDropZone";
+// import SignDropZone from "./DropZones/SignDropZone";
 import { useInitialData } from "./hooks/useInitialData";
 import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
 import { useTheme } from "react-jss";
@@ -194,7 +194,7 @@ export const UserAddDrawer = ({
                                     </Select>
                                 </Form.Item>
                             </Col>
-                            <Col span={16}>
+                            <Col span={24}>
                                 <Form.Item
                                     name="employmentDate"
                                     label="Дата приема на работу"
@@ -203,9 +203,9 @@ export const UserAddDrawer = ({
                                     <DatePicker className={classes.datePicker} />
                                 </Form.Item>
                             </Col>
-                            <Col span={8}>
-                                <SignDropZone form={form} />
-                            </Col>
+                            {/*<Col span={8}>*/}
+                            {/*    <SignDropZone form={form} />*/}
+                            {/*</Col>*/}
                         </Row>
                     </Col>
                 </Row>

@@ -39,11 +39,11 @@ const UserItem: FC = () => {
     }, []);
 
     const [currentUserData, setCurrentUserData] = useState<any>({});
-    const [currentUserSign, setCurrentUserSign] = useState<string | null>(null);
+    // const [currentUserSign, setCurrentUserSign] = useState<string | null>(null);
     const [currentUserPhoto, setCurrentUserPhoto] = useState<string | null>(null);
 
     const [photoLoading, setPhotoLoading] = useState<boolean>(false);
-    const [signLoading, setSignLoading] = useState<boolean>(false);
+    // const [signLoading, setSignLoading] = useState<boolean>(false);
 
     const [archiveModalVisible, setArchiveModalVisible] = useState<boolean>(false);
     const onArchiveModalVisible = useCallback((v: boolean) => setArchiveModalVisible(v), []);
@@ -66,18 +66,17 @@ const UserItem: FC = () => {
     }, [usersId]);
 
     useEffect(() => {
-        const fileId = currentUserData?.signFileId;
-        setSignLoading(true);
-        if (fileId) {
-            actionMethodResultSync("FILE", `file/download/${fileId}/base64`, "get").then((res) => {
-                setSignLoading(false);
-                setCurrentUserSign(res);
-            });
-        } else {
-            setSignLoading(false);
-            setCurrentUserSign(null);
-        }
-
+        // const fileId = currentUserData?.signFileId;
+        // setSignLoading(true);
+        // if (fileId) {
+        //     actionMethodResultSync("FILE", `file/download/${fileId}/base64`, "get").then((res) => {
+        //         setSignLoading(false);
+        //         setCurrentUserSign(res);
+        //     });
+        // } else {
+        //     setSignLoading(false);
+        //     setCurrentUserSign(null);
+        // }
         const photoId = currentUserData?.profilePhotoId;
         setPhotoLoading(true);
         if (photoId) {
@@ -198,24 +197,24 @@ const UserItem: FC = () => {
                                 <Tooltip title={"Дата приема на работу"}>
                                     <Text>{currentUserData?.employmentDate}</Text>
                                 </Tooltip>
-                                <Divider />
+                                {/*<Divider />*/}
                             </Col>
-                            <Row className={classes.rowWrapper} align="middle">
-                                <Col>Подпись:</Col>
-                                <Col className={classes.endedCol}>
-                                    {signLoading ? (
-                                        <Spinner size={20} />
-                                    ) : currentUserSign ? (
-                                        <Image width={40} src={currentUserSign} />
-                                    ) : null}
-                                </Col>
-                            </Row>
+                            {/*<Row className={classes.rowWrapper} align="middle">*/}
+                            {/*    <Col>Подпись:</Col>*/}
+                            {/*    <Col className={classes.endedCol}>*/}
+                            {/*        {signLoading ? (*/}
+                            {/*            <Spinner size={20} />*/}
+                            {/*        ) : currentUserSign ? (*/}
+                            {/*            <Image width={40} src={currentUserSign} />*/}
+                            {/*        ) : null}*/}
+                            {/*    </Col>*/}
+                            {/*</Row>*/}
                         </Row>
                     </Card>
                 </Col>
                 <UserEditDrawer
                     userPhoto={currentUserPhoto}
-                    userSign={currentUserSign}
+                    // userSign={currentUserSign}
                     userData={currentUserData}
                     companyId={currentUserData?.company?.companyId}
                     open={isVisibleEditUserDrawer}

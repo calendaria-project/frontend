@@ -63,6 +63,8 @@ const Header: FC = () => {
                             <LeftOutlined /> Сотрудники
                         </UIHeader>
                     </div>
+                ) : selectedMainMenuPoint === mainMenuEnum.organizationStructure ? (
+                    <UIHeader size="h2">Орг структура</UIHeader>
                 ) : null}
             </div>
             <div className={classes.selections}>

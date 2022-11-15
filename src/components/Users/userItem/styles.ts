@@ -31,7 +31,8 @@ export default createUseStyles({
             background: (theme: ITheme) => theme.background.secondary
         },
         "& .ant-divider": {
-            margin: "14px 0",
+            // margin: "14px 0",
+            margin: "20px 0",
             borderColor: (theme: ITheme) => theme.color.lines
         },
         "& .ant-card-body": {

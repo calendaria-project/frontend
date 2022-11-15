@@ -151,7 +151,6 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
 
     const saveModal = useCallback(
         (record: any) => {
-            console.log("RECORD", record);
             record = Object.fromEntries(
                 Object.entries(record).map(([key, value]: [string, any]) => {
                     if (key.includes("Date")) {
@@ -159,7 +158,6 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                     } else return [key, value];
                 })
             );
-            console.log("RECORD", record);
             const reqMethod = isObjectNotEmpty(currentUserDataItemInfo) ? "put" : "post";
 
             const sendRequest = (data: Object) => {

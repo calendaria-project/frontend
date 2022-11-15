@@ -27,7 +27,7 @@ import UIButton from "ui/Button";
 import { parsePointObjectKey } from "./utils/parsePointObjectKey";
 
 import AvatarDropZone from "./DropZones/AvatarDropZone";
-import SignDropZone from "./DropZones/SignDropZone";
+// import SignDropZone from "./DropZones/SignDropZone";
 import { useInitialData } from "./hooks/useInitialData";
 import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
 import { useTheme } from "react-jss";
@@ -36,7 +36,7 @@ import useStyles from "./styles";
 
 export interface IUserEditDrawer {
     userPhoto: string | null;
-    userSign: string | null;
+    // userSign: string | null;
     userData: any;
     companyId: string | undefined;
     companyName: string | undefined;
@@ -47,7 +47,7 @@ export interface IUserEditDrawer {
 
 export const UserEditDrawer = ({
     userPhoto,
-    userSign,
+    // userSign,
     userData,
     open,
     setOpen,
@@ -194,7 +194,7 @@ export const UserEditDrawer = ({
                                     </Select>
                                 </Form.Item>
                             </Col>
-                            <Col span={16}>
+                            <Col span={24}>
                                 <Form.Item
                                     name="employmentDate"
                                     label="Дата приема на работу"
@@ -203,9 +203,9 @@ export const UserEditDrawer = ({
                                     <DatePicker style={{ width: "100%" }} />
                                 </Form.Item>
                             </Col>
-                            <Col span={8}>
-                                <SignDropZone form={form} userSign={userSign} />
-                            </Col>
+                            {/*<Col span={8}>*/}
+                            {/*    <SignDropZone form={form} userSign={userSign} />*/}
+                            {/*</Col>*/}
                         </Row>
                     </Col>
                 </Row>
