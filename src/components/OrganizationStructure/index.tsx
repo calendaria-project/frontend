@@ -1,8 +1,8 @@
-import React, { FC, useCallback, useContext, useEffect, useState } from "react";
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { SetCurrentOpenedMenu } from "store/actions";
-import { mainMenuEnum } from "data/enums";
+import { mainMenuEnum, nodeTypeEnum } from "data/enums";
 import { useDispatch } from "react-redux";
-import { Row, Col, Select, Tree, Menu, Dropdown, Space, Form } from "antd";
+import { Col, Dropdown, Form, Menu, message, Row, Select, Space, Tree } from "antd";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
@@ -11,42 +11,38 @@ import useCompaniesData from "hooks/useCompaniesData";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import {
+    BranchesOutlined,
+    ClusterOutlined,
     DownOutlined,
     DragOutlined,
     EditOutlined,
-    ClusterOutlined,
-    BranchesOutlined,
     UserOutlined
 } from "@ant-design/icons";
-import { nodeTypeEnum } from "data/enums";
 import { IExtendedOrgStructureTreeItem, IOrgStructureTreeItem } from "interfaces";
-import DivisionUnitDeleteModal from "./modals/divisionUnitDeleteModal";
+import DivisionUnitDeleteModal from "./modals/SharedDeleteModal";
+import useOrgStructureHttpRequests from "./useOrgStructureHttpRequests";
+import { deletingOptions, layoutOptions, TLayoutOptions } from "./contants";
+import { SharedModal } from "./modals/SharedModal";
+import getOrgStructureModalTitle from "utils/getOrgStructureModalTitle";
+import parseModalData from "utils/parseModalData";
+
+import _ from "lodash";
 
 const { Option } = Select;
 
 const OrganizationStructure: FC = () => {
     const authContext = useContext(AuthContext);
     const dispatch = useDispatch();
-
     const theme = useTheme<ITheme>();
     const classes = useStyles(theme);
-
     useEffect(() => {
         dispatch(SetCurrentOpenedMenu(mainMenuEnum.organizationStructure));
     }, []);
 
     const [treeData, setTreeData] = useState<Array<IExtendedOrgStructureTreeItem>>([]);
-
     const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(
         Number(sessionStorage.getItem("selectedCompanyId")) || null
     );
-
-    const { companies } = useCompaniesData();
-
-    const handleSelectCompanyId = useCallback((value: string | number) => {
-        setSelectedCompanyId(+value);
-        sessionStorage.setItem("selectedCompanyId", value + "");
-    }, []);
 
     useEffect(() => {
         initTreeData();
@@ -64,67 +60,330 @@ const OrganizationStructure: FC = () => {
             `division-unit/tree?companyId=${selectedCompanyId}`,
             "get",
             getRequestHeader(authContext.token)
-        ).then((data) => data);
+        ).then((data) => {
+            return data;
+        });
     };
 
-    const [editForm] = Form.useForm();
+    const handleSelectCompanyId = useCallback((value: string | number) => {
+        setSelectedCompanyId(+value);
+        sessionStorage.setItem("selectedCompanyId", value + "");
+    }, []);
 
-    const [selectedNodeType, setSelectedNodeType] = useState("");
-    const [deletionDivisionUnitId, setDeletionDivisionUnitId] = useState(0);
+    const { companies } = useCompaniesData();
+    const { getCompanyById, getDivisionById, getDivisionUnitById, initPositionOptions, positions } =
+        useOrgStructureHttpRequests();
 
-    //division delete modal
-    const [deleteDivisionUnitModalOpen, setDeleteDivisionUnitModalOpen] = useState(false);
-    const onDeleteDivisionUnitModalOpen = useCallback(
-        (v: boolean) => setDeleteDivisionUnitModalOpen(v),
-        []
+    type TSelectedTreeEntity = { treeItem: IOrgStructureTreeItem; layoutOption: TLayoutOptions };
+    const [selectedTreeEntity, setSelectedTreeEntity] = useState<TSelectedTreeEntity>(
+        {} as TSelectedTreeEntity
     );
-    const onDeleteDivisionUnit = useCallback(() => {
-        if (deletionDivisionUnitId) {
-            actionMethodResultSync(
-                "DICTIONARY",
-                `division-unit/${deletionDivisionUnitId}`,
-                "delete",
-                getRequestHeader(authContext.token)
-            );
-            initTreeData();
+
+    //for edition
+    const [existingData, setExistingData] = useState<any>({});
+
+    const getExistingCompanyData = async () => {
+        const companyData = await getCompanyById(selectedCompanyId as number);
+        setExistingData(companyData);
+    };
+    const getExistingDivisionData = async (id: number) => {
+        const divisionData = await getDivisionById(id);
+        setExistingData(divisionData);
+    };
+    const getExistingDivisionUnitData = async (id: number) => {
+        const divisionUnitData = await getDivisionUnitById(id);
+        setExistingData(divisionUnitData);
+    };
+
+    //delete modal
+    const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+    const onSetDeleteModalIsVisible = useCallback((v: boolean) => setDeleteModalVisible(v), []);
+    const onDeleteItem = useCallback(() => {
+        const { id, nodeType } = selectedTreeEntity.treeItem || {};
+        actionMethodResultSync(
+            "DICTIONARY",
+            `${nodeType === nodeTypeEnum.DIVISION ? "division" : "division-unit"}/${id}`,
+            "delete",
+            getRequestHeader(authContext.token)
+        )
+            .then(() => {
+                message.success("Успешно удалено");
+                initTreeData();
+            })
+            .catch(() => message.error("Ошибка"));
+    }, [selectedTreeEntity, initTreeData]);
+
+    //shared modal
+    const [form] = Form.useForm();
+    const [modalIsVisible, setModalIsVisible] = useState(false);
+    const onSetModalIsVisible = useCallback((v: boolean) => setModalIsVisible(v), []);
+
+    const modalTitle = useMemo(
+        () =>
+            getOrgStructureModalTitle(
+                selectedTreeEntity.treeItem?.nodeType,
+                selectedTreeEntity.layoutOption
+            ),
+        [selectedTreeEntity]
+    );
+
+    const handleMenuClick =
+        (treeItem: IOrgStructureTreeItem, layoutOption: TLayoutOptions) => () => {
+            setSelectedTreeEntity({
+                treeItem,
+                layoutOption
+            });
+            form.resetFields();
+
+            if (deletingOptions.includes(layoutOption)) {
+                onSetDeleteModalIsVisible(true);
+            } else {
+                onSetModalIsVisible(true);
+            }
+        };
+
+    const handleEditClick = (treeItem: IOrgStructureTreeItem) => () => {
+        const { nodeType, id } = treeItem || {};
+        setSelectedTreeEntity({
+            treeItem,
+            layoutOption:
+                nodeType === nodeTypeEnum.COMPANY
+                    ? layoutOptions.EDIT_COMPANY
+                    : nodeType === nodeTypeEnum.DIVISION
+                    ? layoutOptions.EDIT_DIVISION
+                    : layoutOptions.EDIT_DIVISION_UNIT
+        });
+
+        if (nodeType === nodeTypeEnum.COMPANY) {
+            getExistingCompanyData();
         }
-    }, [treeData, deletionDivisionUnitId, initTreeData]);
+        if (nodeType === nodeTypeEnum.DIVISION) {
+            getExistingDivisionData(id);
+        }
+        if (nodeType === nodeTypeEnum.DIVISION_UNIT) {
+            getExistingDivisionUnitData(id);
+        }
 
-    const [editionModalOpen, setEditionModalOpen] = useState(false);
+        onSetModalIsVisible(true);
+    };
 
-    const divisionUnitContextMenu = (id: number) => (
-        <Menu
-            items={[
-                {
-                    key: "1",
-                    label: (
-                        <span
-                            onClick={() => {
-                                setDeletionDivisionUnitId(id);
-                                onDeleteDivisionUnitModalOpen(true);
-                            }}
-                        >
-                            Удалить
-                        </span>
+    const onFinishingModal = useCallback(
+        async (data: any) => {
+            const parsedData = parseModalData(data);
+            const { layoutOption, treeItem } = selectedTreeEntity;
+            const { nodeType, id } = treeItem || {};
+
+            if (nodeType === nodeTypeEnum.COMPANY) {
+                if (layoutOption === layoutOptions.ADD_DIVISION) {
+                    actionMethodResultSync(
+                        "DICTIONARY",
+                        `division`,
+                        "post",
+                        getRequestHeader(authContext.token),
+                        { companyId: selectedCompanyId, ...parsedData }
                     )
+                        .then(() => {
+                            message.success("Успешно сохранено");
+                            onSetModalIsVisible(false);
+                            initTreeData();
+                        })
+                        .catch(() => message.error("Ошибка"));
+                } else if (layoutOption === layoutOptions.EDIT_COMPANY) {
+                    actionMethodResultSync(
+                        "DICTIONARY",
+                        `company`,
+                        "put",
+                        getRequestHeader(authContext.token),
+                        _.merge(existingData, parsedData)
+                    )
+                        .then(() => {
+                            message.success("Успешно сохранено");
+                            onSetModalIsVisible(false);
+                            initTreeData();
+                        })
+                        .catch(() => message.error("Ошибка"));
                 }
-            ]}
-        />
+            }
+
+            if (nodeType === nodeTypeEnum.DIVISION) {
+                if (layoutOption === layoutOptions.ADD_DIVISION_UNIT) {
+                    if (parsedData.priority && parsedData.position) {
+                        const companyData = await getCompanyById(selectedCompanyId as number);
+
+                        actionMethodResultSync(
+                            "DICTIONARY",
+                            `division-unit`,
+                            "post",
+                            getRequestHeader(authContext.token),
+                            {
+                                company: companyData,
+                                priority: parsedData.priority,
+                                position: parsedData.position,
+                                division: { divisionId: id }
+                            }
+                        )
+                            .then(() => {
+                                message.success("Успешно сохранено");
+                                onSetModalIsVisible(false);
+                                initTreeData();
+                            })
+                            .catch(() => message.error("Ошибка"));
+                    } else {
+                        actionMethodResultSync(
+                            "DICTIONARY",
+                            "position",
+                            "post",
+                            getRequestHeader(authContext.token),
+                            parsedData
+                        )
+                            .then(() => {
+                                message.success("Добавлена позиция");
+                                initPositionOptions();
+                            })
+                            .catch(() => message.error("Ошибка"));
+                    }
+                }
+                if (layoutOption === layoutOptions.ADD_DIVISION) {
+                    actionMethodResultSync(
+                        "DICTIONARY",
+                        "division",
+                        "post",
+                        getRequestHeader(authContext.token),
+                        { companyId: selectedCompanyId, ...parsedData, parentId: id }
+                    )
+                        .then(() => {
+                            message.success("Успешно сохранено");
+                            onSetModalIsVisible(false);
+                            initTreeData();
+                        })
+                        .catch(() => message.error("Ошибка"));
+                }
+                if (layoutOption === layoutOptions.EDIT_DIVISION) {
+                    actionMethodResultSync(
+                        "DICTIONARY",
+                        `division`,
+                        "put",
+                        getRequestHeader(authContext.token),
+                        _.merge(existingData, parsedData)
+                    )
+                        .then(() => {
+                            message.success("Успешно сохранено");
+                            onSetModalIsVisible(false);
+                            initTreeData();
+                        })
+                        .catch(() => message.error("Ошибка"));
+                }
+            }
+
+            if (nodeType === nodeTypeEnum.DIVISION_UNIT) {
+                if (layoutOption === layoutOptions.EDIT_DIVISION_UNIT) {
+                    const reqData = {
+                        ...existingData,
+                        unitId: id,
+                        priority: parsedData.priority,
+                        position: parsedData.position
+                    };
+                    actionMethodResultSync(
+                        "DICTIONARY",
+                        `division-unit`,
+                        "put",
+                        getRequestHeader(authContext.token),
+                        reqData
+                    )
+                        .then(() => {
+                            message.success("Успешно сохранено");
+                            onSetModalIsVisible(false);
+                            initTreeData();
+                        })
+                        .catch(() => message.error("Ошибка"));
+                }
+            }
+        },
+        [selectedTreeEntity, existingData]
     );
-    const divisionContextMenu = (
+
+    const contextMenu = (treeItem: IOrgStructureTreeItem) => (
         <Menu
-            items={[
-                { key: "1", label: <span>Добавить подразделение</span> },
-                { key: "2", label: <span>Добавить должность</span> }
-            ]}
+            items={
+                treeItem.nodeType === nodeTypeEnum.COMPANY
+                    ? [
+                          {
+                              key: "1",
+                              label: (
+                                  <span
+                                      onClick={handleMenuClick(
+                                          treeItem,
+                                          layoutOptions.ADD_DIVISION
+                                      )}
+                                  >
+                                      Добавить подразделение
+                                  </span>
+                              )
+                          }
+                      ]
+                    : treeItem.nodeType === nodeTypeEnum.DIVISION
+                    ? [
+                          {
+                              key: "1",
+                              label: (
+                                  <span
+                                      onClick={handleMenuClick(
+                                          treeItem,
+                                          layoutOptions.ADD_DIVISION
+                                      )}
+                                  >
+                                      Добавить подразделение
+                                  </span>
+                              )
+                          },
+                          {
+                              key: "2",
+                              label: (
+                                  <span
+                                      onClick={handleMenuClick(
+                                          treeItem,
+                                          layoutOptions.ADD_DIVISION_UNIT
+                                      )}
+                                  >
+                                      Добавить должность
+                                  </span>
+                              )
+                          },
+                          {
+                              key: "3",
+                              label: (
+                                  <span
+                                      onClick={handleMenuClick(
+                                          treeItem,
+                                          layoutOptions.DELETE_DIVISION
+                                      )}
+                                  >
+                                      Удалить
+                                  </span>
+                              )
+                          }
+                      ]
+                    : [
+                          {
+                              key: "1",
+                              label: (
+                                  <span
+                                      onClick={handleMenuClick(
+                                          treeItem,
+                                          layoutOptions.DELETE_DIVISION_UNIT
+                                      )}
+                                  >
+                                      Удалить
+                                  </span>
+                              )
+                          }
+                      ]
+            }
         />
-    );
-    const companyContextMenu = (
-        <Menu items={[{ key: "1", label: <span>Добавить подразделение</span> }]} />
     );
 
     const getIcon = (treeItem: IOrgStructureTreeItem): JSX.Element => {
-        const { nodeType, id } = treeItem || {};
+        const { nodeType } = treeItem;
         return (
             <>
                 {nodeType === nodeTypeEnum.COMPANY ? (
@@ -136,21 +395,10 @@ const OrganizationStructure: FC = () => {
                 )}
                 <div className={classes.iconWrapper}>
                     <EditOutlined
-                        onClick={() => {
-                            setSelectedNodeType(nodeType);
-                            setEditionModalOpen(true);
-                        }}
+                        onClick={handleEditClick(treeItem)}
                         className={classes.editIcon}
                     />
-                    <Dropdown
-                        overlay={
-                            nodeType === nodeTypeEnum.COMPANY
-                                ? companyContextMenu
-                                : nodeType === nodeTypeEnum.DIVISION
-                                ? divisionContextMenu
-                                : divisionUnitContextMenu(id)
-                        }
-                    >
+                    <Dropdown overlay={contextMenu(treeItem)!}>
                         <Space>
                             <DragOutlined className={classes.dragIcon} />
                         </Space>
@@ -189,8 +437,6 @@ const OrganizationStructure: FC = () => {
         return newTreeData;
     };
 
-    console.log(treeData);
-
     return (
         <Row className={classes.container}>
             <Row className={classes.selectionWrapper}>
@@ -221,10 +467,21 @@ const OrganizationStructure: FC = () => {
             </Row>
             <DivisionUnitDeleteModal
                 okText={"Удалить"}
-                title={"Вы действительно хотите удалить текущую должность?"}
-                isVisible={deleteDivisionUnitModalOpen}
-                setIsVisible={onDeleteDivisionUnitModalOpen}
-                onDeleteDivisionUnit={onDeleteDivisionUnit}
+                title={modalTitle}
+                isVisible={deleteModalVisible}
+                setIsVisible={onSetDeleteModalIsVisible}
+                onDeleteItem={onDeleteItem}
+            />
+            <SharedModal
+                okText={"Сохранить"}
+                title={modalTitle}
+                setIsVisible={onSetModalIsVisible}
+                existingData={existingData}
+                onFinish={onFinishingModal}
+                selectedTreeEntity={selectedTreeEntity}
+                isVisible={modalIsVisible}
+                form={form}
+                positions={positions}
             />
         </Row>
     );

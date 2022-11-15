@@ -9,22 +9,22 @@ interface IDivisionUnitDeleteModal {
     title: string;
     isVisible: boolean;
     setIsVisible: (bool: boolean) => void;
-    onDeleteDivisionUnit: () => void;
+    onDeleteItem: () => void;
 }
 
-const DivisionUnitDeleteModal: FC<IDivisionUnitDeleteModal> = ({
+const SharedDeleteModal: FC<IDivisionUnitDeleteModal> = ({
     okText,
     title,
     isVisible,
     setIsVisible,
-    onDeleteDivisionUnit
+    onDeleteItem
 }) => {
     const handleCancel = useCallback(() => {
         setIsVisible(false);
     }, []);
 
     const handleRemove = () => {
-        onDeleteDivisionUnit();
+        onDeleteItem();
         handleCancel();
     };
 
@@ -45,4 +45,4 @@ const DivisionUnitDeleteModal: FC<IDivisionUnitDeleteModal> = ({
         </Modal>
     );
 };
-export default memo(DivisionUnitDeleteModal);
+export default memo(SharedDeleteModal);

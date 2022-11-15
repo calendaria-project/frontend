@@ -37,3 +37,8 @@ export enum nodeTypeEnum {
     DIVISION = "DIVISION",
     DIVISION_UNIT = "DIVISION_UNIT"
 }
+
+export type TNodeTypeEnum =
+    | nodeTypeEnum.DIVISION
+    | nodeTypeEnum.DIVISION_UNIT
+    | nodeTypeEnum.COMPANY;
