@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect, ChangeEvent, useCallback, KeyboardEvent } from "react";
-import { FormInstance, Input as AntdInput } from "antd";
+import { FormInstance, Input as AntdInput, Tooltip } from "antd";
 import { Types, TInputData } from "../constants";
-import getValueWithoutReplacedSymbols from "../../../../../utils/getValueWithoutReplacedSymbols";
+import getValueWithoutReplacedSymbols from "utils/getValueWithoutReplacedSymbols";
 
 interface IInput {
     form: FormInstance;
@@ -84,16 +84,28 @@ const Input: FC<IInput> = ({ form, dataItemLayout, currentDataItemInfo }) => {
     );
 
     if (dataItemLayout.type === Types.INPUT) {
-        return (
-            <AntdInput
-                maxLength={mobileInputFlag ? 16 : undefined}
-                type={dataItemLayout.inputType}
-                placeholder={dataItemLayout.placeholder}
-                onChange={handleChangeValue}
-                onKeyDown={handleAutoCompleteValue}
-                value={currentValue}
-            />
-        );
+        if (mobileInputFlag) {
+            return (
+                <Tooltip placement={"right"} title={"Введите номер в формате +7(xxx)xxx-xx-xx"}>
+                    <AntdInput
+                        maxLength={16}
+                        placeholder={dataItemLayout.placeholder}
+                        onChange={handleChangeValue}
+                        onKeyDown={handleAutoCompleteValue}
+                        value={currentValue}
+                    />
+                </Tooltip>
+            );
+        } else {
+            return (
+                <AntdInput
+                    type={dataItemLayout.inputType}
+                    placeholder={dataItemLayout.placeholder}
+                    onChange={handleChangeValue}
+                    value={currentValue}
+                />
+            );
+        }
     }
 
     return (

@@ -1,7 +1,7 @@
 import { Dropdown, Image, Layout, Menu, Select, Space } from "antd";
 import Button from "ui/Button";
 import { BellOutlined, DownOutlined, LeftOutlined } from "@ant-design/icons";
-import React, { FC, memo, useContext, useEffect, useState } from "react";
+import React, { FC, memo, useContext, useEffect, useMemo, useState } from "react";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { AuthContext } from "context/AuthContextProvider";
@@ -46,7 +46,43 @@ const Header: FC = () => {
         }
     }, [photoId]);
 
-    const dropdownItems = <Menu />;
+    const userDropdownItems = useMemo(
+        () => (
+            <Menu
+                items={[
+                    {
+                        key: "1",
+                        label: (
+                            <Button className={classes.dropdownBtn} customType={"primary"}>
+                                Профиль
+                            </Button>
+                        )
+                    },
+                    {
+                        key: "2",
+                        label: (
+                            <Button className={classes.dropdownBtn} customType={"primary"}>
+                                Настройки
+                            </Button>
+                        )
+                    },
+                    {
+                        key: "3",
+                        label: (
+                            <Button
+                                className={classes.dropdownBtn}
+                                customType={"primary"}
+                                onClick={() => authContext.logout()}
+                            >
+                                Выйти
+                            </Button>
+                        )
+                    }
+                ]}
+            />
+        ),
+        []
+    );
 
     return (
         <AntdHeader className={classes.header}>
@@ -76,16 +112,13 @@ const Header: FC = () => {
                 <Button customType={"primary"}>
                     <BellOutlined className={classes.bellIcon} />
                 </Button>
-                <Dropdown className={classes.userDropdown} overlay={dropdownItems}>
-                    <Button customType={"primary"}>
-                        <Space>
-                            <div className={classes.userDropdownInfo}>
-                                {userPhoto && <Image className={classes.icon} src={userPhoto} />}
-                                {userName}
-                            </div>
-                            <DownOutlined />
-                        </Space>
-                    </Button>
+                <Dropdown className={classes.userDropdown} overlay={userDropdownItems}>
+                    <Space className={classes.userDropdownSpace}>
+                        <Button customType={"primary"} icon={<DownOutlined />}>
+                            {userPhoto && <Image className={classes.icon} src={userPhoto} />}
+                            {userName}
+                        </Button>
+                    </Space>
                 </Dropdown>
             </div>
         </AntdHeader>

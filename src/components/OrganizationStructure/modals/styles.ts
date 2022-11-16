@@ -38,5 +38,10 @@ export default createUseStyles({
     },
     okBtnFormItem: {
         marginTop: "14px !important"
+    },
+    tabs: {
+        "& .ant-tabs-nav-wrap": {
+            justifyContent: "center"
+        }
     }
 });

@@ -37,6 +37,7 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import PhoneInput from "./PhoneInput";
+import { inputLengthHandler } from "utils/inputLengthHandler";
 
 export interface IUserAddDrawer {
     companyId: string | undefined;
@@ -148,7 +149,11 @@ export const UserAddDrawer = ({
                                     label="ИИН"
                                     rules={[{ required: true, message: "ИИН" }]}
                                 >
-                                    <Input />
+                                    <Input
+                                        type="number"
+                                        onKeyPress={inputLengthHandler}
+                                        maxLength={12}
+                                    />
                                 </Form.Item>
                             </Col>
                             <Col span={24}>

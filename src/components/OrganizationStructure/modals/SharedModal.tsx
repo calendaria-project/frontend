@@ -267,6 +267,7 @@ export const SharedModal = ({
             <WithForm
                 children={
                     <Tabs
+                        className={classes.tabs}
                         activeKey={activeKey}
                         onChange={(key) => setActiveKey(key)}
                         items={[

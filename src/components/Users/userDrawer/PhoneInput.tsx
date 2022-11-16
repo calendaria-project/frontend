@@ -1,5 +1,5 @@
 import { ChangeEvent, FC, KeyboardEvent, memo, useCallback, useState } from "react";
-import { FormInstance, Input } from "antd";
+import { FormInstance, Input, Tooltip } from "antd";
 import getValueWithoutReplacedSymbols from "../../../utils/getValueWithoutReplacedSymbols";
 
 interface IPhoneInput {
@@ -53,12 +53,14 @@ const PhoneInput: FC<IPhoneInput> = ({ form }) => {
     );
 
     return (
-        <Input
-            maxLength={16}
-            value={currentValue}
-            onChange={handleChangeValue}
-            onKeyDown={handleAutoCompleteValue}
-        />
+        <Tooltip placement={"left"} title={"Введите номер в формате +7(xxx)xxx-xx-xx"}>
+            <Input
+                maxLength={16}
+                value={currentValue}
+                onChange={handleChangeValue}
+                onKeyDown={handleAutoCompleteValue}
+            />
+        </Tooltip>
     );
 };
 export default memo(PhoneInput);

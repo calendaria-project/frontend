@@ -33,6 +33,7 @@ import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectPropertie
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
+import { inputLengthHandler } from "utils/inputLengthHandler";
 
 export interface IUserEditDrawer {
     userPhoto: string | null;
@@ -166,7 +167,11 @@ export const UserEditDrawer = ({
                                     label="ИИН"
                                     rules={[{ required: true, message: "ИИН" }]}
                                 >
-                                    <Input />
+                                    <Input
+                                        type="number"
+                                        onKeyPress={inputLengthHandler}
+                                        maxLength={12}
+                                    />
                                 </Form.Item>
                             </Col>
                             <Col span={16}>

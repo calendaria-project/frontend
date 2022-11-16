@@ -41,5 +41,10 @@ export default createUseStyles({
         cursor: "pointer"
     },
     userDropdown: {},
-    userDropdownInfo: {}
+    dropdownBtn: {
+        width: "100%"
+    },
+    userDropdownSpace: {
+        paddingTop: "2px"
+    }
 });
