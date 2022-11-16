@@ -77,3 +77,26 @@ export const usersColumns: ColumnDefinition[] = [
         field: "personalContact.mobilePhoneNumber"
     }
 ];
+
+export const externalUsersColumns: ColumnDefinition[] = [
+    {
+        headerSort: false,
+        title: "E-mail",
+        field: "personalContact.email"
+    },
+    {
+        headerSort: false,
+        title: "Номер телефона",
+        field: "personalContact.mobilePhoneNumber"
+    },
+    {
+        headerSort: false,
+        title: "Контрагент",
+        field: "counterparty.nameRu"
+    },
+    {
+        headerSort: false,
+        title: "Должность",
+        field: "position.nameRu"
+    }
+];

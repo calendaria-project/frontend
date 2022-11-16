@@ -4,11 +4,12 @@ import { Layout, Menu, MenuProps } from "antd";
 import { mainMenuEnum } from "data/enums";
 import {
     AppstoreOutlined,
+    ClusterOutlined,
     IdcardOutlined,
     MenuOutlined,
     ReadOutlined,
     ScheduleOutlined,
-    ClusterOutlined
+    DesktopOutlined
 } from "@ant-design/icons";
 
 import "antd/dist/antd.css";
@@ -66,6 +67,11 @@ const AppLayout = () => {
             key: mainMenuEnum.organizationStructure,
             icon: <ClusterOutlined className={classes.icon} />,
             label: "Орг структура"
+        },
+        {
+            key: mainMenuEnum.externalUsers,
+            icon: <DesktopOutlined className={classes.icon} />,
+            label: "Внешние пользователи"
         }
     ];
 

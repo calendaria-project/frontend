@@ -85,6 +85,7 @@ const sharedTheme: ITheme = {
             width: "80px"
         },
         padding: "20px",
+        hugeMargin: "28px",
         margin: "14px",
         smallMargin: "4px",
         mediumPadding: "8px",

@@ -207,8 +207,8 @@ export const DivisionTreeView: FC<ITable> = ({ selectionItems }) => {
     return (
         <div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <SearchingRow selectionItems={selectionItems} onSetSearchStr={onSetSearchStr} />
-                <div>
+                <div className={classes.selectionWrapper}>
+                    <SearchingRow selectionItems={selectionItems} onSetSearchStr={onSetSearchStr} />
                     <Select
                         placeholder="Выберите компанию"
                         className={classes.select}
@@ -221,6 +221,8 @@ export const DivisionTreeView: FC<ITable> = ({ selectionItems }) => {
                             </Option>
                         ))}
                     </Select>
+                </div>
+                <div>
                     <Button
                         className={classes.button}
                         disabled={!selectedCompanyId}
