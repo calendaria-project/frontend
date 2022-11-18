@@ -3,9 +3,11 @@ import { ITheme } from "styles/theme/interface";
 
 export default createUseStyles({
     extraCard: {
-        height: "100%",
+        minHeight: "485px",
+        maxHeight: "485px",
+        overflowY: "auto",
         "& .ant-card-head": {
-            color: (theme: ITheme) => theme.color.secondary,
+            color: (theme: ITheme) => theme.color.primary,
             background: (theme: ITheme) => theme.background.secondary
         },
         "& .ant-divider": {

@@ -109,7 +109,8 @@ export const inputData: InputDataRecord = {
             type: Types.INPUT,
             propertyName: "mobilePhoneNumber",
             inputType: "number",
-            placeholder: "Внутренний номер"
+            placeholder: "Внутренний номер",
+            required: true
         },
         {
             type: Types.INPUT,
@@ -133,7 +134,8 @@ export const inputData: InputDataRecord = {
             dictionaryCode: dictionaryCodesEnum.INVENTORY_TYPE,
             propertyName: "inventoryType",
             placeholder: "Тип инвентаря",
-            withSearch: true
+            withSearch: true,
+            required: true
         },
         {
             type: Types.INPUT,
@@ -171,8 +173,7 @@ export const inputData: InputDataRecord = {
             type: Types.SELECT,
             propertyName: "issueAuthority",
             dictionaryCode: dictionaryCodesEnum.ISSUE_AUTHORITY,
-            placeholder: "Орган выдачи",
-            required: true
+            placeholder: "Орган выдачи"
         },
         {
             type: Types.DATE,
@@ -239,7 +240,7 @@ export const inputData: InputDataRecord = {
     ],
 
     [SelectedKeyTypes.ADDITIONAL_INFO]: [
-        { type: Types.TEXTAREA, propertyName: "aboutMe", placeholder: "О себе" },
+        { type: Types.TEXTAREA, propertyName: "aboutMe", placeholder: "О себе", required: true },
         { type: Types.TEXTAREA, propertyName: "description", placeholder: "Примечание" }
     ],
     [SelectedKeyTypes.EDUCATION]: [
@@ -248,7 +249,8 @@ export const inputData: InputDataRecord = {
             propertyName: "institution",
             dictionaryCode: dictionaryCodesEnum.EDUCATION_INSTITUTION,
             placeholder: "Учебное заведение",
-            withSearch: true
+            withSearch: true,
+            required: true
         },
         //GET - array, POST - object
         {
@@ -256,14 +258,16 @@ export const inputData: InputDataRecord = {
             propertyName: "educationLevel",
             dictionaryCode: dictionaryCodesEnum.EDUCATION_LEVEL,
             placeholder: "Уровень образования",
-            withSearch: true
+            withSearch: true,
+            required: true
         },
         //GET - array, POST - object
         {
             type: Types.SELECT,
             propertyName: "specialty",
             dictionaryCode: dictionaryCodesEnum.SPECIALTY,
-            placeholder: "Специальность"
+            placeholder: "Специальность",
+            required: true
         }
     ],
     [SelectedKeyTypes.LANGUAGE_KNOWLEDGE]: [
@@ -272,13 +276,15 @@ export const inputData: InputDataRecord = {
             propertyName: "language",
             dictionaryCode: dictionaryCodesEnum.LANGUAGE,
             placeholder: "Язык",
-            withSearch: true
+            withSearch: true,
+            required: true
         },
         {
             type: Types.SELECT,
             propertyName: "knowledgeLevel",
             dictionaryCode: dictionaryCodesEnum.LANGUAGE_KNOWLEDGE_LEVEL,
-            placeholder: "Уровень владения"
+            placeholder: "Уровень владения",
+            required: true
         }
     ],
     [SelectedKeyTypes.RELATIONSHIP]: [

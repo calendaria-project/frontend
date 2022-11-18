@@ -232,6 +232,27 @@ export interface IUsersTableModel {
     date: any;
 }
 
+export interface IExternalUsersDtoViewModel {
+    userId: string;
+    username: string;
+    lastname: string;
+    firstname: string;
+    patronymic: string;
+    company: ICompanyDtoModel;
+    counterparty: ICompanyDtoModel;
+    position: IPositionDtoModel;
+    personalContact: IPersonalContactDtoModel;
+    enabled: boolean;
+    profilePhotoId: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface IExternalUsersDataModel extends IExternalUsersDtoViewModel {
+    fullName?: string;
+    currentExternalUserPhotoId?: string;
+}
+
 export interface IUsersCardModel {
     id: string | number;
     fullName: string;

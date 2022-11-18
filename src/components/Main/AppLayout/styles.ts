@@ -7,7 +7,7 @@ export default createUseStyles({
     },
     sider: {
         position: "fixed",
-        zIndex: 501,
+        zIndex: 101,
         height: "100vh",
         width: (theme: ITheme) => theme.layout.sider.width,
         background: (theme: ITheme) => theme.background.primary,

@@ -29,7 +29,8 @@ export enum mainMenuEnum {
     staffing = "staffing",
     users = "users",
     userItem = "userItem",
-    organizationStructure = "organizationStructure"
+    organizationStructure = "organizationStructure",
+    externalUsers = "externalUsers"
 }
 
 export enum nodeTypeEnum {

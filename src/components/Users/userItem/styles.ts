@@ -25,7 +25,8 @@ export default createUseStyles({
         paddingRight: (theme: ITheme) => theme.layout.mediumPadding
     },
     mainCard: {
-        height: "100%",
+        minHeight: "485px",
+        maxHeight: "485px",
         "& .ant-card-head": {
             color: (theme: ITheme) => theme.color.primary,
             background: (theme: ITheme) => theme.background.secondary

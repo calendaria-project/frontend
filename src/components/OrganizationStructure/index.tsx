@@ -1,8 +1,8 @@
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, { FC, useCallback, useContext, useEffect, useState } from "react";
 import { SetCurrentOpenedMenu } from "store/actions";
 import { mainMenuEnum, nodeTypeEnum } from "data/enums";
 import { useDispatch } from "react-redux";
-import { Col, Dropdown, Form, Menu, message, Row, Select, Space, Tree } from "antd";
+import { Col, Dropdown, Form, message, Row, Select, Space, Tree } from "antd";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
@@ -20,13 +20,14 @@ import {
 } from "@ant-design/icons";
 import { IExtendedOrgStructureTreeItem, IOrgStructureTreeItem } from "interfaces";
 import DivisionUnitDeleteModal from "./modals/SharedDeleteModal";
-import useOrgStructureHttpRequests from "./useOrgStructureHttpRequests";
+import useOrgStructureHttpRequests from "./hooks/useOrgStructureHttpRequests";
 import { deletingOptions, layoutOptions, TLayoutOptions } from "./contants";
 import { SharedModal } from "./modals/SharedModal";
 import getOrgStructureModalTitle from "utils/getOrgStructureModalTitle";
 import parseModalData from "utils/parseModalData";
 
 import _ from "lodash";
+import contextMenu from "./contextMenu";
 
 const { Option } = Select;
 
@@ -40,39 +41,50 @@ const OrganizationStructure: FC = () => {
     }, []);
 
     const [treeData, setTreeData] = useState<Array<IExtendedOrgStructureTreeItem>>([]);
+    const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
+
+    const handleExpandKeys = useCallback((v: any) => {
+        setExpandedKeys([...v]);
+    }, []);
+
     const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(
         Number(sessionStorage.getItem("selectedCompanyId")) || null
     );
 
+    const {
+        getCompanyById,
+        getDivisionById,
+        getDivisionUnitById,
+        initPositionOptions,
+        positions,
+        getTreeData
+    } = useOrgStructureHttpRequests();
+
     useEffect(() => {
-        initTreeData();
+        if (selectedCompanyId) {
+            initTreeData();
+        }
     }, [selectedCompanyId]);
 
-    const initTreeData = async () => {
-        const treeData = await getTreeData();
-        const formattedTreeData = formatTreeData(treeData);
-        setTreeData(formattedTreeData);
+    const initTreeData = async (key?: string) => {
+        if (selectedCompanyId) {
+            const treeData = await getTreeData(selectedCompanyId);
+            const formattedTreeData = formatTreeData(treeData);
+            if (!expandedKeys.includes(formattedTreeData[0].key)) {
+                setExpandedKeys([formattedTreeData[0].key]);
+            }
+            if (key) {
+                setExpandedKeys((prev) => [...prev, key]);
+            }
+            setTreeData(formattedTreeData);
+        }
     };
 
-    const getTreeData = async () => {
-        return actionMethodResultSync(
-            "DICTIONARY",
-            `division-unit/tree?companyId=${selectedCompanyId}`,
-            "get",
-            getRequestHeader(authContext.token)
-        ).then((data) => {
-            return data;
-        });
-    };
-
+    const { companies } = useCompaniesData();
     const handleSelectCompanyId = useCallback((value: string | number) => {
         setSelectedCompanyId(+value);
         sessionStorage.setItem("selectedCompanyId", value + "");
     }, []);
-
-    const { companies } = useCompaniesData();
-    const { getCompanyById, getDivisionById, getDivisionUnitById, initPositionOptions, positions } =
-        useOrgStructureHttpRequests();
 
     type TSelectedTreeEntity = { treeItem: IOrgStructureTreeItem; layoutOption: TLayoutOptions };
     const [selectedTreeEntity, setSelectedTreeEntity] = useState<TSelectedTreeEntity>(
@@ -118,14 +130,7 @@ const OrganizationStructure: FC = () => {
     const [modalIsVisible, setModalIsVisible] = useState(false);
     const onSetModalIsVisible = useCallback((v: boolean) => setModalIsVisible(v), []);
 
-    const modalTitle = useMemo(
-        () =>
-            getOrgStructureModalTitle(
-                selectedTreeEntity.treeItem?.nodeType,
-                selectedTreeEntity.layoutOption
-            ),
-        [selectedTreeEntity]
-    );
+    const modalTitle = getOrgStructureModalTitle(selectedTreeEntity.layoutOption);
 
     const handleMenuClick =
         (treeItem: IOrgStructureTreeItem, layoutOption: TLayoutOptions) => () => {
@@ -171,7 +176,7 @@ const OrganizationStructure: FC = () => {
         async (data: any) => {
             const parsedData = parseModalData(data);
             const { layoutOption, treeItem } = selectedTreeEntity;
-            const { nodeType, id } = treeItem || {};
+            const { nodeType, id, code } = treeItem || {};
 
             if (nodeType === nodeTypeEnum.COMPANY) {
                 if (layoutOption === layoutOptions.ADD_DIVISION) {
@@ -225,7 +230,7 @@ const OrganizationStructure: FC = () => {
                             .then(() => {
                                 message.success("Успешно сохранено");
                                 onSetModalIsVisible(false);
-                                initTreeData();
+                                initTreeData(code);
                             })
                             .catch(() => message.error("Ошибка"));
                     } else {
@@ -254,7 +259,7 @@ const OrganizationStructure: FC = () => {
                         .then(() => {
                             message.success("Успешно сохранено");
                             onSetModalIsVisible(false);
-                            initTreeData();
+                            initTreeData(code);
                         })
                         .catch(() => message.error("Ошибка"));
                 }
@@ -302,86 +307,6 @@ const OrganizationStructure: FC = () => {
         [selectedTreeEntity, existingData]
     );
 
-    const contextMenu = (treeItem: IOrgStructureTreeItem) => (
-        <Menu
-            items={
-                treeItem.nodeType === nodeTypeEnum.COMPANY
-                    ? [
-                          {
-                              key: "1",
-                              label: (
-                                  <span
-                                      onClick={handleMenuClick(
-                                          treeItem,
-                                          layoutOptions.ADD_DIVISION
-                                      )}
-                                  >
-                                      Добавить подразделение
-                                  </span>
-                              )
-                          }
-                      ]
-                    : treeItem.nodeType === nodeTypeEnum.DIVISION
-                    ? [
-                          {
-                              key: "1",
-                              label: (
-                                  <span
-                                      onClick={handleMenuClick(
-                                          treeItem,
-                                          layoutOptions.ADD_DIVISION
-                                      )}
-                                  >
-                                      Добавить подразделение
-                                  </span>
-                              )
-                          },
-                          {
-                              key: "2",
-                              label: (
-                                  <span
-                                      onClick={handleMenuClick(
-                                          treeItem,
-                                          layoutOptions.ADD_DIVISION_UNIT
-                                      )}
-                                  >
-                                      Добавить должность
-                                  </span>
-                              )
-                          },
-                          {
-                              key: "3",
-                              label: (
-                                  <span
-                                      onClick={handleMenuClick(
-                                          treeItem,
-                                          layoutOptions.DELETE_DIVISION
-                                      )}
-                                  >
-                                      Удалить
-                                  </span>
-                              )
-                          }
-                      ]
-                    : [
-                          {
-                              key: "1",
-                              label: (
-                                  <span
-                                      onClick={handleMenuClick(
-                                          treeItem,
-                                          layoutOptions.DELETE_DIVISION_UNIT
-                                      )}
-                                  >
-                                      Удалить
-                                  </span>
-                              )
-                          }
-                      ]
-            }
-        />
-    );
-
     const getIcon = (treeItem: IOrgStructureTreeItem): JSX.Element => {
         const { nodeType } = treeItem;
         return (
@@ -398,7 +323,7 @@ const OrganizationStructure: FC = () => {
                         onClick={handleEditClick(treeItem)}
                         className={classes.editIcon}
                     />
-                    <Dropdown overlay={contextMenu(treeItem)!}>
+                    <Dropdown overlay={contextMenu(treeItem, handleMenuClick)!}>
                         <Space>
                             <DragOutlined className={classes.dragIcon} />
                         </Space>
@@ -458,6 +383,8 @@ const OrganizationStructure: FC = () => {
             <Row className={classes.treeWrapper}>
                 <Col span={24}>
                     <Tree
+                        expandedKeys={expandedKeys}
+                        onExpand={handleExpandKeys}
                         showIcon
                         className={classes.tree}
                         switcherIcon={<DownOutlined />}

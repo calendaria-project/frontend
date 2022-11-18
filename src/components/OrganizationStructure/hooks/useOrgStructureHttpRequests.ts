@@ -41,6 +41,17 @@ const useOrgStructureHttpRequests = () => {
             });
     };
 
+    const getTreeData = async (id: number) => {
+        return actionMethodResultSync(
+            "DICTIONARY",
+            `division-unit/tree?companyId=${id}`,
+            "get",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data;
+        });
+    };
+
     const getDivisionById = (id: number) => {
         let url = `division/${id}`;
         return actionMethodResultSync("DICTIONARY", url, "get", getRequestHeader(authContext.token))
@@ -70,7 +81,8 @@ const useOrgStructureHttpRequests = () => {
         getDivisionById,
         getDivisionUnitById,
         positions,
-        initPositionOptions
+        initPositionOptions,
+        getTreeData
     };
 };
 export default useOrgStructureHttpRequests;
