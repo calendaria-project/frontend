@@ -6,8 +6,8 @@ import useStyles from "./styles";
 import cx from "classnames";
 import { SetCurrentOpenedMenu } from "store/actions";
 import { mainMenuEnum } from "data/enums";
-import { Row, Col, Select, Typography, Input, Form } from "antd";
-import { requestTypeValues, ALL } from "./defaultValues";
+import { Row, Col, Select, Typography, Input, Form, message } from "antd";
+import { requestTypeValues, ALL, DATE, sortTypeValues } from "./defaultValues";
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import Button from "ui/Button";
 import { actionMethodResultSync } from "functions/actionMethodResult";
@@ -19,6 +19,12 @@ import { createTableViaTabulator } from "services/tabulator";
 import { externalUsersColumns } from "data/columns";
 import { ColumnDefinition } from "tabulator-tables";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
+import ExternalUserDrawer from "./externalUserDrawer";
+import { IExternalUsersDataModel } from "interfaces";
+import { SharedExternalUserModal } from "./modal/SharedExternalUserModal";
+import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
+import { parsePointObjectKey } from "utils/parsePointObjectKey";
+import getSortedData from "./getSortedData";
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -31,10 +37,34 @@ const ExternalUsers: FC = () => {
     const classes = useStyles(theme);
 
     const [form] = Form.useForm();
+    const [companyId, setCompanyId] = useState<string | undefined>(undefined);
     const [table, setTable] = useState<Tabulator | undefined>();
+    const [currentExternalUserInfo, setCurrentExternalUserInfo] = useState<IExternalUsersDataModel>(
+        {} as IExternalUsersDataModel
+    );
+    const [externalUserDrawerOpen, setExternalUserDrawerOpen] = useState(false);
 
-    const [requestType, setRequestType] = useState(ALL);
+    const [addExternalUserModalVisible, setAddExternalUserModalVisible] = useState(false);
+
+    const [requestType, setRequestType] = useState(
+        sessionStorage.getItem("externalUserReqType") || ALL
+    );
+
+    useEffect(() => {
+        sessionStorage.setItem("externalUserReqType", requestType);
+    }, [requestType]);
+
     const onChangeRequestType = useCallback((v: string) => setRequestType(v), []);
+
+    const [sortType, setSortType] = useState(
+        sessionStorage.getItem("externalUserSortType") || DATE
+    );
+
+    useEffect(() => {
+        sessionStorage.setItem("externalUserSortType", sortType);
+    }, [sortType]);
+
+    const onChangeSortType = useCallback((v: string) => setSortType(v), []);
 
     const [query, setQuery] = useState("");
     const { searchStr } = useDelayedInputSearch(query);
@@ -49,7 +79,7 @@ const ExternalUsers: FC = () => {
 
     useEffect(() => {
         initData();
-    }, [searchStr, requestType]);
+    }, [searchStr, requestType, sortType]);
 
     const { getCurrentUserData } = useSimpleHttpFunctions();
 
@@ -82,6 +112,7 @@ const ExternalUsers: FC = () => {
         const currentUserData: any = await getCurrentUserData();
         if (currentUserData) {
             const companyId = currentUserData.company.companyId;
+            setCompanyId(companyId);
             const externalUserData = await actionMethodResultSync(
                 "USER",
                 `user/external?companyId=${companyId}&requestType=${requestType}`,
@@ -105,6 +136,11 @@ const ExternalUsers: FC = () => {
                 searchedExternalUserData
             );
 
+            const sortedExternalUsersDataWithPhoto = getSortedData(
+                externalUsersDataWithPhoto,
+                sortType
+            );
+
             const actionsSell: ColumnDefinition = {
                 headerSort: false,
                 title: "ФИО",
@@ -116,7 +152,7 @@ const ExternalUsers: FC = () => {
                 createTableViaTabulator(
                     "#externalUsersTable",
                     [actionsSell, ...externalUsersColumns],
-                    externalUsersDataWithPhoto,
+                    sortedExternalUsersDataWithPhoto,
                     handleFioClick,
                     undefined
                 )
@@ -125,7 +161,8 @@ const ExternalUsers: FC = () => {
     };
 
     const handleFioClick = (e: UIEvent, row: Tabulator.RowComponent) => {
-        console.log(row);
+        setCurrentExternalUserInfo(row.getData());
+        setExternalUserDrawerOpen(true);
     };
 
     const getExternalUsersWithPhotoId = async (data: any) => {
@@ -149,6 +186,48 @@ const ExternalUsers: FC = () => {
         return externalUsersWithPhotoId;
     };
 
+    const getDataWithPhoto = async (data: any) => {
+        if (data && data.profilePhotoId) {
+            const externalUserPhotoId = await actionMethodResultSync(
+                "FILE",
+                `file/download/${data.profilePhotoId}/base64`,
+                "get"
+            )
+                .then((res) => res)
+                .catch(() => undefined);
+            if (externalUserPhotoId) {
+                return { ...data, currentExternalUserPhotoId: externalUserPhotoId };
+            }
+        }
+        return data;
+    };
+
+    const onFinishAddExternalUser = useCallback(
+        async (data: any) => {
+            if (companyId) {
+                let currentData = removeEmptyValuesFromAnyLevelObject(
+                    parsePointObjectKey(data, companyId, form)
+                );
+                const newData = await actionMethodResultSync(
+                    "USER",
+                    `user/external`,
+                    "post",
+                    getRequestHeader(authContext.token),
+                    currentData
+                )
+                    .then((res) => res)
+                    .catch(() => message.error("Ошибка!"));
+                const dataWithPhoto = await getDataWithPhoto(newData);
+                table?.addData([dataWithPhoto]);
+                table?.redraw(true);
+                message.success("Успешно добавлено!");
+                setAddExternalUserModalVisible(false);
+                form.resetFields();
+            }
+        },
+        [table, form, companyId]
+    );
+
     return (
         <Row className={classes.wrapper}>
             <Row align={"middle"} justify={"space-between"} className={classes.selectionRow}>
@@ -167,9 +246,14 @@ const ExternalUsers: FC = () => {
                     <Text className={classes.sortText}>Сортировать по:</Text>
                     <Select
                         className={cx(classes.select, classes.sortSelect)}
-                        value={"creationDate"}
+                        value={sortType}
+                        onChange={onChangeSortType}
                     >
-                        {<Option value={"creationDate"}>Дате создания</Option>}
+                        {sortTypeValues.map(({ type, label }) => (
+                            <Option value={type} key={type}>
+                                {label}
+                            </Option>
+                        ))}
                     </Select>
                 </Col>
                 <Col>
@@ -179,17 +263,34 @@ const ExternalUsers: FC = () => {
                         placeholder="Поиск"
                         suffix={<SearchOutlined className={classes.suffix} />}
                     />
-                    <Button className={classes.btn} customType={"regular"} icon={<PlusOutlined />}>
+                    <Button
+                        onClick={() => setAddExternalUserModalVisible(true)}
+                        className={classes.btn}
+                        customType={"regular"}
+                        icon={<PlusOutlined />}
+                    >
                         Добавить
                     </Button>
                 </Col>
             </Row>
             <Row className={classes.externalUsersTableWrap}>
-                {/*<Form form={form} component={false}>*/}
-                {/*    */}
-                {/*</Form>*/}
                 <div id="externalUsersTable" />
             </Row>
+            <ExternalUserDrawer
+                requestType={requestType}
+                table={table}
+                open={externalUserDrawerOpen}
+                setOpen={setExternalUserDrawerOpen}
+                externalUserData={currentExternalUserInfo}
+            />
+            <SharedExternalUserModal
+                okText={"Добавить"}
+                title={"Добавить внешнего пользователя"}
+                setIsVisible={setAddExternalUserModalVisible}
+                onFinish={onFinishAddExternalUser}
+                isVisible={addExternalUserModalVisible}
+                form={form}
+            />
         </Row>
     );
 };

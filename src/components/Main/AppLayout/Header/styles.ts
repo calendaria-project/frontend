@@ -5,7 +5,7 @@ export default createUseStyles({
     header: {
         position: "fixed",
         width: "-webkit-fill-available",
-        zIndex: 500,
+        zIndex: 100,
         marginLeft: (theme: ITheme) => theme.layout.sider.width,
         background: (theme: ITheme) => theme.background.primary,
         borderBottom: (theme: ITheme) => `${theme.border} ${theme.color.lines}`,

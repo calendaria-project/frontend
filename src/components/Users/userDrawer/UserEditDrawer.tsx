@@ -24,9 +24,9 @@ import _ from "lodash";
 
 import UIButton from "ui/Button";
 
-import { parsePointObjectKey } from "./utils/parsePointObjectKey";
+import { parsePointObjectKey } from "utils/parsePointObjectKey";
 
-import AvatarDropZone from "./DropZones/AvatarDropZone";
+import AvatarDropZone from "utils/DropZones/AvatarDropZone";
 // import SignDropZone from "./DropZones/SignDropZone";
 import { useInitialData } from "./hooks/useInitialData";
 import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";

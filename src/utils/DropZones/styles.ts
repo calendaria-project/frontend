@@ -26,6 +26,22 @@ export default createUseStyles({
             overflow: "hidden"
         }
     },
+    unSpaced: {
+        width: "100%",
+        justifyContent: "center",
+        flexDirection: "row",
+        marginBottom: "24px",
+        "& .ant-space-item:first-child": {
+            width: "150px",
+            height: "150px",
+            borderRadius: "100%",
+            overflow: "hidden"
+        },
+        "& .ant-space-item:nth-of-type(2) > div": {
+            display: "flex",
+            flexDirection: "column"
+        }
+    },
     uploadItem: {
         position: "relative",
         "& button": {

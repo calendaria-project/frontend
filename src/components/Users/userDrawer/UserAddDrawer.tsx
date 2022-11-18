@@ -27,16 +27,16 @@ import {
     phonePattern,
     mailMessage,
     phoneMessage
-} from "../userItem/userExtraCard/constants";
-import { parsePointObjectKey } from "./utils/parsePointObjectKey";
-import AvatarDropZone from "./DropZones/AvatarDropZone";
+} from "components/Users/userItem/userExtraCard/constants";
+import { parsePointObjectKey } from "utils/parsePointObjectKey";
+import AvatarDropZone from "utils/DropZones/AvatarDropZone";
 // import SignDropZone from "./DropZones/SignDropZone";
 import { useInitialData } from "./hooks/useInitialData";
 import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
-import PhoneInput from "./PhoneInput";
+import PhoneInput from "utils/PhoneInput";
 import { inputLengthHandler } from "utils/inputLengthHandler";
 
 export interface IUserAddDrawer {

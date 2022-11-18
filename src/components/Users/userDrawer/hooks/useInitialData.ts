@@ -4,7 +4,7 @@ import { IDivisionDtoModel, IPositionDtoModel, ISimpleDictionaryModel } from "in
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 
-export const useInitialData = (companyId: string | undefined) => {
+export const useInitialData = (companyId?: string) => {
     const authContext = useContext(AuthContext);
     const [divisions, setDivisions] = useState<IDivisionDtoModel[]>([]);
     const [positions, setPositions] = useState<IPositionDtoModel[]>([]);
@@ -22,12 +22,14 @@ export const useInitialData = (companyId: string | undefined) => {
     }, [companyId]);
 
     const getDivisionOptions = () => {
-        return actionMethodResultSync(
-            "DICTIONARY",
-            `division?companyId=${companyId}&page=0&size=1000&sortingRule=divisionId%3AASC`,
-            "get",
-            getRequestHeader(authContext.token)
-        ).then((data) => setDivisions(data.content));
+        if (companyId) {
+            return actionMethodResultSync(
+                "DICTIONARY",
+                `division?companyId=${companyId}&page=0&size=1000&sortingRule=divisionId%3AASC`,
+                "get",
+                getRequestHeader(authContext.token)
+            ).then((data) => setDivisions(data.content));
+        }
     };
 
     const getPositionOptions = () => {

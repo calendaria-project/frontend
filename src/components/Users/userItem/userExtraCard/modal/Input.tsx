@@ -86,7 +86,7 @@ const Input: FC<IInput> = ({ form, dataItemLayout, currentDataItemInfo }) => {
     if (dataItemLayout.type === Types.INPUT) {
         if (mobileInputFlag) {
             return (
-                <Tooltip placement={"right"} title={"Введите номер в формате +7(xxx)xxx-xx-xx"}>
+                <Tooltip placement={"left"} title={"Введите номер в формате +7(xxx)xxx-xx-xx"}>
                     <AntdInput
                         maxLength={16}
                         placeholder={dataItemLayout.placeholder}

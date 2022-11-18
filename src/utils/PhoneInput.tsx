@@ -1,13 +1,21 @@
-import { ChangeEvent, FC, KeyboardEvent, memo, useCallback, useState } from "react";
+import { ChangeEvent, FC, KeyboardEvent, memo, useCallback, useEffect, useState } from "react";
 import { FormInstance, Input, Tooltip } from "antd";
-import getValueWithoutReplacedSymbols from "../../../utils/getValueWithoutReplacedSymbols";
+import getValueWithoutReplacedSymbols from "utils/getValueWithoutReplacedSymbols";
 
 interface IPhoneInput {
     form: FormInstance;
+    placeholder?: string;
+    initialValue?: string;
 }
 
-const PhoneInput: FC<IPhoneInput> = ({ form }) => {
+const PhoneInput: FC<IPhoneInput> = ({ form, placeholder, initialValue }) => {
     const [currentValue, setCurrentValue] = useState("");
+
+    useEffect(() => {
+        if (initialValue) {
+            setCurrentValue(initialValue);
+        }
+    }, [initialValue]);
 
     const handleChangeValue = useCallback(
         (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -56,6 +64,7 @@ const PhoneInput: FC<IPhoneInput> = ({ form }) => {
         <Tooltip placement={"left"} title={"Введите номер в формате +7(xxx)xxx-xx-xx"}>
             <Input
                 maxLength={16}
+                placeholder={placeholder}
                 value={currentValue}
                 onChange={handleChangeValue}
                 onKeyDown={handleAutoCompleteValue}

@@ -1,7 +1,7 @@
 import { FC, memo, useEffect } from "react";
 import { Button, Space, Typography, FormInstance } from "antd";
 import Dropzone from "react-dropzone";
-import { getBase64 } from "../utils/getBase64";
+import { getBase64 } from "components/Users/userDrawer/utils/getBase64";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { postFormDataHeader } from "functions/common";
 import { useContext, useState } from "react";
@@ -11,13 +11,15 @@ import { acceptedFiles } from "./acceptedFiles";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
+import cx from "classnames";
 
 const { Title } = Typography;
 
-const AvatarDropZone: FC<{ form: FormInstance; userPhoto?: string | null }> = ({
-    form,
-    userPhoto
-}) => {
+const AvatarDropZone: FC<{
+    form: FormInstance;
+    userPhoto?: string | null;
+    withSpace?: boolean;
+}> = ({ form, userPhoto, withSpace = true }) => {
     const authContext = useContext(AuthContext);
 
     const theme = useTheme<ITheme>();
@@ -26,11 +28,11 @@ const AvatarDropZone: FC<{ form: FormInstance; userPhoto?: string | null }> = ({
 
     const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    //
+    // console.log(userPhoto, avatarUrl);
 
     useEffect(() => {
-        if (userPhoto) {
-            setAvatarUrl(userPhoto);
-        }
+        setAvatarUrl(userPhoto ? userPhoto : null);
     }, [userPhoto]);
 
     const uploadButton = (
@@ -68,8 +70,12 @@ const AvatarDropZone: FC<{ form: FormInstance; userPhoto?: string | null }> = ({
     };
 
     return (
-        <Space className={classes.userTitleSpace} direction="vertical" align="center">
-            <Title level={3}>Основная информация</Title>
+        <Space
+            className={cx(withSpace ? classes.userTitleSpace : classes.unSpaced)}
+            direction="vertical"
+            align="center"
+        >
+            {withSpace && <Title level={3}>Основная информация</Title>}
             {avatarUrl ? (
                 <img src={avatarUrl} alt="avatar" className={classes.avatarIcon} />
             ) : (
@@ -83,13 +89,24 @@ const AvatarDropZone: FC<{ form: FormInstance; userPhoto?: string | null }> = ({
                             <Button className={classes.uploadBtn} type="text">
                                 Добавить
                             </Button>
+                            {!withSpace && (
+                                <Button
+                                    onClick={deleteAvatar}
+                                    className={classes.deleteBtn}
+                                    type="text"
+                                >
+                                    Удалить
+                                </Button>
+                            )}
                         </div>
                     );
                 }}
             </Dropzone>
-            <Button onClick={deleteAvatar} className={classes.deleteBtn} type="text">
-                Удалить
-            </Button>
+            {withSpace && (
+                <Button onClick={deleteAvatar} className={classes.deleteBtn} type="text">
+                    Удалить
+                </Button>
+            )}
         </Space>
     );
 };
