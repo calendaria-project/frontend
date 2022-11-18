@@ -18,7 +18,7 @@ export function removeEmptyValuesFromAnyLevelObject(obj: any) {
                     }
                 });
             }
-        } else if (obj[key] !== "" && obj[key] !== undefined && obj[key] !== null) {
+        } else if (obj[key] !== "" && obj[key] !== undefined) {
             finalObj[key] = obj[key];
         }
     });
