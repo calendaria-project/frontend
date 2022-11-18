@@ -79,9 +79,13 @@ const ExternalUserDrawer: FC<IExternalUserDrawer> = ({
         async (data: any) => {
             console.log(data);
             if (externalUserData) {
-                let gotData = removeEmptyValuesFromAnyLevelObject(
-                    parsePointObjectKey(data, companyId + "", editForm)
+                let gotData = parsePointObjectKey(
+                    removeEmptyValuesFromAnyLevelObject(data),
+                    companyId + "",
+                    editForm,
+                    false
                 );
+
                 const { fullName, currentExternalUserPhotoId, ...currentPureData } =
                     externalUserData;
                 const finalData = _.merge(currentPureData, gotData);
