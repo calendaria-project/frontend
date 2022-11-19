@@ -22,6 +22,7 @@ import { mainMenuEnum } from "data/enums";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
+import { ICurrentUserDtoViewModel, IUsersDtoViewModel } from "interfaces";
 
 const Users: FC = () => {
     const navigate = useNavigate();
@@ -31,7 +32,7 @@ const Users: FC = () => {
     const theme = useTheme<ITheme>();
     const classes = useStyles(theme);
 
-    const [companyId, setCompanyId] = useState<string | undefined>();
+    const [companyId, setCompanyId] = useState<number | undefined>();
     const [companyName, setCompanyName] = useState<string | undefined>();
     const [isVisibleAddUserDrawer, setIsVisibleAddUserDrawer] = useState(false);
     const [table, setTable] = useState<Tabulator | undefined>();
@@ -89,13 +90,13 @@ const Users: FC = () => {
 
     const initData = async () => {
         createTableViaTabulator("#usersTable", usersColumns, [], () => {}, true, customGroupHeader);
-        const currentUserData: any = await getCurrentUserData();
+        const currentUserData: ICurrentUserDtoViewModel = await getCurrentUserData();
         if (currentUserData) {
             const companyId = currentUserData.company.companyId;
             const companyName = currentUserData.company.nameRu;
             setCompanyId(companyId);
             setCompanyName(companyName);
-            const userData = await actionMethodResultSync(
+            const userData: IUsersDtoViewModel[] = await actionMethodResultSync(
                 "USER",
                 `user?companyId=${companyId}`,
                 "get",
@@ -145,7 +146,7 @@ const Users: FC = () => {
         ).then((data) => data);
     };
 
-    const getUsersWithPhotoId = async (data: any) => {
+    const getUsersWithPhotoId = async (data: IUsersDtoViewModel[]) => {
         const usersWithPhotoId = [];
         for (let i = 0; i < data.length; ++i) {
             const profilePhotoId = data[i].profilePhotoId;
@@ -206,7 +207,7 @@ const Users: FC = () => {
                 <div id="usersTable" />
             </Row>
             <UserAddDrawer
-                companyId={companyId}
+                companyId={companyId + ""}
                 open={isVisibleAddUserDrawer}
                 setOpen={setIsVisibleAddUserDrawer}
                 companyName={companyName}

@@ -1,7 +1,7 @@
-import React, { FC, useCallback, useContext, useState } from "react";
+import React, { FC, memo, useCallback, useContext, useState } from "react";
 import { Drawer, Row, Col, Image, Typography, message, Form } from "antd";
 import cx from "classnames";
-import { IExternalUsersDataModel } from "interfaces";
+import { IExternalUsersDataModel, IExternalUsersDtoViewModel } from "interfaces";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
@@ -19,11 +19,12 @@ import { AuthContext } from "context/AuthContextProvider";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import ArchiveExternalUserModal from "../modal/ArchiveExternalUserModal";
-import { SharedExternalUserModal } from "../modal/SharedExternalUserModal";
+import SharedExternalUserModal from "../modal/SharedExternalUserModal";
 import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
 import { parsePointObjectKey } from "utils/parsePointObjectKey";
 import _ from "lodash";
 import { ALL, ARCHIVE } from "../defaultValues";
+import { IFinishData } from "../index";
 
 const { Text, Title } = Typography;
 
@@ -44,7 +45,6 @@ const ExternalUserDrawer: FC<IExternalUserDrawer> = ({
 }) => {
     const authContext = useContext(AuthContext);
     const theme = useTheme<ITheme>();
-    // @ts-ignore
     const classes = useStyles(theme);
 
     const [editForm] = Form.useForm();
@@ -73,11 +73,8 @@ const ExternalUserDrawer: FC<IExternalUserDrawer> = ({
             .catch(() => message.error("Ошибка"));
     }, [table, externalUserData]);
 
-    console.log(table);
-
     const onFinishEditExternalUserDrawer = useCallback(
-        async (data: any) => {
-            console.log(data);
+        async (data: IFinishData) => {
             if (externalUserData) {
                 let gotData = parsePointObjectKey(
                     removeEmptyValuesFromAnyLevelObject(data),
@@ -88,8 +85,8 @@ const ExternalUserDrawer: FC<IExternalUserDrawer> = ({
 
                 const { fullName, currentExternalUserPhotoId, ...currentPureData } =
                     externalUserData;
-                const finalData = _.merge(currentPureData, gotData);
-                const editedData = await actionMethodResultSync(
+                const finalData: IExternalUsersDtoViewModel = _.merge(currentPureData, gotData);
+                const editedData: IExternalUsersDtoViewModel = await actionMethodResultSync(
                     "USER",
                     `user/external`,
                     "put",
@@ -119,7 +116,7 @@ const ExternalUserDrawer: FC<IExternalUserDrawer> = ({
         [editForm, table, externalUserData]
     );
 
-    const getDataWithPhoto = async (data: any) => {
+    const getDataWithPhoto = async (data: IExternalUsersDtoViewModel) => {
         if (data && data.profilePhotoId) {
             const externalUserPhotoId = await actionMethodResultSync(
                 "FILE",
@@ -225,4 +222,4 @@ const ExternalUserDrawer: FC<IExternalUserDrawer> = ({
         </Drawer>
     );
 };
-export default ExternalUserDrawer;
+export default memo(ExternalUserDrawer);

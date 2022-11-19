@@ -23,10 +23,10 @@ const ExternalUserArchiveModal: FC<IExternalUserArchiveModal> = ({
         setIsVisible(false);
     }, []);
 
-    const handleRemove = () => {
+    const handleRemove = useCallback(() => {
         onArchiveItem();
         handleCancel();
-    };
+    }, [onArchiveItem, handleCancel]);
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>

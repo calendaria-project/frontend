@@ -20,14 +20,29 @@ import { externalUsersColumns } from "data/columns";
 import { ColumnDefinition } from "tabulator-tables";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import ExternalUserDrawer from "./externalUserDrawer";
-import { IExternalUsersDataModel } from "interfaces";
-import { SharedExternalUserModal } from "./modal/SharedExternalUserModal";
+import {
+    ICurrentUserDtoViewModel,
+    IExternalUsersDataModel,
+    IExternalUsersDtoViewModel
+} from "interfaces";
+import SharedExternalUserModal from "./modal/SharedExternalUserModal";
 import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
 import { parsePointObjectKey } from "utils/parsePointObjectKey";
 import getSortedData from "./getSortedData";
 
 const { Option } = Select;
 const { Text } = Typography;
+
+export interface IFinishData {
+    firstname: string;
+    lastname: string;
+    patronymic?: string;
+    "position.positionId": number;
+    "counterparty.companyId": number;
+    "personalContact.email"?: string;
+    "personalContact.mobilePhoneNumber": string;
+    profilePhotoId?: string;
+}
 
 const ExternalUsers: FC = () => {
     const dispatch = useDispatch();
@@ -37,7 +52,7 @@ const ExternalUsers: FC = () => {
     const classes = useStyles(theme);
 
     const [form] = Form.useForm();
-    const [companyId, setCompanyId] = useState<string | undefined>(undefined);
+    const [companyId, setCompanyId] = useState<number | undefined>(undefined);
     const [table, setTable] = useState<Tabulator | undefined>();
     const [currentExternalUserInfo, setCurrentExternalUserInfo] = useState<IExternalUsersDataModel>(
         {} as IExternalUsersDataModel
@@ -109,11 +124,11 @@ const ExternalUsers: FC = () => {
 
     const initData = async () => {
         createTableViaTabulator("#externalUsersTable", externalUsersColumns, [], () => {}, true);
-        const currentUserData: any = await getCurrentUserData();
+        const currentUserData: ICurrentUserDtoViewModel = await getCurrentUserData();
         if (currentUserData) {
             const companyId = currentUserData.company.companyId;
             setCompanyId(companyId);
-            const externalUserData = await actionMethodResultSync(
+            const externalUserData: IExternalUsersDtoViewModel[] = await actionMethodResultSync(
                 "USER",
                 `user/external?companyId=${companyId}&requestType=${requestType}`,
                 "get",
@@ -132,9 +147,8 @@ const ExternalUsers: FC = () => {
                 return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
             });
 
-            const externalUsersDataWithPhoto = await getExternalUsersWithPhotoId(
-                searchedExternalUserData
-            );
+            const externalUsersDataWithPhoto: IExternalUsersDataModel[] =
+                await getExternalUsersWithPhotoId(searchedExternalUserData);
 
             const sortedExternalUsersDataWithPhoto = getSortedData(
                 externalUsersDataWithPhoto,
@@ -165,11 +179,11 @@ const ExternalUsers: FC = () => {
         setExternalUserDrawerOpen(true);
     };
 
-    const getExternalUsersWithPhotoId = async (data: any) => {
+    const getExternalUsersWithPhotoId = async (data: IExternalUsersDtoViewModel[]) => {
         const externalUsersWithPhotoId = [];
         for (let i = 0; i < data.length; ++i) {
             const profilePhotoId = data[i].profilePhotoId;
-            let currentExternalUserPhotoId;
+            let currentExternalUserPhotoId: string | undefined;
             if (profilePhotoId) {
                 currentExternalUserPhotoId = await actionMethodResultSync(
                     "FILE",
@@ -186,7 +200,7 @@ const ExternalUsers: FC = () => {
         return externalUsersWithPhotoId;
     };
 
-    const getDataWithPhoto = async (data: any) => {
+    const getDataWithPhoto = async (data: IExternalUsersDtoViewModel) => {
         if (data && data.profilePhotoId) {
             const externalUserPhotoId = await actionMethodResultSync(
                 "FILE",
@@ -203,12 +217,14 @@ const ExternalUsers: FC = () => {
     };
 
     const onFinishAddExternalUser = useCallback(
-        async (data: any) => {
+        async (data: IFinishData) => {
             if (companyId) {
-                let currentData = removeEmptyValuesFromAnyLevelObject(
-                    parsePointObjectKey(data, companyId, form)
+                let currentData = parsePointObjectKey(
+                    removeEmptyValuesFromAnyLevelObject(data),
+                    companyId + "",
+                    form
                 );
-                const newData = await actionMethodResultSync(
+                const newData: IExternalUsersDtoViewModel = await actionMethodResultSync(
                     "USER",
                     `user/external`,
                     "post",
