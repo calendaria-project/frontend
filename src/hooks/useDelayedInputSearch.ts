@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const delay = 700;
+const delay = 500;
 
 const useDelayedInputSearch = (query: string) => {
     const [searchStr, setSearchStr] = useState("");

@@ -23,6 +23,9 @@ export default createUseStyles({
         "& .ant-tree-treenode": {
             padding: "0 0 12px 0 !important"
         },
+        "& .ant-tree-node-content-wrapper": {
+            padding: "0 10px !important"
+        },
         "& .ant-tree-list-holder-inner > div": {
             // width: "100%",
             // background: (theme: ITheme) => theme.background.primary,

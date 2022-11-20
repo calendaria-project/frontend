@@ -23,6 +23,7 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import { ICurrentUserDtoViewModel, IUsersDtoViewModel } from "interfaces";
+import getFullName from "utils/getFullName";
 
 const Users: FC = () => {
     const navigate = useNavigate();
@@ -36,6 +37,7 @@ const Users: FC = () => {
     const [companyName, setCompanyName] = useState<string | undefined>();
     const [isVisibleAddUserDrawer, setIsVisibleAddUserDrawer] = useState(false);
     const [table, setTable] = useState<Tabulator | undefined>();
+    const [tableData, setTableData] = useState<IUsersDtoViewModel[]>([]);
 
     const [query, setQuery] = useState("");
     const { searchStr } = useDelayedInputSearch(query);
@@ -46,6 +48,21 @@ const Users: FC = () => {
 
     useEffect(() => {
         initData();
+    }, []);
+
+    useEffect(() => {
+        const searchedTableData = tableData.filter((tableItem) => {
+            const tableDataStr =
+                getFullName(tableItem.firstname, tableItem.lastname, tableItem.patronymic) +
+                (tableItem.personalContact?.email || "") +
+                // (tableItem.status || "") +
+                (tableItem.position?.nameRu || "") +
+                (tableItem.personalContact?.mobilePhoneNumber || "");
+            return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
+        });
+
+        table?.replaceData(searchedTableData);
+        table?.redraw(true);
     }, [searchStr]);
 
     const fullNameTableActionsFormatter = (cell: Tabulator.CellComponent) => {
@@ -103,19 +120,9 @@ const Users: FC = () => {
                 getRequestHeader(authContext.token)
             ).then((data) => data);
 
-            const searchedUserData = userData.filter((userItem: any) => {
-                const tableDataStr =
-                    (userItem.lastname || "") +
-                    (userItem.firstname || "") +
-                    (userItem.patronymic || "") +
-                    (userItem.personalContact?.email || "") +
-                    (userItem.status || "") +
-                    (userItem.position?.nameRu || "") +
-                    (userItem.personalContact?.mobilePhoneNumber || "");
-                return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
-            });
+            setTableData(userData);
 
-            const userDataWithPhoto = await getUsersWithPhotoId(searchedUserData);
+            const userDataWithPhoto = await getUsersWithPhotoId(userData);
 
             const actionsSell: ColumnDefinition = {
                 headerSort: false,

@@ -25,6 +25,7 @@ export const CompanyTreeView: FC<ITable> = ({ selectionItems }) => {
     const [form] = Form.useForm<ICompanyCreateViewModel>();
     const [editForm] = Form.useForm<ICompanyViewModel>();
     const [table, setTable] = useState<Tabulator>();
+    const [tableData, setTableData] = useState<any>([]);
 
     const [searchStr, setSearchStr] = useState("");
 
@@ -34,6 +35,20 @@ export const CompanyTreeView: FC<ITable> = ({ selectionItems }) => {
 
     useEffect(() => {
         createCompamyNestedTable();
+    }, []);
+
+    useEffect(() => {
+        const filteredTableData = tableData.filter((dataItem: any) => {
+            const tableDataStr =
+                (dataItem.nameKz || "") +
+                (dataItem.nameRu || "") +
+                (dataItem.nameEn || "") +
+                (dataItem.bin || "");
+            return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
+        });
+
+        table?.replaceData(filteredTableData);
+        table?.redraw(true);
     }, [searchStr]);
 
     const nestedTableActionsFormatter = (cell: Tabulator.CellComponent) => {
@@ -65,20 +80,13 @@ export const CompanyTreeView: FC<ITable> = ({ selectionItems }) => {
                     formatter: nestedTableActionsFormatter
                 };
 
-                const filteredData = data.filter((dataItem: any) => {
-                    const tableDataStr =
-                        (dataItem.nameKz || "") +
-                        (dataItem.nameRu || "") +
-                        (dataItem.nameEn || "") +
-                        (dataItem.bin || "");
-                    return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
-                });
+                setTableData(data);
 
                 setTable(
                     createTableViaTabulator(
                         "#companiesTable",
                         [...companiesColumns, actionsCell],
-                        filteredData,
+                        data,
                         () => {}
                     )
                 );

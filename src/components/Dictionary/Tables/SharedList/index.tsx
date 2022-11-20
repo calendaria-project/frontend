@@ -63,10 +63,11 @@ interface ISharedList extends ITable {
 }
 
 const SharedList: FC<ISharedList> = ({ dictionaryCode, modalTitle, selectionItems }) => {
-    const [data, setData] = useState<ISimpleDictionaryViewModel[]>([]);
     const authContext = useContext(AuthContext);
-
     const theme = useTheme<ITheme>();
+
+    const [data, setData] = useState<ISimpleDictionaryViewModel[]>([]);
+    const [copiedData, setCopiedData] = useState<ISimpleDictionaryViewModel[]>([]);
 
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState(-1);
@@ -232,16 +233,22 @@ const SharedList: FC<ISharedList> = ({ dictionaryCode, modalTitle, selectionItem
             "get",
             getRequestHeader(authContext.token)
         ).then((data) => {
-            const filteredData = data.filter((dataItem: any) => {
-                const tableDataStr =
-                    (dataItem.nameKz || "") +
-                    (dataItem.nameRu || "") +
-                    (dataItem.nameEn || "") +
-                    (dataItem.code || "");
-                return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
-            });
-            setData(filteredData);
+            setCopiedData(data);
+            setData(data);
         });
+    }, []);
+
+    useEffect(() => {
+        const filteredData = copiedData.filter((dataItem) => {
+            const tableDataStr =
+                (dataItem.nameKz || "") +
+                (dataItem.nameRu || "") +
+                (dataItem.nameEn || "") +
+                (dataItem.code || "");
+            return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
+        });
+
+        setData(filteredData);
     }, [searchStr]);
 
     return (
@@ -264,7 +271,7 @@ const SharedList: FC<ISharedList> = ({ dictionaryCode, modalTitle, selectionItem
                 rowClassName="editable-row"
                 pagination={{
                     onChange: () => setEditingKey(-1),
-                    pageSize: 5,
+                    pageSize: 7,
                     position: ["bottomCenter"]
                 }}
             />

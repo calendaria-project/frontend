@@ -29,6 +29,7 @@ import SharedExternalUserModal from "./modal/SharedExternalUserModal";
 import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
 import { parsePointObjectKey } from "utils/parsePointObjectKey";
 import getSortedData from "./getSortedData";
+import getFullName from "utils/getFullName";
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -54,6 +55,7 @@ const ExternalUsers: FC = () => {
     const [form] = Form.useForm();
     const [companyId, setCompanyId] = useState<number | undefined>(undefined);
     const [table, setTable] = useState<Tabulator | undefined>();
+    const [tableData, setTableData] = useState<IExternalUsersDataModel[]>([]);
     const [currentExternalUserInfo, setCurrentExternalUserInfo] = useState<IExternalUsersDataModel>(
         {} as IExternalUsersDataModel
     );
@@ -93,8 +95,25 @@ const ExternalUsers: FC = () => {
     }, []);
 
     useEffect(() => {
+        const searchedTableData = tableData.filter((tableItem) => {
+            const tableDataStr =
+                getFullName(tableItem.firstname, tableItem.lastname, tableItem.patronymic) +
+                (tableItem.personalContact?.email || "") +
+                (tableItem.personalContact?.mobilePhoneNumber || "") +
+                (tableItem.counterparty?.nameRu || "") +
+                (tableItem.position?.nameRu || "");
+            return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
+        });
+
+        const sortedAndSearchedTableData = getSortedData(searchedTableData, sortType);
+
+        table?.replaceData(sortedAndSearchedTableData);
+        table?.redraw(true);
+    }, [searchStr, sortType]);
+
+    useEffect(() => {
         initData();
-    }, [searchStr, requestType, sortType]);
+    }, [requestType]);
 
     const { getCurrentUserData } = useSimpleHttpFunctions();
 
@@ -135,22 +154,10 @@ const ExternalUsers: FC = () => {
                 getRequestHeader(authContext.token)
             ).then((data) => data);
 
-            const searchedExternalUserData = externalUserData.filter((userItem: any) => {
-                const tableDataStr =
-                    (userItem.lastname || "") +
-                    (userItem.firstname || "") +
-                    (userItem.patronymic || "") +
-                    (userItem.personalContact?.email || "") +
-                    (userItem.personalContact?.mobilePhoneNumber || "") +
-                    (userItem.counterparty?.nameRu || "") +
-                    (userItem.position?.nameRu || "");
-                return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
-            });
-
             const externalUsersDataWithPhoto: IExternalUsersDataModel[] =
-                await getExternalUsersWithPhotoId(searchedExternalUserData);
+                await getExternalUsersWithPhotoId(externalUserData);
 
-            const sortedExternalUsersDataWithPhoto = getSortedData(
+            const initialSortedExternalUsersDataWithPhoto = getSortedData(
                 externalUsersDataWithPhoto,
                 sortType
             );
@@ -162,11 +169,13 @@ const ExternalUsers: FC = () => {
                 formatter: fullNameTableActionsFormatter
             };
 
+            setTableData(initialSortedExternalUsersDataWithPhoto);
+
             await setTable(
                 createTableViaTabulator(
                     "#externalUsersTable",
                     [actionsSell, ...externalUsersColumns],
-                    sortedExternalUsersDataWithPhoto,
+                    initialSortedExternalUsersDataWithPhoto,
                     handleFioClick,
                     undefined
                 )

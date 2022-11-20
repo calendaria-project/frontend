@@ -44,6 +44,7 @@ export const DivisionTreeView: FC<ITable> = ({ selectionItems }) => {
     const [form] = Form.useForm<IDivisionCreateViewModel>();
     const [editForm] = Form.useForm<IDivisionViewModel>();
     const [table, setTable] = useState<Tabulator>();
+    const [tableData, setTableData] = useState<any>([]);
     const [selectedCompanyId, setSelectedCompanyId] = useState<number | undefined>(undefined);
 
     const { companies } = useCompaniesData();
@@ -56,7 +57,21 @@ export const DivisionTreeView: FC<ITable> = ({ selectionItems }) => {
 
     useEffect(() => {
         initDivisionsTabulator();
-    }, [selectedCompanyId, searchStr]);
+    }, [selectedCompanyId]);
+
+    useEffect(() => {
+        const filteredTableData = tableData.filter((dataItem: any) => {
+            const tableDataStr =
+                (dataItem.nameKz || "") +
+                (dataItem.nameRu || "") +
+                (dataItem.nameEn || "") +
+                (dataItem.code || "");
+            return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
+        });
+
+        table?.replaceData(filteredTableData);
+        table?.redraw(true);
+    }, [searchStr]);
 
     const nestedTableActionsFormatter = (cell: Tabulator.CellComponent) => {
         let editBtnIcon = document.createElement("img");
@@ -85,20 +100,13 @@ export const DivisionTreeView: FC<ITable> = ({ selectionItems }) => {
             formatter: nestedTableActionsFormatter
         };
 
-        const filteredData = data.filter((dataItem: any) => {
-            const tableDataStr =
-                (dataItem.nameKz || "") +
-                (dataItem.nameRu || "") +
-                (dataItem.nameEn || "") +
-                (dataItem.code || "");
-            return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
-        });
+        setTableData(data);
 
         setTable(
             createTableViaTabulator(
                 "#divisionsTable",
                 [...divisionsColumns, actionsCell],
-                filteredData,
+                data,
                 () => {}
             )
         );
