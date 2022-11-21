@@ -20,13 +20,19 @@ export default createUseStyles({
         width: "100%"
     },
     tree: {
+        "& .ant-tree-treenode": {
+            padding: "0 0 12px 0 !important"
+        },
+        "& .ant-tree-node-content-wrapper": {
+            padding: "0 10px !important"
+        },
         "& .ant-tree-list-holder-inner > div": {
-            width: "100%",
-            background: (theme: ITheme) => theme.background.primary,
-            border: (theme: ITheme) => `1px solid ${theme.color.lines}`,
-            borderRadius: (theme: ITheme) => theme.borderRadius,
-            padding: (theme: ITheme) => theme.layout.mediumPadding,
-            margin: (theme: ITheme) => theme.layout.smallMargin
+            // width: "100%",
+            // background: (theme: ITheme) => theme.background.primary,
+            // border: (theme: ITheme) => `1px solid ${theme.color.lines}`,
+            // borderRadius: (theme: ITheme) => theme.borderRadius,
+            // padding: (theme: ITheme) => theme.layout.mediumPadding,
+            // margin: (theme: ITheme) => theme.layout.smallMargin
         },
         "& .ant-tree-node-selected": {
             background: "none !important"

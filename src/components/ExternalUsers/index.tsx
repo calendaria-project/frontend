@@ -20,14 +20,30 @@ import { externalUsersColumns } from "data/columns";
 import { ColumnDefinition } from "tabulator-tables";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import ExternalUserDrawer from "./externalUserDrawer";
-import { IExternalUsersDataModel } from "interfaces";
-import { SharedExternalUserModal } from "./modal/SharedExternalUserModal";
+import {
+    ICurrentUserDtoViewModel,
+    IExternalUsersDataModel,
+    IExternalUsersDtoViewModel
+} from "interfaces";
+import SharedExternalUserModal from "./modal/SharedExternalUserModal";
 import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
 import { parsePointObjectKey } from "utils/parsePointObjectKey";
 import getSortedData from "./getSortedData";
+import getFullName from "utils/getFullName";
 
 const { Option } = Select;
 const { Text } = Typography;
+
+export interface IFinishData {
+    firstname: string;
+    lastname: string;
+    patronymic?: string;
+    "position.positionId": number;
+    "counterparty.companyId": number;
+    "personalContact.email"?: string;
+    "personalContact.mobilePhoneNumber": string;
+    profilePhotoId?: string;
+}
 
 const ExternalUsers: FC = () => {
     const dispatch = useDispatch();
@@ -37,8 +53,9 @@ const ExternalUsers: FC = () => {
     const classes = useStyles(theme);
 
     const [form] = Form.useForm();
-    const [companyId, setCompanyId] = useState<string | undefined>(undefined);
+    const [companyId, setCompanyId] = useState<number | undefined>(undefined);
     const [table, setTable] = useState<Tabulator | undefined>();
+    const [tableData, setTableData] = useState<IExternalUsersDataModel[]>([]);
     const [currentExternalUserInfo, setCurrentExternalUserInfo] = useState<IExternalUsersDataModel>(
         {} as IExternalUsersDataModel
     );
@@ -78,8 +95,25 @@ const ExternalUsers: FC = () => {
     }, []);
 
     useEffect(() => {
+        const searchedTableData = tableData.filter((tableItem) => {
+            const tableDataStr =
+                getFullName(tableItem.firstname, tableItem.lastname, tableItem.patronymic) +
+                (tableItem.personalContact?.email || "") +
+                (tableItem.personalContact?.mobilePhoneNumber || "") +
+                (tableItem.counterparty?.nameRu || "") +
+                (tableItem.position?.nameRu || "");
+            return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
+        });
+
+        const sortedAndSearchedTableData = getSortedData(searchedTableData, sortType);
+
+        table?.replaceData(sortedAndSearchedTableData);
+        table?.redraw(true);
+    }, [searchStr, sortType]);
+
+    useEffect(() => {
         initData();
-    }, [searchStr, requestType, sortType]);
+    }, [requestType]);
 
     const { getCurrentUserData } = useSimpleHttpFunctions();
 
@@ -109,34 +143,21 @@ const ExternalUsers: FC = () => {
 
     const initData = async () => {
         createTableViaTabulator("#externalUsersTable", externalUsersColumns, [], () => {}, true);
-        const currentUserData: any = await getCurrentUserData();
+        const currentUserData: ICurrentUserDtoViewModel = await getCurrentUserData();
         if (currentUserData) {
             const companyId = currentUserData.company.companyId;
             setCompanyId(companyId);
-            const externalUserData = await actionMethodResultSync(
+            const externalUserData: IExternalUsersDtoViewModel[] = await actionMethodResultSync(
                 "USER",
                 `user/external?companyId=${companyId}&requestType=${requestType}`,
                 "get",
                 getRequestHeader(authContext.token)
             ).then((data) => data);
 
-            const searchedExternalUserData = externalUserData.filter((userItem: any) => {
-                const tableDataStr =
-                    (userItem.lastname || "") +
-                    (userItem.firstname || "") +
-                    (userItem.patronymic || "") +
-                    (userItem.personalContact?.email || "") +
-                    (userItem.personalContact?.mobilePhoneNumber || "") +
-                    (userItem.counterparty?.nameRu || "") +
-                    (userItem.position?.nameRu || "");
-                return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
-            });
+            const externalUsersDataWithPhoto: IExternalUsersDataModel[] =
+                await getExternalUsersWithPhotoId(externalUserData);
 
-            const externalUsersDataWithPhoto = await getExternalUsersWithPhotoId(
-                searchedExternalUserData
-            );
-
-            const sortedExternalUsersDataWithPhoto = getSortedData(
+            const initialSortedExternalUsersDataWithPhoto = getSortedData(
                 externalUsersDataWithPhoto,
                 sortType
             );
@@ -148,11 +169,13 @@ const ExternalUsers: FC = () => {
                 formatter: fullNameTableActionsFormatter
             };
 
+            setTableData(initialSortedExternalUsersDataWithPhoto);
+
             await setTable(
                 createTableViaTabulator(
                     "#externalUsersTable",
                     [actionsSell, ...externalUsersColumns],
-                    sortedExternalUsersDataWithPhoto,
+                    initialSortedExternalUsersDataWithPhoto,
                     handleFioClick,
                     undefined
                 )
@@ -165,11 +188,11 @@ const ExternalUsers: FC = () => {
         setExternalUserDrawerOpen(true);
     };
 
-    const getExternalUsersWithPhotoId = async (data: any) => {
+    const getExternalUsersWithPhotoId = async (data: IExternalUsersDtoViewModel[]) => {
         const externalUsersWithPhotoId = [];
         for (let i = 0; i < data.length; ++i) {
             const profilePhotoId = data[i].profilePhotoId;
-            let currentExternalUserPhotoId;
+            let currentExternalUserPhotoId: string | undefined;
             if (profilePhotoId) {
                 currentExternalUserPhotoId = await actionMethodResultSync(
                     "FILE",
@@ -186,7 +209,7 @@ const ExternalUsers: FC = () => {
         return externalUsersWithPhotoId;
     };
 
-    const getDataWithPhoto = async (data: any) => {
+    const getDataWithPhoto = async (data: IExternalUsersDtoViewModel) => {
         if (data && data.profilePhotoId) {
             const externalUserPhotoId = await actionMethodResultSync(
                 "FILE",
@@ -203,12 +226,14 @@ const ExternalUsers: FC = () => {
     };
 
     const onFinishAddExternalUser = useCallback(
-        async (data: any) => {
+        async (data: IFinishData) => {
             if (companyId) {
-                let currentData = removeEmptyValuesFromAnyLevelObject(
-                    parsePointObjectKey(data, companyId, form)
+                let currentData = parsePointObjectKey(
+                    removeEmptyValuesFromAnyLevelObject(data),
+                    companyId + "",
+                    form
                 );
-                const newData = await actionMethodResultSync(
+                const newData: IExternalUsersDtoViewModel = await actionMethodResultSync(
                     "USER",
                     `user/external`,
                     "post",

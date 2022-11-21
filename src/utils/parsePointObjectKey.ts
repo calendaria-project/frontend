@@ -3,7 +3,8 @@ import { FormInstance } from "antd";
 export const parsePointObjectKey = (
     data: any,
     companyId: string | undefined,
-    form: FormInstance
+    form: FormInstance,
+    parsePhotos: boolean = true
 ) => {
     let parsedData: any = {};
     for (let key in data) {
@@ -23,9 +24,12 @@ export const parsePointObjectKey = (
     }
     parsedData.company = { companyId };
 
-    const signFileId = form.getFieldValue("signFileId");
-    const profilePhotoId = form.getFieldValue("profilePhotoId");
-    parsedData.signFileId = signFileId ? signFileId : null;
-    parsedData.profilePhotoId = profilePhotoId ? profilePhotoId : null;
+    if (parsePhotos) {
+        const signFileId = form.getFieldValue("signFileId");
+        const profilePhotoId = form.getFieldValue("profilePhotoId");
+        parsedData.signFileId = signFileId ? signFileId : null;
+        parsedData.profilePhotoId = profilePhotoId ? profilePhotoId : null;
+    }
+
     return parsedData;
 };

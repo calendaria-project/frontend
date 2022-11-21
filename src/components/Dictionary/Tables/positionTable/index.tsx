@@ -60,8 +60,11 @@ const EditableCell: React.FC<EditableCellProps> = ({
 };
 
 const PositionList: FC<ITable> = ({ selectionItems }) => {
-    const [data, setData] = useState<IPositionViewModel[]>([]);
     const authContext = useContext(AuthContext);
+
+    const [data, setData] = useState<IPositionViewModel[]>([]);
+    const [copiedData, setCopiedData] = useState<IPositionViewModel[]>([]);
+
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState(-1);
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -207,16 +210,22 @@ const PositionList: FC<ITable> = ({ selectionItems }) => {
             getRequestHeader(authContext.token)
         ).then((res) => {
             const data = res.content;
-            const filteredData = (data || []).filter((dataItem: any) => {
-                const tableDataStr =
-                    (dataItem.nameKz || "") +
-                    (dataItem.nameRu || "") +
-                    (dataItem.nameEn || "") +
-                    (dataItem.code || "");
-                return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
-            });
-            setData(filteredData);
+            setCopiedData(data);
+            setData(data);
         });
+    }, []);
+
+    useEffect(() => {
+        const filteredData = copiedData.filter((dataItem) => {
+            const tableDataStr =
+                (dataItem.nameKz || "") +
+                (dataItem.nameRu || "") +
+                (dataItem.nameEn || "") +
+                (dataItem.code || "");
+            return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
+        });
+
+        setData(filteredData);
     }, [searchStr]);
 
     return (
@@ -239,7 +248,7 @@ const PositionList: FC<ITable> = ({ selectionItems }) => {
                 rowClassName="editable-row"
                 pagination={{
                     onChange: () => setEditingKey(-1),
-                    pageSize: 5,
+                    pageSize: 7,
                     position: ["bottomCenter"]
                 }}
             />

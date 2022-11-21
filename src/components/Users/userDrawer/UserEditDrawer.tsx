@@ -34,11 +34,12 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import { inputLengthHandler } from "utils/inputLengthHandler";
+import { IUsersDtoViewModel } from "interfaces";
 
 export interface IUserEditDrawer {
     userPhoto: string | null;
     // userSign: string | null;
-    userData: any;
+    userData: IUsersDtoViewModel;
     companyId: string | undefined;
     companyName: string | undefined;
     open: boolean;
@@ -58,6 +59,8 @@ export const UserEditDrawer = ({
 }: IUserEditDrawer) => {
     const [form] = Form.useForm();
     const authContext = useContext(AuthContext);
+
+    console.log(userData);
 
     const theme = useTheme<ITheme>();
     // @ts-ignore

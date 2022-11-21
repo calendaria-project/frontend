@@ -5,7 +5,7 @@ import { validateMessages } from "data/validateMessages";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
-import React, { useEffect } from "react";
+import React, { memo, useCallback, useEffect } from "react";
 import {
     mailMessage,
     mailPattern,
@@ -30,7 +30,7 @@ export interface ISharedExternalUserModal {
     existingData?: IExternalUsersDataModel;
 }
 
-export const SharedExternalUserModal = ({
+const SharedExternalUserModal = ({
     title,
     okText,
     onFinish,
@@ -39,9 +39,9 @@ export const SharedExternalUserModal = ({
     form,
     existingData
 }: ISharedExternalUserModal) => {
-    const handleCancel = () => {
+    const handleCancel = useCallback(() => {
         setIsVisible(false);
-    };
+    }, []);
 
     useEffect(() => {
         if (existingData) {
@@ -65,8 +65,6 @@ export const SharedExternalUserModal = ({
     const { positions } = usePositionsData();
     const userPhoto = existingData?.currentExternalUserPhotoId;
     const phoneNumber = existingData?.personalContact?.mobilePhoneNumber;
-
-    console.log(existingData);
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
@@ -181,3 +179,5 @@ export const SharedExternalUserModal = ({
         </Modal>
     );
 };
+
+export default memo(SharedExternalUserModal);

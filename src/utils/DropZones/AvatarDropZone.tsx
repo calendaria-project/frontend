@@ -1,4 +1,4 @@
-import { FC, memo, useEffect } from "react";
+import React, { FC, memo, useEffect } from "react";
 import { Button, Space, Typography, FormInstance } from "antd";
 import Dropzone from "react-dropzone";
 import { getBase64 } from "components/Users/userDrawer/utils/getBase64";
@@ -64,7 +64,10 @@ const AvatarDropZone: FC<{
         });
     };
 
-    const deleteAvatar = () => {
+    const deleteAvatar = (e: React.MouseEvent<HTMLElement>) => {
+        if (!withSpace) {
+            e.stopPropagation();
+        }
         setAvatarUrl(null);
         form.setFieldValue("profilePhotoId", null);
     };

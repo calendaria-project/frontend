@@ -1,5 +1,5 @@
 export const removeEmptyObjectProperties = (obj: Object): Object =>
-    Object.fromEntries(Object.entries(obj).filter(([_, v]) => v !== null && v !== undefined));
+    Object.fromEntries(Object.entries(obj).filter(([_, v]) => v !== undefined));
 
 export function removeEmptyValuesFromAnyLevelObject(obj: any) {
     const finalObj = {} as any;
@@ -18,7 +18,7 @@ export function removeEmptyValuesFromAnyLevelObject(obj: any) {
                     }
                 });
             }
-        } else if (obj[key] !== "" && obj[key] !== undefined && obj[key] !== null) {
+        } else if (obj[key] !== undefined) {
             finalObj[key] = obj[key];
         }
     });

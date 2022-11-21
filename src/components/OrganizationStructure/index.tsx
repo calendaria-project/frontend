@@ -13,7 +13,7 @@ import { getRequestHeader } from "functions/common";
 import {
     BranchesOutlined,
     ClusterOutlined,
-    DownOutlined,
+    // DownOutlined,
     DragOutlined,
     EditOutlined,
     UserOutlined
@@ -22,7 +22,7 @@ import { IExtendedOrgStructureTreeItem, IOrgStructureTreeItem } from "interfaces
 import DivisionUnitDeleteModal from "./modals/SharedDeleteModal";
 import useOrgStructureHttpRequests from "./hooks/useOrgStructureHttpRequests";
 import { deletingOptions, layoutOptions, TLayoutOptions } from "./contants";
-import { SharedModal } from "./modals/SharedModal";
+import SharedModal from "./modals/SharedModal";
 import getOrgStructureModalTitle from "utils/getOrgStructureModalTitle";
 import parseModalData from "utils/parseModalData";
 
@@ -66,15 +66,23 @@ const OrganizationStructure: FC = () => {
         }
     }, [selectedCompanyId]);
 
-    const initTreeData = async (key?: string) => {
+    const initTreeData = async (key?: string, updatedKey?: string) => {
         if (selectedCompanyId) {
             const treeData = await getTreeData(selectedCompanyId);
             const formattedTreeData = formatTreeData(treeData);
             if (!expandedKeys.includes(formattedTreeData[0].key)) {
                 setExpandedKeys([formattedTreeData[0].key]);
             }
-            if (key) {
+            if (key && !updatedKey) {
                 setExpandedKeys((prev) => [...prev, key]);
+            }
+            if (
+                key &&
+                updatedKey &&
+                expandedKeys.includes(key) &&
+                !expandedKeys.includes(updatedKey)
+            ) {
+                setExpandedKeys((prev) => [..._.without(prev, key), updatedKey]);
             }
             setTreeData(formattedTreeData);
         }
@@ -160,21 +168,27 @@ const OrganizationStructure: FC = () => {
         });
 
         if (nodeType === nodeTypeEnum.COMPANY) {
-            getExistingCompanyData();
+            getExistingCompanyData().then(() => {
+                onSetModalIsVisible(true);
+            });
         }
         if (nodeType === nodeTypeEnum.DIVISION) {
-            getExistingDivisionData(id);
+            getExistingDivisionData(id).then(() => {
+                onSetModalIsVisible(true);
+            });
         }
         if (nodeType === nodeTypeEnum.DIVISION_UNIT) {
-            getExistingDivisionUnitData(id);
+            getExistingDivisionUnitData(id).then(() => {
+                onSetModalIsVisible(true);
+            });
         }
-
-        onSetModalIsVisible(true);
     };
 
     const onFinishingModal = useCallback(
         async (data: any) => {
-            const parsedData = parseModalData(data);
+            const parsedData = parseModalData(
+                data?.priority ? { ...data, priority: +data.priority } : data
+            );
             const { layoutOption, treeItem } = selectedTreeEntity;
             const { nodeType, id, code } = treeItem || {};
 
@@ -274,7 +288,7 @@ const OrganizationStructure: FC = () => {
                         .then(() => {
                             message.success("Успешно сохранено");
                             onSetModalIsVisible(false);
-                            initTreeData();
+                            initTreeData(code, parsedData.code);
                         })
                         .catch(() => message.error("Ошибка"));
                 }
@@ -383,11 +397,12 @@ const OrganizationStructure: FC = () => {
             <Row className={classes.treeWrapper}>
                 <Col span={24}>
                     <Tree
+                        showLine={true}
                         expandedKeys={expandedKeys}
                         onExpand={handleExpandKeys}
                         showIcon
                         className={classes.tree}
-                        switcherIcon={<DownOutlined />}
+                        // switcherIcon={<DownOutlined />}
                         treeData={treeData}
                     />
                 </Col>

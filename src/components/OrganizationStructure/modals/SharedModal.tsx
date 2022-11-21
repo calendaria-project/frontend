@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import { Col, Form, Input, Modal, Row, Select, Tabs } from "antd";
 import Button from "ui/Button";
 import { FormInstance } from "antd/es/form/Form";
@@ -28,7 +28,7 @@ export interface ISharedModal {
     positions: Array<IPositionViewModel>;
 }
 
-export const SharedModal = ({
+const SharedModal = ({
     title,
     okText,
     onFinish,
@@ -290,3 +290,5 @@ export const SharedModal = ({
 
     return <WithForm children={formContent} />;
 };
+
+export default memo(SharedModal);

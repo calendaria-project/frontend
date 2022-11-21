@@ -222,6 +222,11 @@ export interface IUsersDtoViewModel {
     updatedAt: string;
 }
 
+export interface ICurrentUserDtoViewModel extends IUsersDtoViewModel {
+    divisionId: number;
+    enabled: boolean;
+}
+
 export interface IUsersTableModel {
     id: string | number;
     fullName: string;
