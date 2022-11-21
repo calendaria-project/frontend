@@ -24,6 +24,7 @@ import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import { ICurrentUserDtoViewModel, IUsersDtoViewModel } from "interfaces";
 import getFullName from "utils/getFullName";
+import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 
 const Users: FC = () => {
     const navigate = useNavigate();
@@ -41,6 +42,8 @@ const Users: FC = () => {
 
     const [query, setQuery] = useState("");
     const { searchStr } = useDelayedInputSearch(query);
+
+    const { getCurrentUserData } = useSimpleHttpFunctions();
 
     useEffect(() => {
         dispatch(SetCurrentOpenedMenu(mainMenuEnum.users));
@@ -142,15 +145,6 @@ const Users: FC = () => {
                 )
             );
         }
-    };
-
-    const getCurrentUserData = () => {
-        return actionMethodResultSync(
-            "USER",
-            "user/currentUser",
-            "get",
-            getRequestHeader(authContext.token)
-        ).then((data) => data);
     };
 
     const getUsersWithPhotoId = async (data: IUsersDtoViewModel[]) => {

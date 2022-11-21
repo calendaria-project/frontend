@@ -1,9 +1,11 @@
 const EditIcon = ({ color, fontSize }: { color: string; fontSize?: string }) => {
+    const size = fontSize || "24";
+    const viewBox = `0 0 24 24`;
     return (
         <svg
-            width={fontSize || "24"}
-            height={fontSize || "24"}
-            viewBox="0 0 24 24"
+            width={size}
+            height={size}
+            viewBox={viewBox}
             fill="none"
             stroke={color}
             xmlns="http://www.w3.org/2000/svg"
