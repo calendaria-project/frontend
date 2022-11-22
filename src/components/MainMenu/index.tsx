@@ -23,9 +23,9 @@ import { UP, DOWN } from "./defaultValues";
 import PieChartCard from "./Cards/PieChartCard";
 import BirthdayInfoCard from "./Cards/BirthdayInfoCard";
 import CurrentUserCard from "./Cards/CurrentUserCard";
-import questionImage from "../../assets/icons/question.png";
-import { createTableViaTabulator } from "../../services/tabulator";
-import { externalUsersColumns } from "../../data/columns";
+import questionImage from "assets/icons/question.png";
+import { createTableViaTabulator } from "services/tabulator";
+import { externalUsersColumns } from "data/columns";
 import { ColumnDefinition } from "tabulator-tables";
 
 export interface IUsersWithPhotoId extends IUsersDtoViewModel {
