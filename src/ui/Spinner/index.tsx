@@ -6,13 +6,14 @@ type TProps = {
     Icon?: React.FC<any>;
     size?: number;
     spin?: boolean;
+    style?: { [key: string]: string | number };
 };
 
-const Spinner: FC<TProps> = ({ Icon, size = 40, spin = true }) => {
+const Spinner: FC<TProps> = ({ Icon, size = 40, spin = true, style = {} }) => {
     const antIcon = Icon ? (
-        <Icon style={{ fontSize: size }} spin={spin} />
+        <Icon style={{ fontSize: size, ...style }} spin={spin} />
     ) : (
-        <LoadingOutlined style={{ fontSize: size }} spin={spin} />
+        <LoadingOutlined style={{ fontSize: size, ...style }} spin={spin} />
     );
 
     return <Spin indicator={antIcon} />;

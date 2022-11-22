@@ -6,7 +6,7 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import UsersIcon from "assets/svgComponents/UsersIcon";
-import { UP, DOWN } from "../defaultValues";
+import { UP, DOWN } from "../../defaultValues";
 import UserMinusIcon from "assets/svgComponents/UserMinusIcon";
 import UserPlusIcon from "assets/svgComponents/UserPlusIcon";
 import UpArrowIcon from "assets/svgComponents/UpArrowIcon";
@@ -45,7 +45,7 @@ const SmallInfoCard: FC<ISmallInfoCard> = ({ infoText, infoCount, onClick, perce
                     <Col className={classes.primaryInfo}>{infoText}</Col>
                     <Col>
                         {
-                            <div>
+                            <div className={classes.percentageWrapper}>
                                 {percentage.key === UP ? (
                                     <UpArrowIcon color={theme.image.color.successful + ""} />
                                 ) : (

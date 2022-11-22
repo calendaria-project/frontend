@@ -1,6 +1,6 @@
 import { createUseStyles } from "react-jss";
 import { ITheme } from "styles/theme/interface";
-import { UP } from "../defaultValues";
+import { UP } from "../../defaultValues";
 
 export default createUseStyles({
     sharedBorderedWrapper: {
@@ -23,10 +23,6 @@ export default createUseStyles({
                     : theme.image.color.removing
                 : theme.image.color.regular
     },
-
-    smallInfoCol: {
-        height: "150px"
-    },
     smallInfoContent: {
         background: ({ theme }: { theme: ITheme }) => theme.background.highlight
     },
@@ -38,12 +34,9 @@ export default createUseStyles({
         fontSize: "26px",
         color: ({ theme }: { theme: ITheme }) => theme.color.regular
     },
-
-    currentUserCol: {
-        height: "200px"
-    },
-    currentUserContent: {
-        background: ({ theme }: { theme: ITheme }) => theme.background.regular,
-        color: ({ theme }: { theme: ITheme }) => theme.color.primary
+    percentageWrapper: {
+        "& > svg": {
+            marginRight: "6px"
+        }
     }
 });
