@@ -9,8 +9,9 @@ import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import {
     ICurrentUserDtoViewModel,
-    IExternalUsersDtoViewModel,
-    IUsersDtoViewModel
+    IUsersDtoViewModel,
+    IAllStatisticsModel,
+    IBirthDateStatItem
 } from "interfaces";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { actionMethodResultSync } from "functions/actionMethodResult";
@@ -27,6 +28,10 @@ import questionImage from "assets/icons/question.png";
 import { createTableViaTabulator } from "services/tabulator";
 import { externalUsersColumns } from "data/columns";
 import { ColumnDefinition } from "tabulator-tables";
+
+export interface IBirthStatItemWithPhoto extends IBirthDateStatItem {
+    currentUserPhotoId: string;
+}
 
 export interface IUsersWithPhotoId extends IUsersDtoViewModel {
     currentUserPhotoId: string;
@@ -45,60 +50,82 @@ const MainMenu: FC = () => {
         dispatch(SetCurrentOpenedMenu(mainMenuEnum.mainMenu));
     }, []);
 
+    const [allStatistics, setAllStatistics] = useState<IAllStatisticsModel>(
+        {} as IAllStatisticsModel
+    );
+    const [table, setTable] = useState<Tabulator | undefined>();
+
+    const [companyId, setCompanyId] = useState<number | undefined>(undefined);
     const [currentUser, setCurrentUser] = useState<ICurrentUserDtoViewModel>(
         {} as ICurrentUserDtoViewModel
     );
-    const [users, setUsers] = useState<IUsersDtoViewModel[]>([]);
-    const [companyId, setCompanyId] = useState<number | undefined>(undefined);
-    const [table, setTable] = useState<Tabulator | undefined>();
-    const [usersWithPhotoId, setUsersWithPhotoId] = useState<IUsersWithPhotoId[]>([]);
-    const [usersWithPhotoIdLoading, setUsersWithPhotoIdLoading] = useState(false);
-
     const [currentUserPhoto, setCurrentUserPhoto] = useState<string | null>(null);
-    const [photoLoading, setPhotoLoading] = useState(false);
+    const [currentUserPhotoLoading, setCurrentUserPhotoLoading] = useState(false);
+
+    const [birthStatsWithPhoto, setBirthStatsWithPhoto] = useState<IBirthStatItemWithPhoto[]>([]);
+    const [birthStatsLoading, setBirthStatsLoading] = useState(false);
 
     const { getCurrentUserData } = useSimpleHttpFunctions();
 
     useEffect(() => {
-        initData();
+        initStatData();
+    }, [companyId]);
+
+    useEffect(() => {
+        initCurrentUserData();
     }, []);
 
     useEffect(() => {
-        initTableData();
-    }, [currentUser, companyId]);
+        initBirthStatItems();
+    }, [allStatistics]);
 
     useEffect(() => {
-        const photoId = currentUser?.profilePhotoId;
-        setPhotoLoading(true);
-        if (photoId) {
-            actionMethodResultSync("FILE", `file/download/${photoId}/base64`, "get").then((res) => {
-                setPhotoLoading(false);
-                setCurrentUserPhoto(res);
-            });
-        } else {
-            setPhotoLoading(false);
-            setCurrentUserPhoto(null);
-        }
-    }, [currentUser]);
+        initTableData();
+    }, [allStatistics]);
 
-    const initData = async () => {
-        const currentUserData: ICurrentUserDtoViewModel = await getCurrentUserData();
-        setCurrentUser(currentUserData);
-        if (currentUserData) {
-            setUsersWithPhotoIdLoading(true);
-            const companyId = currentUserData.company?.companyId;
-            setCompanyId(companyId);
-            const userData: IUsersDtoViewModel[] = await actionMethodResultSync(
+    const initStatData = async () => {
+        if (companyId) {
+            const statistics: IAllStatisticsModel = await actionMethodResultSync(
                 "USER",
-                `user?companyId=${companyId}`,
+                `statistics/main?companyId=${companyId}`,
                 "get",
                 getRequestHeader(authContext.token)
             ).then((data) => data);
-            setUsers(userData);
+            setAllStatistics(statistics);
+        }
+    };
 
-            const usersWithPhoto: IUsersWithPhotoId[] = await getUsersWithPhotoId(userData);
-            setUsersWithPhotoId(usersWithPhoto);
-            setUsersWithPhotoIdLoading(false);
+    console.log(birthStatsWithPhoto);
+
+    console.log(Date.now());
+
+    const initCurrentUserData = async () => {
+        setCurrentUserPhotoLoading(true);
+        const currentUserData: ICurrentUserDtoViewModel = await getCurrentUserData();
+
+        setCompanyId(currentUserData.company?.companyId);
+        setCurrentUser(currentUserData);
+
+        const photoId = currentUserData?.profilePhotoId;
+        if (photoId) {
+            actionMethodResultSync("FILE", `file/download/${photoId}/base64`, "get").then((res) => {
+                setCurrentUserPhotoLoading(false);
+                setCurrentUserPhoto(res);
+            });
+        } else {
+            setCurrentUserPhotoLoading(false);
+            setCurrentUserPhoto(null);
+        }
+    };
+
+    const initBirthStatItems = async () => {
+        if (allStatistics && allStatistics.birthDateStatItems) {
+            setBirthStatsLoading(true);
+            const currentBirthStatsWithPhoto: IBirthStatItemWithPhoto[] = await getUsersWithPhotoId(
+                allStatistics.birthDateStatItems
+            );
+            setBirthStatsWithPhoto(currentBirthStatsWithPhoto);
+            setBirthStatsLoading(false);
         }
     };
 
@@ -134,16 +161,9 @@ const MainMenu: FC = () => {
             () => {},
             true
         );
-        if (currentUser && companyId) {
-            const externalUserData: IExternalUsersDtoViewModel[] = await actionMethodResultSync(
-                "USER",
-                `user/external?companyId=${companyId}&requestType=ALL`,
-                "get",
-                getRequestHeader(authContext.token)
-            ).then((data) => data);
-            const cuttedExternalUserData = externalUserData.slice(0, 5);
+        if (allStatistics && allStatistics.externalUsers) {
             const cuttedExternalUserDataWithPhoto = await getUsersWithPhotoId(
-                cuttedExternalUserData
+                allStatistics.externalUsers
             );
 
             const actionsSell: ColumnDefinition = {
@@ -182,7 +202,6 @@ const MainMenu: FC = () => {
 
             usersWithPhotoId.push({ ...data[i], currentUserPhotoId });
         }
-
         return usersWithPhotoId;
     };
 
@@ -204,36 +223,36 @@ const MainMenu: FC = () => {
                 <Col span={6} style={{ paddingLeft: "0px" }} className={classes.smallInfoCol}>
                     <SmallInfoCard
                         infoText={"Сотрудники"}
-                        infoCount={users.length}
+                        infoCount={allStatistics.allUsersCnt}
                         onClick={onUsersCardClick}
                     />
                 </Col>
                 <Col span={6} className={classes.smallInfoCol}>
                     <SmallInfoCard
                         infoText={"Добавлено"}
-                        infoCount={23}
+                        infoCount={allStatistics.createdUsersCnt}
                         onClick={() => {}}
                         percentage={{
                             key: UP,
-                            value: "34%"
+                            value: `${allStatistics.createdUsersPercent}%`
                         }}
                     />
                 </Col>
                 <Col span={6} className={classes.smallInfoCol}>
                     <SmallInfoCard
                         infoText={"Уволено"}
-                        infoCount={5}
+                        infoCount={allStatistics.disabledUsersCnt}
                         onClick={() => {}}
                         percentage={{
                             key: DOWN,
-                            value: "12.5%"
+                            value: `${allStatistics.disabledUsersPercent}%`
                         }}
                     />
                 </Col>
                 <Col span={6} style={{ paddingRight: "0px" }} className={classes.currentUserCol}>
                     <div className={cx(classes.sharedBorderedWrapper, classes.currentUserContent)}>
                         <CurrentUserCard
-                            photoLoading={photoLoading}
+                            photoLoading={currentUserPhotoLoading}
                             currentUserPhoto={currentUserPhoto}
                             currentUser={currentUser}
                         />
@@ -244,14 +263,17 @@ const MainMenu: FC = () => {
                 </Col>
                 <Col span={6} className={classes.pieChartCol}>
                     <div className={classes.sharedBorderedWrapper}>
-                        <PieChartCard />
+                        <PieChartCard
+                            temporaryWorkersCount={allStatistics.temporaryWorkersCnt}
+                            pieceWorkersCount={allStatistics.pieceWorkersCnt}
+                        />
                     </div>
                 </Col>
                 <Col span={6} style={{ paddingRight: "0px" }} className={classes.birthdayCol}>
                     <div className={cx(classes.sharedBorderedWrapper, classes.birthdayWrapper)}>
                         <BirthdayInfoCard
-                            usersWithPhotoIdLoading={usersWithPhotoIdLoading}
-                            usersWithPhotoId={usersWithPhotoId}
+                            statItemsLoading={birthStatsLoading}
+                            statItemsWithPhotoId={birthStatsWithPhoto}
                         />
                     </div>
                 </Col>

@@ -40,7 +40,8 @@ import PhoneInput from "utils/PhoneInput";
 import { inputLengthHandler } from "utils/inputLengthHandler";
 
 export interface IUserAddDrawer {
-    companyId: string | undefined;
+    companyId?: number;
+    divisionId?: number;
     companyName: string | undefined;
     open: boolean;
     setOpen: (val: boolean) => void;
@@ -48,11 +49,12 @@ export interface IUserAddDrawer {
 }
 
 export const UserAddDrawer = ({
+    companyId,
+    divisionId,
+    companyName,
     open,
     setOpen,
-    companyName,
-    onFinishCreatingUser,
-    companyId
+    onFinishCreatingUser
 }: IUserAddDrawer) => {
     const [form] = Form.useForm();
     const authContext = useContext(AuthContext);
@@ -61,7 +63,9 @@ export const UserAddDrawer = ({
     // @ts-ignore
     const classes = useStyles(theme);
 
-    const { divisions, positions, sexes } = useInitialData(companyId);
+    const { divisions, positions, sexes } = useInitialData(companyId, divisionId);
+
+    console.log(positions);
 
     const onClose = () => {
         setOpen(false);
@@ -69,7 +73,9 @@ export const UserAddDrawer = ({
 
     const handleCreateUser = () => {
         form.validateFields().then((e) => {
-            let data = removeEmptyValuesFromAnyLevelObject(parsePointObjectKey(e, companyId, form));
+            let data = removeEmptyValuesFromAnyLevelObject(
+                parsePointObjectKey(e, companyId + "", form)
+            );
             createUser(data);
         });
     };
@@ -261,7 +267,7 @@ export const UserAddDrawer = ({
                                     label="Подразделение"
                                 >
                                     <Select allowClear>
-                                        {divisions.map((el, i) => (
+                                        {(divisions || []).map((el, i) => (
                                             <Option
                                                 key={i}
                                                 children={el.nameRu}
@@ -278,7 +284,7 @@ export const UserAddDrawer = ({
                                     label="Должность"
                                 >
                                     <Select allowClear>
-                                        {positions.map((el, i) => (
+                                        {(positions || []).map((el, i) => (
                                             <Option
                                                 key={i}
                                                 children={el.nameRu}

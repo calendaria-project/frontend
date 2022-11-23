@@ -108,8 +108,10 @@ export const inputData: InputDataRecord = {
         {
             type: Types.INPUT,
             propertyName: "mobilePhoneNumber",
-            inputType: "number",
-            placeholder: "Внутренний номер",
+            customType: "mobile",
+            patternMessage: phoneMessage,
+            pattern: phonePattern,
+            placeholder: "Номер мобильного телефона",
             required: true
         },
         {
@@ -118,7 +120,7 @@ export const inputData: InputDataRecord = {
             customType: "mobile",
             patternMessage: phoneMessage,
             pattern: phonePattern,
-            placeholder: "Корпоративный мобильный номер"
+            placeholder: "Номер рабочего телефона"
         },
         {
             type: Types.INPUT,
@@ -222,7 +224,7 @@ export const inputData: InputDataRecord = {
             type: Types.SELECT,
             propertyName: "contractType",
             dictionaryCode: dictionaryCodesEnum.CONTRACT_TYPE,
-            placeholder: "Тип контракта",
+            placeholder: "Тип договора",
             required: true
         },
         {
@@ -234,8 +236,40 @@ export const inputData: InputDataRecord = {
         {
             type: Types.DATE,
             propertyName: "contractDate",
-            placeholder: "Дата договора",
+            placeholder: "Дата начала договора",
             required: true
+        },
+        {
+            type: Types.DATE,
+            propertyName: "contractEndDate",
+            placeholder: "Дата окончания договора"
+        },
+        {
+            type: Types.SELECT,
+            propertyName: "workType",
+            dictionaryCode: dictionaryCodesEnum.WORK_TYPE,
+            placeholder: "Тип работ"
+        },
+        {
+            type: Types.SELECT,
+            propertyName: "workKind",
+            dictionaryCode: dictionaryCodesEnum.WORK_KIND,
+            placeholder: "Вид работ"
+        },
+        {
+            type: Types.INPUT,
+            propertyName: "salaryConstantPart",
+            placeholder: "Постоянная часть з/п"
+        },
+        {
+            type: Types.INPUT,
+            propertyName: "salaryVariablePart",
+            placeholder: "Переменная часть з/п"
+        },
+        {
+            type: Types.INPUT,
+            propertyName: "salary",
+            placeholder: "Общий оклад"
         }
     ],
 

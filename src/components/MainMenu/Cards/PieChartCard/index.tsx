@@ -1,11 +1,16 @@
 import { Row } from "antd";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
-import React, { memo } from "react";
+import React, { memo, FC } from "react";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 
-const PieChartCard = () => {
+interface IPieChartCard {
+    temporaryWorkersCount: number;
+    pieceWorkersCount: number;
+}
+
+const PieChartCard: FC<IPieChartCard> = ({ temporaryWorkersCount, pieceWorkersCount }) => {
     const theme = useTheme<ITheme>();
     // @ts-ignore
     const classes = useStyles(theme);
@@ -17,8 +22,8 @@ const PieChartCard = () => {
                 <PieChart className={classes.pieChart}>
                     <Pie
                         data={[
-                            { name: "Сдельщики", value: 30 },
-                            { name: "Повременщики", value: 70 }
+                            { name: "Сдельщики", value: pieceWorkersCount ?? 0 },
+                            { name: "Повременщики", value: temporaryWorkersCount ?? 0 }
                         ]}
                         innerRadius={95}
                         outerRadius={110}

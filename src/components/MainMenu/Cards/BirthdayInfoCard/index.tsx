@@ -10,14 +10,14 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 
-import { IUsersWithPhotoId } from "../../index";
+import { IBirthStatItemWithPhoto } from "../../index";
 
 interface IBirthdayInfoCard {
-    usersWithPhotoIdLoading: boolean;
-    usersWithPhotoId: IUsersWithPhotoId[];
+    statItemsLoading: boolean;
+    statItemsWithPhotoId: IBirthStatItemWithPhoto[];
 }
 
-const BirthdayInfoCard: FC<IBirthdayInfoCard> = ({ usersWithPhotoIdLoading, usersWithPhotoId }) => {
+const BirthdayInfoCard: FC<IBirthdayInfoCard> = ({ statItemsLoading, statItemsWithPhotoId }) => {
     const theme = useTheme<ITheme>();
     // @ts-ignore
     const classes = useStyles(theme);
@@ -30,20 +30,20 @@ const BirthdayInfoCard: FC<IBirthdayInfoCard> = ({ usersWithPhotoIdLoading, user
                 </Col>
                 <Col className={classes.birthdayTitle}>Дни рождения</Col>
             </Row>
-            {usersWithPhotoIdLoading ? (
+            {statItemsLoading ? (
                 <div className={classes.birthdayImageSpinWrap}>
                     <Spinner size={40} style={{ color: theme.color.regular + "" }} />
                 </div>
-            ) : usersWithPhotoId ? (
-                sortArrayWithBirthDates(usersWithPhotoId).map((userItem, index) => (
+            ) : sortArrayWithBirthDates(statItemsWithPhotoId) ? (
+                statItemsWithPhotoId.map((statItem, index) => (
                     <Row className={classes.birthdayContentWrapper} align={"middle"}>
                         <Col>
-                            {userItem.currentUserPhotoId ? (
+                            {statItem.currentUserPhotoId ? (
                                 <Image
                                     className={classes.birthUsersImage}
                                     width={40}
                                     height={40}
-                                    src={userItem.currentUserPhotoId}
+                                    src={statItem.currentUserPhotoId}
                                 />
                             ) : (
                                 <QuestionCircleOutlined className={classes.questionIcon} />
@@ -52,21 +52,21 @@ const BirthdayInfoCard: FC<IBirthdayInfoCard> = ({ usersWithPhotoIdLoading, user
                         <Col className={classes.birthdayContentInfo}>
                             <div>
                                 {getFullName(
-                                    userItem.firstname,
-                                    userItem.lastname,
-                                    userItem.patronymic
+                                    statItem.firstname,
+                                    statItem.lastname,
+                                    statItem.patronymic
                                 )}
                             </div>
                             <div>
                                 {index === 0 &&
                                 dateToYMD(new Date()) ===
-                                    dateToYMD(new Date(userItem.birthDate)) ? (
+                                    dateToYMD(new Date(statItem.birthDate)) ? (
                                     <span className={classes.highlightedBirthDate}>
-                                        {localeDate(userItem.birthDate, "ru")}
+                                        {localeDate(statItem.birthDate, "ru")}
                                     </span>
                                 ) : (
                                     <span className={classes.birthDate}>
-                                        {localeDate(userItem.birthDate, "ru")}
+                                        {localeDate(statItem.birthDate, "ru")}
                                     </span>
                                 )}
                             </div>

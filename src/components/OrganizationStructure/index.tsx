@@ -237,6 +237,7 @@ const OrganizationStructure: FC = () => {
                             {
                                 company: companyData,
                                 priority: parsedData.priority,
+                                isCompanyHead: parsedData.isCompanyHead,
                                 position: parsedData.position,
                                 division: { divisionId: id }
                             }
@@ -300,7 +301,8 @@ const OrganizationStructure: FC = () => {
                         ...existingData,
                         unitId: id,
                         priority: parsedData.priority,
-                        position: parsedData.position
+                        position: parsedData.position,
+                        isCompanyHead: parsedData.isCompanyHead
                     };
                     actionMethodResultSync(
                         "DICTIONARY",

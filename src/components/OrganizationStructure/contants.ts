@@ -62,13 +62,15 @@ export const structureLayout: IStructureLayout = {
         ],
         [layoutOptions.ADD_DIVISION_UNIT]: [
             { name: "position", label: "Должность", required: true },
-            { name: "priority", label: "Приоритет", required: true }
+            { name: "priority", label: "Приоритет", required: true },
+            { name: "isCompanyHead", label: "Руководитель", required: true }
         ]
     },
     [nodeTypeEnum.DIVISION_UNIT]: {
         [layoutOptions.EDIT_DIVISION_UNIT]: [
             { name: "position", label: "Должность", required: true },
-            { name: "priority", label: "Приоритет", required: true }
+            { name: "priority", label: "Приоритет", required: true },
+            { name: "isCompanyHead", label: "Руководитель", required: true }
         ]
     }
 };

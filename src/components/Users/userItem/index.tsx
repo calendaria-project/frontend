@@ -24,6 +24,7 @@ import useStyles from "./styles";
 const { Title, Text } = Typography;
 
 import UserItemArchieveModal from "./modal/UserItemArchiveModal";
+import { ICurrentUserDtoViewModel } from "interfaces";
 
 const UserItem: FC = () => {
     const dispatch = useDispatch();
@@ -38,7 +39,9 @@ const UserItem: FC = () => {
         dispatch(SetCurrentOpenedMenu(mainMenuEnum.userItem));
     }, []);
 
-    const [currentUserData, setCurrentUserData] = useState<any>({});
+    const [currentUserData, setCurrentUserData] = useState<ICurrentUserDtoViewModel>(
+        {} as ICurrentUserDtoViewModel
+    );
     // const [currentUserSign, setCurrentUserSign] = useState<string | null>(null);
     const [currentUserPhoto, setCurrentUserPhoto] = useState<string | null>(null);
 
@@ -216,7 +219,8 @@ const UserItem: FC = () => {
                     userPhoto={currentUserPhoto}
                     // userSign={currentUserSign}
                     userData={currentUserData}
-                    companyId={currentUserData?.company?.companyId}
+                    divisionId={currentUserData.divisionId}
+                    companyId={currentUserData.company?.companyId}
                     open={isVisibleEditUserDrawer}
                     setOpen={setIsVisibleEditUserDrawer}
                     companyName={currentUserData?.company?.nameRu}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, memo } from "react";
-import { Col, Form, Input, Modal, Row, Select, Tabs } from "antd";
+import { Col, Form, Input, Modal, Row, Select, Tabs, Checkbox } from "antd";
 import Button from "ui/Button";
 import { FormInstance } from "antd/es/form/Form";
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
@@ -53,12 +53,15 @@ const SharedModal = ({
     const currentStructureLayout = currentStructure?.[layoutOption];
 
     useEffect(() => {
-        if (existingData && editingOptions.includes(layoutOption))
+        if (existingData && editingOptions.includes(layoutOption)) {
             form.setFieldsValue({
                 ...existingData,
                 "position.positionId": existingData?.position?.positionId
             });
+        }
     }, [existingData]);
+
+    console.log(existingData);
 
     const WithForm = ({ children }: { children: any }) => {
         return (
@@ -131,6 +134,14 @@ const SharedModal = ({
                                         />
                                     ))}
                                 </Select>
+                            </Form.Item>
+                        </Col>
+                    ) : name === "isCompanyHead" ? (
+                        <Col span={24}>
+                            <Form.Item name={name} valuePropName="checked" rules={[{ required }]}>
+                                <Checkbox defaultChecked={existingData?.isCompanyHead ?? false}>
+                                    {label}
+                                </Checkbox>
                             </Form.Item>
                         </Col>
                     ) : name === "companyAddresses" ? (
