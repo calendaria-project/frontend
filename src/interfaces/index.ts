@@ -1,14 +1,6 @@
 import type { FormRule } from "antd";
 import { nodeTypeEnum } from "data/enums";
 
-export interface ICompanyBaseModel {
-    bin: string;
-    nameKz: string;
-    nameRu: string;
-    nameEn: string;
-    parentId: number;
-}
-
 export interface ISimpleDictionaryModel {
     nameKz: string;
     nameRu: string;
@@ -20,7 +12,45 @@ export interface ISimpleDictionaryViewModel extends ISimpleDictionaryModel {
     code: string;
 }
 
-export interface ICompanyTreeNodeModel extends ICompanyBaseModel {
+export interface ICompanyTypeDictionaryViewModel {
+    companyTypeId: number;
+    code: string;
+    nameKz: string;
+    nameRu: string;
+    nameEn: string;
+    longnameKz: string;
+    longnameRu: string;
+    longnameEn: string;
+}
+
+export interface ICompanyBaseModel {
+    bin: string;
+    nameKz: string;
+    nameRu: string;
+    nameEn: string;
+    parentId: number;
+    companyType: ICompanyTypeDictionaryViewModel;
+    companyIndex: string;
+    fax: string;
+    email: string;
+    isCounterparty: boolean;
+}
+
+export interface IDivisionStatItemsSimpleViewModel {
+    divisionId: number;
+    nameRu: string;
+    nameKz: string;
+    nameEn: string;
+    positionCnt: number;
+    userCnt: number;
+}
+
+export interface ICompanyTreeNodeModel {
+    bin: string;
+    nameKz: string;
+    nameRu: string;
+    nameEn: string;
+    parentId: number;
     id: number;
     nodeType: string;
     companyId: number;
@@ -29,26 +59,38 @@ export interface ICompanyTreeNodeModel extends ICompanyBaseModel {
 export interface ICompanyAddressBaseModel {
     address: string;
     type: string;
+    country: ISimpleDictionaryViewModel;
+    city: ISimpleDictionaryViewModel;
 }
 
+export interface ICompanyAddressCreateViewModel extends ICompanyAddressBaseModel {}
+
 export interface ICompanyCreateViewModel extends ICompanyBaseModel {
+    //post
     companyAddresses: ICompanyAddressCreateViewModel[];
 }
 
+export interface ICompanyAddressViewModel extends ICompanyAddressBaseModel {
+    companyAddressId: number;
+    companyId: number;
+    country: ISimpleDictionaryViewModel;
+    city: ISimpleDictionaryViewModel;
+    createdAt: string;
+    updatedAt: string;
+}
+
 export interface ICompanyViewModel extends ICompanyBaseModel {
+    //put
     companyAddresses: ICompanyAddressViewModel[];
     companyId: number;
     createdAt: string;
     updatedAt: string;
 }
 
-export interface ICompanyAddressCreateViewModel extends ICompanyAddressBaseModel {}
-
-export interface ICompanyAddressViewModel extends ICompanyAddressBaseModel {
+export interface ICompanyAddressDto {
     companyAddressId: number;
-    companyId: number;
-    createdAt: string;
-    updatedAt: string;
+    address: string;
+    type: string;
 }
 
 export interface IPositionBaseModel {
@@ -60,6 +102,15 @@ export interface IPositionBaseModel {
 
 export interface IPositionViewModel extends IPositionBaseModel {
     positionId: number;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface ICompanyTypeViewModel extends IPositionBaseModel {
+    companyTypeId: number;
+    longnameKz: string;
+    longnameRu: string;
+    longnameEn: string;
     createdAt: string;
     updatedAt: string;
 }
@@ -152,13 +203,20 @@ export interface IDictionaryDtoModel {
     description: string;
 }
 
+export interface ICompanyTypeModel {}
+
 export interface ICompanyDtoModel {
     companyId: number;
     bin: string;
     nameKz: string;
     nameRu: string;
     nameEn: string;
+    isCounterparty: boolean;
     parentId: number;
+    companyType: ICompanyTypeDictionaryViewModel;
+    companyIndex: string;
+    fax: string;
+    email: string;
 }
 
 export interface IDivisionDtoModel {
@@ -287,6 +345,12 @@ export interface IUsersContractModel {
     contractType: ISimpleDictionaryModel;
     contractNum: string;
     contractDate: string;
+    contractEndDate: string;
+    workType: ISimpleDictionaryModel;
+    workKind: ISimpleDictionaryModel;
+    salaryConstantPart: number;
+    salaryVariablePart: number;
+    salary: number;
     userId: string;
     createdAt: string;
     updatedAt: string;
@@ -359,8 +423,35 @@ export interface IOrgStructureTreeItem {
     children: Array<IOrgStructureTreeItem> | [];
 }
 
+export interface IDivisionUnitDtoModel {
+    unitId: number;
+    company: ICompanyDtoModel;
+}
+
 export interface IExtendedOrgStructureTreeItem extends IOrgStructureTreeItem {
     title: string;
     key: string;
     icon: JSX.Element;
+}
+
+export interface IBirthDateStatItem {
+    userId: string;
+    lastname: string;
+    firstname: string;
+    patronymic: string;
+    birthDate: string;
+    profilePhotoId: string;
+}
+
+export interface IAllStatisticsModel {
+    allUsersCnt: number;
+    createdUsersCnt: number;
+    createdUsersPercent: number;
+    disabledUsersCnt: number;
+    disabledUsersPercent: number;
+    birthDateStatItems: IBirthDateStatItem[];
+    externalUsers: IExternalUsersDtoViewModel[];
+    divisionStatItems: IDivisionStatItemsSimpleViewModel[];
+    temporaryWorkersCnt: number;
+    pieceWorkersCnt: number;
 }

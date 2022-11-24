@@ -121,6 +121,7 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
             sendRequest(data);
 
             setModalVisibleFlag(false);
+            form.resetFields();
         },
         [currentUserDataItemInfo, currentSelectedKey, usersId, currentItemIndex]
     );

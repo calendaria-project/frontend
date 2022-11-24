@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { CompanyTreeView } from "./companiesTreeView";
 import { DivisionTreeView } from "./divisionTreeView";
 import PositionList from "./Tables/positionTable";
+import CompanyTypeList from "./Tables/companyTypeTable";
 
 import { useDispatch } from "react-redux";
 import { SetCurrentOpenedMenu } from "store/actions";
@@ -26,6 +27,8 @@ import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import { RelationshipTypeTable } from "./Tables/relationshipTypeTable";
 import { MilitaryRankTable } from "./Tables/militaryRankTable";
+import { WorkTypeTable } from "./Tables/workTypeTable";
+import { WorkKindTable } from "./Tables/workKindTable";
 
 const Dictionary = () => {
     const dispatch = useDispatch();
@@ -129,6 +132,21 @@ const Dictionary = () => {
             label: "Воинское звание",
             key: "17",
             children: <MilitaryRankTable />
+        },
+        {
+            label: "Тип работ",
+            key: "18",
+            children: <WorkTypeTable />
+        },
+        {
+            label: "Вид работ",
+            key: "19",
+            children: <WorkKindTable />
+        },
+        {
+            label: "Типы компаний",
+            key: "20",
+            children: <CompanyTypeList />
         }
     ];
 

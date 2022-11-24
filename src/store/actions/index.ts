@@ -22,6 +22,13 @@ export const SetCurrentUserDataItemInfo = (payload: { [selectedKey: string]: any
     };
 };
 
+export const SetCurrentLayoutMenu = (payload: string): IAction => {
+    return {
+        type: MainActionTypes.SET_CURRENT_LAYOUT_MENU,
+        payload
+    };
+};
+
 export const SetCurrentOpenedMenu = (payload: string): IAction => {
     return {
         type: MainActionTypes.SET_CURRENT_OPENED_MENU,

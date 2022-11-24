@@ -24,6 +24,7 @@ import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import { ICurrentUserDtoViewModel, IUsersDtoViewModel } from "interfaces";
 import getFullName from "utils/getFullName";
+import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 
 const Users: FC = () => {
     const navigate = useNavigate();
@@ -33,7 +34,8 @@ const Users: FC = () => {
     const theme = useTheme<ITheme>();
     const classes = useStyles(theme);
 
-    const [companyId, setCompanyId] = useState<number | undefined>();
+    const [companyId, setCompanyId] = useState<number | undefined>(undefined);
+    const [divisionId, setDivisionId] = useState<number | undefined>(undefined);
     const [companyName, setCompanyName] = useState<string | undefined>();
     const [isVisibleAddUserDrawer, setIsVisibleAddUserDrawer] = useState(false);
     const [table, setTable] = useState<Tabulator | undefined>();
@@ -41,6 +43,8 @@ const Users: FC = () => {
 
     const [query, setQuery] = useState("");
     const { searchStr } = useDelayedInputSearch(query);
+
+    const { getCurrentUserData } = useSimpleHttpFunctions();
 
     useEffect(() => {
         dispatch(SetCurrentOpenedMenu(mainMenuEnum.users));
@@ -111,7 +115,10 @@ const Users: FC = () => {
         if (currentUserData) {
             const companyId = currentUserData.company.companyId;
             const companyName = currentUserData.company.nameRu;
+            const divisionId = currentUserData.divisionId;
+
             setCompanyId(companyId);
+            setDivisionId(divisionId);
             setCompanyName(companyName);
             const userData: IUsersDtoViewModel[] = await actionMethodResultSync(
                 "USER",
@@ -142,15 +149,6 @@ const Users: FC = () => {
                 )
             );
         }
-    };
-
-    const getCurrentUserData = () => {
-        return actionMethodResultSync(
-            "USER",
-            "user/currentUser",
-            "get",
-            getRequestHeader(authContext.token)
-        ).then((data) => data);
     };
 
     const getUsersWithPhotoId = async (data: IUsersDtoViewModel[]) => {
@@ -214,7 +212,8 @@ const Users: FC = () => {
                 <div id="usersTable" />
             </Row>
             <UserAddDrawer
-                companyId={companyId + ""}
+                companyId={companyId}
+                divisionId={divisionId}
                 open={isVisibleAddUserDrawer}
                 setOpen={setIsVisibleAddUserDrawer}
                 companyName={companyName}

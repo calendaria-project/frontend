@@ -34,6 +34,7 @@ export interface ITheme {
         padding: string;
         hugeMargin: string;
         margin: string;
+        mediumMargin: string;
         smallMargin: string;
         mediumPadding: string;
         smallPadding: string;

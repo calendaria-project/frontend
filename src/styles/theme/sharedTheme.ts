@@ -17,7 +17,8 @@ const sharedTheme: ITheme = {
     background: {
         primary: "#FFFFFF",
         secondary: "#2C2C2C",
-        regular: "#016FC0"
+        regular: "#016FC0",
+        highlight: "#FAFAFA"
     },
     border: "1px solid",
     borderRadius: "6px",
@@ -39,7 +40,9 @@ const sharedTheme: ITheme = {
             primary: "#FFFFFF",
             secondary: "#2C2C2C",
             regular: "#016FC0",
-            transparency: "#C2C2C2"
+            transparency: "#C2C2C2",
+            removing: "#EB5757",
+            successful: "#27AE60"
         }
     },
     button: {
@@ -87,6 +90,7 @@ const sharedTheme: ITheme = {
         padding: "20px",
         hugeMargin: "28px",
         margin: "14px",
+        mediumMargin: "8px",
         smallMargin: "4px",
         mediumPadding: "8px",
         smallPadding: "4px"

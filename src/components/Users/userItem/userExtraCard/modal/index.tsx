@@ -1,4 +1,4 @@
-import { Col, Form, FormInstance, Modal, Row } from "antd";
+import { Col, Form, FormInstance, Modal, Row, Typography } from "antd";
 import Select from "./Select";
 
 import Button from "ui/Button";
@@ -14,6 +14,8 @@ import useStyles from "./styles";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { getCurrentUserDataItemInfo, getSelectedKey } from "store/reducers/userReducer";
 import DatePicker from "./DatePicker";
+
+const { Text } = Typography;
 
 const WithFormItem: FC<{ dataItemLayout: TInputData; children: any }> = ({
     dataItemLayout,
@@ -79,8 +81,6 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                 : undefined
             : [currentUserDataItemInfo?.[index!]];
 
-    // console.log(modalCurrentDataItemInfo);
-
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
             <Form
@@ -120,6 +120,10 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                                                       dataItemLayout={dataItemLayout}
                                                       currentDataItemInfo={dataItemInfo}
                                                   />
+                                              ) : dataItemLayout.type === Types.TITLE ? (
+                                                  <Text strong style={{ fontSize: "18px" }}>
+                                                      {dataItemLayout.placeholder}
+                                                  </Text>
                                               ) : null}
                                           </WithFormItem>
                                       ))}
@@ -148,6 +152,10 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                                               dataItemLayout={dataItemLayout}
                                               currentDataItemInfo={currentUserDataItemInfo}
                                           />
+                                      ) : dataItemLayout.type === Types.TITLE ? (
+                                          <Text strong style={{ fontSize: "18px" }}>
+                                              {dataItemLayout.placeholder}
+                                          </Text>
                                       ) : null}
                                   </WithFormItem>
                               </Col>

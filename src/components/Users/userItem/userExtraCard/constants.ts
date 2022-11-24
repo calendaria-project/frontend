@@ -1,6 +1,8 @@
 import { dictionaryCodesEnum } from "data/enums";
+import { phonePattern, mailPattern, phoneMessage, mailMessage } from "utils/patterns";
 
 export enum Types {
+    TITLE = "title",
     UNEDITABLE = "uneditable",
     SELECT = "select",
     INPUT = "input",
@@ -61,13 +63,6 @@ type InputDataRecord = {
     [key: string]: Array<TInputData>;
 };
 
-export const phonePattern = new RegExp(/^\+7\(\d{3}\)\d{3}(-\d{2})(-\d{2})$/);
-export const mailPattern = new RegExp(
-    /^(([^<>()\[\]\\.,;:ЁёА-я\s@"]+(\.[^<>()\[\]\\.,;:ЁёА-я\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([A-Za-z\-0-9]+\.)+[A-Za-z]{2,}))$/
-);
-export const mailMessage = "Введите почту в формате example@google.com";
-export const phoneMessage = "Введите номер в формате +7(xxx)xxx-xx-xx";
-
 export const inputData: InputDataRecord = {
     [SelectedKeyTypes.USER]: [
         { type: Types.UNEDITABLE, propertyName: "username", placeholder: "Логин" }
@@ -108,8 +103,10 @@ export const inputData: InputDataRecord = {
         {
             type: Types.INPUT,
             propertyName: "mobilePhoneNumber",
-            inputType: "number",
-            placeholder: "Внутренний номер",
+            customType: "mobile",
+            patternMessage: phoneMessage,
+            pattern: phonePattern,
+            placeholder: "Номер мобильного телефона",
             required: true
         },
         {
@@ -118,7 +115,7 @@ export const inputData: InputDataRecord = {
             customType: "mobile",
             patternMessage: phoneMessage,
             pattern: phonePattern,
-            placeholder: "Корпоративный мобильный номер"
+            placeholder: "Номер рабочего телефона"
         },
         {
             type: Types.INPUT,
@@ -222,7 +219,7 @@ export const inputData: InputDataRecord = {
             type: Types.SELECT,
             propertyName: "contractType",
             dictionaryCode: dictionaryCodesEnum.CONTRACT_TYPE,
-            placeholder: "Тип контракта",
+            placeholder: "Тип договора",
             required: true
         },
         {
@@ -234,8 +231,48 @@ export const inputData: InputDataRecord = {
         {
             type: Types.DATE,
             propertyName: "contractDate",
-            placeholder: "Дата договора",
+            placeholder: "Дата начала договора",
             required: true
+        },
+        {
+            type: Types.SELECT,
+            propertyName: "workType",
+            dictionaryCode: dictionaryCodesEnum.WORK_TYPE,
+            placeholder: "Тип работ"
+        },
+        {
+            type: Types.SELECT,
+            propertyName: "workKind",
+            dictionaryCode: dictionaryCodesEnum.WORK_KIND,
+            placeholder: "Вид работ"
+        },
+        {
+            type: Types.DATE,
+            propertyName: "contractEndDate",
+            placeholder: "Дата окончания договора"
+        },
+        {
+            type: Types.TITLE,
+            placeholder: "Заработная плата",
+            propertyName: ""
+        },
+        {
+            type: Types.INPUT,
+            propertyName: "salaryConstantPart",
+            inputType: "number",
+            placeholder: "Постоянная часть з/п"
+        },
+        {
+            type: Types.INPUT,
+            propertyName: "salaryVariablePart",
+            inputType: "number",
+            placeholder: "Переменная часть з/п"
+        },
+        {
+            type: Types.INPUT,
+            propertyName: "salary",
+            inputType: "number",
+            placeholder: "Общий оклад"
         }
     ],
 

@@ -254,7 +254,7 @@ const PositionList: FC<ITable> = ({ selectionItems }) => {
             />
             <SharedModal
                 okText="Создать"
-                title="Новая позиция"
+                title="Новая должность"
                 onFinish={save}
                 isVisible={isModalVisible}
                 setIsVisible={setIsModalVisible}

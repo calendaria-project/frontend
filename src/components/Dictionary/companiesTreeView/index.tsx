@@ -27,6 +27,8 @@ export const CompanyTreeView: FC<ITable> = ({ selectionItems }) => {
     const [table, setTable] = useState<Tabulator>();
     const [tableData, setTableData] = useState<any>([]);
 
+    const [companyData, setCompanyData] = useState<ICompanyViewModel>({} as ICompanyViewModel);
+
     const [searchStr, setSearchStr] = useState("");
 
     const onSetSearchStr = useCallback((v: string) => {
@@ -97,6 +99,7 @@ export const CompanyTreeView: FC<ITable> = ({ selectionItems }) => {
     };
 
     const handleAddCompany = async (data: ICompanyCreateViewModel) => {
+        console.log("handleAddCompany", data);
         const company = selectedRow?.getData();
         data.parentId = company.companyId;
         let newChild = await createCompany(data);
@@ -107,12 +110,13 @@ export const CompanyTreeView: FC<ITable> = ({ selectionItems }) => {
     };
 
     const handleUpdateCompany = async (data: any) => {
+        console.log("handleUpdateCompany", data);
         let updatedData = await updateCompanyById(data);
         selectedRow?.update({ ...updatedData, _children: selectedRow.getData()._children });
         createCompamyNestedTable();
         setIsEditModalVisible(false);
-        editForm.resetFields();
         setSelectedRow(undefined);
+        editForm.resetFields();
     };
 
     const updateCompanyById = (data: ICompanyViewModel) => {
@@ -170,6 +174,8 @@ export const CompanyTreeView: FC<ITable> = ({ selectionItems }) => {
         console.log("edit");
         const company = row.getData();
         const data = await getCompanyById(company.companyId);
+        setCompanyData(data);
+        console.log("onEdit getCompanyById data:", data);
         editForm.setFieldsValue(data);
         setIsEditModalVisible(true);
     };
@@ -196,6 +202,7 @@ export const CompanyTreeView: FC<ITable> = ({ selectionItems }) => {
                 isVisible={isEditModalVisible}
                 setIsVisible={setIsEditModalVisible}
                 form={editForm}
+                companyData={companyData}
             />
             <SearchingRow selectionItems={selectionItems} onSetSearchStr={onSetSearchStr} />
             <div id="companiesTable" />

@@ -1,4 +1,4 @@
-import { Col, Form, FormInstance, Modal, Row } from "antd";
+import { Col, Form, FormInstance, Modal, Row, Typography } from "antd";
 import Select from "../Select";
 
 import Button from "ui/Button";
@@ -11,6 +11,8 @@ import { Types, TInputData } from "../../constants";
 
 import useStyles from "../styles";
 import DatePicker from "../DatePicker";
+
+const { Text } = Typography;
 
 interface IUserItemModal {
     okText: string;
@@ -76,6 +78,10 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
                                         dataItemLayout={dataItemLayout}
                                         currentDataItemInfo={undefined}
                                     />
+                                ) : dataItemLayout.type === Types.TITLE ? (
+                                    <Text strong style={{ fontSize: "18px" }}>
+                                        {dataItemLayout.placeholder}
+                                    </Text>
                                 ) : null}
                             </Form.Item>
                         ))}

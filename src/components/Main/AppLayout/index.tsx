@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Layout, Menu, MenuProps } from "antd";
 import { mainMenuEnum } from "data/enums";
@@ -20,23 +19,29 @@ import useStyles from "./styles";
 import { ITheme } from "styles/theme/interface";
 import Routes from "../Routes";
 import Header from "./Header";
+import { useTypedSelector } from "hooks/useTypedSelector";
+import { SetCurrentLayoutMenu } from "store/actions";
+import { useDispatch } from "react-redux";
 
 const { Sider, Content } = Layout;
 
 const AppLayout = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const theme = useTheme<ITheme>();
     const classes = useStyles(theme);
 
+    const current =
+        useTypedSelector((state) => state.menu.layoutMenu) ||
+        sessionStorage.getItem("mainMenuTab") ||
+        mainMenuEnum.mainMenu;
+
     // const [collapsed, setCollapsed] = useState(true);
-    const [current, setCurrent] = useState<string>(
-        sessionStorage.getItem("mainMenuTab") || mainMenuEnum.mainMenu
-    );
 
     const onClick: MenuProps["onClick"] = (e) => {
         const menuKey = e.key;
-        setCurrent(menuKey);
+        dispatch(SetCurrentLayoutMenu(menuKey));
         sessionStorage.setItem("mainMenuTab", menuKey);
         if (menuKey === mainMenuEnum.mainMenu) navigate("/");
         else navigate(`/${menuKey}`);

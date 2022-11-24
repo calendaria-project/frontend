@@ -40,7 +40,8 @@ export interface IUserEditDrawer {
     userPhoto: string | null;
     // userSign: string | null;
     userData: IUsersDtoViewModel;
-    companyId: string | undefined;
+    companyId?: number;
+    divisionId?: number;
     companyName: string | undefined;
     open: boolean;
     setOpen: (val: boolean) => void;
@@ -55,7 +56,8 @@ export const UserEditDrawer = ({
     setOpen,
     companyName,
     onFinishEditingUser,
-    companyId
+    companyId,
+    divisionId
 }: IUserEditDrawer) => {
     const [form] = Form.useForm();
     const authContext = useContext(AuthContext);
@@ -66,7 +68,7 @@ export const UserEditDrawer = ({
     // @ts-ignore
     const classes = useStyles(theme);
 
-    const { divisions, positions, sexes } = useInitialData(companyId);
+    const { divisions, positions, sexes } = useInitialData(companyId, divisionId);
 
     useEffect(() => {
         form.setFieldsValue({
@@ -90,7 +92,7 @@ export const UserEditDrawer = ({
 
     const handleEditUser = () => {
         form.validateFields().then((e) => {
-            let data = parsePointObjectKey(e, companyId, form);
+            let data = parsePointObjectKey(e, companyId + "", form);
             const currentData = _.merge(userData, data);
             editUser(removeEmptyValuesFromAnyLevelObject(currentData));
         });
@@ -260,7 +262,7 @@ export const UserEditDrawer = ({
                             <Col span={24}>
                                 <Form.Item name="division.divisionId" label="Подразделение">
                                     <Select allowClear>
-                                        {divisions.map((el, i) => (
+                                        {(divisions || []).map((el, i) => (
                                             <Option
                                                 key={i}
                                                 children={el.nameRu}
@@ -273,11 +275,14 @@ export const UserEditDrawer = ({
                             <Col span={24}>
                                 <Form.Item name="position.positionId" label="Должность">
                                     <Select allowClear>
-                                        {positions.map((el, i) => (
+                                        {(positions && positions instanceof Array
+                                            ? [...positions, userData.position]
+                                            : [userData.position]
+                                        ).map((el: any, i: number) => (
                                             <Option
                                                 key={i}
-                                                children={el.nameRu}
-                                                value={el.positionId}
+                                                children={el?.nameRu}
+                                                value={el?.positionId}
                                             />
                                         ))}
                                     </Select>

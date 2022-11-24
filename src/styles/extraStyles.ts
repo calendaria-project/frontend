@@ -17,7 +17,10 @@ export default createUseStyles({
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            maxWidth: "200px"
+            maxWidth: "250px"
+        },
+        ".ant-table-content": {
+            overflow: "auto"
         },
         ".ant-input, .ant-input-affix-wrapper, .ant-select-selector, .ant-picker, .ant-pagination-item, .ant-pagination-prev, .ant-pagination-next, .ant-card-bordered":
             {

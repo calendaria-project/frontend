@@ -189,6 +189,7 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
             }
 
             setModalVisibleFlag(false);
+            form.resetFields();
         },
         [currentUserDataItemInfo, selectedKey, usersId]
     );
@@ -230,6 +231,7 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
             sendRequest(data);
 
             setAdditionalModalVisibleFlag(false);
+            form.resetFields();
         },
         [currentUserDataItemInfo, selectedKey, usersId]
     );

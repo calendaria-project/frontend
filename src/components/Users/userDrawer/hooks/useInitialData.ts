@@ -4,25 +4,26 @@ import { IDivisionDtoModel, IPositionDtoModel, ISimpleDictionaryModel } from "in
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 
-export const useInitialData = (companyId?: string) => {
+export const useInitialData = (companyId?: number, divisionId?: number) => {
     const authContext = useContext(AuthContext);
     const [divisions, setDivisions] = useState<IDivisionDtoModel[]>([]);
     const [positions, setPositions] = useState<IPositionDtoModel[]>([]);
     const [sexes, setSexes] = useState<ISimpleDictionaryModel[]>([]);
 
     useEffect(() => {
-        getPositionOptions();
         getSexOptions();
     }, []);
 
     useEffect(() => {
-        if (companyId && divisions.length === 0) {
-            getDivisionOptions();
-        }
+        getPositionOptions();
+    }, [divisionId]);
+
+    useEffect(() => {
+        getDivisionOptions();
     }, [companyId]);
 
     const getDivisionOptions = () => {
-        if (companyId) {
+        if (companyId && divisions.length === 0) {
             return actionMethodResultSync(
                 "DICTIONARY",
                 `division?companyId=${companyId}&page=0&size=1000&sortingRule=divisionId%3AASC`,
@@ -33,12 +34,16 @@ export const useInitialData = (companyId?: string) => {
     };
 
     const getPositionOptions = () => {
-        return actionMethodResultSync(
-            "DICTIONARY",
-            `position?page=0&size=1000&sortingRule=positionId%3AASC`,
-            "get",
-            getRequestHeader(authContext.token)
-        ).then((data) => setPositions(data.content));
+        if (divisionId && positions.length === 0) {
+            return actionMethodResultSync(
+                "DICTIONARY",
+                `position/divisionUnit?divisionId=${divisionId}`,
+                "get",
+                getRequestHeader(authContext.token)
+            ).then((data) => {
+                setPositions(data);
+            });
+        }
     };
 
     const getSexOptions = () => {
