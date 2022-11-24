@@ -1,5 +1,5 @@
-import React, { useState, useEffect, memo } from "react";
-import { Col, Form, Input, Modal, Row, Select, Tabs, Checkbox } from "antd";
+import React, { memo, useEffect, useState } from "react";
+import { Checkbox, Col, Form, Input, Modal, Row, Select, Tabs } from "antd";
 import Button from "ui/Button";
 import { FormInstance } from "antd/es/form/Form";
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
@@ -10,6 +10,8 @@ import useStyles from "./styles";
 import { validateMessages } from "data/validateMessages";
 import { IOrgStructureTreeItem, IPositionViewModel } from "interfaces";
 import { editingOptions, layoutOptions, structureLayout, TLayoutOptions } from "../contants";
+import CompanySelect from "components/Dictionary/companiesTreeView/modal/Select";
+import { mailMessage, mailPattern } from "utils/patterns";
 
 const { Option } = Select;
 
@@ -61,7 +63,8 @@ const SharedModal = ({
         }
     }, [existingData]);
 
-    console.log(existingData);
+    const colSpan = layoutOption === layoutOptions.EDIT_COMPANY ? 24 : 12;
+    // console.log(existingData);
 
     const WithForm = ({ children }: { children: any }) => {
         return (
@@ -99,11 +102,15 @@ const SharedModal = ({
     };
 
     const formContent = (
-        <Row align={"middle"} justify={"center"} gutter={[16, 16]}>
-            {(currentStructureLayout || []).map(({ name, label, required }) => (
+        <Row
+            align={"middle"}
+            justify={layoutOption === layoutOptions.EDIT_COMPANY ? undefined : "center"}
+            gutter={[16, layoutOption === layoutOptions.EDIT_COMPANY ? 0 : 16]}
+        >
+            {(currentStructureLayout || []).map(({ name, label, placeholder, required }) => (
                 <React.Fragment key={name}>
                     {name === "bin" ? (
-                        <Col span={12}>
+                        <Col span={colSpan}>
                             <Form.Item
                                 name={name}
                                 label={label}
@@ -115,11 +122,11 @@ const SharedModal = ({
                                     }
                                 ]}
                             >
-                                <Input type="number" />
+                                <Input placeholder={placeholder} type="number" />
                             </Form.Item>
                         </Col>
                     ) : name === "position" ? (
-                        <Col span={12}>
+                        <Col span={colSpan}>
                             <Form.Item
                                 name="position.positionId"
                                 label="Должность"
@@ -136,17 +143,54 @@ const SharedModal = ({
                                 </Select>
                             </Form.Item>
                         </Col>
+                    ) : name === "companyType" ? (
+                        <Col span={colSpan}>
+                            <Form.Item
+                                name="companyType"
+                                initialValue={existingData?.companyType}
+                                rules={[{ required: true }]}
+                            >
+                                <CompanySelect
+                                    form={form}
+                                    defaultValue={existingData?.companyType?.companyTypeId}
+                                    placeholder={"Тип компании"}
+                                    fieldName={"companyType"}
+                                    url={"company-type"}
+                                    idKey={"companyTypeId"}
+                                />
+                            </Form.Item>
+                        </Col>
                     ) : name === "isCompanyHead" ? (
-                        <Col span={24}>
+                        <Col span={colSpan}>
                             <Form.Item name={name} valuePropName="checked" rules={[{ required }]}>
                                 <Checkbox defaultChecked={existingData?.isCompanyHead ?? false}>
                                     {label}
                                 </Checkbox>
                             </Form.Item>
                         </Col>
+                    ) : name === "isCounterparty" ? (
+                        <Col span={colSpan}>
+                            <Form.Item name={name} valuePropName="checked" rules={[{ required }]}>
+                                <Checkbox defaultChecked={existingData?.isCounterparty ?? false}>
+                                    {label}
+                                </Checkbox>
+                            </Form.Item>
+                        </Col>
+                    ) : name === "email" ? (
+                        <Col span={colSpan}>
+                            <Form.Item
+                                name={name}
+                                rules={[
+                                    { pattern: mailPattern, message: mailMessage },
+                                    { required }
+                                ]}
+                            >
+                                <Input placeholder={placeholder} />
+                            </Form.Item>
+                        </Col>
                     ) : name === "companyAddresses" ? (
                         <>
-                            <Col span={24}>
+                            <Col className={classes.addressLabel} span={24}>
                                 <FormItemLabel prefixCls="" required={false} label="Адреса" />
                             </Col>
                             <Form.List name={["companyAddresses"]}>
@@ -160,22 +204,72 @@ const SharedModal = ({
                                                     <Col span={11}>
                                                         <Form.Item
                                                             className={classes.leftFormItem}
-                                                            label="Адрес"
-                                                            name={[name, "address"]}
+                                                            name={[name, "country"]}
                                                             rules={[{ required: true }]}
+                                                            initialValue={
+                                                                existingData?.companyAddresses?.[
+                                                                    name
+                                                                ]?.country
+                                                            }
                                                         >
-                                                            <Input />
+                                                            <CompanySelect
+                                                                form={form}
+                                                                defaultValue={
+                                                                    existingData
+                                                                        ?.companyAddresses?.[name]
+                                                                        ?.country?.id
+                                                                }
+                                                                placeholder={"Страна"}
+                                                                fieldName={"country"}
+                                                                url={"simple/COUNTRY"}
+                                                                idKey={"id"}
+                                                                num={name}
+                                                            />
                                                         </Form.Item>
                                                     </Col>
                                                     <Col span={11}>
                                                         <Form.Item
                                                             className={classes.rightFormItem}
-                                                            label="Тип"
+                                                            name={[name, "city"]}
+                                                            rules={[{ required: true }]}
+                                                            initialValue={
+                                                                existingData?.companyAddresses?.[
+                                                                    name
+                                                                ]?.city
+                                                            }
+                                                        >
+                                                            <CompanySelect
+                                                                form={form}
+                                                                defaultValue={
+                                                                    existingData
+                                                                        ?.companyAddresses?.[name]
+                                                                        ?.city?.id
+                                                                }
+                                                                placeholder={"Город"}
+                                                                fieldName={"city"}
+                                                                url={"simple/CITY"}
+                                                                idKey={"id"}
+                                                                num={name}
+                                                            />
+                                                        </Form.Item>
+                                                    </Col>
+                                                    <Col span={11}>
+                                                        <Form.Item
+                                                            className={classes.leftFormItem}
+                                                            name={[name, "address"]}
+                                                            rules={[{ required: true }]}
+                                                        >
+                                                            <Input placeholder={"Адрес"} />
+                                                        </Form.Item>
+                                                    </Col>
+                                                    <Col span={11}>
+                                                        <Form.Item
+                                                            className={classes.rightFormItem}
                                                             name={[name, "type"]}
                                                             rules={[{ required: true }]}
                                                         >
                                                             <Select
-                                                                placeholder="Выберите тип"
+                                                                placeholder="Тип адреса"
                                                                 allowClear
                                                             >
                                                                 <Option value="FACT">
@@ -221,9 +315,9 @@ const SharedModal = ({
                             </Form.List>
                         </>
                     ) : (
-                        <Col span={12}>
+                        <Col span={colSpan}>
                             <Form.Item name={name} label={label} rules={[{ required }]}>
-                                <Input />
+                                <Input placeholder={placeholder} />
                             </Form.Item>
                         </Col>
                     )}

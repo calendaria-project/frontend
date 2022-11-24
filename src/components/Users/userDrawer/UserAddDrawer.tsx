@@ -22,12 +22,7 @@ const { Title } = Typography;
 
 import UIButton from "ui/Button";
 
-import {
-    mailPattern,
-    phonePattern,
-    mailMessage,
-    phoneMessage
-} from "components/Users/userItem/userExtraCard/constants";
+import { mailPattern, phonePattern, mailMessage, phoneMessage } from "utils/patterns";
 import { parsePointObjectKey } from "utils/parsePointObjectKey";
 import AvatarDropZone from "utils/DropZones/AvatarDropZone";
 // import SignDropZone from "./DropZones/SignDropZone";

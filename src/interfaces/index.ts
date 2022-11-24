@@ -1,14 +1,6 @@
 import type { FormRule } from "antd";
 import { nodeTypeEnum } from "data/enums";
 
-export interface ICompanyBaseModel {
-    bin: string;
-    nameKz: string;
-    nameRu: string;
-    nameEn: string;
-    parentId: number;
-}
-
 export interface ISimpleDictionaryModel {
     nameKz: string;
     nameRu: string;
@@ -20,7 +12,7 @@ export interface ISimpleDictionaryViewModel extends ISimpleDictionaryModel {
     code: string;
 }
 
-export interface ICompanySimpleDictionaryViewModel {
+export interface ICompanyTypeDictionaryViewModel {
     companyTypeId: number;
     code: string;
     nameKz: string;
@@ -29,6 +21,19 @@ export interface ICompanySimpleDictionaryViewModel {
     longnameKz: string;
     longnameRu: string;
     longnameEn: string;
+}
+
+export interface ICompanyBaseModel {
+    bin: string;
+    nameKz: string;
+    nameRu: string;
+    nameEn: string;
+    parentId: number;
+    companyType: ICompanyTypeDictionaryViewModel;
+    companyIndex: string;
+    fax: string;
+    email: string;
+    isCounterparty: boolean;
 }
 
 export interface IDivisionStatItemsSimpleViewModel {
@@ -40,7 +45,12 @@ export interface IDivisionStatItemsSimpleViewModel {
     userCnt: number;
 }
 
-export interface ICompanyTreeNodeModel extends ICompanyBaseModel {
+export interface ICompanyTreeNodeModel {
+    bin: string;
+    nameKz: string;
+    nameRu: string;
+    nameEn: string;
+    parentId: number;
     id: number;
     nodeType: string;
     companyId: number;
@@ -49,26 +59,30 @@ export interface ICompanyTreeNodeModel extends ICompanyBaseModel {
 export interface ICompanyAddressBaseModel {
     address: string;
     type: string;
+    country: ISimpleDictionaryViewModel;
+    city: ISimpleDictionaryViewModel;
 }
 
 export interface ICompanyAddressCreateViewModel extends ICompanyAddressBaseModel {}
 
 export interface ICompanyCreateViewModel extends ICompanyBaseModel {
+    //post
     companyAddresses: ICompanyAddressCreateViewModel[];
-}
-
-export interface ICompanyViewModel extends ICompanyBaseModel {
-    companyAddresses: ICompanyAddressViewModel[];
-    companyId: number;
-    createdAt: string;
-    updatedAt: string;
 }
 
 export interface ICompanyAddressViewModel extends ICompanyAddressBaseModel {
     companyAddressId: number;
     companyId: number;
-    country: ISimpleDictionaryModel;
-    city: ISimpleDictionaryModel;
+    country: ISimpleDictionaryViewModel;
+    city: ISimpleDictionaryViewModel;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface ICompanyViewModel extends ICompanyBaseModel {
+    //put
+    companyAddresses: ICompanyAddressViewModel[];
+    companyId: number;
     createdAt: string;
     updatedAt: string;
 }
@@ -199,7 +213,7 @@ export interface ICompanyDtoModel {
     nameEn: string;
     isCounterparty: boolean;
     parentId: number;
-    companyType: ICompanySimpleDictionaryViewModel;
+    companyType: ICompanyTypeDictionaryViewModel;
     companyIndex: string;
     fax: string;
     email: string;

@@ -275,11 +275,14 @@ export const UserEditDrawer = ({
                             <Col span={24}>
                                 <Form.Item name="position.positionId" label="Должность">
                                     <Select allowClear>
-                                        {(positions || []).map((el, i) => (
+                                        {(positions && positions instanceof Array
+                                            ? [...positions, userData.position]
+                                            : [userData.position]
+                                        ).map((el: any, i: number) => (
                                             <Option
                                                 key={i}
-                                                children={el.nameRu}
-                                                value={el.positionId}
+                                                children={el?.nameRu}
+                                                value={el?.positionId}
                                             />
                                         ))}
                                     </Select>

@@ -1,7 +1,14 @@
 import { nodeTypeEnum } from "data/enums";
 
 interface IStructureLayout {
-    [key: string]: { [key: string]: Array<{ name: string; label?: string; required?: boolean }> };
+    [key: string]: {
+        [key: string]: Array<{
+            name: string;
+            placeholder?: string;
+            label?: string;
+            required?: boolean;
+        }>;
+    };
 }
 
 export enum layoutOptions {
@@ -34,10 +41,15 @@ export const deletingOptions = [layoutOptions.DELETE_DIVISION_UNIT, layoutOption
 export const structureLayout: IStructureLayout = {
     [nodeTypeEnum.COMPANY]: {
         [layoutOptions.EDIT_COMPANY]: [
-            { name: "bin", label: "БИН", required: true },
-            { name: "nameRu", label: "На Русском", required: true },
-            { name: "nameKz", label: "На Казахском", required: true },
-            { name: "nameEn", label: "На Английском" },
+            { name: "isCounterparty", label: "Контрагент", required: true },
+            { name: "bin", placeholder: "БИН", required: true },
+            { name: "nameRu", placeholder: "На Русском", required: true },
+            { name: "nameKz", placeholder: "На Казахском", required: true },
+            { name: "nameEn", placeholder: "На Английском" },
+            { name: "companyType", placeholder: "Тип компании", required: true },
+            { name: "companyIndex", placeholder: "Индекс", required: true },
+            { name: "fax", placeholder: "Факс" },
+            { name: "email", placeholder: "Почта", required: true },
             { name: "companyAddresses" }
         ],
         [layoutOptions.ADD_DIVISION]: [

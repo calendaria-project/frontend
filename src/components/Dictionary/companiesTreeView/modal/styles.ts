@@ -24,8 +24,7 @@ export default createUseStyles({
     minusCol: {
         display: "flex",
         justifyContent: "end",
-        alignItems: "center",
-        marginTop: "18px"
+        marginTop: "-20px"
     },
     plusCol: {
         marginTop: "-8px"
@@ -38,5 +37,8 @@ export default createUseStyles({
     },
     okBtnFormItem: {
         marginTop: "14px !important"
+    },
+    addressLabel: {
+        marginBottom: "10px"
     }
 });

@@ -6,12 +6,7 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import React, { memo, useCallback, useEffect } from "react";
-import {
-    mailMessage,
-    mailPattern,
-    phoneMessage,
-    phonePattern
-} from "components/Users/userItem/userExtraCard/constants";
+import { mailMessage, mailPattern, phoneMessage, phonePattern } from "utils/patterns";
 import PhoneInput from "utils/PhoneInput";
 import useCompaniesData from "hooks/useCompaniesData";
 import usePositionsData from "hooks/usePositionsData";

@@ -1,6 +1,8 @@
 import { dictionaryCodesEnum } from "data/enums";
+import { phonePattern, mailPattern, phoneMessage, mailMessage } from "utils/patterns";
 
 export enum Types {
+    TITLE = "title",
     UNEDITABLE = "uneditable",
     SELECT = "select",
     INPUT = "input",
@@ -60,13 +62,6 @@ export type TInputData = {
 type InputDataRecord = {
     [key: string]: Array<TInputData>;
 };
-
-export const phonePattern = new RegExp(/^\+7\(\d{3}\)\d{3}(-\d{2})(-\d{2})$/);
-export const mailPattern = new RegExp(
-    /^(([^<>()\[\]\\.,;:ЁёА-я\s@"]+(\.[^<>()\[\]\\.,;:ЁёА-я\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([A-Za-z\-0-9]+\.)+[A-Za-z]{2,}))$/
-);
-export const mailMessage = "Введите почту в формате example@google.com";
-export const phoneMessage = "Введите номер в формате +7(xxx)xxx-xx-xx";
 
 export const inputData: InputDataRecord = {
     [SelectedKeyTypes.USER]: [
@@ -240,11 +235,6 @@ export const inputData: InputDataRecord = {
             required: true
         },
         {
-            type: Types.DATE,
-            propertyName: "contractEndDate",
-            placeholder: "Дата окончания договора"
-        },
-        {
             type: Types.SELECT,
             propertyName: "workType",
             dictionaryCode: dictionaryCodesEnum.WORK_TYPE,
@@ -257,18 +247,31 @@ export const inputData: InputDataRecord = {
             placeholder: "Вид работ"
         },
         {
+            type: Types.DATE,
+            propertyName: "contractEndDate",
+            placeholder: "Дата окончания договора"
+        },
+        {
+            type: Types.TITLE,
+            placeholder: "Заработная плата",
+            propertyName: ""
+        },
+        {
             type: Types.INPUT,
             propertyName: "salaryConstantPart",
+            inputType: "number",
             placeholder: "Постоянная часть з/п"
         },
         {
             type: Types.INPUT,
             propertyName: "salaryVariablePart",
+            inputType: "number",
             placeholder: "Переменная часть з/п"
         },
         {
             type: Types.INPUT,
             propertyName: "salary",
+            inputType: "number",
             placeholder: "Общий оклад"
         }
     ],

@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Form, Input, Row, Col, Select } from "antd";
+import { Modal, Form, Input, Row, Col, Select, Checkbox } from "antd";
 import Button from "ui/Button";
 import { ICompanyCreateViewModel, ICompanyViewModel } from "interfaces";
 import { FormInstance } from "antd/es/form/Form";
@@ -8,6 +8,9 @@ import FormItemLabel from "antd/es/form/FormItemLabel";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
+
+import CompanySelect from "./Select";
+import { mailMessage, mailPattern } from "utils/patterns";
 
 const { Option } = Select;
 
@@ -18,6 +21,7 @@ export interface ICompanyDirectoryModal {
     onFinish: (values: ICompanyCreateViewModel | ICompanyViewModel) => void;
     isVisible: boolean;
     form: FormInstance<ICompanyCreateViewModel | ICompanyViewModel>;
+    companyData?: ICompanyViewModel;
 }
 
 const validateMessages = {
@@ -30,7 +34,8 @@ export const CompanyDirectoryModal = ({
     onFinish,
     isVisible,
     setIsVisible,
-    form
+    form,
+    companyData
 }: ICompanyDirectoryModal) => {
     const theme = useTheme<ITheme>();
     const classes = useStyles(theme);
@@ -38,6 +43,8 @@ export const CompanyDirectoryModal = ({
     const handleCancel = () => {
         setIsVisible(false);
     };
+
+    console.log("company Data", companyData);
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
@@ -53,54 +60,84 @@ export const CompanyDirectoryModal = ({
                 layout="vertical"
                 className={classes.directoryModal}
             >
-                <Row gutter={16} justify={"space-between"}>
+                <Row gutter={16}>
                     <Form.Item hidden name="companyId" />
                     <Form.Item hidden name="parentId" />
                     <Form.Item hidden name="createdAt" />
 
-                    <Col span={12}>
+                    <Col span={24}>
                         <Form.Item
-                            className={classes.leftFormItem}
+                            name="isCounterparty"
+                            valuePropName="checked"
+                            rules={[{ required: true }]}
+                        >
+                            <Checkbox defaultChecked={false}>Контрагент</Checkbox>
+                        </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                        <Form.Item
                             name="bin"
-                            label="БИН"
                             rules={[
                                 { required: true },
                                 { pattern: new RegExp(/^\d{12}$/), message: "Введите 12 цифр" }
                             ]}
                         >
-                            <Input type="number" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                            className={classes.rightFormItem}
-                            name="nameKz"
-                            label="На Казахском"
-                            rules={[{ required: true }]}
-                        >
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                            className={classes.leftFormItem}
-                            name="nameRu"
-                            label="На русском"
-                            rules={[{ required: true }]}
-                        >
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                            className={classes.rightFormItem}
-                            name="nameEn"
-                            label="На английском"
-                        >
-                            <Input />
+                            <Input placeholder={"БИН"} type="number" />
                         </Form.Item>
                     </Col>
                     <Col span={24}>
+                        <Form.Item name="nameKz" rules={[{ required: true }]}>
+                            <Input placeholder={"На Казахском"} />
+                        </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                        <Form.Item name="nameRu" rules={[{ required: true }]}>
+                            <Input placeholder={"На русском"} />
+                        </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                        <Form.Item name="nameEn">
+                            <Input placeholder={"На английском"} />
+                        </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                        <Form.Item
+                            name="companyType"
+                            initialValue={companyData?.companyType}
+                            rules={[{ required: true }]}
+                        >
+                            <CompanySelect
+                                form={form}
+                                defaultValue={companyData?.companyType?.companyTypeId}
+                                placeholder={"Тип компании"}
+                                fieldName={"companyType"}
+                                url={"company-type"}
+                                idKey={"companyTypeId"}
+                            />
+                        </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                        <Form.Item name="companyIndex" rules={[{ required: true }]}>
+                            <Input placeholder={"Индекс"} />
+                        </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                        <Form.Item name="fax">
+                            <Input placeholder={"Факс"} />
+                        </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                        <Form.Item
+                            name="email"
+                            rules={[
+                                { pattern: mailPattern, message: mailMessage },
+                                { required: true }
+                            ]}
+                        >
+                            <Input placeholder={"Почта"} />
+                        </Form.Item>
+                    </Col>
+                    <Col span={24} className={classes.addressLabel}>
                         <FormItemLabel prefixCls="" required={false} label="Адреса" />
                     </Col>
                     <Form.List name={["companyAddresses"]}>
@@ -114,21 +151,66 @@ export const CompanyDirectoryModal = ({
                                             <Col span={11}>
                                                 <Form.Item
                                                     className={classes.leftFormItem}
-                                                    label="Адрес"
-                                                    name={[name, "address"]}
+                                                    name={[name, "country"]}
                                                     rules={[{ required: true }]}
+                                                    initialValue={
+                                                        companyData?.companyAddresses?.[name]
+                                                            ?.country
+                                                    }
                                                 >
-                                                    <Input />
+                                                    <CompanySelect
+                                                        form={form}
+                                                        defaultValue={
+                                                            companyData?.companyAddresses?.[name]
+                                                                ?.country?.id
+                                                        }
+                                                        placeholder={"Страна"}
+                                                        fieldName={"country"}
+                                                        url={"simple/COUNTRY"}
+                                                        idKey={"id"}
+                                                        num={name}
+                                                    />
                                                 </Form.Item>
                                             </Col>
                                             <Col span={11}>
                                                 <Form.Item
                                                     className={classes.rightFormItem}
-                                                    label="Тип"
+                                                    name={[name, "city"]}
+                                                    rules={[{ required: true }]}
+                                                    initialValue={
+                                                        companyData?.companyAddresses?.[name]?.city
+                                                    }
+                                                >
+                                                    <CompanySelect
+                                                        form={form}
+                                                        defaultValue={
+                                                            companyData?.companyAddresses?.[name]
+                                                                ?.city?.id
+                                                        }
+                                                        placeholder={"Город"}
+                                                        fieldName={"city"}
+                                                        url={"simple/CITY"}
+                                                        idKey={"id"}
+                                                        num={name}
+                                                    />
+                                                </Form.Item>
+                                            </Col>
+                                            <Col span={11}>
+                                                <Form.Item
+                                                    className={classes.leftFormItem}
+                                                    name={[name, "address"]}
+                                                    rules={[{ required: true }]}
+                                                >
+                                                    <Input placeholder={"Адрес"} />
+                                                </Form.Item>
+                                            </Col>
+                                            <Col span={11}>
+                                                <Form.Item
+                                                    className={classes.rightFormItem}
                                                     name={[name, "type"]}
                                                     rules={[{ required: true }]}
                                                 >
-                                                    <Select placeholder="Выберите тип" allowClear>
+                                                    <Select placeholder="Тип адреса" allowClear>
                                                         <Option value="FACT">фактический</Option>
                                                         <Option value="JUR">юридический</Option>
                                                         <Option value="OTHER">другой</Option>
