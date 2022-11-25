@@ -47,7 +47,6 @@ interface IUserItemModal {
     onFinish: (values: Object) => void;
     form: FormInstance;
     currentDataLayout: Array<TInputData>;
-    currentCutInfo?: any;
     index?: number;
 }
 
@@ -99,34 +98,39 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                         ? (modalCurrentDataItemInfo || []).map(
                               (dataItemInfo: any, index: number) => (
                                   <Col xl={24} xs={24} key={index}>
-                                      {(currentDataLayout || []).map((dataItemLayout) => (
-                                          <WithFormItem dataItemLayout={dataItemLayout}>
-                                              {dataItemLayout.type === Types.SELECT ? (
-                                                  <Select
-                                                      form={form}
-                                                      dataItemLayout={dataItemLayout}
-                                                      currentDataItemInfo={dataItemInfo}
-                                                  />
-                                              ) : dataItemLayout.type === Types.INPUT ||
-                                                dataItemLayout.type === Types.TEXTAREA ? (
-                                                  <Input
-                                                      form={form}
-                                                      dataItemLayout={dataItemLayout}
-                                                      currentDataItemInfo={dataItemInfo}
-                                                  />
-                                              ) : dataItemLayout.type === Types.DATE ? (
-                                                  <DatePicker
-                                                      form={form}
-                                                      dataItemLayout={dataItemLayout}
-                                                      currentDataItemInfo={dataItemInfo}
-                                                  />
-                                              ) : dataItemLayout.type === Types.TITLE ? (
-                                                  <Text strong style={{ fontSize: "18px" }}>
-                                                      {dataItemLayout.placeholder}
-                                                  </Text>
-                                              ) : null}
-                                          </WithFormItem>
-                                      ))}
+                                      {(currentDataLayout || []).map(
+                                          (dataItemLayout: any, index: number) => (
+                                              <WithFormItem
+                                                  key={"" + dataItemLayout.propertyName + index}
+                                                  dataItemLayout={dataItemLayout}
+                                              >
+                                                  {dataItemLayout.type === Types.SELECT ? (
+                                                      <Select
+                                                          form={form}
+                                                          dataItemLayout={dataItemLayout}
+                                                          currentDataItemInfo={dataItemInfo}
+                                                      />
+                                                  ) : dataItemLayout.type === Types.INPUT ||
+                                                    dataItemLayout.type === Types.TEXTAREA ? (
+                                                      <Input
+                                                          form={form}
+                                                          dataItemLayout={dataItemLayout}
+                                                          currentDataItemInfo={dataItemInfo}
+                                                      />
+                                                  ) : dataItemLayout.type === Types.DATE ? (
+                                                      <DatePicker
+                                                          form={form}
+                                                          dataItemLayout={dataItemLayout}
+                                                          currentDataItemInfo={dataItemInfo}
+                                                      />
+                                                  ) : dataItemLayout.type === Types.TITLE ? (
+                                                      <Text strong style={{ fontSize: "18px" }}>
+                                                          {dataItemLayout.placeholder}
+                                                      </Text>
+                                                  ) : null}
+                                              </WithFormItem>
+                                          )
+                                      )}
                                   </Col>
                               )
                           )

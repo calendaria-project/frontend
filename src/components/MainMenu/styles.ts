@@ -42,11 +42,13 @@ export default createUseStyles({
     },
 
     smallInfoCol: {
-        height: "150px"
+        height: "150px",
+        paddingLeft: "0px !important"
     },
 
     currentUserCol: {
-        height: "200px"
+        height: "200px",
+        paddingRight: "0px !important"
     },
     currentUserContent: {
         background: (theme: ITheme) => theme.background.regular,
@@ -58,7 +60,8 @@ export default createUseStyles({
 
     staffingCol: {
         marginTop: "-50px",
-        height: "400px"
+        height: "400px",
+        paddingLeft: "0px !important"
     },
 
     pieChartCol: {
@@ -67,7 +70,8 @@ export default createUseStyles({
     },
 
     birthdayCol: {
-        height: "350px"
+        height: "350px",
+        paddingRight: "0px !important"
     },
     birthdayWrapper: {
         overflow: "auto"

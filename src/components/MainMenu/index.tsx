@@ -95,10 +95,6 @@ const MainMenu: FC = () => {
         }
     };
 
-    console.log(birthStatsWithPhoto);
-
-    console.log(Date.now());
-
     const initCurrentUserData = async () => {
         setCurrentUserPhotoLoading(true);
         const currentUserData: ICurrentUserDtoViewModel = await getCurrentUserData();
@@ -119,8 +115,8 @@ const MainMenu: FC = () => {
     };
 
     const initBirthStatItems = async () => {
+        setBirthStatsLoading(true);
         if (allStatistics && allStatistics.birthDateStatItems) {
-            setBirthStatsLoading(true);
             const currentBirthStatsWithPhoto: IBirthStatItemWithPhoto[] = await getUsersWithPhotoId(
                 allStatistics.birthDateStatItems
             );
@@ -220,7 +216,7 @@ const MainMenu: FC = () => {
     return (
         <Row className={classes.container}>
             <Row className={classes.infoRow} gutter={[16, 16]}>
-                <Col span={6} style={{ paddingLeft: "0px" }} className={classes.smallInfoCol}>
+                <Col span={6} className={classes.smallInfoCol}>
                     <SmallInfoCard
                         infoText={"Сотрудники"}
                         infoCount={allStatistics.allUsersCnt}
@@ -234,7 +230,7 @@ const MainMenu: FC = () => {
                         onClick={() => {}}
                         percentage={{
                             key: UP,
-                            value: `${allStatistics.createdUsersPercent}%`
+                            value: `${allStatistics.createdUsersPercent ?? 0}%`
                         }}
                     />
                 </Col>
@@ -245,11 +241,11 @@ const MainMenu: FC = () => {
                         onClick={() => {}}
                         percentage={{
                             key: DOWN,
-                            value: `${allStatistics.disabledUsersPercent}%`
+                            value: `${allStatistics.disabledUsersPercent ?? 0}%`
                         }}
                     />
                 </Col>
-                <Col span={6} style={{ paddingRight: "0px" }} className={classes.currentUserCol}>
+                <Col span={6} className={classes.currentUserCol}>
                     <div className={cx(classes.sharedBorderedWrapper, classes.currentUserContent)}>
                         <CurrentUserCard
                             photoLoading={currentUserPhotoLoading}
@@ -258,7 +254,7 @@ const MainMenu: FC = () => {
                         />
                     </div>
                 </Col>
-                <Col span={12} style={{ paddingLeft: "0px" }} className={classes.staffingCol}>
+                <Col span={12} className={classes.staffingCol}>
                     <div className={classes.sharedBorderedWrapper}>Штатное расписание</div>
                 </Col>
                 <Col span={6} className={classes.pieChartCol}>
@@ -269,7 +265,7 @@ const MainMenu: FC = () => {
                         />
                     </div>
                 </Col>
-                <Col span={6} style={{ paddingRight: "0px" }} className={classes.birthdayCol}>
+                <Col span={6} className={classes.birthdayCol}>
                     <div className={cx(classes.sharedBorderedWrapper, classes.birthdayWrapper)}>
                         <BirthdayInfoCard
                             statItemsLoading={birthStatsLoading}
@@ -285,7 +281,7 @@ const MainMenu: FC = () => {
                     className={classes.externalUsersTextWrapper}
                 >
                     <Col>
-                        <span className={classes.externalUsersTitle}>Внешние пользователи</span>
+                        <span className={classes.externalUsersTitle}>Внешние пользователи </span>
                         <span className={classes.externalUsersTitleExtra}>
                             (добавленные за последний месяц)
                         </span>

@@ -23,7 +23,7 @@ import useStyles from "./styles";
 
 const { Title, Text } = Typography;
 
-import UserItemArchieveModal from "./modal/UserItemArchiveModal";
+import UserItemArchiveModal from "./modal/UserItemArchiveModal";
 import { ICurrentUserDtoViewModel } from "interfaces";
 
 const UserItem: FC = () => {
@@ -49,7 +49,7 @@ const UserItem: FC = () => {
     // const [signLoading, setSignLoading] = useState<boolean>(false);
 
     const [archiveModalVisible, setArchiveModalVisible] = useState<boolean>(false);
-    const onArchiveModalVisible = useCallback((v: boolean) => setArchiveModalVisible(v), []);
+    const handleArchiveModalVisible = useCallback(() => setArchiveModalVisible(true), []);
 
     const [isVisibleEditUserDrawer, setIsVisibleEditUserDrawer] = useState(false);
     const onShowDrawer = useCallback(() => setIsVisibleEditUserDrawer(true), []);
@@ -125,8 +125,8 @@ const UserItem: FC = () => {
                     <span className={classes.extraInfoSpan}>Должность: </span>
                     {currentUserData?.position?.nameRu}
                 </Col>
-                <Col className={cx(classes.archieveCol, classes.endedCol)}>
-                    <Button onClick={() => onArchiveModalVisible(true)} customType={"removing"}>
+                <Col className={cx(classes.archiveCol, classes.endedCol)}>
+                    <Button onClick={handleArchiveModalVisible} customType={"removing"}>
                         В архив
                     </Button>
                 </Col>
@@ -169,36 +169,36 @@ const UserItem: FC = () => {
                                         )}
                                     </Title>
                                     <Text type="secondary">
-                                        {currentUserData?.personalContact?.mobilePhoneNumber}
+                                        {currentUserData?.personalContact?.mobilePhoneNumber ?? ""}
                                     </Text>
                                     <br />
                                     <Text type="secondary">
-                                        {currentUserData?.personalContact?.email}
+                                        {currentUserData?.personalContact?.email ?? ""}
                                     </Text>
                                 </Col>
                             </Row>
                             <Col span={24}>
                                 <Divider />
                                 <Tooltip title={"ИИН"}>
-                                    <Text>{currentUserData?.iin}</Text>
+                                    <Text>{currentUserData?.iin ?? ""}</Text>
                                 </Tooltip>
                                 <Divider />
                             </Col>
                             <Col span={24}>
                                 <Tooltip title={"Дата рождения"}>
-                                    <Text>{currentUserData?.birthDate}</Text>
+                                    <Text>{currentUserData?.birthDate ?? ""}</Text>
                                 </Tooltip>
                                 <Divider />
                             </Col>
                             <Col span={24}>
                                 <Tooltip title={"Пол"}>
-                                    <Text>{currentUserData?.sex?.nameRu}</Text>
+                                    <Text>{currentUserData?.sex?.nameRu ?? ""}</Text>
                                 </Tooltip>
                                 <Divider />
                             </Col>
                             <Col span={24}>
                                 <Tooltip title={"Дата приема на работу"}>
-                                    <Text>{currentUserData?.employmentDate}</Text>
+                                    <Text>{currentUserData?.employmentDate ?? ""}</Text>
                                 </Tooltip>
                                 {/*<Divider />*/}
                             </Col>
@@ -226,11 +226,11 @@ const UserItem: FC = () => {
                     companyName={currentUserData?.company?.nameRu}
                     onFinishEditingUser={onFinishEditingUser}
                 />
-                <UserItemArchieveModal
+                <UserItemArchiveModal
                     okText={"Удалить"}
                     title={"Вы уверены что хотите перенести в архив текущего сотрудника?"}
                     isVisible={archiveModalVisible}
-                    setIsVisible={onArchiveModalVisible}
+                    setIsVisible={setArchiveModalVisible}
                     handleDeleteUser={handleDeleteUser}
                 />
                 <Col className={classes.extraCardCol} span={16}>

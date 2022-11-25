@@ -35,7 +35,6 @@ const Users: FC = () => {
     const classes = useStyles(theme);
 
     const [companyId, setCompanyId] = useState<number | undefined>(undefined);
-    const [divisionId, setDivisionId] = useState<number | undefined>(undefined);
     const [companyName, setCompanyName] = useState<string | undefined>();
     const [isVisibleAddUserDrawer, setIsVisibleAddUserDrawer] = useState(false);
     const [table, setTable] = useState<Tabulator | undefined>();
@@ -115,10 +114,8 @@ const Users: FC = () => {
         if (currentUserData) {
             const companyId = currentUserData.company.companyId;
             const companyName = currentUserData.company.nameRu;
-            const divisionId = currentUserData.divisionId;
 
             setCompanyId(companyId);
-            setDivisionId(divisionId);
             setCompanyName(companyName);
             const userData: IUsersDtoViewModel[] = await actionMethodResultSync(
                 "USER",
@@ -213,7 +210,6 @@ const Users: FC = () => {
             </Row>
             <UserAddDrawer
                 companyId={companyId}
-                divisionId={divisionId}
                 open={isVisibleAddUserDrawer}
                 setOpen={setIsVisibleAddUserDrawer}
                 companyName={companyName}

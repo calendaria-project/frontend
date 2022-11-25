@@ -64,7 +64,6 @@ const SharedModal = ({
     }, [existingData]);
 
     const colSpan = layoutOption === layoutOptions.EDIT_COMPANY ? 24 : 12;
-    // console.log(existingData);
 
     const WithForm = ({ children }: { children: any }) => {
         return (
@@ -161,19 +160,25 @@ const SharedModal = ({
                             </Form.Item>
                         </Col>
                     ) : name === "isCompanyHead" ? (
-                        <Col span={colSpan}>
-                            <Form.Item name={name} valuePropName="checked" rules={[{ required }]}>
-                                <Checkbox defaultChecked={existingData?.isCompanyHead ?? false}>
-                                    {label}
-                                </Checkbox>
+                        <Col span={24}>
+                            <Form.Item
+                                initialValue={false}
+                                name={name}
+                                valuePropName="checked"
+                                rules={[{ required }]}
+                            >
+                                <Checkbox defaultChecked={false}>{label}</Checkbox>
                             </Form.Item>
                         </Col>
                     ) : name === "isCounterparty" ? (
                         <Col span={colSpan}>
-                            <Form.Item name={name} valuePropName="checked" rules={[{ required }]}>
-                                <Checkbox defaultChecked={existingData?.isCounterparty ?? false}>
-                                    {label}
-                                </Checkbox>
+                            <Form.Item
+                                initialValue={false}
+                                name={name}
+                                valuePropName="checked"
+                                rules={[{ required }]}
+                            >
+                                <Checkbox defaultChecked={false}>{label}</Checkbox>
                             </Form.Item>
                         </Col>
                     ) : name === "email" ? (

@@ -31,6 +31,7 @@ import { useDispatch } from "react-redux";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
+import getObjectWithHandledDates from "utils/getObjectWithHandeledDates";
 
 interface IRowData {
     dataItem: TInputData;
@@ -53,18 +54,9 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
     const currentSelectedKey = useTypedSelector((state) => getSelectedKey(state.user));
     const userMenuDataExists: boolean = isObjectNotEmpty(currentUserDataItemInfo);
 
+    const [form] = Form.useForm();
     const [currentItemIndex, setCurrentItemIndex] = useState<number>(0);
-
     const [modalVisibleFlag, setModalVisibleFlag] = useState<boolean>(false);
-
-    const additionalModalTitle = useMemo(
-        () => `Редактировать ${getUserEditingNameByKey(currentSelectedKey)}`,
-        [currentSelectedKey]
-    );
-
-    const onSetModalVisibleFlag = useCallback((bool: boolean) => {
-        setModalVisibleFlag(bool);
-    }, []);
 
     const handleIconClick = useCallback(
         (index: number) => () => {
@@ -74,19 +66,11 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
         []
     );
 
-    const [form] = Form.useForm();
-
     const saveModal = useCallback(
         (record: any) => {
-            record = Object.fromEntries(
-                Object.entries(record).map(([key, value]: [string, any]) => {
-                    if (key.includes("Date")) {
-                        return [key, value._i];
-                    } else return [key, value];
-                })
-            );
-
+            const recordWithDates = getObjectWithHandledDates(record);
             const reqMethod = "put";
+
             const sendRequest = (data: Object) => {
                 actionMethodResultSync(
                     "USER",
@@ -116,7 +100,7 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
             };
 
             const data = removeEmptyObjectProperties(
-                _.merge(currentUserDataItemInfo[currentItemIndex], record)
+                _.merge(currentUserDataItemInfo[currentItemIndex], recordWithDates)
             );
             sendRequest(data);
 
@@ -124,6 +108,11 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
             form.resetFields();
         },
         [currentUserDataItemInfo, currentSelectedKey, usersId, currentItemIndex]
+    );
+
+    const additionalModalTitle = useMemo(
+        () => `Редактировать ${getUserEditingNameByKey(currentSelectedKey)}`,
+        [currentSelectedKey]
     );
 
     const ListItem: FC<{
@@ -177,7 +166,7 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                     okText={"Сохранить"}
                     title={additionalModalTitle}
                     isVisible={modalVisibleFlag}
-                    setIsVisible={onSetModalVisibleFlag}
+                    setIsVisible={setModalVisibleFlag}
                     onFinish={saveModal}
                     form={form}
                     currentDataLayout={currentDataLayout}
@@ -281,7 +270,6 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
         </>
     );
 };
-
 const ListedRowData = React.memo(ListRowData);
 export { ListedRowData };
 

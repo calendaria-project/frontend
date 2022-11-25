@@ -36,7 +36,11 @@ const BirthdayInfoCard: FC<IBirthdayInfoCard> = ({ statItemsLoading, statItemsWi
                 </div>
             ) : sortArrayWithBirthDates(statItemsWithPhotoId) ? (
                 statItemsWithPhotoId.map((statItem, index) => (
-                    <Row className={classes.birthdayContentWrapper} align={"middle"}>
+                    <Row
+                        key={statItem.birthDate + index}
+                        className={classes.birthdayContentWrapper}
+                        align={"middle"}
+                    >
                         <Col>
                             {statItem.currentUserPhotoId ? (
                                 <Image
@@ -61,9 +65,7 @@ const BirthdayInfoCard: FC<IBirthdayInfoCard> = ({ statItemsLoading, statItemsWi
                                 {index === 0 &&
                                 dateToYMD(new Date()) ===
                                     dateToYMD(new Date(statItem.birthDate)) ? (
-                                    <span className={classes.highlightedBirthDate}>
-                                        {localeDate(statItem.birthDate, "ru")}
-                                    </span>
+                                    <span className={classes.highlightedBirthDate}>Сегодня</span>
                                 ) : (
                                     <span className={classes.birthDate}>
                                         {localeDate(statItem.birthDate, "ru")}

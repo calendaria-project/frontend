@@ -1,5 +1,6 @@
 import { Row } from "antd";
-import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
+import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, TooltipProps } from "recharts";
+import { ValueType, NameType } from "recharts/src/component/DefaultTooltipContent";
 import React, { memo, FC } from "react";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
@@ -15,6 +16,24 @@ const PieChartCard: FC<IPieChartCard> = ({ temporaryWorkersCount, pieceWorkersCo
     // @ts-ignore
     const classes = useStyles(theme);
 
+    const temporaryWorkersName = "Повременщики";
+    const pieceWorkersName = "Сдельщики";
+
+    const CustomTooltip: FC = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
+        if (active && payload && payload.length) {
+            const percentageDep = 100 / (temporaryWorkersCount + pieceWorkersCount);
+            return (
+                <div className="ant-tooltip-inner">
+                    {payload[0].name === temporaryWorkersName
+                        ? `${Math.round(percentageDep * temporaryWorkersCount)}%`
+                        : `${Math.round(percentageDep * pieceWorkersCount)}%`}
+                </div>
+            );
+        }
+
+        return null;
+    };
+
     return (
         <Row className={classes.pieChartRow}>
             <div className={classes.pieChartTitle}>Сотрудники на заводе</div>
@@ -22,8 +41,8 @@ const PieChartCard: FC<IPieChartCard> = ({ temporaryWorkersCount, pieceWorkersCo
                 <PieChart className={classes.pieChart}>
                     <Pie
                         data={[
-                            { name: "Сдельщики", value: pieceWorkersCount ?? 0 },
-                            { name: "Повременщики", value: temporaryWorkersCount ?? 0 }
+                            { name: pieceWorkersName, value: pieceWorkersCount ?? 0 },
+                            { name: temporaryWorkersName, value: temporaryWorkersCount ?? 0 }
                         ]}
                         innerRadius={95}
                         outerRadius={110}
@@ -32,6 +51,7 @@ const PieChartCard: FC<IPieChartCard> = ({ temporaryWorkersCount, pieceWorkersCo
                         <Cell fill={theme.color.successful + ""} />
                         <Cell fill={theme.color.removing + ""} />
                     </Pie>
+                    <Tooltip content={<CustomTooltip />} />
                     <Legend iconType={"circle"} verticalAlign={"bottom"} />
                 </PieChart>
             </ResponsiveContainer>

@@ -42,7 +42,7 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
             <Form
-                name="basic"
+                name="simpleAdditionalModal"
                 validateMessages={validateMessages}
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}
@@ -54,9 +54,9 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
             >
                 <Row gutter={16}>
                     <Col xl={24} xs={24}>
-                        {(currentDataLayout || []).map((dataItemLayout) => (
+                        {(currentDataLayout || []).map((dataItemLayout, index) => (
                             <Form.Item
-                                key={dataItemLayout.propertyName}
+                                key={"" + dataItemLayout.propertyName + index}
                                 name={dataItemLayout.propertyName}
                                 rules={[{ required: dataItemLayout.required }]}
                             >
