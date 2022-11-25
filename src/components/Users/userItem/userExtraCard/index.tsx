@@ -41,6 +41,7 @@ import SimpleUserExtraCardAdditionalModal from "./modal/simpleAdditionalModal";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
+import getObjectWithHandledDates from "utils/getObjectWithHandeledDates";
 
 interface IUserExtraCard {
     usersId: string;
@@ -64,22 +65,8 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
         [selectedKey]
     );
 
-    const arrayTypesFlag = useMemo(() => arrayKeyTypes.includes(selectedKey), [selectedKey]);
-
-    const modalTitle = useMemo(
-        () =>
-            `${userMenuDataExists ? "Редактировать" : "Добавить"} ${getUserEditingNameByKey(
-                selectedKey
-            )}`,
-        [selectedKey, userMenuDataExists]
-    );
-
-    const additionalModalTitle = useMemo(
-        () => `Добавить ${getUserEditingNameByKey(selectedKey)}`,
-        [selectedKey]
-    );
-
     const [form] = Form.useForm();
+    const [simpleForm] = Form.useForm();
     const [modalVisibleFlag, setModalVisibleFlag] = useState<boolean>(false);
     const [additionalModalVisibleFlag, setAdditionalModalVisibleFlag] = useState<boolean>(false);
 
@@ -115,14 +102,6 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
         [dispatch]
     );
 
-    const onSetModalVisibleFlag = useCallback((bool: boolean) => {
-        setModalVisibleFlag(bool);
-    }, []);
-
-    const onSetAdditionalModalVisibleFlag = useCallback((bool: boolean) => {
-        setAdditionalModalVisibleFlag(bool);
-    }, []);
-
     const handleIconClick = useCallback(() => {
         setModalVisibleFlag(true);
     }, []);
@@ -151,13 +130,7 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
 
     const saveModal = useCallback(
         (record: any) => {
-            record = Object.fromEntries(
-                Object.entries(record).map(([key, value]: [string, any]) => {
-                    if (key.includes("Date")) {
-                        return [key, value._i];
-                    } else return [key, value];
-                })
-            );
+            const recordWithDates = getObjectWithHandledDates(record);
             const reqMethod = isObjectNotEmpty(currentUserDataItemInfo) ? "put" : "post";
 
             const sendRequest = (data: Object) => {
@@ -179,11 +152,11 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
             };
 
             if (reqMethod === "post") {
-                const data = removeEmptyObjectProperties({ ...record, userId: usersId });
+                const data = removeEmptyObjectProperties({ ...recordWithDates, userId: usersId });
                 console.log("DATA", data);
                 sendRequest(data);
             } else {
-                const data = _.merge(currentUserDataItemInfo, record);
+                const data = _.merge(currentUserDataItemInfo, recordWithDates);
                 console.log("DATA", data);
                 sendRequest(data);
             }
@@ -191,19 +164,12 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
             setModalVisibleFlag(false);
             form.resetFields();
         },
-        [currentUserDataItemInfo, selectedKey, usersId]
+        [form, currentUserDataItemInfo, selectedKey, usersId]
     );
 
     const saveAdditionalModal = useCallback(
         (record: any) => {
-            record = Object.fromEntries(
-                Object.entries(record).map(([key, value]: [string, any]) => {
-                    if (key.includes("Date")) {
-                        return [key, value._i];
-                    } else return [key, value];
-                })
-            );
-
+            const recordWithDates = getObjectWithHandledDates(record);
             const reqMethod = "post";
 
             const sendRequest = (data: Object) => {
@@ -227,13 +193,13 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                     });
             };
 
-            const data = removeEmptyObjectProperties({ ...record, userId: usersId });
+            const data = removeEmptyObjectProperties({ ...recordWithDates, userId: usersId });
             sendRequest(data);
 
             setAdditionalModalVisibleFlag(false);
-            form.resetFields();
+            simpleForm.resetFields();
         },
-        [currentUserDataItemInfo, selectedKey, usersId]
+        [simpleForm, currentUserDataItemInfo, selectedKey, usersId]
     );
 
     const items: MenuProps["items"] = [
@@ -314,6 +280,20 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
     ];
     const memoizedAdditionalItems = useMemo(() => additionalItems, [additionalItems]);
 
+    const arrayTypesFlag = useMemo(() => arrayKeyTypes.includes(selectedKey), [selectedKey]);
+
+    const modalTitle = useMemo(
+        () =>
+            `${userMenuDataExists ? "Редактировать" : "Добавить"} ${getUserEditingNameByKey(
+                selectedKey
+            )}`,
+        [selectedKey, userMenuDataExists]
+    );
+    const additionalModalTitle = useMemo(
+        () => `Добавить ${getUserEditingNameByKey(selectedKey)}`,
+        [selectedKey]
+    );
+
     return (
         <Card className={classes.extraCard} title="Дополнительная информация">
             <Form form={form} component={false}>
@@ -357,7 +337,7 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                     okText={"Сохранить"}
                     title={modalTitle}
                     isVisible={modalVisibleFlag}
-                    setIsVisible={onSetModalVisibleFlag}
+                    setIsVisible={setModalVisibleFlag}
                     onFinish={saveModal}
                     form={form}
                     currentDataLayout={currentDataLayout}
@@ -366,9 +346,9 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                     okText={"Сохранить"}
                     title={additionalModalTitle}
                     isVisible={additionalModalVisibleFlag}
-                    setIsVisible={onSetAdditionalModalVisibleFlag}
+                    setIsVisible={setAdditionalModalVisibleFlag}
                     onFinish={saveAdditionalModal}
-                    form={form}
+                    form={simpleForm}
                     currentDataLayout={currentDataLayout}
                 />
             </Form>

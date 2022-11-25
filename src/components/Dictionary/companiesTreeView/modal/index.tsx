@@ -60,7 +60,7 @@ export const CompanyDirectoryModal = ({
                 layout="vertical"
                 className={classes.directoryModal}
             >
-                <Row gutter={16}>
+                <Row gutter={[16, 0]}>
                     <Form.Item hidden name="companyId" />
                     <Form.Item hidden name="parentId" />
                     <Form.Item hidden name="createdAt" />
@@ -69,6 +69,7 @@ export const CompanyDirectoryModal = ({
                         <Form.Item
                             name="isCounterparty"
                             valuePropName="checked"
+                            initialValue={false}
                             rules={[{ required: true }]}
                         >
                             <Checkbox defaultChecked={false}>Контрагент</Checkbox>

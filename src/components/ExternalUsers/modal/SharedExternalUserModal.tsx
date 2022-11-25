@@ -8,10 +8,9 @@ import useStyles from "./styles";
 import React, { memo, useCallback, useEffect } from "react";
 import { mailMessage, mailPattern, phoneMessage, phonePattern } from "utils/patterns";
 import PhoneInput from "utils/PhoneInput";
-import useCompaniesData from "hooks/useCompaniesData";
-import usePositionsData from "hooks/usePositionsData";
 import AvatarDropZone from "utils/DropZones/AvatarDropZone";
 import { IExternalUsersDataModel } from "interfaces";
+import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 
 const { Option } = Select;
 
@@ -56,9 +55,8 @@ const SharedExternalUserModal = ({
     const theme = useTheme<ITheme>();
     const classes = useStyles(theme);
 
-    const { companies } = useCompaniesData();
-    const { positions } = usePositionsData();
-    const userPhoto = existingData?.currentExternalUserPhotoId;
+    const { companies, positions } = useSimpleHttpFunctions();
+    const userPhoto = existingData?.currentPhotoId;
     const phoneNumber = existingData?.personalContact?.mobilePhoneNumber;
 
     return (

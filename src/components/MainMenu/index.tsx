@@ -7,12 +7,7 @@ import { AuthContext } from "context/AuthContextProvider";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
-import {
-    ICurrentUserDtoViewModel,
-    IUsersDtoViewModel,
-    IAllStatisticsModel,
-    IBirthDateStatItem
-} from "interfaces";
+import { ICurrentUserDtoViewModel, IAllStatisticsModel, IBirthDateStatItem } from "interfaces";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
@@ -30,11 +25,7 @@ import { externalUsersColumns } from "data/columns";
 import { ColumnDefinition } from "tabulator-tables";
 
 export interface IBirthStatItemWithPhoto extends IBirthDateStatItem {
-    currentUserPhotoId: string;
-}
-
-export interface IUsersWithPhotoId extends IUsersDtoViewModel {
-    currentUserPhotoId: string;
+    currentPhotoId: string;
 }
 
 const MainMenu: FC = () => {
@@ -65,7 +56,7 @@ const MainMenu: FC = () => {
     const [birthStatsWithPhoto, setBirthStatsWithPhoto] = useState<IBirthStatItemWithPhoto[]>([]);
     const [birthStatsLoading, setBirthStatsLoading] = useState(false);
 
-    const { getCurrentUserData } = useSimpleHttpFunctions();
+    const { getCurrentUserData, getUsersWithPhotoId } = useSimpleHttpFunctions();
 
     useEffect(() => {
         initStatData();
@@ -95,10 +86,6 @@ const MainMenu: FC = () => {
         }
     };
 
-    console.log(birthStatsWithPhoto);
-
-    console.log(Date.now());
-
     const initCurrentUserData = async () => {
         setCurrentUserPhotoLoading(true);
         const currentUserData: ICurrentUserDtoViewModel = await getCurrentUserData();
@@ -119,8 +106,8 @@ const MainMenu: FC = () => {
     };
 
     const initBirthStatItems = async () => {
+        setBirthStatsLoading(true);
         if (allStatistics && allStatistics.birthDateStatItems) {
-            setBirthStatsLoading(true);
             const currentBirthStatsWithPhoto: IBirthStatItemWithPhoto[] = await getUsersWithPhotoId(
                 allStatistics.birthDateStatItems
             );
@@ -131,8 +118,7 @@ const MainMenu: FC = () => {
 
     const fullNameTableActionsFormatter = (cell: Tabulator.CellComponent) => {
         const data: any = cell.getData();
-
-        const userPhoto = data.currentUserPhotoId;
+        const userPhoto = data.currentPhotoId;
 
         let photoElement = document.createElement("img");
         photoElement.setAttribute("src", userPhoto ? userPhoto : questionImage);
@@ -185,26 +171,6 @@ const MainMenu: FC = () => {
         }
     };
 
-    const getUsersWithPhotoId = async (data: any) => {
-        const usersWithPhotoId = [];
-        for (let i = 0; i < data.length; ++i) {
-            const profilePhotoId = data[i].profilePhotoId;
-            let currentUserPhotoId;
-            if (profilePhotoId) {
-                currentUserPhotoId = await actionMethodResultSync(
-                    "FILE",
-                    `file/download/${profilePhotoId}/base64`,
-                    "get"
-                )
-                    .then((res) => res)
-                    .catch(() => undefined);
-            }
-
-            usersWithPhotoId.push({ ...data[i], currentUserPhotoId });
-        }
-        return usersWithPhotoId;
-    };
-
     const onUsersCardClick = useCallback(() => {
         dispatch(SetCurrentLayoutMenu(mainMenuEnum.users));
         sessionStorage.setItem("mainMenuTab", mainMenuEnum.users);
@@ -220,7 +186,7 @@ const MainMenu: FC = () => {
     return (
         <Row className={classes.container}>
             <Row className={classes.infoRow} gutter={[16, 16]}>
-                <Col span={6} style={{ paddingLeft: "0px" }} className={classes.smallInfoCol}>
+                <Col span={6} className={classes.smallInfoCol}>
                     <SmallInfoCard
                         infoText={"Сотрудники"}
                         infoCount={allStatistics.allUsersCnt}
@@ -234,7 +200,7 @@ const MainMenu: FC = () => {
                         onClick={() => {}}
                         percentage={{
                             key: UP,
-                            value: `${allStatistics.createdUsersPercent}%`
+                            value: `${allStatistics.createdUsersPercent ?? 0}%`
                         }}
                     />
                 </Col>
@@ -245,11 +211,11 @@ const MainMenu: FC = () => {
                         onClick={() => {}}
                         percentage={{
                             key: DOWN,
-                            value: `${allStatistics.disabledUsersPercent}%`
+                            value: `${allStatistics.disabledUsersPercent ?? 0}%`
                         }}
                     />
                 </Col>
-                <Col span={6} style={{ paddingRight: "0px" }} className={classes.currentUserCol}>
+                <Col span={6} className={classes.currentUserCol}>
                     <div className={cx(classes.sharedBorderedWrapper, classes.currentUserContent)}>
                         <CurrentUserCard
                             photoLoading={currentUserPhotoLoading}
@@ -258,7 +224,7 @@ const MainMenu: FC = () => {
                         />
                     </div>
                 </Col>
-                <Col span={12} style={{ paddingLeft: "0px" }} className={classes.staffingCol}>
+                <Col span={12} className={classes.staffingCol}>
                     <div className={classes.sharedBorderedWrapper}>Штатное расписание</div>
                 </Col>
                 <Col span={6} className={classes.pieChartCol}>
@@ -269,7 +235,7 @@ const MainMenu: FC = () => {
                         />
                     </div>
                 </Col>
-                <Col span={6} style={{ paddingRight: "0px" }} className={classes.birthdayCol}>
+                <Col span={6} className={classes.birthdayCol}>
                     <div className={cx(classes.sharedBorderedWrapper, classes.birthdayWrapper)}>
                         <BirthdayInfoCard
                             statItemsLoading={birthStatsLoading}
@@ -285,7 +251,7 @@ const MainMenu: FC = () => {
                     className={classes.externalUsersTextWrapper}
                 >
                     <Col>
-                        <span className={classes.externalUsersTitle}>Внешние пользователи</span>
+                        <span className={classes.externalUsersTitle}>Внешние пользователи </span>
                         <span className={classes.externalUsersTitleExtra}>
                             (добавленные за последний месяц)
                         </span>

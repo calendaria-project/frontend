@@ -70,7 +70,7 @@ export default createUseStyles({
         paddingLeft: (theme: ITheme) => `${theme.layout.padding} !important`,
         paddingRight: (theme: ITheme) => `${theme.layout.padding} !important`
     },
-    archieveCol: {
+    archiveCol: {
         paddingRight: "0 !important"
     },
     extraInfoSpan: {

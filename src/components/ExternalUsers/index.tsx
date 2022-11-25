@@ -115,12 +115,12 @@ const ExternalUsers: FC = () => {
         initData();
     }, [requestType]);
 
-    const { getCurrentUserData } = useSimpleHttpFunctions();
+    const { getCurrentUserData, getUsersWithPhotoId } = useSimpleHttpFunctions();
 
     const fullNameTableActionsFormatter = (cell: Tabulator.CellComponent) => {
         const data: any = cell.getData();
 
-        const userPhoto = data.currentExternalUserPhotoId;
+        const userPhoto = data.currentPhotoId;
 
         let photoElement = document.createElement("img");
         photoElement.setAttribute("src", userPhoto ? userPhoto : questionImage);
@@ -154,8 +154,9 @@ const ExternalUsers: FC = () => {
                 getRequestHeader(authContext.token)
             ).then((data) => data);
 
-            const externalUsersDataWithPhoto: IExternalUsersDataModel[] =
-                await getExternalUsersWithPhotoId(externalUserData);
+            const externalUsersDataWithPhoto: IExternalUsersDataModel[] = await getUsersWithPhotoId(
+                externalUserData
+            );
 
             const initialSortedExternalUsersDataWithPhoto = getSortedData(
                 externalUsersDataWithPhoto,
@@ -188,38 +189,17 @@ const ExternalUsers: FC = () => {
         setExternalUserDrawerOpen(true);
     };
 
-    const getExternalUsersWithPhotoId = async (data: IExternalUsersDtoViewModel[]) => {
-        const externalUsersWithPhotoId = [];
-        for (let i = 0; i < data.length; ++i) {
-            const profilePhotoId = data[i].profilePhotoId;
-            let currentExternalUserPhotoId: string | undefined;
-            if (profilePhotoId) {
-                currentExternalUserPhotoId = await actionMethodResultSync(
-                    "FILE",
-                    `file/download/${profilePhotoId}/base64`,
-                    "get"
-                )
-                    .then((res) => res)
-                    .catch(() => undefined);
-            }
-
-            externalUsersWithPhotoId.push({ ...data[i], currentExternalUserPhotoId });
-        }
-
-        return externalUsersWithPhotoId;
-    };
-
     const getDataWithPhoto = async (data: IExternalUsersDtoViewModel) => {
         if (data && data.profilePhotoId) {
-            const externalUserPhotoId = await actionMethodResultSync(
+            const currentPhotoId = await actionMethodResultSync(
                 "FILE",
                 `file/download/${data.profilePhotoId}/base64`,
                 "get"
             )
                 .then((res) => res)
                 .catch(() => undefined);
-            if (externalUserPhotoId) {
-                return { ...data, currentExternalUserPhotoId: externalUserPhotoId };
+            if (currentPhotoId) {
+                return { ...data, currentPhotoId };
             }
         }
         return data;

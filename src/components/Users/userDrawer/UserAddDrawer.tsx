@@ -16,7 +16,7 @@ import {
 import { AuthContext } from "context/AuthContextProvider";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
-import { useContext } from "react";
+import { useCallback, useContext, useState } from "react";
 const { Option } = Select;
 const { Title } = Typography;
 
@@ -36,7 +36,6 @@ import { inputLengthHandler } from "utils/inputLengthHandler";
 
 export interface IUserAddDrawer {
     companyId?: number;
-    divisionId?: number;
     companyName: string | undefined;
     open: boolean;
     setOpen: (val: boolean) => void;
@@ -45,7 +44,6 @@ export interface IUserAddDrawer {
 
 export const UserAddDrawer = ({
     companyId,
-    divisionId,
     companyName,
     open,
     setOpen,
@@ -58,9 +56,17 @@ export const UserAddDrawer = ({
     // @ts-ignore
     const classes = useStyles(theme);
 
-    const { divisions, positions, sexes } = useInitialData(companyId, divisionId);
+    const [currentDivisionId, setCurrentDivisionId] = useState<number | undefined>(undefined);
 
-    console.log(positions);
+    const handleCurrentDivisionId = useCallback(
+        (v: number) => {
+            setCurrentDivisionId(v);
+            form.resetFields(["position.positionId"]);
+        },
+        [form]
+    );
+
+    const { divisions, positions, sexes } = useInitialData(companyId, currentDivisionId);
 
     const onClose = () => {
         setOpen(false);
@@ -261,7 +267,11 @@ export const UserAddDrawer = ({
                                     name="division.divisionId"
                                     label="Подразделение"
                                 >
-                                    <Select allowClear>
+                                    <Select
+                                        value={currentDivisionId}
+                                        onChange={handleCurrentDivisionId}
+                                        allowClear
+                                    >
                                         {(divisions || []).map((el, i) => (
                                             <Option
                                                 key={i}

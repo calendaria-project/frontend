@@ -42,21 +42,25 @@ const CurrentUserCard: FC<ICurrentUserCard> = ({ photoLoading, currentUserPhoto,
             </Row>
             <Row align={"middle"}>
                 <Col className={classes.userInfoName}>Должность:</Col>
-                <Col className={classes.userInfoValue}>{currentUser.position?.nameRu}</Col>
+                <Col className={classes.userInfoValue}>{currentUser.position?.nameRu ?? ""}</Col>
             </Row>
             <Row align={"middle"}>
                 <Col className={classes.userInfoName}>Возраст:</Col>
-                <Col className={classes.userInfoValue}>{getYearsAmount(currentUser.birthDate)}</Col>
+                <Col className={classes.userInfoValue}>
+                    {currentUser.birthDate ? getYearsAmount(currentUser.birthDate) : ""}
+                </Col>
             </Row>
             <Row align={"middle"}>
                 <Col className={classes.userInfoName}>Номер:</Col>
                 <Col className={classes.userInfoValue}>
-                    {currentUser.personalContact?.mobilePhoneNumber}
+                    {currentUser.personalContact?.mobilePhoneNumber ?? ""}
                 </Col>
             </Row>
             <Row align={"middle"}>
                 <Col className={classes.userInfoName}>Почта:</Col>
-                <Col className={classes.userInfoValue}>{currentUser.personalContact?.email}</Col>
+                <Col className={classes.userInfoValue}>
+                    {currentUser.personalContact?.email ?? ""}
+                </Col>
             </Row>
         </>
     );

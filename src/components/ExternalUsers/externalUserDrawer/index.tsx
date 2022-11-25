@@ -53,7 +53,7 @@ const ExternalUserDrawer: FC<IExternalUserDrawer> = ({
     const [archiveModalVisible, setArchiveModalVisible] = useState(false);
 
     const onClose = useCallback(() => setOpen(false), []);
-    const profileImage = externalUserData?.currentExternalUserPhotoId;
+    const profileImage = externalUserData?.currentPhotoId;
     const companyId = externalUserData?.company?.companyId;
 
     const onArchiveExternalUser = useCallback(() => {
@@ -83,8 +83,7 @@ const ExternalUserDrawer: FC<IExternalUserDrawer> = ({
                     false
                 );
 
-                const { fullName, currentExternalUserPhotoId, ...currentPureData } =
-                    externalUserData;
+                const { fullName, currentPhotoId, ...currentPureData } = externalUserData;
                 const finalData: IExternalUsersDtoViewModel = _.merge(currentPureData, gotData);
                 const editedData: IExternalUsersDtoViewModel = await actionMethodResultSync(
                     "USER",
@@ -118,15 +117,15 @@ const ExternalUserDrawer: FC<IExternalUserDrawer> = ({
 
     const getDataWithPhoto = async (data: IExternalUsersDtoViewModel) => {
         if (data && data.profilePhotoId) {
-            const externalUserPhotoId = await actionMethodResultSync(
+            const currentPhotoId = await actionMethodResultSync(
                 "FILE",
                 `file/download/${data.profilePhotoId}/base64`,
                 "get"
             )
                 .then((res) => res)
                 .catch(() => undefined);
-            if (externalUserPhotoId) {
-                return { ...data, currentExternalUserPhotoId: externalUserPhotoId };
+            if (currentPhotoId) {
+                return { ...data, currentPhotoId };
             }
         }
         return data;

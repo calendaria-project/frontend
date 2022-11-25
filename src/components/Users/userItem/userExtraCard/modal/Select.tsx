@@ -23,7 +23,7 @@ interface ISelectValue {
 const Select: FC<ISelect> = ({ form, dataItemLayout, currentDataItemInfo }) => {
     const authContext = useContext(AuthContext);
 
-    const [selectValue, setSelectValue] = useState<ISelectValue | undefined>({} as ISelectValue);
+    const [selectValue, setSelectValue] = useState<ISelectValue | undefined>(undefined);
     const [selectValues, setSelectValues] = useState<Array<ISelectValue>>([]);
 
     useEffect(() => {

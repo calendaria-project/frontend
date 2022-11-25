@@ -16,7 +16,7 @@ import {
 import { AuthContext } from "context/AuthContextProvider";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
-import { useContext, useEffect } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import moment from "moment";
 const { Option } = Select;
 const { Title } = Typography;
@@ -62,13 +62,19 @@ export const UserEditDrawer = ({
     const [form] = Form.useForm();
     const authContext = useContext(AuthContext);
 
-    console.log(userData);
-
     const theme = useTheme<ITheme>();
     // @ts-ignore
     const classes = useStyles(theme);
 
-    const { divisions, positions, sexes } = useInitialData(companyId, divisionId);
+    const [currentDivisionId, setCurrentDivisionId] = useState<number | undefined>(undefined);
+
+    const handleCurrentDivisionId = useCallback(
+        (v: number) => {
+            setCurrentDivisionId(v);
+            form.resetFields(["position.positionId"]);
+        },
+        [form]
+    );
 
     useEffect(() => {
         form.setFieldsValue({
@@ -84,7 +90,11 @@ export const UserEditDrawer = ({
             profilePhotoId: userData?.profilePhotoId,
             signFileId: userData?.signFileId
         });
+
+        setCurrentDivisionId(divisionId);
     }, [userData]);
+
+    const { divisions, positions, sexes } = useInitialData(companyId, currentDivisionId);
 
     const onClose = () => {
         setOpen(false);
@@ -108,6 +118,7 @@ export const UserEditDrawer = ({
             .catch(() => message.error("Ошибка редактирования"));
     };
 
+    // @ts-ignore
     return (
         <Drawer
             title="Вернуться назад"
@@ -261,7 +272,11 @@ export const UserEditDrawer = ({
                             </Col>
                             <Col span={24}>
                                 <Form.Item name="division.divisionId" label="Подразделение">
-                                    <Select allowClear>
+                                    <Select
+                                        value={currentDivisionId}
+                                        onChange={handleCurrentDivisionId}
+                                        allowClear
+                                    >
                                         {(divisions || []).map((el, i) => (
                                             <Option
                                                 key={i}
@@ -275,10 +290,16 @@ export const UserEditDrawer = ({
                             <Col span={24}>
                                 <Form.Item name="position.positionId" label="Должность">
                                     <Select allowClear>
-                                        {(positions && positions instanceof Array
-                                            ? [...positions, userData.position]
-                                            : [userData.position]
-                                        ).map((el: any, i: number) => (
+                                        {[
+                                            ...positions,
+                                            ...(positions.some(
+                                                (pos) =>
+                                                    pos.positionId ===
+                                                    userData?.position?.positionId
+                                            ) || divisionId !== currentDivisionId
+                                                ? []
+                                                : [userData.position])
+                                        ].map((el: any, i: number) => (
                                             <Option
                                                 key={i}
                                                 children={el?.nameRu}

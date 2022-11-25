@@ -34,7 +34,7 @@ export const useInitialData = (companyId?: number, divisionId?: number) => {
     };
 
     const getPositionOptions = () => {
-        if (divisionId && positions.length === 0) {
+        if (divisionId) {
             return actionMethodResultSync(
                 "DICTIONARY",
                 `position/divisionUnit?divisionId=${divisionId}`,

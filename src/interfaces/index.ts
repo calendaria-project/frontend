@@ -313,7 +313,7 @@ export interface IExternalUsersDtoViewModel {
 
 export interface IExternalUsersDataModel extends IExternalUsersDtoViewModel {
     fullName?: string;
-    currentExternalUserPhotoId?: string;
+    currentPhotoId?: string;
 }
 
 export interface IUsersCardModel {

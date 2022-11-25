@@ -7,13 +7,11 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import { AuthContext } from "context/AuthContextProvider";
-import useCompaniesData from "hooks/useCompaniesData";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import {
     BranchesOutlined,
     ClusterOutlined,
-    // DownOutlined,
     DragOutlined,
     EditOutlined,
     UserOutlined
@@ -28,6 +26,7 @@ import parseModalData from "utils/parseModalData";
 
 import _ from "lodash";
 import contextMenu from "./contextMenu";
+import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 
 const { Option } = Select;
 
@@ -88,7 +87,7 @@ const OrganizationStructure: FC = () => {
         }
     };
 
-    const { companies } = useCompaniesData();
+    const { companies } = useSimpleHttpFunctions();
     const handleSelectCompanyId = useCallback((value: string | number) => {
         setSelectedCompanyId(+value);
         sessionStorage.setItem("selectedCompanyId", value + "");
