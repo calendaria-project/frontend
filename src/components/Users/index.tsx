@@ -26,6 +26,10 @@ import { ICurrentUserDtoViewModel, IUsersDtoViewModel } from "interfaces";
 import getFullName from "utils/getFullName";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 
+interface IUsersWithPhoto extends IUsersDtoViewModel {
+    currentPhotoId: string;
+}
+
 const Users: FC = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -38,12 +42,12 @@ const Users: FC = () => {
     const [companyName, setCompanyName] = useState<string | undefined>();
     const [isVisibleAddUserDrawer, setIsVisibleAddUserDrawer] = useState(false);
     const [table, setTable] = useState<Tabulator | undefined>();
-    const [tableData, setTableData] = useState<IUsersDtoViewModel[]>([]);
+    const [tableData, setTableData] = useState<IUsersWithPhoto[]>([]);
 
     const [query, setQuery] = useState("");
     const { searchStr } = useDelayedInputSearch(query);
 
-    const { getCurrentUserData } = useSimpleHttpFunctions();
+    const { getCurrentUserData, getUsersWithPhotoId } = useSimpleHttpFunctions();
 
     useEffect(() => {
         dispatch(SetCurrentOpenedMenu(mainMenuEnum.users));
@@ -71,7 +75,7 @@ const Users: FC = () => {
     const fullNameTableActionsFormatter = (cell: Tabulator.CellComponent) => {
         const data: any = cell.getData();
 
-        const userPhoto = data.currentUserPhotoId;
+        const userPhoto = data.currentPhotoId;
 
         let photoElement = document.createElement("img");
         photoElement.setAttribute("src", userPhoto ? userPhoto : questionImage);
@@ -124,9 +128,8 @@ const Users: FC = () => {
                 getRequestHeader(authContext.token)
             ).then((data) => data);
 
-            setTableData(userData);
-
-            const userDataWithPhoto = await getUsersWithPhotoId(userData);
+            const userDataWithPhoto: IUsersWithPhoto[] = await getUsersWithPhotoId(userData);
+            setTableData(userDataWithPhoto);
 
             const actionsSell: ColumnDefinition = {
                 headerSort: false,
@@ -146,27 +149,6 @@ const Users: FC = () => {
                 )
             );
         }
-    };
-
-    const getUsersWithPhotoId = async (data: IUsersDtoViewModel[]) => {
-        const usersWithPhotoId = [];
-        for (let i = 0; i < data.length; ++i) {
-            const profilePhotoId = data[i].profilePhotoId;
-            let currentUserPhotoId;
-            if (profilePhotoId) {
-                currentUserPhotoId = await actionMethodResultSync(
-                    "FILE",
-                    `file/download/${profilePhotoId}/base64`,
-                    "get"
-                )
-                    .then((res) => res)
-                    .catch(() => undefined);
-            }
-
-            usersWithPhotoId.push({ ...data[i], currentUserPhotoId });
-        }
-
-        return usersWithPhotoId;
     };
 
     const handleFioClick = (e: UIEvent, row: Tabulator.RowComponent) =>

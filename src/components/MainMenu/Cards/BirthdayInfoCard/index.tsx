@@ -42,12 +42,12 @@ const BirthdayInfoCard: FC<IBirthdayInfoCard> = ({ statItemsLoading, statItemsWi
                         align={"middle"}
                     >
                         <Col>
-                            {statItem.currentUserPhotoId ? (
+                            {statItem.currentPhotoId ? (
                                 <Image
                                     className={classes.birthUsersImage}
                                     width={40}
                                     height={40}
-                                    src={statItem.currentUserPhotoId}
+                                    src={statItem.currentPhotoId}
                                 />
                             ) : (
                                 <QuestionCircleOutlined className={classes.questionIcon} />

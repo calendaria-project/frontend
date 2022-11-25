@@ -26,7 +26,7 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import Button from "ui/Button";
 import { PlusOutlined } from "@ant-design/icons";
-import useCompaniesData from "hooks/useCompaniesData";
+import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 
 const { Option } = Select;
 
@@ -47,7 +47,7 @@ export const DivisionTreeView: FC<ITable> = ({ selectionItems }) => {
     const [tableData, setTableData] = useState<any>([]);
     const [selectedCompanyId, setSelectedCompanyId] = useState<number | undefined>(undefined);
 
-    const { companies } = useCompaniesData();
+    const { companies } = useSimpleHttpFunctions();
 
     const [searchStr, setSearchStr] = useState("");
 

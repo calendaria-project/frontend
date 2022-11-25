@@ -7,12 +7,7 @@ import { AuthContext } from "context/AuthContextProvider";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
-import {
-    ICurrentUserDtoViewModel,
-    IUsersDtoViewModel,
-    IAllStatisticsModel,
-    IBirthDateStatItem
-} from "interfaces";
+import { ICurrentUserDtoViewModel, IAllStatisticsModel, IBirthDateStatItem } from "interfaces";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
@@ -30,11 +25,7 @@ import { externalUsersColumns } from "data/columns";
 import { ColumnDefinition } from "tabulator-tables";
 
 export interface IBirthStatItemWithPhoto extends IBirthDateStatItem {
-    currentUserPhotoId: string;
-}
-
-export interface IUsersWithPhotoId extends IUsersDtoViewModel {
-    currentUserPhotoId: string;
+    currentPhotoId: string;
 }
 
 const MainMenu: FC = () => {
@@ -65,7 +56,7 @@ const MainMenu: FC = () => {
     const [birthStatsWithPhoto, setBirthStatsWithPhoto] = useState<IBirthStatItemWithPhoto[]>([]);
     const [birthStatsLoading, setBirthStatsLoading] = useState(false);
 
-    const { getCurrentUserData } = useSimpleHttpFunctions();
+    const { getCurrentUserData, getUsersWithPhotoId } = useSimpleHttpFunctions();
 
     useEffect(() => {
         initStatData();
@@ -127,8 +118,7 @@ const MainMenu: FC = () => {
 
     const fullNameTableActionsFormatter = (cell: Tabulator.CellComponent) => {
         const data: any = cell.getData();
-
-        const userPhoto = data.currentUserPhotoId;
+        const userPhoto = data.currentPhotoId;
 
         let photoElement = document.createElement("img");
         photoElement.setAttribute("src", userPhoto ? userPhoto : questionImage);
@@ -179,26 +169,6 @@ const MainMenu: FC = () => {
                 )
             );
         }
-    };
-
-    const getUsersWithPhotoId = async (data: any) => {
-        const usersWithPhotoId = [];
-        for (let i = 0; i < data.length; ++i) {
-            const profilePhotoId = data[i].profilePhotoId;
-            let currentUserPhotoId;
-            if (profilePhotoId) {
-                currentUserPhotoId = await actionMethodResultSync(
-                    "FILE",
-                    `file/download/${profilePhotoId}/base64`,
-                    "get"
-                )
-                    .then((res) => res)
-                    .catch(() => undefined);
-            }
-
-            usersWithPhotoId.push({ ...data[i], currentUserPhotoId });
-        }
-        return usersWithPhotoId;
     };
 
     const onUsersCardClick = useCallback(() => {
