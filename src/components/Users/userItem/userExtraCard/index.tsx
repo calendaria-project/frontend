@@ -180,10 +180,16 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                     data
                 )
                     .then((res) => {
-                        console.log(res);
-                        const currentData = isObjectNotEmpty(currentUserDataItemInfo)
-                            ? [...currentUserDataItemInfo, res]
-                            : [res];
+                        let currentData;
+                        if (res instanceof Object && !(res instanceof Array)) {
+                            isObjectNotEmpty(currentUserDataItemInfo)
+                                ? (currentData = [...currentUserDataItemInfo, res])
+                                : (currentData = [res]);
+                        } else if (res instanceof Array) {
+                            isObjectNotEmpty(currentUserDataItemInfo)
+                                ? (currentData = [...currentUserDataItemInfo, ...res])
+                                : (currentData = [...res]);
+                        }
                         dispatch(SetCurrentUserDataItemInfo({ [selectedKey]: currentData }));
                         message.success("Успешно сохранено");
                     })
