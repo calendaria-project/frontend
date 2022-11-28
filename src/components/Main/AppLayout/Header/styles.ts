@@ -45,6 +45,14 @@ export default createUseStyles({
         width: "100%"
     },
     userDropdownSpace: {
-        paddingTop: "2px"
+        paddingTop: "0px"
+    },
+    userDropdownBtn: {
+        display: "flex",
+        gap: "8px",
+        alignItems: "flex-start"
+    },
+    downIcon: {
+        marginTop: "3px"
     }
 });

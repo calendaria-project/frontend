@@ -16,7 +16,6 @@ export default createUseStyles({
         width: "100%"
     },
     treeWrapper: {
-        marginTop: (theme: ITheme) => theme.layout.margin,
         width: "100%"
     },
     tree: {

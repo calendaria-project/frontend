@@ -6,6 +6,7 @@ export interface ITheme {
     border: string;
     borderRadius: string;
     fontWeight: TSimpleThemeRecord;
+    fontSize: TSimpleThemeRecord;
     selection: {
         background: TSimpleThemeRecord;
     };

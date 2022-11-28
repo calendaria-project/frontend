@@ -1,10 +1,11 @@
 import { createUseStyles } from "react-jss";
+import { ITheme } from "../../../../styles/theme/interface";
 
 export default createUseStyles({
     pieChartTitle: {
         position: "absolute",
         fontWeight: 500,
-        fontSize: "18px"
+        fontSize: (theme: ITheme) => theme.fontSize.title
     },
     pieChartRow: {
         height: "100%"

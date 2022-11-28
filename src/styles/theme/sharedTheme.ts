@@ -9,6 +9,7 @@ const sharedTheme: ITheme = {
         extraText: "#828282",
         regular: "#016FC0",
         removing: "#EB5757",
+        between: "#F2994A",
         successful: "#27AE60",
         arrow: "#000000",
         lines: "#C2C2C2",
@@ -26,6 +27,10 @@ const sharedTheme: ITheme = {
         btn: 400,
         primary: 500,
         bold: 600
+    },
+    fontSize: {
+        title: "18px",
+        primary: "16px"
     },
     selection: {
         background: {

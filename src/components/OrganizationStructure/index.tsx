@@ -2,7 +2,7 @@ import React, { FC, useCallback, useContext, useEffect, useState } from "react";
 import { SetCurrentOpenedMenu } from "store/actions";
 import { mainMenuEnum, nodeTypeEnum } from "data/enums";
 import { useDispatch } from "react-redux";
-import { Col, Dropdown, Form, message, Row, Select, Space, Tree } from "antd";
+import { Col, Dropdown, Form, message, Row, Space, Tree } from "antd";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
@@ -16,9 +16,12 @@ import {
     EditOutlined,
     UserOutlined
 } from "@ant-design/icons";
-import { IExtendedOrgStructureTreeItem, IOrgStructureTreeItem } from "interfaces";
+import {
+    ICurrentUserDtoViewModel,
+    IExtendedOrgStructureTreeItem,
+    IOrgStructureTreeItem
+} from "interfaces";
 import DivisionUnitDeleteModal from "./modals/SharedDeleteModal";
-import useOrgStructureHttpRequests from "./hooks/useOrgStructureHttpRequests";
 import { deletingOptions, layoutOptions, TLayoutOptions } from "./contants";
 import SharedModal from "./modals/SharedModal";
 import getOrgStructureModalTitle from "utils/getOrgStructureModalTitle";
@@ -27,8 +30,6 @@ import parseModalData from "utils/parseModalData";
 import _ from "lodash";
 import contextMenu from "./contextMenu";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
-
-const { Option } = Select;
 
 const OrganizationStructure: FC = () => {
     const authContext = useContext(AuthContext);
@@ -46,9 +47,7 @@ const OrganizationStructure: FC = () => {
         setExpandedKeys([...v]);
     }, []);
 
-    const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(
-        Number(sessionStorage.getItem("selectedCompanyId")) || null
-    );
+    const [companyId, setCompanyId] = useState<number | null>(null);
 
     const {
         getCompanyById,
@@ -56,18 +55,31 @@ const OrganizationStructure: FC = () => {
         getDivisionUnitById,
         initPositionOptions,
         positions,
-        getTreeData
-    } = useOrgStructureHttpRequests();
+        getTreeData,
+        getCurrentUserData
+    } = useSimpleHttpFunctions();
 
     useEffect(() => {
-        if (selectedCompanyId) {
+        initData();
+    }, []);
+
+    const initData = async () => {
+        const currentUserData: ICurrentUserDtoViewModel = await getCurrentUserData();
+        if (currentUserData) {
+            const companyId = currentUserData.company.companyId;
+            setCompanyId(companyId);
+        }
+    };
+
+    useEffect(() => {
+        if (companyId) {
             initTreeData();
         }
-    }, [selectedCompanyId]);
+    }, [companyId]);
 
     const initTreeData = async (key?: string, updatedKey?: string) => {
-        if (selectedCompanyId) {
-            const treeData = await getTreeData(selectedCompanyId);
+        if (companyId) {
+            const treeData = await getTreeData(companyId);
             const formattedTreeData = formatTreeData(treeData);
             if (!expandedKeys.includes(formattedTreeData[0].key)) {
                 setExpandedKeys([formattedTreeData[0].key]);
@@ -87,12 +99,6 @@ const OrganizationStructure: FC = () => {
         }
     };
 
-    const { companies } = useSimpleHttpFunctions();
-    const handleSelectCompanyId = useCallback((value: string | number) => {
-        setSelectedCompanyId(+value);
-        sessionStorage.setItem("selectedCompanyId", value + "");
-    }, []);
-
     type TSelectedTreeEntity = { treeItem: IOrgStructureTreeItem; layoutOption: TLayoutOptions };
     const [selectedTreeEntity, setSelectedTreeEntity] = useState<TSelectedTreeEntity>(
         {} as TSelectedTreeEntity
@@ -102,7 +108,7 @@ const OrganizationStructure: FC = () => {
     const [existingData, setExistingData] = useState<any>({});
 
     const getExistingCompanyData = async () => {
-        const companyData = await getCompanyById(selectedCompanyId as number);
+        const companyData = await getCompanyById(companyId!);
         setExistingData(companyData);
     };
     const getExistingDivisionData = async (id: number) => {
@@ -198,7 +204,7 @@ const OrganizationStructure: FC = () => {
                         `division`,
                         "post",
                         getRequestHeader(authContext.token),
-                        { companyId: selectedCompanyId, ...parsedData }
+                        { companyId: companyId, ...parsedData }
                     )
                         .then(() => {
                             message.success("Успешно сохранено");
@@ -226,7 +232,7 @@ const OrganizationStructure: FC = () => {
             if (nodeType === nodeTypeEnum.DIVISION) {
                 if (layoutOption === layoutOptions.ADD_DIVISION_UNIT) {
                     if (parsedData.priority && parsedData.position) {
-                        const companyData = await getCompanyById(selectedCompanyId as number);
+                        const companyData = await getCompanyById(companyId!);
 
                         actionMethodResultSync(
                             "DICTIONARY",
@@ -268,7 +274,7 @@ const OrganizationStructure: FC = () => {
                         "division",
                         "post",
                         getRequestHeader(authContext.token),
-                        { companyId: selectedCompanyId, ...parsedData, parentId: id }
+                        { companyId: companyId, ...parsedData, parentId: id }
                     )
                         .then(() => {
                             message.success("Успешно сохранено");
@@ -379,22 +385,6 @@ const OrganizationStructure: FC = () => {
 
     return (
         <Row className={classes.container}>
-            <Row className={classes.selectionWrapper}>
-                <Col span={24}>
-                    <Select
-                        placeholder="Выберите компанию"
-                        className={classes.select}
-                        value={selectedCompanyId || null}
-                        onChange={handleSelectCompanyId}
-                    >
-                        {companies.map((el, i) => (
-                            <Option key={i} value={el.companyId}>
-                                {el.nameRu}
-                            </Option>
-                        ))}
-                    </Select>
-                </Col>
-            </Row>
             <Row className={classes.treeWrapper}>
                 <Col span={24}>
                     <Tree

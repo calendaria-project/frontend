@@ -1,4 +1,4 @@
-import { Dropdown, Image, Layout, Menu, Select, Space } from "antd";
+import { Dropdown, Layout, Menu, Select, Space } from "antd";
 import Button from "ui/Button";
 import { BellOutlined, DownOutlined, LeftOutlined } from "@ant-design/icons";
 import React, { FC, memo, useContext, useEffect, useMemo, useState } from "react";
@@ -12,6 +12,7 @@ import UIHeader from "ui/Header";
 import { mainMenuEnum } from "data/enums";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { useNavigate } from "react-router";
+import getFullName from "utils/getFullName";
 
 const { Header: AntdHeader } = Layout;
 
@@ -25,7 +26,6 @@ const Header: FC = () => {
     const [photoId, setPhotoId] = useState<string | null>(null);
     const [userPhoto, setUserPhoto] = useState<string | null>(null);
     const [userName, setUserName] = useState<string | null>(null);
-
     useEffect(() => {
         actionMethodResultSync(
             "USER",
@@ -33,7 +33,7 @@ const Header: FC = () => {
             "get",
             getRequestHeader(authContext.token)
         ).then((data) => {
-            setUserName(data?.firstname || data?.username);
+            setUserName(getFullName(data.firstname, data.lastname));
             setPhotoId(data?.profilePhotoId);
         });
     }, []);
@@ -116,8 +116,20 @@ const Header: FC = () => {
                 </Button>
                 <Dropdown className={classes.userDropdown} overlay={userDropdownItems}>
                     <Space className={classes.userDropdownSpace}>
-                        <Button customType={"primary"} icon={<DownOutlined />}>
-                            {userPhoto && <Image className={classes.icon} src={userPhoto} />}
+                        <Button
+                            className={classes.userDropdownBtn}
+                            customType={"primary"}
+                            icon={<DownOutlined className={classes.downIcon} />}
+                        >
+                            {userPhoto && (
+                                <img
+                                    alt={""}
+                                    src={userPhoto}
+                                    width={"20px"}
+                                    height={"20px"}
+                                    style={{ borderRadius: "50%" }}
+                                />
+                            )}
                             {userName}
                         </Button>
                     </Space>

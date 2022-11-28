@@ -63,6 +63,10 @@ export default createUseStyles({
         height: "400px",
         paddingLeft: "0px !important"
     },
+    staffingTitle: {
+        fontWeight: (theme: ITheme) => theme.fontWeight.primary,
+        fontSize: (theme: ITheme) => theme.fontSize.title
+    },
 
     pieChartCol: {
         marginTop: "-50px",
@@ -85,12 +89,12 @@ export default createUseStyles({
         width: "100%"
     },
     externalUsersTitle: {
-        fontWeight: 500
+        fontWeight: (theme: ITheme) => theme.fontWeight.primary
     },
     externalUsersTitleExtra: {
         color: (theme: ITheme) => theme.color.extraText
     },
-    externalUsersShowAll: {
+    showAll: {
         cursor: "pointer",
         color: (theme: ITheme) => theme.color.regular
     },

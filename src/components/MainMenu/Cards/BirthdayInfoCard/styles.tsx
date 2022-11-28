@@ -13,7 +13,7 @@ export default createUseStyles({
     },
     birthdayTitle: {
         fontWeight: 500,
-        fontSize: "18px",
+        fontSize: (theme: ITheme) => theme.fontSize.title,
         marginLeft: (theme: ITheme) => theme.layout.margin
     },
     birthdayContentInfo: {
@@ -30,7 +30,7 @@ export default createUseStyles({
         fontSize: "14px",
         color: (theme: ITheme) => theme.color.regular
     },
-    birthdayImageSpinWrap: {
+    birthdayImageCenteredWrap: {
         height: "250px",
         display: "flex",
         justifyContent: "center",

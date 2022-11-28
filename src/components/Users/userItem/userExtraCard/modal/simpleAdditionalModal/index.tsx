@@ -79,7 +79,7 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
                                         currentDataItemInfo={undefined}
                                     />
                                 ) : dataItemLayout.type === Types.TITLE ? (
-                                    <Text strong style={{ fontSize: "18px" }}>
+                                    <Text strong className={classes.titleItem}>
                                         {dataItemLayout.placeholder}
                                     </Text>
                                 ) : null}
