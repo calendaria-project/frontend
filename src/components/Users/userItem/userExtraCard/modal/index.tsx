@@ -80,6 +80,8 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                 : undefined
             : [currentUserDataItemInfo?.[index!]];
 
+    console.log(modalCurrentDataItemInfo);
+
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
             <Form
@@ -124,7 +126,7 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                                                           currentDataItemInfo={dataItemInfo}
                                                       />
                                                   ) : dataItemLayout.type === Types.TITLE ? (
-                                                      <Text strong style={{ fontSize: "18px" }}>
+                                                      <Text strong className={classes.titleItem}>
                                                           {dataItemLayout.placeholder}
                                                       </Text>
                                                   ) : null}
@@ -157,7 +159,7 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                                               currentDataItemInfo={currentUserDataItemInfo}
                                           />
                                       ) : dataItemLayout.type === Types.TITLE ? (
-                                          <Text strong style={{ fontSize: "18px" }}>
+                                          <Text strong className={classes.titleItem}>
                                               {dataItemLayout.placeholder}
                                           </Text>
                                       ) : null}

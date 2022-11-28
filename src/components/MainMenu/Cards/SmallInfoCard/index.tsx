@@ -62,7 +62,7 @@ const SmallInfoCard: FC<ISmallInfoCard> = ({ infoText, infoCount, onClick, perce
                 </Col>
             )}
             <Row style={{ width: "100%" }} justify={"space-between"} align={"middle"}>
-                <Col className={classes.secondaryInfo}>{infoCount}</Col>
+                <Col className={classes.secondaryInfo}>{infoCount ?? 0}</Col>
                 <Col>
                     <Button onClick={onClick} customType={"regular"}>
                         Посмотреть

@@ -1,9 +1,8 @@
-import { FC, useCallback, useContext, useEffect, useState } from "react";
+import { FC, memo, useCallback, useEffect, useState } from "react";
 import { FormInstance, Select as AntdSelect } from "antd";
 import { TInputData } from "../constants";
-import { actionMethodResultSync } from "functions/actionMethodResult";
-import { getRequestHeader } from "functions/common";
-import { AuthContext } from "context/AuthContextProvider";
+import { ISimpleDictionaryModel } from "interfaces";
+import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 
 const { Option } = AntdSelect;
 
@@ -13,53 +12,40 @@ interface ISelect {
     currentDataItemInfo: any;
 }
 
-interface ISelectValue {
-    id: number;
-    nameRu: string;
-    nameKz: string;
-    nameEn: string;
-}
-
 const Select: FC<ISelect> = ({ form, dataItemLayout, currentDataItemInfo }) => {
-    const authContext = useContext(AuthContext);
+    const [selectValue, setSelectValue] = useState<ISimpleDictionaryModel | undefined>(undefined);
+    const [selectValues, setSelectValues] = useState<ISimpleDictionaryModel[]>([]);
 
-    const [selectValue, setSelectValue] = useState<ISelectValue | undefined>(undefined);
-    const [selectValues, setSelectValues] = useState<Array<ISelectValue>>([]);
+    const { getDictionaryValues } = useSimpleHttpFunctions();
 
     useEffect(() => {
+        initData();
+    }, []);
+
+    const initData = async () => {
         const url = `simple/${dataItemLayout.dictionaryCode}`;
-        actionMethodResultSync("DICTIONARY", url, "get", getRequestHeader(authContext.token)).then(
-            (data) => setSelectValues(data)
-        );
+        const currentSelectValues: ISimpleDictionaryModel[] = await getDictionaryValues(url);
+        setSelectValues(currentSelectValues);
+
         const id = currentDataItemInfo?.[dataItemLayout.propertyName]?.id;
         if (id) {
-            const url = `simple/${dataItemLayout.dictionaryCode}/item/${id}`;
-            actionMethodResultSync(
-                "DICTIONARY",
-                url,
-                "get",
-                getRequestHeader(authContext.token)
-            ).then((data) => setSelectValue(data));
+            const currentSelectValue = currentSelectValues.find((item) => item.id === id);
+            setSelectValue(currentSelectValue);
         }
-    }, [currentDataItemInfo, dataItemLayout]);
+    };
 
     useEffect(() => {
-        form.setFieldsValue({
-            [dataItemLayout.propertyName]: selectValue
-        });
-    }, [currentDataItemInfo, selectValue]);
+        form.setFieldValue([dataItemLayout.propertyName], selectValue);
+    }, [selectValue]);
 
     const handleChangeValue = useCallback(
         (v: any) => {
-            const currentValueObject: ISelectValue | undefined = selectValues.find(
+            const currentValueObject: ISimpleDictionaryModel | undefined = selectValues.find(
                 (item) => item.id === v
             );
-            form.setFieldsValue({
-                [dataItemLayout.propertyName]: currentValueObject
-            });
             setSelectValue(currentValueObject);
         },
-        [currentDataItemInfo, selectValue, selectValues]
+        [selectValues]
     );
 
     return (
@@ -78,4 +64,4 @@ const Select: FC<ISelect> = ({ form, dataItemLayout, currentDataItemInfo }) => {
         </AntdSelect>
     );
 };
-export default Select;
+export default memo(Select);

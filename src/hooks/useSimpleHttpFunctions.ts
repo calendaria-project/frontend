@@ -12,25 +12,45 @@ const useSimpleHttpFunctions = () => {
     useEffect(() => {
         actionMethodResultSync(
             "DICTIONARY",
-            `position?page=0&size=1000&sortingRule=positionId%3AASC`,
-            "get",
-            getRequestHeader(authContext.token)
-        ).then((data) => setPositions(data.content));
-    }, []);
-
-    useEffect(() => {
-        actionMethodResultSync(
-            "DICTIONARY",
-            "company?page=0&size=100&sortingRule=companyId%ASC",
+            "company?page=0&size=100&sortingRule=companyId%3AASC",
             "get",
             getRequestHeader(authContext.token)
         ).then((data) => setCompanies(data.content));
     }, []);
 
+    useEffect(() => {
+        initPositionOptions();
+    }, []);
+
+    const initPositionOptions = async () => {
+        const positionOptions = await getPositionOptions();
+        setPositions(positionOptions);
+    };
+
+    const getPositionOptions = () => {
+        return actionMethodResultSync(
+            "DICTIONARY",
+            `position?page=0&size=1000&sortingRule=positionId%3AASC`,
+            "get",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data.content;
+        });
+    };
+
     const getCurrentUserData = () => {
         return actionMethodResultSync(
             "USER",
             "user/currentUser",
+            "get",
+            getRequestHeader(authContext.token)
+        ).then((data) => data);
+    };
+
+    const getDictionaryValues = (url: string) => {
+        return actionMethodResultSync(
+            "DICTIONARY",
+            url,
             "get",
             getRequestHeader(authContext.token)
         ).then((data) => data);
@@ -57,11 +77,65 @@ const useSimpleHttpFunctions = () => {
         return dataWithPhotoId;
     };
 
+    const getCompanyById = (id: number) => {
+        let url = `company/${id}`;
+        return actionMethodResultSync("DICTIONARY", url, "get", getRequestHeader(authContext.token))
+            .then((data) => {
+                return data;
+            })
+            .catch((err) => {
+                console.log(err);
+                return {};
+            });
+    };
+
+    const getDivisionById = (id: number) => {
+        let url = `division/${id}`;
+        return actionMethodResultSync("DICTIONARY", url, "get", getRequestHeader(authContext.token))
+            .then((data) => {
+                return data;
+            })
+            .catch((err) => {
+                console.log(err);
+                return {};
+            });
+    };
+
+    const getDivisionUnitById = (id: number) => {
+        let url = `division-unit/${id}`;
+        return actionMethodResultSync("DICTIONARY", url, "get", getRequestHeader(authContext.token))
+            .then((data) => {
+                return data;
+            })
+            .catch((err) => {
+                console.log(err);
+                return {};
+            });
+    };
+
+    const getTreeData = (id: number) => {
+        return actionMethodResultSync(
+            "DICTIONARY",
+            `division-unit/tree?companyId=${id}`,
+            "get",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data;
+        });
+    };
+
     return {
         companies,
         positions,
+        initPositionOptions,
+        getPositionOptions,
         getCurrentUserData,
-        getUsersWithPhotoId
+        getUsersWithPhotoId,
+        getDictionaryValues,
+        getCompanyById,
+        getDivisionById,
+        getDivisionUnitById,
+        getTreeData
     };
 };
 export default useSimpleHttpFunctions;

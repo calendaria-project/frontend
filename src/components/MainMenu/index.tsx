@@ -23,6 +23,7 @@ import questionImage from "assets/icons/question.png";
 import { createTableViaTabulator } from "services/tabulator";
 import { externalUsersColumns } from "data/columns";
 import { ColumnDefinition } from "tabulator-tables";
+import StaffingCard from "./Cards/StaffingCard";
 
 export interface IBirthStatItemWithPhoto extends IBirthDateStatItem {
     currentPhotoId: string;
@@ -44,6 +45,7 @@ const MainMenu: FC = () => {
     const [allStatistics, setAllStatistics] = useState<IAllStatisticsModel>(
         {} as IAllStatisticsModel
     );
+    const [statsLoading, setStatsLoading] = useState(false);
     const [table, setTable] = useState<Tabulator | undefined>();
 
     const [companyId, setCompanyId] = useState<number | undefined>(undefined);
@@ -76,6 +78,7 @@ const MainMenu: FC = () => {
 
     const initStatData = async () => {
         if (companyId) {
+            setStatsLoading(true);
             const statistics: IAllStatisticsModel = await actionMethodResultSync(
                 "USER",
                 `statistics/main?companyId=${companyId}`,
@@ -83,6 +86,7 @@ const MainMenu: FC = () => {
                 getRequestHeader(authContext.token)
             ).then((data) => data);
             setAllStatistics(statistics);
+            setStatsLoading(false);
         }
     };
 
@@ -104,6 +108,8 @@ const MainMenu: FC = () => {
             setCurrentUserPhoto(null);
         }
     };
+
+    console.log(allStatistics);
 
     const initBirthStatItems = async () => {
         setBirthStatsLoading(true);
@@ -177,6 +183,12 @@ const MainMenu: FC = () => {
         navigate("/users");
     }, []);
 
+    const onStaffingCardClick = useCallback(() => {
+        dispatch(SetCurrentLayoutMenu(mainMenuEnum.users));
+        sessionStorage.setItem("mainMenuTab", mainMenuEnum.staffing);
+        navigate("/staffing");
+    }, []);
+
     const onShowAllExternalUsersClick = useCallback(() => {
         dispatch(SetCurrentLayoutMenu(mainMenuEnum.externalUsers));
         sessionStorage.setItem("mainMenuTab", mainMenuEnum.externalUsers);
@@ -225,7 +237,13 @@ const MainMenu: FC = () => {
                     </div>
                 </Col>
                 <Col span={12} className={classes.staffingCol}>
-                    <div className={classes.sharedBorderedWrapper}>Штатное расписание</div>
+                    <div className={classes.sharedBorderedWrapper}>
+                        <StaffingCard
+                            divisionStatItems={allStatistics.divisionStatItems}
+                            statsLoading={statsLoading}
+                            onClick={onStaffingCardClick}
+                        />
+                    </div>
                 </Col>
                 <Col span={6} className={classes.pieChartCol}>
                     <div className={classes.sharedBorderedWrapper}>
@@ -257,10 +275,7 @@ const MainMenu: FC = () => {
                         </span>
                     </Col>
                     <Col>
-                        <span
-                            onClick={onShowAllExternalUsersClick}
-                            className={classes.externalUsersShowAll}
-                        >
+                        <span onClick={onShowAllExternalUsersClick} className={classes.showAll}>
                             Посмотреть все
                         </span>
                     </Col>

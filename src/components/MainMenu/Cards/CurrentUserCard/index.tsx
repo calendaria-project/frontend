@@ -1,4 +1,4 @@
-import { Col, Image, Row } from "antd";
+import { Col, Row } from "antd";
 import Spinner from "ui/Spinner";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import getFullName from "utils/getFullName";
@@ -23,11 +23,17 @@ const CurrentUserCard: FC<ICurrentUserCard> = ({ photoLoading, currentUserPhoto,
     return (
         <>
             <Row align={"middle"}>
-                <Col>
+                <Col className={classes.photoCol}>
                     {photoLoading ? (
                         <Spinner size={20} style={{ color: "white" }} />
                     ) : currentUserPhoto ? (
-                        <Image width={40} height={40} src={currentUserPhoto} />
+                        <img
+                            alt={""}
+                            src={currentUserPhoto}
+                            width={"40px"}
+                            height={"40px"}
+                            style={{ borderRadius: "50%" }}
+                        />
                     ) : (
                         <QuestionCircleOutlined className={classes.questionIcon} />
                     )}

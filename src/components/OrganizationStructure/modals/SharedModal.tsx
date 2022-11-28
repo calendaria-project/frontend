@@ -8,7 +8,7 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import { validateMessages } from "data/validateMessages";
-import { IOrgStructureTreeItem, IPositionViewModel } from "interfaces";
+import { IOrgStructureTreeItem, IPositionDtoModel } from "interfaces";
 import { editingOptions, layoutOptions, structureLayout, TLayoutOptions } from "../contants";
 import CompanySelect from "components/Dictionary/companiesTreeView/modal/Select";
 import { mailMessage, mailPattern } from "utils/patterns";
@@ -27,7 +27,7 @@ export interface ISharedModal {
     existingData?: any;
     isVisible: boolean;
     form: FormInstance;
-    positions: Array<IPositionViewModel>;
+    positions: Array<IPositionDtoModel>;
 }
 
 const SharedModal = ({

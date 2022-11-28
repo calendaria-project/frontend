@@ -100,11 +100,24 @@ export const CompanyTreeView: FC<ITable> = ({ selectionItems }) => {
 
     const handleAddCompany = async (data: ICompanyCreateViewModel) => {
         console.log("handleAddCompany", data);
-        const company = selectedRow?.getData();
-        data.parentId = company.companyId;
-        let newChild = await createCompany(data);
-        selectedRow?.addTreeChild(newChild);
-        setSelectedRow(undefined);
+        const reformattedCompany = (company: any) => ({
+            ...company,
+            nameRu: `${company.companyType.nameRu} ${company.nameRu}`,
+            nameKz: `${company.companyType.nameKz} ${company.nameKz}`,
+            nameEn: `${company.companyType.nameEn || ""} ${company.nameEn || ""}`
+        });
+
+        if (selectedRow) {
+            const company = selectedRow?.getData();
+            data.parentId = company.companyId;
+            const newChild: ICompanyViewModel = await createCompany(data);
+            selectedRow?.addTreeChild(reformattedCompany(newChild));
+            setSelectedRow(undefined);
+        } else {
+            const newCompany: ICompanyViewModel = await createCompany(data);
+            table?.addData(reformattedCompany(newCompany));
+            table?.redraw(true);
+        }
         setIsModalVisible(false);
         form.resetFields();
     };
@@ -187,6 +200,12 @@ export const CompanyTreeView: FC<ITable> = ({ selectionItems }) => {
 
     return (
         <>
+            <SearchingRow
+                selectionItems={selectionItems}
+                onSetSearchStr={onSetSearchStr}
+                onSetIsModalVisible={setIsModalVisible}
+            />
+            <div id="companiesTable" />
             <CompanyDirectoryModal
                 okText="Создать"
                 title="Новая компания"
@@ -204,8 +223,6 @@ export const CompanyTreeView: FC<ITable> = ({ selectionItems }) => {
                 form={editForm}
                 companyData={companyData}
             />
-            <SearchingRow selectionItems={selectionItems} onSetSearchStr={onSetSearchStr} />
-            <div id="companiesTable" />
         </>
     );
 };

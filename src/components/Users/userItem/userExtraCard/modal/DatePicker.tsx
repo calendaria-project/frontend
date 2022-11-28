@@ -1,9 +1,7 @@
 import { DatePicker as AntdDatePicker, FormInstance } from "antd";
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useState, memo } from "react";
 import { TInputData } from "../constants";
-
 import moment, { Moment } from "moment";
-
 import useStyles from "./styles";
 
 interface IDatePicker {
@@ -15,35 +13,24 @@ interface IDatePicker {
 const DatePicker: FC<IDatePicker> = ({ form, dataItemLayout, currentDataItemInfo }) => {
     const classes = useStyles();
 
-    const [currentValue, setCurrentValue] = useState<Moment | null>(
-        currentDataItemInfo?.[dataItemLayout.propertyName]
-            ? moment(currentDataItemInfo?.[dataItemLayout.propertyName], "YYYY-MM-DD")
-            : null
-    );
+    const [currentValue, setCurrentValue] = useState<Moment | null>(null);
 
     useEffect(() => {
+        console.log(currentDataItemInfo?.[dataItemLayout.propertyName]);
         setCurrentValue(
             currentDataItemInfo?.[dataItemLayout.propertyName]
                 ? moment(currentDataItemInfo?.[dataItemLayout.propertyName], "YYYY-MM-DD")
                 : null
         );
-    }, [dataItemLayout, currentDataItemInfo]);
+    }, []);
 
     useEffect(() => {
-        form.setFieldsValue({
-            [dataItemLayout.propertyName]: currentValue
-        });
+        form.setFieldValue([dataItemLayout.propertyName], currentValue);
     }, [currentValue]);
 
-    const handleChangeValue = useCallback(
-        (date: any, dateString: any) => {
-            form.setFieldsValue({
-                [dataItemLayout.propertyName]: moment(dateString, "YYYY-MM-DD")
-            });
-            setCurrentValue(moment(dateString, "YYYY-MM-DD"));
-        },
-        [dataItemLayout, currentValue]
-    );
+    const handleChangeValue = useCallback((date: any, dateSting: string) => {
+        setCurrentValue(moment(dateSting, "YYYY-MM-DD"));
+    }, []);
 
     return (
         <AntdDatePicker
@@ -56,4 +43,4 @@ const DatePicker: FC<IDatePicker> = ({ form, dataItemLayout, currentDataItemInfo
     );
 };
 
-export default DatePicker;
+export default memo(DatePicker);

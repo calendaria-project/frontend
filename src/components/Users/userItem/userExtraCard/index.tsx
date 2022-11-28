@@ -60,10 +60,7 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
     );
 
     const userMenuDataExists: boolean = isObjectNotEmpty(currentUserDataItemInfo);
-    const additionalMenuExists: boolean = useMemo(
-        () => additionalMenuTypes.includes(selectedKey),
-        [selectedKey]
-    );
+    const additionalMenuExists: boolean = additionalMenuTypes.includes(selectedKey);
 
     const [form] = Form.useForm();
     const [simpleForm] = Form.useForm();
@@ -172,6 +169,8 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
             const recordWithDates = getObjectWithHandledDates(record);
             const reqMethod = "post";
 
+            console.log(recordWithDates);
+
             const sendRequest = (data: Object) => {
                 actionMethodResultSync(
                     "USER",
@@ -181,9 +180,16 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                     data
                 )
                     .then((res) => {
-                        const currentData = isObjectNotEmpty(currentUserDataItemInfo)
-                            ? [...currentUserDataItemInfo, res]
-                            : [res];
+                        let currentData;
+                        if (res instanceof Object && !(res instanceof Array)) {
+                            isObjectNotEmpty(currentUserDataItemInfo)
+                                ? (currentData = [...currentUserDataItemInfo, res])
+                                : (currentData = [res]);
+                        } else if (res instanceof Array) {
+                            isObjectNotEmpty(currentUserDataItemInfo)
+                                ? (currentData = [...currentUserDataItemInfo, ...res])
+                                : (currentData = [...res]);
+                        }
                         dispatch(SetCurrentUserDataItemInfo({ [selectedKey]: currentData }));
                         message.success("Успешно сохранено");
                     })
