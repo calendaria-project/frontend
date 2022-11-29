@@ -144,12 +144,14 @@ const ListRowData: FC<{
                         `contract/export/${contract.contractId}`,
                         "get",
                         getFileRequestHeader(authContext.token)
-                    ).then((res) =>
-                        fileDownload(
-                            res,
-                            `${userFio} - ${contract.contractType?.nameRu || ""}.docx`
+                    )
+                        .then((res) =>
+                            fileDownload(
+                                res,
+                                `${userFio} - ${contract.contractType?.nameRu || ""}.docx`
+                            )
                         )
-                    );
+                        .catch(() => message.error("Ошибка скачивания договора"));
                 }
             }
         },
