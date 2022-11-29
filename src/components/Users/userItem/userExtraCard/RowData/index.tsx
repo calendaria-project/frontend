@@ -1,7 +1,8 @@
 import React, { FC, useState, useEffect, memo, useMemo, useCallback, useContext } from "react";
-import { Row, Col, Divider, Typography, Form, message } from "antd";
+import { Row, Col, Divider, Typography, Form, message, FormInstance } from "antd";
 import { TInputData, Types } from "../constants";
 import { SelectedKeyTypes } from "../constants";
+import fileDownload from "js-file-download";
 
 import _ from "lodash";
 
@@ -17,13 +18,13 @@ import {
     IUsersLanguageKnowledgeModel,
     IUsersRelationshipModel
 } from "interfaces";
-import { EditOutlined } from "@ant-design/icons";
+import { EditOutlined, DownloadOutlined } from "@ant-design/icons";
 
 import UserExtraCardModal from "../modal";
 import { getUserEditingNameByKey } from "utils/getUserEditingNameByKey";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import getUserRequestUrl from "functions/getUserRequestUrl";
-import { getRequestHeader } from "functions/common";
+import { getFileRequestHeader, getRequestHeader } from "functions/common";
 import { SetCurrentUserDataItemInfo } from "store/actions";
 import { removeEmptyObjectProperties } from "utils/removeObjectProperties";
 import { AuthContext } from "context/AuthContextProvider";
@@ -33,21 +34,83 @@ import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import getObjectWithHandledDates from "utils/getObjectWithHandeledDates";
 
-interface IRowData {
-    dataItem: TInputData;
-}
-
-interface IListRowData {
-    currentDataLayout: Array<TInputData>;
-    usersId: string;
-}
-
 const { Text } = Typography;
 
-const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
+const ListItem: FC<{
+    onClick: (index: number) => () => void;
+    onDownload?: (index: number) => () => void;
+    form: FormInstance;
+    index: number;
+    title: string | undefined;
+    extraTitle?: string | undefined;
+    additionalInfo: string | undefined;
+    additionalInfoExtraColor?: boolean | undefined;
+    extraAdditionalInfo?: string | number | undefined;
+}> = ({
+    onClick,
+    onDownload,
+    form,
+    index,
+    title,
+    extraTitle,
+    additionalInfo,
+    additionalInfoExtraColor,
+    extraAdditionalInfo
+}) => {
+    const theme = useTheme<ITheme>();
+    // @ts-ignore
+    const classes = useStyles({ theme, additionalInfoExtraColor });
+
+    return (
+        <Form key={index} form={form} component={false}>
+            <Row className={classes.rowWrapper}>
+                <Col>
+                    <Text strong>{title || ""}</Text>
+                </Col>
+                <Col className={classes.endedColWrapper}>
+                    {onDownload ? (
+                        <>
+                            <EditOutlined onClick={onClick(index)} className={classes.editIcon} />
+                            <DownloadOutlined
+                                onClick={onDownload(index)}
+                                className={classes.downloadIcon}
+                            />
+                        </>
+                    ) : (
+                        <EditOutlined onClick={onClick(index)} className={classes.icon} />
+                    )}
+                </Col>
+            </Row>
+            {extraTitle && (
+                <Row className={classes.rowWrapper}>
+                    <Col>
+                        <Text>{extraTitle || ""}</Text>
+                    </Col>
+                </Row>
+            )}
+            <Row className={classes.rowWrapper}>
+                <Col>
+                    <Text className={classes.additionalInfo}>{additionalInfo || ""}</Text>
+                </Col>
+                {extraAdditionalInfo && (
+                    <Col className={classes.endedColWrapper}>
+                        <Text className={classes.extraInfo}>{extraAdditionalInfo}</Text>
+                    </Col>
+                )}
+            </Row>
+            <Divider />
+        </Form>
+    );
+};
+
+const ListRowData: FC<{
+    currentDataLayout: Array<TInputData>;
+    usersId: string;
+}> = ({ currentDataLayout, usersId }) => {
     const authContext = useContext(AuthContext);
     const dispatch = useDispatch();
 
+    const userFio = useTypedSelector((state) => state.user.currentUserFio);
     const currentUserDataItemInfo = useTypedSelector((state) =>
         getCurrentUserDataItemInfo(state.user)
     );
@@ -58,12 +121,39 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
     const [currentItemIndex, setCurrentItemIndex] = useState<number>(0);
     const [modalVisibleFlag, setModalVisibleFlag] = useState<boolean>(false);
 
-    const handleIconClick = useCallback(
+    const onIconClick = useCallback(
         (index: number) => () => {
             setCurrentItemIndex(index);
             setModalVisibleFlag(true);
         },
         []
+    );
+
+    const onDownloadClick = useCallback(
+        (index: number) => () => {
+            if (userMenuDataExists) {
+                let contract: IUsersContractModel = {} as IUsersContractModel;
+                currentUserDataItemInfo.forEach((item: IUsersContractModel, itemIndex: number) => {
+                    if (index === itemIndex) {
+                        contract = item;
+                    }
+                });
+                if (contract && contract.contractId) {
+                    actionMethodResultSync(
+                        "USER",
+                        `contract/export/${contract.contractId}`,
+                        "get",
+                        getFileRequestHeader(authContext.token)
+                    ).then((res) =>
+                        fileDownload(
+                            res,
+                            `${userFio} - ${contract.contractType?.nameRu || ""}.docx`
+                        )
+                    );
+                }
+            }
+        },
+        [currentUserDataItemInfo, userMenuDataExists]
     );
 
     const saveModal = useCallback(
@@ -115,67 +205,6 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
         [currentSelectedKey]
     );
 
-    const ListItem: FC<{
-        index: number;
-        title: string | undefined;
-        extraTitle?: string | undefined;
-        additionalInfo: string | undefined;
-        additionalInfoExtraColor?: boolean | undefined;
-        extraAdditionalInfo?: string | number | undefined;
-    }> = ({
-        index,
-        title,
-        extraTitle,
-        additionalInfo,
-        additionalInfoExtraColor,
-        extraAdditionalInfo
-    }) => {
-        const theme = useTheme<ITheme>();
-        // @ts-ignore
-        const classes = useStyles({ theme, additionalInfoExtraColor });
-
-        return (
-            <Form key={index} form={form} component={false}>
-                <Row className={classes.rowWrapper}>
-                    <Col>
-                        <Text strong>{title || ""}</Text>
-                    </Col>
-                    <Col className={classes.endedColWrapper}>
-                        <EditOutlined onClick={handleIconClick(index)} className={classes.icon} />
-                    </Col>
-                </Row>
-                {extraTitle && (
-                    <Row className={classes.rowWrapper}>
-                        <Col>
-                            <Text>{extraTitle || ""}</Text>
-                        </Col>
-                    </Row>
-                )}
-                <Row className={classes.rowWrapper}>
-                    <Col>
-                        <Text className={classes.additionalInfo}>{additionalInfo || ""}</Text>
-                    </Col>
-                    {extraAdditionalInfo && (
-                        <Col className={classes.endedColWrapper}>
-                            <Text className={classes.extraInfo}>{extraAdditionalInfo}</Text>
-                        </Col>
-                    )}
-                </Row>
-                <Divider />
-                <UserExtraCardModal
-                    okText={"Сохранить"}
-                    title={additionalModalTitle}
-                    isVisible={modalVisibleFlag}
-                    setIsVisible={setModalVisibleFlag}
-                    onFinish={saveModal}
-                    form={form}
-                    currentDataLayout={currentDataLayout}
-                    index={currentItemIndex}
-                />
-            </Form>
-        );
-    };
-
     return (
         <>
             {userMenuDataExists &&
@@ -184,10 +213,13 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                           (dataInfo: IUsersContractModel, index: number) => (
                               <ListItem
                                   key={"" + index + dataInfo.contractType?.nameRu}
+                                  onClick={onIconClick}
+                                  form={form}
                                   index={index}
                                   title={dataInfo.contractType?.nameRu}
                                   additionalInfo={dataInfo.contractNum}
                                   extraAdditionalInfo={dataInfo.contractDate}
+                                  onDownload={onDownloadClick}
                               />
                           )
                       )
@@ -196,6 +228,8 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                           (dataInfo: IUsersDocumentModel, index: number) => (
                               <ListItem
                                   key={"" + index + dataInfo.documentType?.nameRu}
+                                  onClick={onIconClick}
+                                  form={form}
                                   index={index}
                                   title={dataInfo.documentType?.nameRu}
                                   additionalInfo={dataInfo.issueAuthority?.nameRu}
@@ -208,6 +242,8 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                           (dataInfo: IUsersInventoryModel, index: number) => (
                               <ListItem
                                   key={"" + index + dataInfo.inventoryType?.nameRu}
+                                  onClick={onIconClick}
+                                  form={form}
                                   index={index}
                                   title={dataInfo.inventoryType?.nameRu}
                                   additionalInfo={dataInfo.serialNum}
@@ -220,6 +256,8 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                           (dataInfo: IUsersEducationModel, index: number) => (
                               <ListItem
                                   key={"" + index + dataInfo.institution?.nameRu}
+                                  onClick={onIconClick}
+                                  form={form}
                                   index={index}
                                   title={dataInfo.institution?.nameRu}
                                   additionalInfo={dataInfo.educationLevel?.nameRu}
@@ -232,6 +270,8 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                           (dataInfo: IUsersLanguageKnowledgeModel, index: number) => (
                               <ListItem
                                   key={"" + index + dataInfo.language?.nameRu}
+                                  onClick={onIconClick}
+                                  form={form}
                                   index={index}
                                   title={dataInfo.language?.nameRu}
                                   additionalInfo={dataInfo.knowledgeLevel?.nameRu}
@@ -243,6 +283,8 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                           (dataInfo: IUsersAddressInfoModel, index: number) => (
                               <ListItem
                                   key={"" + index + dataInfo.addressType?.nameRu}
+                                  onClick={onIconClick}
+                                  form={form}
                                   index={index}
                                   title={dataInfo.addressType?.nameRu}
                                   additionalInfo={dataInfo.city?.nameRu}
@@ -255,6 +297,8 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                           (dataInfo: IUsersRelationshipModel, index: number) => (
                               <ListItem
                                   key={"" + index + dataInfo.relationshipType?.nameRu}
+                                  onClick={onIconClick}
+                                  form={form}
                                   index={index}
                                   title={dataInfo.relationshipType?.nameRu}
                                   extraTitle={`${dataInfo.lastname || ""} ${
@@ -267,13 +311,23 @@ const ListRowData: FC<IListRowData> = ({ currentDataLayout, usersId }) => {
                           )
                       )
                     : null)}
+            <UserExtraCardModal
+                okText={"Сохранить"}
+                title={additionalModalTitle}
+                isVisible={modalVisibleFlag}
+                setIsVisible={setModalVisibleFlag}
+                onFinish={saveModal}
+                form={form}
+                currentDataLayout={currentDataLayout}
+                index={currentItemIndex}
+            />
         </>
     );
 };
 const ListedRowData = React.memo(ListRowData);
 export { ListedRowData };
 
-const RowData: FC<IRowData> = ({ dataItem }) => {
+const RowData: FC<{ dataItem: TInputData }> = ({ dataItem }) => {
     const classes = useStyles();
 
     const [displayedData, setDisplayedData] = useState<string>("");

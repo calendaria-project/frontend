@@ -34,6 +34,8 @@ const Select: FC<ISelect> = ({ form, dataItemLayout, currentDataItemInfo }) => {
         }
     };
 
+    console.log(selectValues);
+
     useEffect(() => {
         form.setFieldValue([dataItemLayout.propertyName], selectValue);
     }, [selectValue]);

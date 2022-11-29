@@ -16,6 +16,16 @@ export default createUseStyles({
         right: "6px",
         top: "4px"
     },
+    editIcon: {
+        position: "absolute",
+        right: "30px",
+        top: "4px"
+    },
+    downloadIcon: {
+        position: "absolute",
+        right: "6px",
+        top: "5px"
+    },
     extraInfo: {
         color: ({ theme }: { theme: ITheme } = {} as any) => theme?.color?.extraText
     },

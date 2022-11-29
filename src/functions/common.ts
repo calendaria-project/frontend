@@ -14,6 +14,17 @@ export const postFormDataHeader = (token: string): AxiosRequestConfig => {
     };
 };
 
+export const getFileRequestHeader = (token: string): AxiosRequestConfig => {
+    return {
+        responseType: "blob",
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json; charset=utf-8",
+            Accept: "application/json"
+        }
+    };
+};
+
 export const getRequestHeader = (token: string): AxiosRequestConfig => {
     return {
         headers: {

@@ -4,11 +4,13 @@ import { IAction } from "../interfaces";
 
 interface IUserState {
     selectedKey: string;
+    currentUserFio: string;
     currentUserDataItemInfo: { [selectedKey: string]: any };
 }
 
 const initialState: IUserState = {
     selectedKey: SelectedKeyTypes.USER,
+    currentUserFio: "",
     currentUserDataItemInfo: {}
 };
 
@@ -18,6 +20,12 @@ const userReducer = (state = initialState, action: IAction): IUserState => {
             return {
                 ...state,
                 selectedKey: action.payload as string
+            };
+        }
+        case MainActionTypes.SET_CURRENT_USER_FIO: {
+            return {
+                ...state,
+                currentUserFio: action.payload as string
             };
         }
         case MainActionTypes.SET_CURRENT_USER_DATA_ITEM_INFO: {
