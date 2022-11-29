@@ -14,7 +14,7 @@ import Header from "ui/Header";
 import UserExtraCard from "./userExtraCard";
 import { UserEditDrawer } from "../userDrawer/UserEditDrawer";
 import Spinner from "ui/Spinner";
-import { SetCurrentOpenedMenu } from "store/actions";
+import { SetCurrentOpenedMenu, SetCurrentUserFio } from "store/actions";
 import { mainMenuEnum } from "data/enums";
 import { useDispatch } from "react-redux";
 import { useTheme } from "react-jss";
@@ -56,6 +56,17 @@ const UserItem: FC = () => {
     const onFinishEditingUser = (data: any) => {
         setCurrentUserData(data);
     };
+
+    const userFio = getFullName(
+        currentUserData.firstname,
+        currentUserData?.lastname,
+        currentUserData?.patronymic
+    );
+    useEffect(() => {
+        if (userFio) {
+            dispatch(SetCurrentUserFio(userFio));
+        }
+    }, [userFio]);
 
     useEffect(() => {
         actionMethodResultSync(
@@ -161,13 +172,7 @@ const UserItem: FC = () => {
                                     </div>
                                 </Col>
                                 <Col span={14} className={classes.fioWrapper}>
-                                    <Title level={5}>
-                                        {getFullName(
-                                            currentUserData.firstname,
-                                            currentUserData?.lastname,
-                                            currentUserData?.patronymic
-                                        )}
-                                    </Title>
+                                    <Title level={5}>{userFio}</Title>
                                     <Text type="secondary">
                                         {currentUserData?.personalContact?.mobilePhoneNumber ?? ""}
                                     </Text>

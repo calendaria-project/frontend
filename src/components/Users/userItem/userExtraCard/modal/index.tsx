@@ -85,7 +85,7 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
             <Form
-                name="basic"
+                name="userExtraCardModal"
                 validateMessages={validateMessages}
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}

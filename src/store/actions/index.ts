@@ -15,6 +15,13 @@ export const SetUserSelectedKey = (payload: string): IAction => {
     };
 };
 
+export const SetCurrentUserFio = (payload: string): IAction => {
+    return {
+        type: MainActionTypes.SET_CURRENT_USER_FIO,
+        payload
+    };
+};
+
 export const SetCurrentUserDataItemInfo = (payload: { [selectedKey: string]: any }): IAction => {
     return {
         type: MainActionTypes.SET_CURRENT_USER_DATA_ITEM_INFO,

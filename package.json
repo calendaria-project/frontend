@@ -23,6 +23,7 @@
     "cross-env": "^7.0.3",
     "devextreme": "^22.1.5",
     "devextreme-react": "^22.1.5",
+    "js-file-download": "^0.4.12",
     "jwt-decode": "^3.1.2",
     "keycloak-js": "^19.0.2",
     "lodash": "^4.17.21",
