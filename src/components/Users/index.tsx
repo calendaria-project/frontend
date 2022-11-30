@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import { Col, Input, Row } from "antd";
+import { Col, Input, Row, Select } from "antd";
 import Button from "ui/Button";
 import { FC, useContext, useEffect, useState } from "react";
 import { AuthContext } from "context/AuthContextProvider";
@@ -25,6 +25,11 @@ import useStyles from "./styles";
 import { ICurrentUserDtoViewModel, IUsersDtoViewModel } from "interfaces";
 import getFullName from "utils/getFullName";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
+import cx from "classnames";
+import { ALL } from "data/values";
+import { requestTypeValues } from "./defaultValues";
+
+const { Option } = Select;
 
 interface IUsersWithPhoto extends IUsersDtoViewModel {
     currentPhotoId: string;
@@ -47,6 +52,14 @@ const Users: FC = () => {
     const [query, setQuery] = useState("");
     const { searchStr } = useDelayedInputSearch(query);
 
+    const [requestType, setRequestType] = useState(sessionStorage.getItem("userReqType") || ALL);
+
+    useEffect(() => {
+        sessionStorage.setItem("userReqType", requestType);
+    }, [requestType]);
+
+    const onChangeRequestType = useCallback((v: string) => setRequestType(v), []);
+
     const { getCurrentUserData, getUsersWithPhotoId } = useSimpleHttpFunctions();
 
     useEffect(() => {
@@ -55,16 +68,17 @@ const Users: FC = () => {
 
     useEffect(() => {
         initData();
-    }, []);
+    }, [requestType]);
 
     useEffect(() => {
         const searchedTableData = tableData.filter((tableItem) => {
             const tableDataStr =
                 getFullName(tableItem.firstname, tableItem.lastname, tableItem.patronymic) +
-                (tableItem.personalContact?.email || "") +
-                // (tableItem.status || "") +
+                (tableItem.iin || "") +
                 (tableItem.position?.nameRu || "") +
-                (tableItem.personalContact?.mobilePhoneNumber || "");
+                (tableItem.personalContact?.mobilePhoneNumber || "") +
+                (tableItem.personalContact?.email || "") +
+                (tableItem.employmentDate || "");
             return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
         });
 
@@ -123,7 +137,7 @@ const Users: FC = () => {
             setCompanyName(companyName);
             const userData: IUsersDtoViewModel[] = await actionMethodResultSync(
                 "USER",
-                `user?companyId=${companyId}`,
+                `user?companyId=${companyId}&requestType=${requestType}`,
                 "get",
                 getRequestHeader(authContext.token)
             ).then((data) => data);
@@ -176,14 +190,27 @@ const Users: FC = () => {
                         suffix={<SearchOutlined className={classes.searchIcon} />}
                     />
                 </Col>
-                <Col className={classes.searchingCol}>
+                <Col className={cx(classes.searchingCol, classes.selectCol)}>
+                    <Select
+                        className={classes.select}
+                        value={requestType}
+                        onChange={onChangeRequestType}
+                    >
+                        {requestTypeValues.map(({ type, label }) => (
+                            <Option value={type} key={type}>
+                                {label}
+                            </Option>
+                        ))}
+                    </Select>
+                </Col>
+                <Col className={cx(classes.searchingCol, classes.endedCol)}>
                     <Button
                         className={classes.button}
                         customType={"regular"}
                         icon={<PlusOutlined />}
                         onClick={showDrawer}
                     >
-                        Добавить нового сотрудника
+                        Добавить
                     </Button>
                 </Col>
             </Row>

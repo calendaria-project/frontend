@@ -1,6 +1,4 @@
-export const ALL = "ALL";
-export const ARCHIVE = "ARCHIVE";
-export const ACTIVE = "ACTIVE";
+import { ALL, ACTIVE, ARCHIVE } from "data/values";
 export const requestTypeValues = [
     {
         type: ALL,

@@ -12,6 +12,7 @@ import { IOrgStructureTreeItem, IPositionDtoModel } from "interfaces";
 import { editingOptions, layoutOptions, structureLayout, TLayoutOptions } from "../contants";
 import CompanySelect from "components/Dictionary/companiesTreeView/modal/Select";
 import { mailMessage, mailPattern } from "utils/patterns";
+import { inputLengthHandler } from "utils/inputLengthHandler";
 
 const { Option } = Select;
 
@@ -121,7 +122,12 @@ const SharedModal = ({
                                     }
                                 ]}
                             >
-                                <Input placeholder={placeholder} type="number" />
+                                <Input
+                                    placeholder={placeholder}
+                                    type="number"
+                                    onKeyPress={inputLengthHandler}
+                                    maxLength={12}
+                                />
                             </Form.Item>
                         </Col>
                     ) : name === "position" ? (

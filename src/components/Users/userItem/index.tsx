@@ -25,6 +25,7 @@ const { Title, Text } = Typography;
 
 import UserItemArchiveModal from "./modal/UserItemArchiveModal";
 import { ICurrentUserDtoViewModel } from "interfaces";
+import { ARCHIVE } from "data/values";
 
 const UserItem: FC = () => {
     const dispatch = useDispatch();
@@ -136,11 +137,13 @@ const UserItem: FC = () => {
                     <span className={classes.extraInfoSpan}>Должность: </span>
                     {currentUserData?.position?.nameRu}
                 </Col>
-                <Col className={cx(classes.archiveCol, classes.endedCol)}>
-                    <Button onClick={handleArchiveModalVisible} customType={"removing"}>
-                        В архив
-                    </Button>
-                </Col>
+                {sessionStorage.getItem("userReqType") !== ARCHIVE && (
+                    <Col className={cx(classes.archiveCol, classes.endedCol)}>
+                        <Button onClick={handleArchiveModalVisible} customType={"removing"}>
+                            В архив
+                        </Button>
+                    </Col>
+                )}
             </Row>
             <Row className={classes.rowWrapper} gutter={[16, 16]}>
                 <Col className={classes.mainCardCol} span={8}>

@@ -14,6 +14,7 @@ import {
     ClusterOutlined,
     DragOutlined,
     EditOutlined,
+    // CrownOutlined,
     UserOutlined
 } from "@ant-design/icons";
 import {
@@ -81,6 +82,7 @@ const OrganizationStructure: FC = () => {
         if (companyId) {
             const treeData = await getTreeData(companyId);
             const formattedTreeData = formatTreeData(treeData);
+            console.log(formattedTreeData);
             if (!expandedKeys.includes(formattedTreeData[0].key)) {
                 setExpandedKeys([formattedTreeData[0].key]);
             }

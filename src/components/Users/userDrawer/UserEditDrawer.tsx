@@ -181,7 +181,13 @@ export const UserEditDrawer = ({
                                 <Form.Item
                                     name="iin"
                                     label="ИИН"
-                                    rules={[{ required: true, message: "ИИН" }]}
+                                    rules={[
+                                        { required: true, message: "ИИН" },
+                                        {
+                                            pattern: new RegExp(/^\d{12}$/),
+                                            message: "Введите 12 цифр"
+                                        }
+                                    ]}
                                 >
                                     <Input
                                         type="number"
