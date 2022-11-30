@@ -183,11 +183,11 @@ const MainMenu: FC = () => {
         navigate("/users");
     }, []);
 
-    const onStaffingCardClick = useCallback(() => {
-        dispatch(SetCurrentLayoutMenu(mainMenuEnum.users));
-        sessionStorage.setItem("mainMenuTab", mainMenuEnum.staffing);
-        navigate("/staffing");
-    }, []);
+    // const onStaffingCardClick = useCallback(() => {
+    //     dispatch(SetCurrentLayoutMenu(mainMenuEnum.users));
+    //     sessionStorage.setItem("mainMenuTab", mainMenuEnum.staffing);
+    //     navigate("/staffing");
+    // }, []);
 
     const onShowAllExternalUsersClick = useCallback(() => {
         dispatch(SetCurrentLayoutMenu(mainMenuEnum.externalUsers));
@@ -241,7 +241,7 @@ const MainMenu: FC = () => {
                         <StaffingCard
                             divisionStatItems={allStatistics.divisionStatItems}
                             statsLoading={statsLoading}
-                            onClick={onStaffingCardClick}
+                            onClick={() => {}}
                         />
                     </div>
                 </Col>

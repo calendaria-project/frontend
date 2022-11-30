@@ -58,13 +58,8 @@ export const divisionsColumns: ColumnDefinition[] = [
 export const usersColumns: ColumnDefinition[] = [
     {
         headerSort: false,
-        title: "E-mail",
-        field: "personalContact.email"
-    },
-    {
-        headerSort: false,
-        title: "Статус",
-        field: "status"
+        title: "ИИН",
+        field: "iin"
     },
     {
         headerSort: false,
@@ -75,6 +70,16 @@ export const usersColumns: ColumnDefinition[] = [
         headerSort: false,
         title: "Номер телефона",
         field: "personalContact.mobilePhoneNumber"
+    },
+    {
+        headerSort: false,
+        title: "E-mail",
+        field: "personalContact.email"
+    },
+    {
+        headerSort: false,
+        title: "Дата приема",
+        field: "employmentDate"
     }
 ];
 

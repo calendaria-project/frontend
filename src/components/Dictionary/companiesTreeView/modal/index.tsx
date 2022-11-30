@@ -11,6 +11,7 @@ import useStyles from "./styles";
 
 import CompanySelect from "./Select";
 import { mailMessage, mailPattern } from "utils/patterns";
+import { inputLengthHandler } from "utils/inputLengthHandler";
 
 const { Option } = Select;
 
@@ -83,7 +84,12 @@ export const CompanyDirectoryModal = ({
                                 { pattern: new RegExp(/^\d{12}$/), message: "Введите 12 цифр" }
                             ]}
                         >
-                            <Input placeholder={"БИН"} type="number" />
+                            <Input
+                                placeholder={"БИН"}
+                                type="number"
+                                onKeyPress={inputLengthHandler}
+                                maxLength={12}
+                            />
                         </Form.Item>
                     </Col>
                     <Col span={24}>

@@ -23,7 +23,7 @@ import SharedExternalUserModal from "../modal/SharedExternalUserModal";
 import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
 import { parsePointObjectKey } from "utils/parsePointObjectKey";
 import _ from "lodash";
-import { ALL, ARCHIVE } from "../defaultValues";
+import { ALL, ARCHIVE } from "data/values";
 import { IFinishData } from "../index";
 
 const { Text, Title } = Typography;
