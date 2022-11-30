@@ -42,6 +42,7 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import getObjectWithHandledDates from "utils/getObjectWithHandeledDates";
+import axios from "axios";
 
 interface IUserExtraCard {
     usersId: string;
@@ -167,43 +168,49 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
     const saveAdditionalModal = useCallback(
         (record: any) => {
             const recordWithDates = getObjectWithHandledDates(record);
-            const reqMethod = "post";
-
             console.log(recordWithDates);
 
             const sendRequest = (data: Object) => {
-                actionMethodResultSync(
-                    "USER",
-                    getUserRequestUrl(selectedKey, reqMethod, usersId),
-                    reqMethod,
-                    getRequestHeader(authContext.token),
-                    data
-                )
+                const url = `${process.env.USER_URL}${getUserRequestUrl(
+                    selectedKey,
+                    "post",
+                    usersId
+                )}`;
+                axios
+                    .post(url, data, getRequestHeader(authContext.token))
                     .then((res) => {
                         let currentData;
-                        if (res instanceof Object && !(res instanceof Array)) {
+                        const result = res.data;
+                        if (result instanceof Object && !(result instanceof Array)) {
                             isObjectNotEmpty(currentUserDataItemInfo)
-                                ? (currentData = [...currentUserDataItemInfo, res])
-                                : (currentData = [res]);
-                        } else if (res instanceof Array) {
+                                ? (currentData = [...currentUserDataItemInfo, result])
+                                : (currentData = [result]);
+                        } else if (result instanceof Array) {
                             isObjectNotEmpty(currentUserDataItemInfo)
-                                ? (currentData = [...currentUserDataItemInfo, ...res])
-                                : (currentData = [...res]);
+                                ? (currentData = [...currentUserDataItemInfo, ...result])
+                                : (currentData = [...result]);
                         }
                         dispatch(SetCurrentUserDataItemInfo({ [selectedKey]: currentData }));
                         message.success("Успешно сохранено");
+
+                        setAdditionalModalVisibleFlag(false);
+                        simpleForm.resetFields();
                     })
                     .catch((err) => {
-                        console.log(err);
-                        message.error("Ошибка");
+                        const errData = err.response?.data;
+                        if (errData?.code === "VALIDATION_ERROR") {
+                            console.log(errData);
+                            message.error("Ошибка валидации");
+                        } else {
+                            message.error("Ошибка");
+                            setAdditionalModalVisibleFlag(false);
+                            simpleForm.resetFields();
+                        }
                     });
             };
 
             const data = removeEmptyObjectProperties({ ...recordWithDates, userId: usersId });
             sendRequest(data);
-
-            setAdditionalModalVisibleFlag(false);
-            simpleForm.resetFields();
         },
         [simpleForm, currentUserDataItemInfo, selectedKey, usersId]
     );

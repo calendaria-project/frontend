@@ -238,13 +238,15 @@ export const inputData: InputDataRecord = {
             type: Types.SELECT,
             propertyName: "workType",
             dictionaryCode: dictionaryCodesEnum.WORK_TYPE,
-            placeholder: "Тип работ"
+            placeholder: "Тип работ",
+            required: true
         },
         {
             type: Types.SELECT,
             propertyName: "workKind",
             dictionaryCode: dictionaryCodesEnum.WORK_KIND,
-            placeholder: "Вид работ"
+            placeholder: "Вид работ",
+            required: true
         },
         {
             type: Types.DATE,
@@ -260,19 +262,15 @@ export const inputData: InputDataRecord = {
             type: Types.INPUT,
             propertyName: "salaryConstantPart",
             inputType: "number",
-            placeholder: "Постоянная часть з/п"
+            placeholder: "Постоянная часть з/п",
+            required: true
         },
         {
             type: Types.INPUT,
             propertyName: "salaryVariablePart",
             inputType: "number",
-            placeholder: "Переменная часть з/п"
-        },
-        {
-            type: Types.INPUT,
-            propertyName: "salary",
-            inputType: "number",
-            placeholder: "Общий оклад"
+            placeholder: "Переменная часть з/п",
+            required: true
         }
     ],
 
@@ -365,3 +363,25 @@ export const inputData: InputDataRecord = {
         }
     ]
 };
+
+export const REDUCED_CONTRACT_INFO: TInputData[] = [
+    {
+        type: Types.SELECT,
+        propertyName: "contractType",
+        dictionaryCode: dictionaryCodesEnum.CONTRACT_TYPE,
+        placeholder: "Тип договора",
+        required: true
+    },
+    {
+        type: Types.INPUT,
+        propertyName: "contractNum",
+        placeholder: "Номер договора",
+        required: true
+    },
+    {
+        type: Types.DATE,
+        propertyName: "contractDate",
+        placeholder: "Дата начала договора",
+        required: true
+    }
+];

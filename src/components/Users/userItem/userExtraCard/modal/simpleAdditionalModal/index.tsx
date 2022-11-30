@@ -65,6 +65,7 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
                                         form={form}
                                         dataItemLayout={dataItemLayout}
                                         currentDataItemInfo={undefined}
+                                        additionalModalFlag={true}
                                     />
                                 ) : dataItemLayout.type === Types.INPUT ? (
                                     <Input
