@@ -30,7 +30,8 @@ const sharedTheme: ITheme = {
     },
     fontSize: {
         title: "18px",
-        primary: "16px"
+        primary: "16px",
+        description: "14px"
     },
     selection: {
         background: {

@@ -1,18 +1,20 @@
-import { Col, Form, FormInstance, Modal, Row, Typography } from "antd";
-import Select from "../Select";
+import { Col, Form, FormInstance, Modal, Row } from "antd";
 
 import Button from "ui/Button";
 
-import Input from "../Input";
-import React, { FC, memo, useCallback } from "react";
+import React, { FC, memo, useCallback, useState, useEffect } from "react";
 
 import { validateMessages } from "data/validateMessages";
-import { Types, TInputData } from "../../constants";
+import { SelectedKeyTypes, TInputData } from "../../constants";
 
-import useStyles from "../styles";
-import DatePicker from "../DatePicker";
-
-const { Text } = Typography;
+import useStyles from "./styles";
+import { IErrorModifiedItem } from "../../errorCodes";
+import { getUserEditingNameByKey } from "utils/getUserEditingNameByKey";
+import { useTheme } from "react-jss";
+import ExtraValidationModal from "./modal";
+import { getFormItemContent, WithFormItem } from "../index";
+import { useTypedSelector } from "hooks/useTypedSelector";
+import { getSelectedKey } from "store/reducers/userReducer";
 
 interface IUserItemModal {
     okText: string;
@@ -22,6 +24,9 @@ interface IUserItemModal {
     onFinish: (values: Object) => void;
     form: FormInstance;
     currentDataLayout: Array<TInputData>;
+    errorMsg?: string;
+    errorArr?: IErrorModifiedItem[];
+    usersId: string;
 }
 
 const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
@@ -31,13 +36,50 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
     setIsVisible,
     onFinish,
     form,
-    currentDataLayout
+    currentDataLayout,
+    errorMsg,
+    errorArr,
+    usersId
 }) => {
     const handleCancel = useCallback(() => {
         setIsVisible(false);
     }, []);
 
-    const classes = useStyles();
+    const theme = useTheme();
+    // @ts-ignore
+    const classes = useStyles(theme);
+    const [extraForm] = Form.useForm();
+
+    const selectedKey = useTypedSelector((state) => getSelectedKey(state.user));
+
+    const [currentErr, setCurrentErr] = useState<{ error: IErrorModifiedItem; index: number }>(
+        {} as { error: IErrorModifiedItem; index: number }
+    );
+
+    const [copiedErrorArr, setCopiedErrorArr] = useState<IErrorModifiedItem[] | undefined>();
+
+    const onChangeCopiedErrorArr = (index: number, currentErr: IErrorModifiedItem) => {
+        const newErrorsArr = copiedErrorArr?.map((item, itemIndex) =>
+            itemIndex === index ? currentErr : item
+        );
+        setCopiedErrorArr(newErrorsArr);
+    };
+
+    const [extraModalVisible, setExtraModalVisible] = useState(false);
+
+    const openExtraModal = useCallback(
+        (err: IErrorModifiedItem, index: number) => () => {
+            setCurrentErr({ error: err, index: index });
+            setExtraModalVisible(true);
+        },
+        []
+    );
+
+    console.log(copiedErrorArr);
+
+    useEffect(() => {
+        setCopiedErrorArr(errorArr);
+    }, [errorArr]);
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
@@ -55,39 +97,42 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
                 <Row gutter={16}>
                     <Col xl={24} xs={24}>
                         {(currentDataLayout || []).map((dataItemLayout, index) => (
-                            <Form.Item
+                            <WithFormItem
                                 key={"" + dataItemLayout.propertyName + index}
-                                name={dataItemLayout.propertyName}
-                                rules={[{ required: dataItemLayout.required }]}
+                                dataItemLayout={dataItemLayout}
                             >
-                                {dataItemLayout.type === Types.SELECT ? (
-                                    <Select
-                                        form={form}
-                                        dataItemLayout={dataItemLayout}
-                                        currentDataItemInfo={undefined}
-                                        additionalModalFlag={true}
-                                    />
-                                ) : dataItemLayout.type === Types.INPUT ? (
-                                    <Input
-                                        dataItemLayout={dataItemLayout}
-                                        currentDataItemInfo={undefined}
-                                        form={form}
-                                    />
-                                ) : dataItemLayout.type === Types.DATE ? (
-                                    <DatePicker
-                                        form={form}
-                                        dataItemLayout={dataItemLayout}
-                                        currentDataItemInfo={undefined}
-                                    />
-                                ) : dataItemLayout.type === Types.TITLE ? (
-                                    <Text strong className={classes.titleItem}>
-                                        {dataItemLayout.placeholder}
-                                    </Text>
-                                ) : null}
-                            </Form.Item>
+                                {getFormItemContent(form, dataItemLayout, undefined, true)}
+                            </WithFormItem>
                         ))}
+                        {selectedKey === SelectedKeyTypes.CONTRACT && errorMsg && (
+                            <Col className={classes.errorMsg} span={24}>
+                                {errorMsg}
+                            </Col>
+                        )}
                     </Col>
                 </Row>
+                {selectedKey === SelectedKeyTypes.CONTRACT && copiedErrorArr && (
+                    <Row className={classes.errArrWrapper}>
+                        {(copiedErrorArr || []).map((errItem, index) => (
+                            <Row
+                                key={errItem.selectedKey}
+                                className={classes.errItem}
+                                align={"middle"}
+                                justify={"space-between"}
+                            >
+                                <Col className={classes.errItemTitle}>{`${
+                                    errItem.field ? "Редактировать" : "Добавить"
+                                } ${getUserEditingNameByKey(errItem.selectedKey)}`}</Col>
+                                <Col
+                                    onClick={openExtraModal(errItem, index)}
+                                    className={classes.errItemAdd}
+                                >
+                                    {errItem.addText}
+                                </Col>
+                            </Row>
+                        ))}
+                    </Row>
+                )}
                 <Row align={"middle"} justify={"center"} gutter={[16, 16]}>
                     <Col>
                         <Form.Item className={classes.okBtnFormItem}>
@@ -103,6 +148,19 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
                     </Col>
                 </Row>
             </Form>
+            <ExtraValidationModal
+                okText={"Сохранить"}
+                title={
+                    currentErr.error?.field ? "Редактирование информации" : "Добавление информации"
+                }
+                isVisible={extraModalVisible}
+                setIsVisible={setExtraModalVisible}
+                form={extraForm}
+                currentErr={currentErr.error}
+                onChangeErrors={onChangeCopiedErrorArr}
+                editingIndex={currentErr.index}
+                usersId={usersId}
+            />
         </Modal>
     );
 };

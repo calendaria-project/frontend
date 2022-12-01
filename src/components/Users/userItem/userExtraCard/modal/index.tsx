@@ -14,10 +14,11 @@ import useStyles from "./styles";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { getCurrentUserDataItemInfo, getSelectedKey } from "store/reducers/userReducer";
 import DatePicker from "./DatePicker";
+import { useTheme } from "react-jss";
 
 const { Text } = Typography;
 
-const WithFormItem: FC<{ dataItemLayout: TInputData; children: any }> = ({
+export const WithFormItem: FC<{ dataItemLayout: TInputData; children: any }> = ({
     dataItemLayout,
     children
 }) => {
@@ -36,6 +37,42 @@ const WithFormItem: FC<{ dataItemLayout: TInputData; children: any }> = ({
         >
             {children}
         </Form.Item>
+    );
+};
+
+export const getFormItemContent = (
+    form: FormInstance,
+    dataItemLayout: TInputData,
+    dataItemInfo: any,
+    additionalModalFlag?: boolean
+) => {
+    return (
+        <>
+            {dataItemLayout.type === Types.SELECT ? (
+                <Select
+                    form={form}
+                    dataItemLayout={dataItemLayout}
+                    currentDataItemInfo={dataItemInfo}
+                    additionalModalFlag={additionalModalFlag}
+                />
+            ) : dataItemLayout.type === Types.INPUT || dataItemLayout.type === Types.TEXTAREA ? (
+                <Input
+                    form={form}
+                    dataItemLayout={dataItemLayout}
+                    currentDataItemInfo={dataItemInfo}
+                />
+            ) : dataItemLayout.type === Types.DATE ? (
+                <DatePicker
+                    form={form}
+                    dataItemLayout={dataItemLayout}
+                    currentDataItemInfo={dataItemInfo}
+                />
+            ) : dataItemLayout.type === Types.TITLE ? (
+                <Text strong style={{ fontSize: "18px" }}>
+                    {dataItemLayout.placeholder}
+                </Text>
+            ) : null}
+        </>
     );
 };
 
@@ -60,7 +97,9 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
     currentDataLayout,
     index
 }) => {
-    const classes = useStyles();
+    const theme = useTheme();
+    // @ts-ignore
+    const classes = useStyles(theme);
 
     const selectedKey = useTypedSelector((state) => getSelectedKey(state.user));
     const currentUserDataItemInfo = useTypedSelector((state) =>
@@ -81,37 +120,6 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
             : [currentUserDataItemInfo?.[index!]];
 
     console.log(modalCurrentDataItemInfo);
-
-    const getFormItemContent = (dataItemLayout: TInputData, dataItemInfo: any) => {
-        return (
-            <>
-                {dataItemLayout.type === Types.SELECT ? (
-                    <Select
-                        form={form}
-                        dataItemLayout={dataItemLayout}
-                        currentDataItemInfo={dataItemInfo}
-                    />
-                ) : dataItemLayout.type === Types.INPUT ||
-                  dataItemLayout.type === Types.TEXTAREA ? (
-                    <Input
-                        form={form}
-                        dataItemLayout={dataItemLayout}
-                        currentDataItemInfo={dataItemInfo}
-                    />
-                ) : dataItemLayout.type === Types.DATE ? (
-                    <DatePicker
-                        form={form}
-                        dataItemLayout={dataItemLayout}
-                        currentDataItemInfo={dataItemInfo}
-                    />
-                ) : dataItemLayout.type === Types.TITLE ? (
-                    <Text strong className={classes.titleItem}>
-                        {dataItemLayout.placeholder}
-                    </Text>
-                ) : null}
-            </>
-        );
-    };
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
@@ -139,6 +147,7 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                                                     dataItemLayout={dataItemLayout}
                                                 >
                                                     {getFormItemContent(
+                                                        form,
                                                         dataItemLayout,
                                                         dataItemInfo
                                                     )}
@@ -153,6 +162,7 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                                                         dataItemLayout={dataItemLayout}
                                                     >
                                                         {getFormItemContent(
+                                                            form,
                                                             dataItemLayout,
                                                             dataItemInfo
                                                         )}
@@ -165,7 +175,11 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                         : (currentDataLayout || []).map((dataItemLayout, index) => (
                               <Col xl={24} xs={24} key={"" + index + dataItemLayout.propertyName}>
                                   <WithFormItem dataItemLayout={dataItemLayout}>
-                                      {getFormItemContent(dataItemLayout, currentUserDataItemInfo)}
+                                      {getFormItemContent(
+                                          form,
+                                          dataItemLayout,
+                                          currentUserDataItemInfo
+                                      )}
                                   </WithFormItem>
                               </Col>
                           ))}

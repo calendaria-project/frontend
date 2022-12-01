@@ -23,6 +23,7 @@ import {
 } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { useTypedSelector } from "hooks/useTypedSelector";
+import { IErrorDetail, modalErrorCodes, errorCodes, IErrorModifiedItem } from "./errorCodes";
 
 import UserExtraCardModal from "./modal";
 import { getUserEditingNameByKey } from "utils/getUserEditingNameByKey";
@@ -71,6 +72,9 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
     const [currentDataLayout, setCurrentDataLayout] = useState<Array<TInputData>>(
         inputData?.[selectedKey]
     );
+
+    const [errorMessages, setErrorMessages] = useState<string>("");
+    const [errorArr, setErrorArr] = useState<IErrorModifiedItem[]>([]);
 
     useEffect(() => {
         dispatch(SetUserSelectedKey(SelectedKeyTypes.USER));
@@ -193,14 +197,37 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                         dispatch(SetCurrentUserDataItemInfo({ [selectedKey]: currentData }));
                         message.success("Успешно сохранено");
 
+                        setErrorMessages("");
+                        setErrorArr([]);
                         setAdditionalModalVisibleFlag(false);
                         simpleForm.resetFields();
                     })
                     .catch((err) => {
                         const errData = err.response?.data;
                         if (errData?.code === "VALIDATION_ERROR") {
+                            const errorDetails: IErrorDetail[] = errData?.details;
                             console.log(errData);
                             message.error("Ошибка валидации");
+                            let errMsgs = "Отсутствуют: ";
+                            let errModals: IErrorModifiedItem[] = [];
+                            (errorDetails || []).forEach((detail, index) => {
+                                index !== errorDetails.length - 1
+                                    ? (errMsgs += errorCodes[detail.errorCode] + ", ")
+                                    : (errMsgs += errorCodes[detail.errorCode]);
+                                if (modalErrorCodes.includes(detail.errorCode)) {
+                                    errModals.push({
+                                        selectedKey:
+                                            detail.entity.slice(0, 1).toLowerCase() +
+                                            detail.entity.slice(1),
+                                        id: detail.entityId,
+                                        field: detail.field,
+                                        addText: "Добавить"
+                                    });
+                                }
+                            });
+                            setErrorMessages(errMsgs);
+                            setErrorArr(errModals);
+                            console.log(errMsgs, errModals);
                         } else {
                             message.error("Ошибка");
                             setAdditionalModalVisibleFlag(false);
@@ -363,6 +390,9 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                     onFinish={saveAdditionalModal}
                     form={simpleForm}
                     currentDataLayout={currentDataLayout}
+                    errorMsg={errorMessages}
+                    errorArr={errorArr}
+                    usersId={usersId}
                 />
             </Form>
         </Card>
