@@ -1,8 +1,7 @@
-import { Col, Modal, Row } from "antd";
-
-import Button from "ui/Button";
+import { Modal } from "antd";
 
 import React, { FC, memo, useCallback } from "react";
+import ModalBtns from "components/Shared/modalRenderer/modalBtns";
 
 interface IExternalUserArchiveModal {
     okText: string;
@@ -30,18 +29,7 @@ const ExternalUserArchiveModal: FC<IExternalUserArchiveModal> = ({
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
-            <Row align={"middle"} justify={"center"} gutter={[16, 16]}>
-                <Col>
-                    <Button customType={"removing"} onClick={handleRemove}>
-                        {okText}
-                    </Button>
-                </Col>
-                <Col>
-                    <Button className="cancel-btn" onClick={handleCancel}>
-                        Отмена
-                    </Button>
-                </Col>
-            </Row>
+            <ModalBtns okText={okText} onClick={handleRemove} />
         </Modal>
     );
 };

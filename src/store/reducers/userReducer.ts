@@ -1,4 +1,4 @@
-import { SelectedKeyTypes } from "components/Users/userItem/userExtraCard/constants";
+import { selectedKeyTypes } from "data/enums";
 import { MainActionTypes } from "../types";
 import { IAction } from "../interfaces";
 
@@ -9,7 +9,7 @@ interface IUserState {
 }
 
 const initialState: IUserState = {
-    selectedKey: SelectedKeyTypes.USER,
+    selectedKey: selectedKeyTypes.USER,
     currentUserFio: "",
     currentUserDataItemInfo: {}
 };

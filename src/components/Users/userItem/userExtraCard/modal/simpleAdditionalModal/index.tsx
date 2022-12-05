@@ -1,20 +1,20 @@
 import { Col, Form, FormInstance, Modal, Row } from "antd";
 
-import Button from "ui/Button";
-
 import React, { FC, memo, useCallback, useState, useEffect } from "react";
 
 import { validateMessages } from "data/validateMessages";
-import { SelectedKeyTypes, TInputData } from "../../constants";
+import { selectedKeyTypes } from "data/enums";
+import { TLayoutModalData } from "data/types";
 
 import useStyles from "./styles";
-import { IErrorModifiedItem } from "../../errorCodes";
-import { getUserEditingNameByKey } from "utils/getUserEditingNameByKey";
+import { IErrorModifiedItem } from "data/errorCodes";
+import { getModalEditingNameByKey } from "utils/getModalEditingNameByKey";
 import { useTheme } from "react-jss";
-import ExtraValidationModal from "./modal";
-import { getFormItemContent, WithFormItem } from "../index";
+import ExtraValidationModal from "./validationModal";
+import WithFormItem, { getFormItemContent } from "components/Shared/modalRenderer";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { getSelectedKey } from "store/reducers/userReducer";
+import ModalBtns from "components/Shared/modalRenderer/modalBtns";
 
 interface IUserItemModal {
     okText: string;
@@ -23,7 +23,7 @@ interface IUserItemModal {
     setIsVisible: (bool: boolean) => void;
     onFinish: (values: Object) => void;
     form: FormInstance;
-    currentDataLayout: Array<TInputData>;
+    currentDataLayout: TLayoutModalData[];
     errorMsg?: string;
     errorArr?: IErrorModifiedItem[];
     usersId: string;
@@ -50,36 +50,35 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
     const classes = useStyles(theme);
     const [extraForm] = Form.useForm();
 
+    const [extraModalVisible, setExtraModalVisible] = useState(false);
     const selectedKey = useTypedSelector((state) => getSelectedKey(state.user));
 
-    const [currentErr, setCurrentErr] = useState<{ error: IErrorModifiedItem; index: number }>(
-        {} as { error: IErrorModifiedItem; index: number }
+    const [currentErr, setCurrentErr] = useState<{ error: IErrorModifiedItem; errIndex: number }>(
+        {} as { error: IErrorModifiedItem; errIndex: number }
     );
 
     const [copiedErrorArr, setCopiedErrorArr] = useState<IErrorModifiedItem[] | undefined>();
 
-    const onChangeCopiedErrorArr = (index: number, currentErr: IErrorModifiedItem) => {
-        const newErrorsArr = copiedErrorArr?.map((item, itemIndex) =>
-            itemIndex === index ? currentErr : item
+    const onChangeError = (changedErr: IErrorModifiedItem) => {
+        const newErrorsArr = copiedErrorArr?.map((defaultErr, itemIndex) =>
+            itemIndex === currentErr.errIndex ? changedErr : defaultErr
         );
         setCopiedErrorArr(newErrorsArr);
     };
 
-    const [extraModalVisible, setExtraModalVisible] = useState(false);
+    useEffect(() => {
+        setCopiedErrorArr(errorArr);
+    }, [errorArr]);
 
     const openExtraModal = useCallback(
         (err: IErrorModifiedItem, index: number) => () => {
-            setCurrentErr({ error: err, index: index });
+            setCurrentErr({ error: err, errIndex: index });
             setExtraModalVisible(true);
         },
         []
     );
 
     console.log(copiedErrorArr);
-
-    useEffect(() => {
-        setCopiedErrorArr(errorArr);
-    }, [errorArr]);
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
@@ -104,61 +103,47 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
                                 {getFormItemContent(form, dataItemLayout, undefined, true)}
                             </WithFormItem>
                         ))}
-                        {selectedKey === SelectedKeyTypes.CONTRACT && errorMsg && (
+                        {selectedKey === selectedKeyTypes.CONTRACT && errorMsg && (
                             <Col className={classes.errorMsg} span={24}>
                                 {errorMsg}
                             </Col>
                         )}
                     </Col>
                 </Row>
-                {selectedKey === SelectedKeyTypes.CONTRACT && copiedErrorArr && (
-                    <Row className={classes.errArrWrapper}>
-                        {(copiedErrorArr || []).map((errItem, index) => (
-                            <Row
-                                key={errItem.selectedKey}
-                                className={classes.errItem}
-                                align={"middle"}
-                                justify={"space-between"}
-                            >
-                                <Col className={classes.errItemTitle}>{`${
-                                    errItem.field ? "Редактировать" : "Добавить"
-                                } ${getUserEditingNameByKey(errItem.selectedKey)}`}</Col>
-                                <Col
-                                    onClick={openExtraModal(errItem, index)}
-                                    className={classes.errItemAdd}
+                {selectedKey === selectedKeyTypes.CONTRACT &&
+                    copiedErrorArr &&
+                    !!copiedErrorArr.length && (
+                        <Row className={classes.errArrWrapper}>
+                            {copiedErrorArr.map((errItem, index) => (
+                                <Row
+                                    key={errItem.selectedKey}
+                                    className={classes.errItem}
+                                    align={"middle"}
+                                    justify={"space-between"}
                                 >
-                                    {errItem.addText}
-                                </Col>
-                            </Row>
-                        ))}
-                    </Row>
-                )}
-                <Row align={"middle"} justify={"center"} gutter={[16, 16]}>
-                    <Col>
-                        <Form.Item className={classes.okBtnFormItem}>
-                            <Button customType={"regular"} htmlType="submit">
-                                {okText}
-                            </Button>
-                        </Form.Item>
-                    </Col>
-                    <Col>
-                        <Button customType={"primary"} onClick={handleCancel}>
-                            Отмена
-                        </Button>
-                    </Col>
-                </Row>
+                                    <Col className={classes.errItemTitle}>{`${
+                                        errItem.field ? "Редактировать" : "Добавить"
+                                    } ${getModalEditingNameByKey(errItem.selectedKey)}`}</Col>
+                                    <Col
+                                        onClick={openExtraModal(errItem, index)}
+                                        className={classes.errItemAdd}
+                                    >
+                                        {errItem.addText}
+                                    </Col>
+                                </Row>
+                            ))}
+                        </Row>
+                    )}
+                <ModalBtns okText={okText} onClick={handleCancel} />
             </Form>
             <ExtraValidationModal
                 okText={"Сохранить"}
-                title={
-                    currentErr.error?.field ? "Редактирование информации" : "Добавление информации"
-                }
+                title={currentErr.error?.field ? "Редактировать " : "Добавить "}
                 isVisible={extraModalVisible}
                 setIsVisible={setExtraModalVisible}
                 form={extraForm}
                 currentErr={currentErr.error}
-                onChangeErrors={onChangeCopiedErrorArr}
-                editingIndex={currentErr.index}
+                onChangeError={onChangeError}
                 usersId={usersId}
             />
         </Modal>

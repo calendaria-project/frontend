@@ -1,4 +1,4 @@
-import { SelectedKeyTypes } from "../components/Users/userItem/userExtraCard/constants";
+import { selectedKeyTypes } from "../data/enums";
 
 const getUserRequestUrl = (
     selectedKey: string,
@@ -6,8 +6,8 @@ const getUserRequestUrl = (
     usersId?: string
 ): string => {
     const currentSelectedKey =
-        selectedKey === SelectedKeyTypes.CONTACT_PERSONAL ||
-        selectedKey === SelectedKeyTypes.CONTACT_BUSINESS
+        selectedKey === selectedKeyTypes.CONTACT_PERSONAL ||
+        selectedKey === selectedKeyTypes.CONTACT_BUSINESS
             ? "contact"
             : selectedKey;
 
@@ -16,9 +16,9 @@ const getUserRequestUrl = (
             ? `/${usersId}`
             : ""
     }${
-        selectedKey === SelectedKeyTypes.CONTACT_PERSONAL
+        selectedKey === selectedKeyTypes.CONTACT_PERSONAL
             ? "/personal"
-            : selectedKey === SelectedKeyTypes.CONTACT_BUSINESS
+            : selectedKey === selectedKeyTypes.CONTACT_BUSINESS
             ? "/business"
             : ""
     }`;

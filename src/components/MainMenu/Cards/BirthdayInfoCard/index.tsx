@@ -22,6 +22,8 @@ const BirthdayInfoCard: FC<IBirthdayInfoCard> = ({ statItemsLoading, statItemsWi
     // @ts-ignore
     const classes = useStyles(theme);
 
+    // statItemsWithPhotoId && statItemsWithPhotoId.length ? sortArrayWithBirthDates(statItemsWithPhotoId) ?
+
     return (
         <>
             <Row align={"middle"}>
@@ -35,50 +37,45 @@ const BirthdayInfoCard: FC<IBirthdayInfoCard> = ({ statItemsLoading, statItemsWi
                     <Spinner size={40} style={{ color: theme.color.regular + "" }} />
                 </div>
             ) : statItemsWithPhotoId.length ? (
-                sortArrayWithBirthDates(statItemsWithPhotoId) ? (
-                    statItemsWithPhotoId.map((statItem, index) => (
-                        <Row
-                            key={statItem.birthDate + index}
-                            className={classes.birthdayContentWrapper}
-                            align={"middle"}
-                        >
-                            <Col>
-                                {statItem.currentPhotoId ? (
-                                    <Image
-                                        className={classes.birthUsersImage}
-                                        width={40}
-                                        height={40}
-                                        src={statItem.currentPhotoId}
-                                    />
-                                ) : (
-                                    <QuestionCircleOutlined className={classes.questionIcon} />
+                sortArrayWithBirthDates(statItemsWithPhotoId).map((statItem, index) => (
+                    <Row
+                        key={statItem.birthDate + index}
+                        className={classes.birthdayContentWrapper}
+                        align={"middle"}
+                    >
+                        <Col>
+                            {statItem.currentPhotoId ? (
+                                <Image
+                                    className={classes.birthUsersImage}
+                                    width={40}
+                                    height={40}
+                                    src={statItem.currentPhotoId}
+                                />
+                            ) : (
+                                <QuestionCircleOutlined className={classes.questionIcon} />
+                            )}
+                        </Col>
+                        <Col className={classes.birthdayContentInfo}>
+                            <div>
+                                {getFullName(
+                                    statItem.firstname,
+                                    statItem.lastname,
+                                    statItem.patronymic
                                 )}
-                            </Col>
-                            <Col className={classes.birthdayContentInfo}>
-                                <div>
-                                    {getFullName(
-                                        statItem.firstname,
-                                        statItem.lastname,
-                                        statItem.patronymic
-                                    )}
-                                </div>
-                                <div>
-                                    {index === 0 &&
-                                    dateToYMD(new Date()) ===
-                                        dateToYMD(new Date(statItem.birthDate)) ? (
-                                        <span className={classes.highlightedBirthDate}>
-                                            Сегодня
-                                        </span>
-                                    ) : (
-                                        <span className={classes.birthDate}>
-                                            {localeDate(statItem.birthDate, "ru")}
-                                        </span>
-                                    )}
-                                </div>
-                            </Col>
-                        </Row>
-                    ))
-                ) : null
+                            </div>
+                            <div>
+                                {dateToYMD(new Date()) ===
+                                dateToYMD(new Date(statItem.birthDate)) ? (
+                                    <span className={classes.highlightedBirthDate}>Сегодня</span>
+                                ) : (
+                                    <span className={classes.birthDate}>
+                                        {localeDate(statItem.birthDate, "ru")}
+                                    </span>
+                                )}
+                            </div>
+                        </Col>
+                    </Row>
+                ))
             ) : (
                 <div className={classes.birthdayImageCenteredWrap}>
                     <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />

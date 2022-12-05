@@ -11,9 +11,8 @@ import { getRequestHeader } from "functions/common";
 import { IPositionViewModel, IStaffingItemCreateModel, IStaffingItemViewModel } from "interfaces";
 import { createTableViaTabulator } from "services/tabulator";
 import { StaffingItemModal } from "./modal";
-import "./styles.scss";
 
-const StaffingItem: React.FC = ({}) => {
+const StaffingItem: React.FC = () => {
     const authContext = useContext(AuthContext);
     const navigate = useNavigate();
     const [isModalVisible, setIsModalVisible] = useState(false);

@@ -1,13 +1,9 @@
 import { Card, Col, Form, Menu, MenuProps, message, Row } from "antd";
 import React, { FC, memo, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import _ from "lodash";
-import {
-    additionalMenuTypes,
-    arrayKeyTypes,
-    inputData,
-    SelectedKeyTypes,
-    TInputData
-} from "./constants";
+import { additionalMenuTypes, arrayKeyTypes, modalData } from "./constants";
+import { TLayoutModalData } from "data/types";
+import { selectedKeyTypes } from "data/enums";
 import {
     CarOutlined,
     CodeSandboxOutlined,
@@ -23,10 +19,10 @@ import {
 } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { useTypedSelector } from "hooks/useTypedSelector";
-import { IErrorDetail, modalErrorCodes, errorCodes, IErrorModifiedItem } from "./errorCodes";
+import { IErrorDetail, modalErrorCodes, errorCodes, IErrorModifiedItem } from "data/errorCodes";
 
 import UserExtraCardModal from "./modal";
-import { getUserEditingNameByKey } from "utils/getUserEditingNameByKey";
+import { getModalEditingNameByKey } from "utils/getModalEditingNameByKey";
 
 import RowData, { ListedRowData } from "./RowData";
 import { AuthContext } from "context/AuthContextProvider";
@@ -69,23 +65,23 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
     const [modalVisibleFlag, setModalVisibleFlag] = useState<boolean>(false);
     const [additionalModalVisibleFlag, setAdditionalModalVisibleFlag] = useState<boolean>(false);
 
-    const [currentDataLayout, setCurrentDataLayout] = useState<Array<TInputData>>(
-        inputData?.[selectedKey]
+    const [currentDataLayout, setCurrentDataLayout] = useState<TLayoutModalData[]>(
+        modalData?.[selectedKey]
     );
 
     const [errorMessages, setErrorMessages] = useState<string>("");
     const [errorArr, setErrorArr] = useState<IErrorModifiedItem[]>([]);
 
     useEffect(() => {
-        dispatch(SetUserSelectedKey(SelectedKeyTypes.USER));
+        dispatch(SetUserSelectedKey(selectedKeyTypes.USER));
     }, [usersId]);
 
     useEffect(() => {
-        setCurrentDataLayout(inputData[selectedKey]);
+        setCurrentDataLayout(modalData[selectedKey]);
     }, [selectedKey]);
 
     useEffect(() => {
-        if (selectedKey !== SelectedKeyTypes.SHARED_INFO) {
+        if (selectedKey !== selectedKeyTypes.SHARED_INFO) {
             const url = getUserRequestUrl(selectedKey, "get", usersId);
             actionMethodResultSync("USER", url, "get", getRequestHeader(authContext.token)).then(
                 (res) => {
@@ -244,47 +240,47 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
 
     const items: MenuProps["items"] = [
         {
-            key: SelectedKeyTypes.USER,
+            key: selectedKeyTypes.USER,
             icon: <KeyOutlined />,
             label: "Учетная запись"
         },
         {
-            key: SelectedKeyTypes.CONTACT_PERSONAL,
-            icon: getIcon(SelectedKeyTypes.CONTACT_PERSONAL, <UserOutlined />),
+            key: selectedKeyTypes.CONTACT_PERSONAL,
+            icon: getIcon(selectedKeyTypes.CONTACT_PERSONAL, <UserOutlined />),
             label: "Контакты"
         },
         {
-            key: SelectedKeyTypes.CONTACT_BUSINESS,
-            icon: getIcon(SelectedKeyTypes.CONTACT_BUSINESS, <ContactsOutlined />),
+            key: selectedKeyTypes.CONTACT_BUSINESS,
+            icon: getIcon(selectedKeyTypes.CONTACT_BUSINESS, <ContactsOutlined />),
             label: "Организация"
         },
         {
-            key: SelectedKeyTypes.INVENTORY,
-            icon: getIcon(SelectedKeyTypes.INVENTORY, <CodeSandboxOutlined />),
+            key: selectedKeyTypes.INVENTORY,
+            icon: getIcon(selectedKeyTypes.INVENTORY, <CodeSandboxOutlined />),
             label: "Инвентарь"
         },
         {
-            key: SelectedKeyTypes.DOCUMENT,
-            icon: getIcon(SelectedKeyTypes.DOCUMENT, <FileTextOutlined />),
+            key: selectedKeyTypes.DOCUMENT,
+            icon: getIcon(selectedKeyTypes.DOCUMENT, <FileTextOutlined />),
             label: "Документы"
         },
         {
-            key: SelectedKeyTypes.ADDRESS_INFO,
-            icon: getIcon(SelectedKeyTypes.ADDRESS_INFO, <EnvironmentOutlined />),
+            key: selectedKeyTypes.ADDRESS_INFO,
+            icon: getIcon(selectedKeyTypes.ADDRESS_INFO, <EnvironmentOutlined />),
             label: "Адрес"
         },
         {
-            key: SelectedKeyTypes.CAR_INFO,
-            icon: getIcon(SelectedKeyTypes.CAR_INFO, <CarOutlined />),
+            key: selectedKeyTypes.CAR_INFO,
+            icon: getIcon(selectedKeyTypes.CAR_INFO, <CarOutlined />),
             label: "Автомобиль"
         },
         {
-            key: SelectedKeyTypes.CONTRACT,
-            icon: getIcon(SelectedKeyTypes.CONTRACT, <FormOutlined />),
+            key: selectedKeyTypes.CONTRACT,
+            icon: getIcon(selectedKeyTypes.CONTRACT, <FormOutlined />),
             label: "Договора"
         },
         {
-            key: SelectedKeyTypes.SHARED_INFO,
+            key: selectedKeyTypes.SHARED_INFO,
             icon: <InfoCircleOutlined />,
             label: "Информация"
         }
@@ -293,28 +289,28 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
 
     const additionalItems: MenuProps["items"] = [
         {
-            key: SelectedKeyTypes.ADDITIONAL_INFO,
-            icon: getIcon(SelectedKeyTypes.ADDITIONAL_INFO),
+            key: selectedKeyTypes.ADDITIONAL_INFO,
+            icon: getIcon(selectedKeyTypes.ADDITIONAL_INFO),
             label: "О себе"
         },
         {
-            key: SelectedKeyTypes.LANGUAGE_KNOWLEDGE,
-            icon: getIcon(SelectedKeyTypes.LANGUAGE_KNOWLEDGE),
+            key: selectedKeyTypes.LANGUAGE_KNOWLEDGE,
+            icon: getIcon(selectedKeyTypes.LANGUAGE_KNOWLEDGE),
             label: "Иностранные языки"
         },
         {
-            key: SelectedKeyTypes.EDUCATION,
-            icon: getIcon(SelectedKeyTypes.EDUCATION),
+            key: selectedKeyTypes.EDUCATION,
+            icon: getIcon(selectedKeyTypes.EDUCATION),
             label: "Образование"
         },
         {
-            key: SelectedKeyTypes.RELATIONSHIP,
-            icon: getIcon(SelectedKeyTypes.RELATIONSHIP),
+            key: selectedKeyTypes.RELATIONSHIP,
+            icon: getIcon(selectedKeyTypes.RELATIONSHIP),
             label: "Родственные связи"
         },
         {
-            key: SelectedKeyTypes.MILITARY_INFO,
-            icon: getIcon(SelectedKeyTypes.MILITARY_INFO),
+            key: selectedKeyTypes.MILITARY_INFO,
+            icon: getIcon(selectedKeyTypes.MILITARY_INFO),
             label: "Воинский учет"
         }
     ];
@@ -324,13 +320,13 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
 
     const modalTitle = useMemo(
         () =>
-            `${userMenuDataExists ? "Редактировать" : "Добавить"} ${getUserEditingNameByKey(
+            `${userMenuDataExists ? "Редактировать" : "Добавить"} ${getModalEditingNameByKey(
                 selectedKey
             )}`,
         [selectedKey, userMenuDataExists]
     );
     const additionalModalTitle = useMemo(
-        () => `Добавить ${getUserEditingNameByKey(selectedKey)}`,
+        () => `Добавить ${getModalEditingNameByKey(selectedKey)}`,
         [selectedKey]
     );
 

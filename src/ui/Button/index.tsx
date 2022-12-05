@@ -1,6 +1,7 @@
 import { Button as AntdButton } from "antd";
 import { FC, ReactNode } from "react";
 import cx from "classnames";
+import { CSSProperties } from "react";
 
 import { useTheme } from "react-jss";
 import useStyles from "./styles";
@@ -9,7 +10,7 @@ import { ITheme } from "styles/theme/interface";
 interface IButton {
     children?: any;
     className?: string;
-    customType?: "regular" | "removing" | "primary";
+    customType?: "regular" | "removing" | "primary" | "cancel";
     block?: boolean;
     danger?: boolean;
     disabled?: boolean;
@@ -23,6 +24,7 @@ interface IButton {
     target?: string;
     type?: "primary" | "ghost" | "dashed" | "link" | "text" | "default";
     onClick?: () => void;
+    style?: CSSProperties;
 }
 
 const Button: FC<IButton> = ({
@@ -41,7 +43,8 @@ const Button: FC<IButton> = ({
     size = "middle",
     target,
     type = "default",
-    onClick
+    onClick,
+    style
 }) => {
     const theme = useTheme<ITheme>();
     // @ts-ignore
@@ -63,6 +66,7 @@ const Button: FC<IButton> = ({
             target={target}
             type={type}
             onClick={onClick}
+            style={style}
         >
             {children ? children : null}
         </AntdButton>

@@ -1,3 +1,29 @@
+export enum layoutConstantTypes {
+    TITLE = "title",
+    UNEDITABLE = "uneditable",
+    SELECT = "select",
+    INPUT = "input",
+    TEXTAREA = "textArea",
+    DATE = "date"
+}
+
+export enum selectedKeyTypes {
+    USER = "user",
+    CONTACT_PERSONAL = "contact_personal",
+    CONTACT_BUSINESS = "contact_business",
+    INVENTORY = "inventory",
+    DOCUMENT = "document",
+    ADDRESS_INFO = "addressInfo",
+    CAR_INFO = "carInfo",
+    CONTRACT = "contract",
+    SHARED_INFO = "sharedInfo",
+    ADDITIONAL_INFO = "additionalInfo",
+    EDUCATION = "education",
+    LANGUAGE_KNOWLEDGE = "languageKnowledge",
+    RELATIONSHIP = "relationship",
+    MILITARY_INFO = "militaryInfo"
+}
+
 export enum StaffingNodeTypesEnum {
     COMPANY = "COMPANY",
     DIVISION = "DIVISION",
@@ -40,8 +66,3 @@ export enum nodeTypeEnum {
     DIVISION = "DIVISION",
     DIVISION_UNIT = "DIVISION_UNIT"
 }
-
-export type TNodeTypeEnum =
-    | nodeTypeEnum.DIVISION
-    | nodeTypeEnum.DIVISION_UNIT
-    | nodeTypeEnum.COMPANY;

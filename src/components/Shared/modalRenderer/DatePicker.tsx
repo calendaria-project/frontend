@@ -1,12 +1,12 @@
 import { DatePicker as AntdDatePicker, FormInstance } from "antd";
 import React, { FC, useCallback, useEffect, useState, memo } from "react";
-import { TInputData } from "../constants";
+import { TLayoutModalData } from "data/types";
 import moment, { Moment } from "moment";
 import useStyles from "./styles";
 
 interface IDatePicker {
     form: FormInstance;
-    dataItemLayout: TInputData;
+    dataItemLayout: TLayoutModalData;
     currentDataItemInfo: any;
 }
 

@@ -9,9 +9,9 @@ function sortArrayWithBirthDates<T>(arrWithDates: Array<T>): Array<T> {
     return arrWithDates.sort((a, b) =>
         dateToYMD(new Date((a as TSample).birthDate)) >
             dateToYMD(new Date((b as TSample).birthDate)) &&
-        dateToYMD(new Date((a as TSample).birthDate)) < dateToYMD(new Date())
-            ? 1
-            : -1
+        dateToYMD(new Date((a as TSample).birthDate)) <= dateToYMD(new Date())
+            ? -1
+            : 1
     );
 }
 export default sortArrayWithBirthDates;

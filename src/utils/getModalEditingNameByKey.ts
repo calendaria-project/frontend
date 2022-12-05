@@ -1,41 +1,41 @@
-import { SelectedKeyTypes } from "components/Users/userItem/userExtraCard/constants";
+import { selectedKeyTypes } from "data/enums";
 
-export const getUserEditingNameByKey = (key: string): string => {
+export const getModalEditingNameByKey = (key: string): string => {
     switch (key) {
-        case SelectedKeyTypes.ADDITIONAL_INFO: {
+        case selectedKeyTypes.ADDITIONAL_INFO: {
             return "информацию о себе";
         }
-        case SelectedKeyTypes.ADDRESS_INFO: {
+        case selectedKeyTypes.ADDRESS_INFO: {
             return "адрес";
         }
-        case SelectedKeyTypes.CAR_INFO: {
+        case selectedKeyTypes.CAR_INFO: {
             return "автомобиль";
         }
-        case SelectedKeyTypes.CONTACT_PERSONAL: {
+        case selectedKeyTypes.CONTACT_PERSONAL: {
             return "контакты";
         }
-        case SelectedKeyTypes.CONTACT_BUSINESS: {
+        case selectedKeyTypes.CONTACT_BUSINESS: {
             return "организацию";
         }
-        case SelectedKeyTypes.INVENTORY: {
+        case selectedKeyTypes.INVENTORY: {
             return "инвентарь";
         }
-        case SelectedKeyTypes.DOCUMENT: {
+        case selectedKeyTypes.DOCUMENT: {
             return "документы";
         }
-        case SelectedKeyTypes.CONTRACT: {
+        case selectedKeyTypes.CONTRACT: {
             return "договора";
         }
-        case SelectedKeyTypes.EDUCATION: {
+        case selectedKeyTypes.EDUCATION: {
             return "образование";
         }
-        case SelectedKeyTypes.LANGUAGE_KNOWLEDGE: {
+        case selectedKeyTypes.LANGUAGE_KNOWLEDGE: {
             return "иностранные языки";
         }
-        case SelectedKeyTypes.RELATIONSHIP: {
+        case selectedKeyTypes.RELATIONSHIP: {
             return "родственные связи";
         }
-        case SelectedKeyTypes.MILITARY_INFO: {
+        case selectedKeyTypes.MILITARY_INFO: {
             return "воинский учет";
         }
         default: {
