@@ -1,5 +1,4 @@
 import { Modal, Form, Input, Row, Col, Select } from "antd";
-import Button from "ui/Button";
 import { FormInstance } from "antd/es/form/Form";
 import { validateMessages } from "data/validateMessages";
 import { useTheme } from "react-jss";
@@ -11,6 +10,7 @@ import PhoneInput from "utils/PhoneInput";
 import AvatarDropZone from "utils/DropZones/AvatarDropZone";
 import { IExternalUsersDataModel } from "interfaces";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
+import ModalBtns from "components/Shared/modalRenderer/modalBtns";
 
 const { Option } = Select;
 
@@ -71,7 +71,7 @@ const SharedExternalUserModal = ({
                 onFinish={onFinish}
                 autoComplete="off"
                 layout="vertical"
-                className={classes.directoryModal}
+                className="directoryModal"
             >
                 <Row>
                     <Col span={24}>
@@ -154,20 +154,7 @@ const SharedExternalUserModal = ({
                         </Form.Item>
                     </Col>
                 </Row>
-                <Row align={"middle"} justify={"center"} gutter={[16, 16]}>
-                    <Col>
-                        <Form.Item className={classes.okBtnFormItem}>
-                            <Button customType={"regular"} htmlType="submit">
-                                {okText}
-                            </Button>
-                        </Form.Item>
-                    </Col>
-                    <Col>
-                        <Button customType={"primary"} onClick={handleCancel}>
-                            Отмена
-                        </Button>
-                    </Col>
-                </Row>
+                <ModalBtns okText={okText} onClick={handleCancel} />
             </Form>
         </Modal>
     );

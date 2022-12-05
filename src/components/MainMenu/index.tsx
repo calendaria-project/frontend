@@ -24,6 +24,7 @@ import { createTableViaTabulator } from "services/tabulator";
 import { externalUsersColumns } from "data/columns";
 import { ColumnDefinition } from "tabulator-tables";
 import StaffingCard from "./Cards/StaffingCard";
+import { ALL, ARCHIVE, ACTIVE } from "data/values";
 
 export interface IBirthStatItemWithPhoto extends IBirthDateStatItem {
     currentPhotoId: string;
@@ -180,6 +181,21 @@ const MainMenu: FC = () => {
     const onUsersCardClick = useCallback(() => {
         dispatch(SetCurrentLayoutMenu(mainMenuEnum.users));
         sessionStorage.setItem("mainMenuTab", mainMenuEnum.users);
+        sessionStorage.setItem("userReqType", ALL);
+        navigate("/users");
+    }, []);
+
+    const onActiveUsersCardClick = useCallback(() => {
+        dispatch(SetCurrentLayoutMenu(mainMenuEnum.users));
+        sessionStorage.setItem("mainMenuTab", mainMenuEnum.users);
+        sessionStorage.setItem("userReqType", ACTIVE);
+        navigate("/users");
+    }, []);
+
+    const onArchiveUsersCardClick = useCallback(() => {
+        dispatch(SetCurrentLayoutMenu(mainMenuEnum.users));
+        sessionStorage.setItem("mainMenuTab", mainMenuEnum.users);
+        sessionStorage.setItem("userReqType", ARCHIVE);
         navigate("/users");
     }, []);
 
@@ -209,7 +225,7 @@ const MainMenu: FC = () => {
                     <SmallInfoCard
                         infoText={"Добавлено"}
                         infoCount={allStatistics.createdUsersCnt}
-                        onClick={() => {}}
+                        onClick={onActiveUsersCardClick}
                         percentage={{
                             key: UP,
                             value: `${allStatistics.createdUsersPercent ?? 0}%`
@@ -220,7 +236,7 @@ const MainMenu: FC = () => {
                     <SmallInfoCard
                         infoText={"Уволено"}
                         infoCount={allStatistics.disabledUsersCnt}
-                        onClick={() => {}}
+                        onClick={onArchiveUsersCardClick}
                         percentage={{
                             key: DOWN,
                             value: `${allStatistics.disabledUsersPercent ?? 0}%`

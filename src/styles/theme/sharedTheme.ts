@@ -93,6 +93,7 @@ const sharedTheme: ITheme = {
         sider: {
             width: "80px"
         },
+        btnRowMargin: "14px 0 0 8px",
         padding: "20px",
         hugeMargin: "28px",
         margin: "14px",

@@ -269,7 +269,7 @@ const Staffing: FC = () => {
                             </Select>
                             <UIButton
                                 customType={"regular"}
-                                className={"uibtn endedCol"}
+                                style={{ marginLeft: "14px", height: "34px" }}
                                 disabled={!selectedCompanyId}
                                 onClick={() => setIsModalVisible(true)}
                                 icon={<PlusOutlined />}

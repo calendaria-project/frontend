@@ -32,6 +32,7 @@ export interface ITheme {
     layout: {
         header: TSimpleThemeRecord;
         sider: TSimpleThemeRecord;
+        btnRowMargin: string;
         padding: string;
         hugeMargin: string;
         margin: string;

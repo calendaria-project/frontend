@@ -13,6 +13,7 @@ import { editingOptions, layoutOptions, structureLayout, TLayoutOptions } from "
 import CompanySelect from "components/Dictionary/companiesTreeView/modal/Select";
 import { mailMessage, mailPattern } from "utils/patterns";
 import { inputLengthHandler } from "utils/inputLengthHandler";
+import ModalBtns from "components/Shared/modalRenderer/modalBtns";
 
 const { Option } = Select;
 
@@ -79,23 +80,10 @@ const SharedModal = ({
                     onFinish={onFinish}
                     autoComplete="off"
                     layout="vertical"
-                    className={classes.directoryModal}
+                    className="directoryModal"
                 >
                     {children}
-                    <Row align={"middle"} justify={"center"} gutter={[16, 16]}>
-                        <Col>
-                            <Form.Item className={classes.okBtnFormItem}>
-                                <Button customType={"regular"} htmlType="submit">
-                                    {okText}
-                                </Button>
-                            </Form.Item>
-                        </Col>
-                        <Col>
-                            <Button customType={"primary"} onClick={handleCancel}>
-                                Отмена
-                            </Button>
-                        </Col>
-                    </Row>
+                    <ModalBtns okText={okText} onClick={handleCancel} />
                 </Form>
             </Modal>
         );

@@ -42,7 +42,7 @@ const App = () => {
                         alignItems: "center"
                     }}
                 >
-                    <Spinner />
+                    <Spinner style={{ color: sharedTheme.color.regular }} />
                 </div>
             )}
         </>

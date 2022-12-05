@@ -1,4 +1,5 @@
 import { FormInstance } from "antd";
+import parseModalData from "utils/parseModalData";
 
 export const parsePointObjectKey = (
     data: any,
@@ -6,22 +7,7 @@ export const parsePointObjectKey = (
     form: FormInstance,
     parsePhotos: boolean = true
 ) => {
-    let parsedData: any = {};
-    for (let key in data) {
-        if (data.hasOwnProperty(key)) {
-            if (key.includes(".")) {
-                let arrData = key.split(".");
-                parsedData[arrData[0]] = {
-                    ...(parsedData[arrData[0]] ? parsedData[arrData[0]] : {}),
-                    [arrData[1]]: data[key]
-                };
-            } else if (key.includes("Date")) {
-                parsedData[key] = data[key].format("YYYY-MM-DD");
-            } else {
-                parsedData[key] = data[key];
-            }
-        }
-    }
+    let parsedData: any = parseModalData(data);
     parsedData.company = { companyId };
 
     if (parsePhotos) {

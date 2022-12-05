@@ -8,12 +8,13 @@ import React, {
     memo
 } from "react";
 import { FormInstance, Input as AntdInput, Tooltip } from "antd";
-import { Types, TInputData } from "../constants";
+import { TLayoutModalData } from "data/types";
+import { layoutConstantTypes } from "data/enums";
 import getValueWithoutReplacedSymbols from "utils/getValueWithoutReplacedSymbols";
 
 interface IInput {
     form: FormInstance;
-    dataItemLayout: TInputData;
+    dataItemLayout: TLayoutModalData;
     currentDataItemInfo: any;
 }
 
@@ -80,7 +81,7 @@ const Input: FC<IInput> = ({ form, dataItemLayout, currentDataItemInfo }) => {
         [dataItemLayout, currentValue]
     );
 
-    if (dataItemLayout.type === Types.INPUT) {
+    if (dataItemLayout.type === layoutConstantTypes.INPUT) {
         if (mobileInputFlag) {
             return (
                 <Tooltip placement={"left"} title={"Введите номер в формате +7(xxx)xxx-xx-xx"}>

@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect, memo, useMemo, useCallback, useContext } from "react";
 import { Row, Col, Divider, Typography, Form, message, FormInstance } from "antd";
-import { TInputData, Types } from "../constants";
-import { SelectedKeyTypes } from "../constants";
+import { TLayoutModalData } from "data/types";
+import { selectedKeyTypes, layoutConstantTypes } from "data/enums";
 import fileDownload from "js-file-download";
 
 import _ from "lodash";
@@ -21,7 +21,7 @@ import {
 import { EditOutlined, DownloadOutlined } from "@ant-design/icons";
 
 import UserExtraCardModal from "../modal";
-import { getUserEditingNameByKey } from "utils/getUserEditingNameByKey";
+import { getModalEditingNameByKey } from "utils/getModalEditingNameByKey";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import getUserRequestUrl from "functions/getUserRequestUrl";
 import { getFileRequestHeader, getRequestHeader } from "functions/common";
@@ -104,7 +104,7 @@ const ListItem: FC<{
 };
 
 const ListRowData: FC<{
-    currentDataLayout: Array<TInputData>;
+    currentDataLayout: TLayoutModalData[];
     usersId: string;
 }> = ({ currentDataLayout, usersId }) => {
     const authContext = useContext(AuthContext);
@@ -203,14 +203,14 @@ const ListRowData: FC<{
     );
 
     const additionalModalTitle = useMemo(
-        () => `Редактировать ${getUserEditingNameByKey(currentSelectedKey)}`,
+        () => `Редактировать ${getModalEditingNameByKey(currentSelectedKey)}`,
         [currentSelectedKey]
     );
 
     return (
         <>
             {userMenuDataExists &&
-                (currentSelectedKey === SelectedKeyTypes.CONTRACT
+                (currentSelectedKey === selectedKeyTypes.CONTRACT
                     ? (currentUserDataItemInfo || []).map(
                           (dataInfo: IUsersContractModel, index: number) => (
                               <ListItem
@@ -225,7 +225,7 @@ const ListRowData: FC<{
                               />
                           )
                       )
-                    : currentSelectedKey === SelectedKeyTypes.DOCUMENT
+                    : currentSelectedKey === selectedKeyTypes.DOCUMENT
                     ? (currentUserDataItemInfo || []).map(
                           (dataInfo: IUsersDocumentModel, index: number) => (
                               <ListItem
@@ -239,7 +239,7 @@ const ListRowData: FC<{
                               />
                           )
                       )
-                    : currentSelectedKey === SelectedKeyTypes.INVENTORY
+                    : currentSelectedKey === selectedKeyTypes.INVENTORY
                     ? (currentUserDataItemInfo || []).map(
                           (dataInfo: IUsersInventoryModel, index: number) => (
                               <ListItem
@@ -253,7 +253,7 @@ const ListRowData: FC<{
                               />
                           )
                       )
-                    : currentSelectedKey === SelectedKeyTypes.EDUCATION
+                    : currentSelectedKey === selectedKeyTypes.EDUCATION
                     ? (currentUserDataItemInfo || []).map(
                           (dataInfo: IUsersEducationModel, index: number) => (
                               <ListItem
@@ -267,7 +267,7 @@ const ListRowData: FC<{
                               />
                           )
                       )
-                    : currentSelectedKey === SelectedKeyTypes.LANGUAGE_KNOWLEDGE
+                    : currentSelectedKey === selectedKeyTypes.LANGUAGE_KNOWLEDGE
                     ? (currentUserDataItemInfo || []).map(
                           (dataInfo: IUsersLanguageKnowledgeModel, index: number) => (
                               <ListItem
@@ -280,7 +280,7 @@ const ListRowData: FC<{
                               />
                           )
                       )
-                    : currentSelectedKey === SelectedKeyTypes.ADDRESS_INFO
+                    : currentSelectedKey === selectedKeyTypes.ADDRESS_INFO
                     ? (currentUserDataItemInfo || []).map(
                           (dataInfo: IUsersAddressInfoModel, index: number) => (
                               <ListItem
@@ -294,7 +294,7 @@ const ListRowData: FC<{
                               />
                           )
                       )
-                    : currentSelectedKey === SelectedKeyTypes.RELATIONSHIP
+                    : currentSelectedKey === selectedKeyTypes.RELATIONSHIP
                     ? (currentUserDataItemInfo || []).map(
                           (dataInfo: IUsersRelationshipModel, index: number) => (
                               <ListItem
@@ -329,7 +329,7 @@ const ListRowData: FC<{
 const ListedRowData = React.memo(ListRowData);
 export { ListedRowData };
 
-const RowData: FC<{ dataItem: TInputData }> = ({ dataItem }) => {
+const RowData: FC<{ dataItem: TLayoutModalData }> = ({ dataItem }) => {
     const classes = useStyles();
 
     const [displayedData, setDisplayedData] = useState<string>("");
@@ -339,7 +339,7 @@ const RowData: FC<{ dataItem: TInputData }> = ({ dataItem }) => {
     const userMenuDataExists: boolean = isObjectNotEmpty(currentUserDataItemInfo);
 
     useEffect(() => {
-        if (dataItem.type === Types.SELECT) {
+        if (dataItem.type === layoutConstantTypes.SELECT) {
             setDisplayedData(currentUserDataItemInfo?.[dataItem.propertyName]?.nameRu);
         } else {
             setDisplayedData(currentUserDataItemInfo?.[dataItem.propertyName]);

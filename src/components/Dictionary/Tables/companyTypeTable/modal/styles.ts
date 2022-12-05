@@ -7,8 +7,5 @@ export default createUseStyles({
     },
     rightFormItem: {
         paddingLeft: (theme: ITheme) => `${theme.layout.smallPadding} !important`
-    },
-    okBtnFormItem: {
-        marginTop: "12px !important"
     }
 });

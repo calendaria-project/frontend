@@ -45,8 +45,8 @@ const StaffingCard: FC<IStaffingCard> = ({ divisionStatItems, statsLoading, onCl
                         <Spinner size={40} style={{ color: theme.color.regular + "" }} />
                     </div>
                 ) : divisionStatItems && divisionStatItems.length ? (
-                    divisionStatItems.map((statItem) => (
-                        <>
+                    divisionStatItems.map((statItem, index) => (
+                        <React.Fragment key={"" + statItem.nameRu + index}>
                             <Row
                                 justify={"space-between"}
                                 align={"middle"}
@@ -69,7 +69,7 @@ const StaffingCard: FC<IStaffingCard> = ({ divisionStatItems, statsLoading, onCl
                                 </Col>
                             </Row>
                             <Divider className={classes.divider} />
-                        </>
+                        </React.Fragment>
                     ))
                 ) : (
                     <div className={classes.centeredWrap}>

@@ -56,6 +56,19 @@ export default createUseStyles({
         },
         ".ant-modal-wrap": {
             backgroundColor: "rgba(0, 0, 0, 0.20) !important"
+        },
+        ".directoryModal": {
+            "& .ant-form-item": {
+                marginBottom: "14px !important"
+            },
+            "& .ant-form-item-label": {
+                width: "100% !important",
+                minWidth: "100% !important"
+            },
+            "& .ant-form-item-control": {
+                width: "100% !important",
+                minWidth: "100% !important"
+            }
         }
     }
 });

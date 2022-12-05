@@ -1,22 +1,22 @@
 import { Col, Form, FormInstance, message, Modal, Row } from "antd";
 
-import Button from "ui/Button";
-
 import React, { FC, memo, useCallback, useContext, useEffect, useState } from "react";
 
 import { validateMessages } from "data/validateMessages";
 
-import { IErrorModifiedItem } from "../../../errorCodes";
-import { inputData, SelectedKeyTypes, TInputData } from "../../../constants";
-import { useTheme } from "react-jss";
-import useStyles from "../styles";
+import { IErrorModifiedItem } from "data/errorCodes";
+import { modalData } from "../../../constants";
+import { selectedKeyTypes } from "data/enums";
+import { TLayoutModalData } from "data/types";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { AuthContext } from "context/AuthContextProvider";
-import { getFormItemContent, WithFormItem } from "../../index";
+import WithFormItem, { getFormItemContent } from "components/Shared/modalRenderer";
 import getObjectWithHandledDates from "utils/getObjectWithHandeledDates";
 import _ from "lodash";
 import { removeEmptyObjectProperties } from "utils/removeObjectProperties";
+import { getModalEditingNameByKey } from "utils/getModalEditingNameByKey";
+import ModalBtns from "components/Shared/modalRenderer/modalBtns";
 
 interface IExtraValidationModal {
     okText: string;
@@ -25,8 +25,7 @@ interface IExtraValidationModal {
     setIsVisible: (bool: boolean) => void;
     form: FormInstance;
     currentErr: IErrorModifiedItem;
-    onChangeErrors: (index: number, currentErr: IErrorModifiedItem) => void;
-    editingIndex: number;
+    onChangeError: (currentErr: IErrorModifiedItem) => void;
     usersId: string;
 }
 
@@ -36,9 +35,8 @@ const ExtraValidationModal: FC<IExtraValidationModal> = ({
     isVisible,
     setIsVisible,
     form,
-    onChangeErrors,
+    onChangeError,
     currentErr,
-    editingIndex,
     usersId
 }) => {
     const handleCancel = useCallback(() => {
@@ -47,22 +45,18 @@ const ExtraValidationModal: FC<IExtraValidationModal> = ({
 
     const authContext = useContext(AuthContext);
 
-    const theme = useTheme();
-    // @ts-ignore
-    const classes = useStyles(theme);
-
-    const currentDataLayout: TInputData[] = inputData[currentErr?.selectedKey];
-    const [currentData, setCurrentData] = useState<any>(undefined);
+    const currentDataLayout: TLayoutModalData[] = modalData[currentErr?.selectedKey];
+    const [entityArrData, setEntityArrData] = useState<any>(undefined);
 
     const entity = (currentErr?.selectedKey || "").includes("address")
-        ? SelectedKeyTypes.ADDRESS_INFO
+        ? selectedKeyTypes.ADDRESS_INFO
         : (currentErr?.selectedKey || "").includes("document")
-        ? SelectedKeyTypes.DOCUMENT
+        ? selectedKeyTypes.DOCUMENT
         : "";
 
-    const getCurrentData = () => {
-        if (currentData && entity) {
-            return currentData.find((dataItem: any) => dataItem[entity + "Id"] === currentErr.id);
+    const getExactEntityData = () => {
+        if (entityArrData && entity) {
+            return entityArrData.find((dataItem: any) => dataItem[entity + "Id"] === currentErr.id);
         }
         return undefined;
     };
@@ -75,7 +69,7 @@ const ExtraValidationModal: FC<IExtraValidationModal> = ({
                     `${entity}/${currentErr.id}`,
                     "get",
                     getRequestHeader(authContext.token)
-                ).then((res) => setCurrentData(res));
+                ).then((res) => setEntityArrData(res));
             }
         }
     }, [currentErr, entity]);
@@ -97,7 +91,7 @@ const ExtraValidationModal: FC<IExtraValidationModal> = ({
                     .then((res) => {
                         console.log(res);
                         message.success("Сохранено");
-                        onChangeErrors(editingIndex, {
+                        onChangeError({
                             ...currentErr,
                             addText: res[entity.replace("Info", "") + "Type"]?.nameRu || ""
                         });
@@ -110,21 +104,28 @@ const ExtraValidationModal: FC<IExtraValidationModal> = ({
                     });
             };
 
-            if (reqMethod === "put") {
-                const finalData = removeEmptyObjectProperties(
-                    _.merge(getCurrentData(), recordWithDates)
-                );
-                sendRequest({ ...finalData, userId: usersId });
-            } else {
-                const finalData = removeEmptyObjectProperties(recordWithDates);
-                sendRequest({ ...finalData, userId: usersId });
+            if (entity) {
+                if (reqMethod === "put") {
+                    const finalData = removeEmptyObjectProperties(
+                        _.merge(getExactEntityData(), recordWithDates)
+                    );
+                    sendRequest({ ...finalData, userId: usersId });
+                } else {
+                    const finalData = removeEmptyObjectProperties(recordWithDates);
+                    sendRequest({ ...finalData, userId: usersId });
+                }
             }
         },
         [entity, currentErr]
     );
 
     return (
-        <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
+        <Modal
+            title={title + getModalEditingNameByKey(entity)}
+            open={isVisible}
+            footer={null}
+            onCancel={handleCancel}
+        >
             <Form
                 name="extraValidationModal"
                 validateMessages={validateMessages}
@@ -143,23 +144,12 @@ const ExtraValidationModal: FC<IExtraValidationModal> = ({
                                 key={"_" + index + dataItemLayout.propertyName}
                                 dataItemLayout={dataItemLayout}
                             >
-                                {getFormItemContent(form, dataItemLayout, getCurrentData())}
+                                {getFormItemContent(form, dataItemLayout, getExactEntityData())}
                             </WithFormItem>
                         ))}
                     </Col>
-                    <Col>
-                        <Form.Item className={classes.okBtnFormItem}>
-                            <Button customType={"regular"} htmlType="submit">
-                                {okText}
-                            </Button>
-                        </Form.Item>
-                    </Col>
-                    <Col>
-                        <Button customType={"primary"} onClick={handleCancel}>
-                            Отмена
-                        </Button>
-                    </Col>
                 </Row>
+                <ModalBtns okText={okText} onClick={handleCancel} />
             </Form>
         </Modal>
     );

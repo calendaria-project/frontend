@@ -11,7 +11,7 @@ export interface ICompanyDirectoryModal {
     onFinish: (values: IStaffingItemCreateModel | IStaffingItemViewModel) => void;
     isVisible: boolean;
     form: FormInstance<IStaffingItemCreateModel | IStaffingItemViewModel>;
-    positions: IPositionViewModel[]
+    positions: IPositionViewModel[];
 }
 
 const validateMessages = {
@@ -32,13 +32,7 @@ export const StaffingItemModal = ({
     };
 
     return (
-        <Modal
-            title={title}
-            open={isVisible}
-            footer={null}
-            onCancel={handleCancel}
-        // okText={okText}
-        >
+        <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
             <Form<IStaffingItemViewModel | IStaffingItemCreateModel>
                 form={form}
                 validateMessages={validateMessages}
@@ -68,7 +62,11 @@ export const StaffingItemModal = ({
                         </Form.Item>
                     </Col>
                     <Col xl={12} xs={24}>
-                        <Form.Item name="staffUnitCount" label="Кол-во единиц" rules={[{ required: true }]}>
+                        <Form.Item
+                            name="staffUnitCount"
+                            label="Кол-во единиц"
+                            rules={[{ required: true }]}
+                        >
                             <Input type="number" />
                         </Form.Item>
                     </Col>
@@ -78,8 +76,12 @@ export const StaffingItemModal = ({
                         </Form.Item>
                     </Col>
                     <Col xl={12} xs={24}>
-                        <Form.Item name="salarySupplement" label="Надбавка к окладу" rules={[{ required: true }]}>
-                            <Input type="number"/>
+                        <Form.Item
+                            name="salarySupplement"
+                            label="Надбавка к окладу"
+                            rules={[{ required: true }]}
+                        >
+                            <Input type="number" />
                         </Form.Item>
                     </Col>
                     <Col xl={24} xs={24}>

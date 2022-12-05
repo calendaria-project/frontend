@@ -1,6 +1,6 @@
 import { FC, memo, useCallback, useEffect, useState } from "react";
 import { FormInstance, Select as AntdSelect } from "antd";
-import { TInputData } from "../constants";
+import { TLayoutModalData } from "data/types";
 import { ISimpleDictionaryViewModel } from "interfaces";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { dictionaryCodesEnum } from "data/enums";
@@ -9,7 +9,7 @@ const { Option } = AntdSelect;
 
 interface ISelect {
     form: FormInstance;
-    dataItemLayout: TInputData;
+    dataItemLayout: TLayoutModalData;
     currentDataItemInfo: any;
     additionalModalFlag?: boolean;
 }

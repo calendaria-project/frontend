@@ -12,6 +12,7 @@ import useStyles from "./styles";
 import CompanySelect from "./Select";
 import { mailMessage, mailPattern } from "utils/patterns";
 import { inputLengthHandler } from "utils/inputLengthHandler";
+import ModalBtns from "components/Shared/modalRenderer/modalBtns";
 
 const { Option } = Select;
 
@@ -59,7 +60,7 @@ export const CompanyDirectoryModal = ({
                 onFinish={onFinish}
                 autoComplete="off"
                 layout="vertical"
-                className={classes.directoryModal}
+                className="directoryModal"
             >
                 <Row gutter={[16, 0]}>
                     <Form.Item hidden name="companyId" />
@@ -252,20 +253,7 @@ export const CompanyDirectoryModal = ({
                         )}
                     </Form.List>
                 </Row>
-                <Row align={"middle"} justify={"center"} gutter={[16, 16]}>
-                    <Col>
-                        <Form.Item className={classes.okBtnFormItem}>
-                            <Button customType={"regular"} htmlType="submit">
-                                {okText}
-                            </Button>
-                        </Form.Item>
-                    </Col>
-                    <Col>
-                        <Button customType={"primary"} onClick={handleCancel}>
-                            Отмена
-                        </Button>
-                    </Col>
-                </Row>
+                <ModalBtns okText={okText} onClick={handleCancel} />
             </Form>
         </Modal>
     );

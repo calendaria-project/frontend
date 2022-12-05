@@ -1,75 +1,35 @@
 import { dictionaryCodesEnum } from "data/enums";
 import { phonePattern, mailPattern, phoneMessage, mailMessage } from "utils/patterns";
-
-export enum Types {
-    TITLE = "title",
-    UNEDITABLE = "uneditable",
-    SELECT = "select",
-    INPUT = "input",
-    TEXTAREA = "textArea",
-    DATE = "date"
-}
-
-export enum SelectedKeyTypes {
-    USER = "user",
-    CONTACT_PERSONAL = "contact_personal",
-    CONTACT_BUSINESS = "contact_business",
-    INVENTORY = "inventory",
-    DOCUMENT = "document",
-    ADDRESS_INFO = "addressInfo",
-    CAR_INFO = "carInfo",
-    CONTRACT = "contract",
-    SHARED_INFO = "sharedInfo",
-    ADDITIONAL_INFO = "additionalInfo",
-    EDUCATION = "education",
-    LANGUAGE_KNOWLEDGE = "languageKnowledge",
-    RELATIONSHIP = "relationship",
-    MILITARY_INFO = "militaryInfo"
-}
+import { selectedKeyTypes } from "data/enums";
+import { TLayoutModalDataRecord, TLayoutModalData } from "data/types";
+import { layoutConstantTypes } from "data/enums";
 
 export const arrayKeyTypes: Array<string> = [
-    SelectedKeyTypes.EDUCATION,
-    SelectedKeyTypes.LANGUAGE_KNOWLEDGE,
-    SelectedKeyTypes.CONTRACT,
-    SelectedKeyTypes.INVENTORY,
-    SelectedKeyTypes.DOCUMENT,
-    SelectedKeyTypes.ADDRESS_INFO,
-    SelectedKeyTypes.RELATIONSHIP
+    selectedKeyTypes.EDUCATION,
+    selectedKeyTypes.LANGUAGE_KNOWLEDGE,
+    selectedKeyTypes.CONTRACT,
+    selectedKeyTypes.INVENTORY,
+    selectedKeyTypes.DOCUMENT,
+    selectedKeyTypes.ADDRESS_INFO,
+    selectedKeyTypes.RELATIONSHIP
 ];
 
 export const additionalMenuTypes: Array<string> = [
-    SelectedKeyTypes.SHARED_INFO,
-    SelectedKeyTypes.ADDITIONAL_INFO,
-    SelectedKeyTypes.LANGUAGE_KNOWLEDGE,
-    SelectedKeyTypes.EDUCATION,
-    SelectedKeyTypes.RELATIONSHIP,
-    SelectedKeyTypes.MILITARY_INFO
+    selectedKeyTypes.SHARED_INFO,
+    selectedKeyTypes.ADDITIONAL_INFO,
+    selectedKeyTypes.LANGUAGE_KNOWLEDGE,
+    selectedKeyTypes.EDUCATION,
+    selectedKeyTypes.RELATIONSHIP,
+    selectedKeyTypes.MILITARY_INFO
 ];
 
-export type TInputData = {
-    type: string;
-    propertyName: string;
-    dictionaryCode?: string;
-    inputType?: string;
-    customType?: "mobile";
-    withSearch?: boolean;
-    pattern?: RegExp;
-    patternMessage?: string;
-    placeholder: string;
-    required?: boolean;
-};
-
-type InputDataRecord = {
-    [key: string]: Array<TInputData>;
-};
-
-export const inputData: InputDataRecord = {
-    [SelectedKeyTypes.USER]: [
-        { type: Types.UNEDITABLE, propertyName: "username", placeholder: "Логин" }
+export const modalData: TLayoutModalDataRecord = {
+    [selectedKeyTypes.USER]: [
+        { type: layoutConstantTypes.UNEDITABLE, propertyName: "username", placeholder: "Логин" }
     ],
-    [SelectedKeyTypes.CONTACT_PERSONAL]: [
+    [selectedKeyTypes.CONTACT_PERSONAL]: [
         {
-            type: Types.INPUT,
+            type: layoutConstantTypes.INPUT,
             propertyName: "mobilePhoneNumber",
             customType: "mobile",
             pattern: phonePattern,
@@ -78,14 +38,14 @@ export const inputData: InputDataRecord = {
             required: true
         },
         {
-            type: Types.INPUT,
+            type: layoutConstantTypes.INPUT,
             patternMessage: mailMessage,
             pattern: mailPattern,
             propertyName: "email",
             placeholder: "Личный e-mail"
         },
         {
-            type: Types.INPUT,
+            type: layoutConstantTypes.INPUT,
             propertyName: "homePhoneNumber",
             customType: "mobile",
             patternMessage: phoneMessage,
@@ -93,15 +53,19 @@ export const inputData: InputDataRecord = {
             placeholder: "Домашний телефон"
         }
     ],
-    [SelectedKeyTypes.CONTACT_BUSINESS]: [
-        { type: Types.INPUT, propertyName: "workPlace", placeholder: "Адрес места работы" },
+    [selectedKeyTypes.CONTACT_BUSINESS]: [
         {
-            type: Types.INPUT,
+            type: layoutConstantTypes.INPUT,
+            propertyName: "workPlace",
+            placeholder: "Адрес места работы"
+        },
+        {
+            type: layoutConstantTypes.INPUT,
             propertyName: "cabinetNumber",
             placeholder: "Номер кабинета"
         },
         {
-            type: Types.INPUT,
+            type: layoutConstantTypes.INPUT,
             propertyName: "mobilePhoneNumber",
             customType: "mobile",
             patternMessage: phoneMessage,
@@ -110,7 +74,7 @@ export const inputData: InputDataRecord = {
             required: true
         },
         {
-            type: Types.INPUT,
+            type: layoutConstantTypes.INPUT,
             propertyName: "internalPhoneNumber",
             customType: "mobile",
             patternMessage: phoneMessage,
@@ -118,16 +82,16 @@ export const inputData: InputDataRecord = {
             placeholder: "Номер рабочего телефона"
         },
         {
-            type: Types.INPUT,
+            type: layoutConstantTypes.INPUT,
             patternMessage: phoneMessage,
             pattern: mailPattern,
             propertyName: "email",
             placeholder: "Корпоративный e-mail"
         }
     ],
-    [SelectedKeyTypes.INVENTORY]: [
+    [selectedKeyTypes.INVENTORY]: [
         {
-            type: Types.SELECT,
+            type: layoutConstantTypes.SELECT,
             dictionaryCode: dictionaryCodesEnum.INVENTORY_TYPE,
             propertyName: "inventoryType",
             placeholder: "Тип инвентаря",
@@ -135,138 +99,148 @@ export const inputData: InputDataRecord = {
             required: true
         },
         {
-            type: Types.INPUT,
+            type: layoutConstantTypes.INPUT,
             propertyName: "num",
             placeholder: "Инвентарный номер",
             required: true
         },
         {
-            type: Types.INPUT,
+            type: layoutConstantTypes.INPUT,
             propertyName: "serialNum",
             placeholder: "Инвентарный серийный номер"
         },
         {
-            type: Types.INPUT,
+            type: layoutConstantTypes.INPUT,
             propertyName: "modelNum",
             placeholder: "Инвентарный номер модель"
         },
-        { type: Types.INPUT, propertyName: "note", placeholder: "Комментарий" }
+        { type: layoutConstantTypes.INPUT, propertyName: "note", placeholder: "Комментарий" }
     ],
-    [SelectedKeyTypes.DOCUMENT]: [
+    [selectedKeyTypes.DOCUMENT]: [
         {
-            type: Types.SELECT,
+            type: layoutConstantTypes.SELECT,
             propertyName: "documentType",
             dictionaryCode: dictionaryCodesEnum.DOCUMENT_TYPE,
             placeholder: "Тип документа",
             required: true
         },
         {
-            type: Types.INPUT,
+            type: layoutConstantTypes.INPUT,
             propertyName: "documentNum",
             placeholder: "Номер документа",
             required: true
         },
         {
-            type: Types.SELECT,
+            type: layoutConstantTypes.SELECT,
             propertyName: "issueAuthority",
             dictionaryCode: dictionaryCodesEnum.ISSUE_AUTHORITY,
             placeholder: "Орган выдачи"
         },
         {
-            type: Types.DATE,
+            type: layoutConstantTypes.DATE,
             propertyName: "issueDate",
             placeholder: "Дата выдачи",
             required: true
         }
     ],
-    [SelectedKeyTypes.ADDRESS_INFO]: [
+    [selectedKeyTypes.ADDRESS_INFO]: [
         {
-            type: Types.SELECT,
+            type: layoutConstantTypes.SELECT,
             propertyName: "addressType",
             dictionaryCode: dictionaryCodesEnum.ADDRESS_TYPE,
             placeholder: "Тип адреса",
             required: true
         },
         {
-            type: Types.SELECT,
+            type: layoutConstantTypes.SELECT,
             propertyName: "city",
             dictionaryCode: dictionaryCodesEnum.CITY,
             placeholder: "Город",
             required: true
         },
-        { type: Types.INPUT, propertyName: "street", placeholder: "Улица", required: true },
-        { type: Types.INPUT, propertyName: "houseNum", placeholder: "Дом", required: true },
-        { type: Types.INPUT, propertyName: "flatNum", placeholder: "Квартира" }
-    ],
-    [SelectedKeyTypes.CAR_INFO]: [
         {
-            type: Types.SELECT,
+            type: layoutConstantTypes.INPUT,
+            propertyName: "street",
+            placeholder: "Улица",
+            required: true
+        },
+        {
+            type: layoutConstantTypes.INPUT,
+            propertyName: "houseNum",
+            placeholder: "Дом",
+            required: true
+        },
+        { type: layoutConstantTypes.INPUT, propertyName: "flatNum", placeholder: "Квартира" }
+    ],
+    [selectedKeyTypes.CAR_INFO]: [
+        {
+            type: layoutConstantTypes.SELECT,
             propertyName: "carModel",
             dictionaryCode: dictionaryCodesEnum.CAR_MODEL,
             placeholder: "Марка",
             required: true
         },
         {
-            type: Types.INPUT,
+            type: layoutConstantTypes.INPUT,
             propertyName: "carNum",
             placeholder: "Государственный номер",
             required: true
         },
-        { type: Types.INPUT, propertyName: "note", placeholder: "Примечание" }
+        { type: layoutConstantTypes.INPUT, propertyName: "note", placeholder: "Примечание" }
     ],
-    [SelectedKeyTypes.CONTRACT]: [
+    [selectedKeyTypes.CONTRACT]: [
         {
-            type: Types.SELECT,
+            type: layoutConstantTypes.SELECT,
             propertyName: "contractType",
             dictionaryCode: dictionaryCodesEnum.CONTRACT_TYPE,
             placeholder: "Тип договора",
             required: true
         },
         {
-            type: Types.INPUT,
+            type: layoutConstantTypes.INPUT,
             propertyName: "contractNum",
             placeholder: "Номер договора",
             required: true
         },
         {
-            type: Types.DATE,
+            type: layoutConstantTypes.DATE,
             propertyName: "contractDate",
             placeholder: "Дата начала договора",
             required: true
         },
         {
-            type: Types.SELECT,
+            type: layoutConstantTypes.SELECT,
             propertyName: "workType",
             dictionaryCode: dictionaryCodesEnum.WORK_TYPE,
             placeholder: "Тип работ",
             required: true
         },
         {
-            type: Types.SELECT,
+            type: layoutConstantTypes.SELECT,
             propertyName: "workKind",
             dictionaryCode: dictionaryCodesEnum.WORK_KIND,
             placeholder: "Вид работ",
             required: true
         },
         {
-            type: Types.DATE,
+            type: layoutConstantTypes.DATE,
             propertyName: "contractEndDate",
             placeholder: "Дата окончания договора"
         },
         {
-            type: Types.TITLE,
+            type: layoutConstantTypes.TITLE,
             placeholder: "Заработная плата",
             propertyName: ""
         },
         {
-            type: Types.INPUT,
+            type: layoutConstantTypes.INPUT,
             propertyName: "salaryConstantPart",
             inputType: "number",
             placeholder: "Постоянная часть з/п",
             required: true
         },
         {
-            type: Types.INPUT,
+            type: layoutConstantTypes.INPUT,
             propertyName: "salaryVariablePart",
             inputType: "number",
             placeholder: "Переменная часть з/п",
@@ -274,13 +248,22 @@ export const inputData: InputDataRecord = {
         }
     ],
 
-    [SelectedKeyTypes.ADDITIONAL_INFO]: [
-        { type: Types.TEXTAREA, propertyName: "aboutMe", placeholder: "О себе", required: true },
-        { type: Types.TEXTAREA, propertyName: "description", placeholder: "Примечание" }
-    ],
-    [SelectedKeyTypes.EDUCATION]: [
+    [selectedKeyTypes.ADDITIONAL_INFO]: [
         {
-            type: Types.SELECT,
+            type: layoutConstantTypes.TEXTAREA,
+            propertyName: "aboutMe",
+            placeholder: "О себе",
+            required: true
+        },
+        {
+            type: layoutConstantTypes.TEXTAREA,
+            propertyName: "description",
+            placeholder: "Примечание"
+        }
+    ],
+    [selectedKeyTypes.EDUCATION]: [
+        {
+            type: layoutConstantTypes.SELECT,
             propertyName: "institution",
             dictionaryCode: dictionaryCodesEnum.EDUCATION_INSTITUTION,
             placeholder: "Учебное заведение",
@@ -289,7 +272,7 @@ export const inputData: InputDataRecord = {
         },
         //GET - array, POST - object
         {
-            type: Types.SELECT,
+            type: layoutConstantTypes.SELECT,
             propertyName: "educationLevel",
             dictionaryCode: dictionaryCodesEnum.EDUCATION_LEVEL,
             placeholder: "Уровень образования",
@@ -298,16 +281,16 @@ export const inputData: InputDataRecord = {
         },
         //GET - array, POST - object
         {
-            type: Types.SELECT,
+            type: layoutConstantTypes.SELECT,
             propertyName: "specialty",
             dictionaryCode: dictionaryCodesEnum.SPECIALTY,
             placeholder: "Специальность",
             required: true
         }
     ],
-    [SelectedKeyTypes.LANGUAGE_KNOWLEDGE]: [
+    [selectedKeyTypes.LANGUAGE_KNOWLEDGE]: [
         {
-            type: Types.SELECT,
+            type: layoutConstantTypes.SELECT,
             propertyName: "language",
             dictionaryCode: dictionaryCodesEnum.LANGUAGE,
             placeholder: "Язык",
@@ -315,48 +298,58 @@ export const inputData: InputDataRecord = {
             required: true
         },
         {
-            type: Types.SELECT,
+            type: layoutConstantTypes.SELECT,
             propertyName: "knowledgeLevel",
             dictionaryCode: dictionaryCodesEnum.LANGUAGE_KNOWLEDGE_LEVEL,
             placeholder: "Уровень владения",
             required: true
         }
     ],
-    [SelectedKeyTypes.RELATIONSHIP]: [
+    [selectedKeyTypes.RELATIONSHIP]: [
         {
-            type: Types.SELECT,
+            type: layoutConstantTypes.SELECT,
             propertyName: "sex",
             dictionaryCode: dictionaryCodesEnum.SEX,
             placeholder: "Пол",
             required: true
         },
         {
-            type: Types.SELECT,
+            type: layoutConstantTypes.SELECT,
             propertyName: "relationshipType",
             dictionaryCode: dictionaryCodesEnum.RELATIONSHIP_TYPE,
             placeholder: "Родство",
             required: true
         },
         {
-            type: Types.DATE,
+            type: layoutConstantTypes.DATE,
             propertyName: "birthDate",
             placeholder: "Дата рождения",
             required: true
         },
-        { type: Types.INPUT, propertyName: "firstname", placeholder: "Имя", required: true },
-        { type: Types.INPUT, propertyName: "lastname", placeholder: "Фамилия", required: true },
-        { type: Types.INPUT, propertyName: "patronymic", placeholder: "Отчество" }
-    ],
-    [SelectedKeyTypes.MILITARY_INFO]: [
         {
-            type: Types.SELECT,
+            type: layoutConstantTypes.INPUT,
+            propertyName: "firstname",
+            placeholder: "Имя",
+            required: true
+        },
+        {
+            type: layoutConstantTypes.INPUT,
+            propertyName: "lastname",
+            placeholder: "Фамилия",
+            required: true
+        },
+        { type: layoutConstantTypes.INPUT, propertyName: "patronymic", placeholder: "Отчество" }
+    ],
+    [selectedKeyTypes.MILITARY_INFO]: [
+        {
+            type: layoutConstantTypes.SELECT,
             propertyName: "militaryRank",
             dictionaryCode: dictionaryCodesEnum.MILITARY_RANK,
             placeholder: "Военное звание",
             required: true
         },
         {
-            type: Types.DATE,
+            type: layoutConstantTypes.DATE,
             propertyName: "enlistmentDate",
             placeholder: "Дата приема на службу",
             required: true
@@ -364,22 +357,22 @@ export const inputData: InputDataRecord = {
     ]
 };
 
-export const REDUCED_CONTRACT_INFO: TInputData[] = [
+export const REDUCED_CONTRACT_INFO: TLayoutModalData[] = [
     {
-        type: Types.SELECT,
+        type: layoutConstantTypes.SELECT,
         propertyName: "contractType",
         dictionaryCode: dictionaryCodesEnum.CONTRACT_TYPE,
         placeholder: "Тип договора",
         required: true
     },
     {
-        type: Types.INPUT,
+        type: layoutConstantTypes.INPUT,
         propertyName: "contractNum",
         placeholder: "Номер договора",
         required: true
     },
     {
-        type: Types.DATE,
+        type: layoutConstantTypes.DATE,
         propertyName: "contractDate",
         placeholder: "Дата начала договора",
         required: true
