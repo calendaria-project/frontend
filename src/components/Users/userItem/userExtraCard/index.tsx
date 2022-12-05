@@ -23,6 +23,7 @@ import {
 } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { useTypedSelector } from "hooks/useTypedSelector";
+import { IErrorDetail, modalErrorCodes, errorCodes, IErrorModifiedItem } from "./errorCodes";
 
 import UserExtraCardModal from "./modal";
 import { getUserEditingNameByKey } from "utils/getUserEditingNameByKey";
@@ -42,6 +43,7 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import getObjectWithHandledDates from "utils/getObjectWithHandeledDates";
+import axios from "axios";
 
 interface IUserExtraCard {
     usersId: string;
@@ -70,6 +72,9 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
     const [currentDataLayout, setCurrentDataLayout] = useState<Array<TInputData>>(
         inputData?.[selectedKey]
     );
+
+    const [errorMessages, setErrorMessages] = useState<string>("");
+    const [errorArr, setErrorArr] = useState<IErrorModifiedItem[]>([]);
 
     useEffect(() => {
         dispatch(SetUserSelectedKey(SelectedKeyTypes.USER));
@@ -167,43 +172,72 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
     const saveAdditionalModal = useCallback(
         (record: any) => {
             const recordWithDates = getObjectWithHandledDates(record);
-            const reqMethod = "post";
-
             console.log(recordWithDates);
 
             const sendRequest = (data: Object) => {
-                actionMethodResultSync(
-                    "USER",
-                    getUserRequestUrl(selectedKey, reqMethod, usersId),
-                    reqMethod,
-                    getRequestHeader(authContext.token),
-                    data
-                )
+                const url = `${process.env.USER_URL}${getUserRequestUrl(
+                    selectedKey,
+                    "post",
+                    usersId
+                )}`;
+                axios
+                    .post(url, data, getRequestHeader(authContext.token))
                     .then((res) => {
                         let currentData;
-                        if (res instanceof Object && !(res instanceof Array)) {
+                        const result = res.data;
+                        if (result instanceof Object && !(result instanceof Array)) {
                             isObjectNotEmpty(currentUserDataItemInfo)
-                                ? (currentData = [...currentUserDataItemInfo, res])
-                                : (currentData = [res]);
-                        } else if (res instanceof Array) {
+                                ? (currentData = [...currentUserDataItemInfo, result])
+                                : (currentData = [result]);
+                        } else if (result instanceof Array) {
                             isObjectNotEmpty(currentUserDataItemInfo)
-                                ? (currentData = [...currentUserDataItemInfo, ...res])
-                                : (currentData = [...res]);
+                                ? (currentData = [...currentUserDataItemInfo, ...result])
+                                : (currentData = [...result]);
                         }
                         dispatch(SetCurrentUserDataItemInfo({ [selectedKey]: currentData }));
                         message.success("Успешно сохранено");
+
+                        setErrorMessages("");
+                        setErrorArr([]);
+                        setAdditionalModalVisibleFlag(false);
+                        simpleForm.resetFields();
                     })
                     .catch((err) => {
-                        console.log(err);
-                        message.error("Ошибка");
+                        const errData = err.response?.data;
+                        if (errData?.code === "VALIDATION_ERROR") {
+                            const errorDetails: IErrorDetail[] = errData?.details;
+                            console.log(errData);
+                            message.error("Ошибка валидации");
+                            let errMsgs = "Отсутствуют: ";
+                            let errModals: IErrorModifiedItem[] = [];
+                            (errorDetails || []).forEach((detail, index) => {
+                                index !== errorDetails.length - 1
+                                    ? (errMsgs += errorCodes[detail.errorCode] + ", ")
+                                    : (errMsgs += errorCodes[detail.errorCode]);
+                                if (modalErrorCodes.includes(detail.errorCode)) {
+                                    errModals.push({
+                                        selectedKey:
+                                            detail.entity.slice(0, 1).toLowerCase() +
+                                            detail.entity.slice(1),
+                                        id: detail.entityId,
+                                        field: detail.field,
+                                        addText: "Добавить"
+                                    });
+                                }
+                            });
+                            setErrorMessages(errMsgs);
+                            setErrorArr(errModals);
+                            console.log(errMsgs, errModals);
+                        } else {
+                            message.error("Ошибка");
+                            setAdditionalModalVisibleFlag(false);
+                            simpleForm.resetFields();
+                        }
                     });
             };
 
             const data = removeEmptyObjectProperties({ ...recordWithDates, userId: usersId });
             sendRequest(data);
-
-            setAdditionalModalVisibleFlag(false);
-            simpleForm.resetFields();
         },
         [simpleForm, currentUserDataItemInfo, selectedKey, usersId]
     );
@@ -356,6 +390,9 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                     onFinish={saveAdditionalModal}
                     form={simpleForm}
                     currentDataLayout={currentDataLayout}
+                    errorMsg={errorMessages}
+                    errorArr={errorArr}
+                    usersId={usersId}
                 />
             </Form>
         </Card>

@@ -6,8 +6,5 @@ export default createUseStyles({
     },
     okBtnFormItem: {
         marginTop: "10px !important"
-    },
-    titleItem: {
-        fontSize: "18px"
     }
 });
