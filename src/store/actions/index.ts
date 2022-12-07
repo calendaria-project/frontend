@@ -49,3 +49,17 @@ export const SetDictionaryTabActiveKey = (payload: string): IAction => {
         payload
     };
 };
+
+export const SetModalVariableSalary = (payload: number): IAction => {
+    return {
+        type: MainActionTypes.SET_MODAL_VARIABLE_SALARY,
+        payload
+    };
+};
+
+export const SetModalConstantSalary = (payload: number): IAction => {
+    return {
+        type: MainActionTypes.SET_MODAL_CONSTANT_SALARY,
+        payload
+    };
+};

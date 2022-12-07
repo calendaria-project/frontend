@@ -94,21 +94,24 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
                 form={form}
             >
                 <Row gutter={16}>
-                    <Col xl={24} xs={24}>
-                        {(currentDataLayout || []).map((dataItemLayout, index) => (
-                            <WithFormItem
+                    {(currentDataLayout || []).map((dataItemLayout, index) => {
+                        const span = dataItemLayout.span;
+                        return (
+                            <Col
                                 key={"" + dataItemLayout.propertyName + index}
-                                dataItemLayout={dataItemLayout}
+                                span={span ? span : 24}
                             >
-                                {getFormItemContent(form, dataItemLayout, undefined, true)}
-                            </WithFormItem>
-                        ))}
-                        {selectedKey === selectedKeyTypes.CONTRACT && errorMsg && (
-                            <Col className={classes.errorMsg} span={24}>
-                                {errorMsg}
+                                <WithFormItem dataItemLayout={dataItemLayout}>
+                                    {getFormItemContent(form, dataItemLayout, undefined, true)}
+                                </WithFormItem>
                             </Col>
-                        )}
-                    </Col>
+                        );
+                    })}
+                    {selectedKey === selectedKeyTypes.CONTRACT && errorMsg && (
+                        <Col className={classes.errorMsg} span={24}>
+                            {errorMsg}
+                        </Col>
+                    )}
                 </Row>
                 {selectedKey === selectedKeyTypes.CONTRACT &&
                     copiedErrorArr &&
@@ -134,7 +137,7 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
                             ))}
                         </Row>
                     )}
-                <ModalBtns okText={okText} onClick={handleCancel} />
+                <ModalBtns okText={okText} onCancel={handleCancel} />
             </Form>
             <ExtraValidationModal
                 okText={"Сохранить"}

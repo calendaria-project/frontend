@@ -149,7 +149,7 @@ const ExtraValidationModal: FC<IExtraValidationModal> = ({
                         ))}
                     </Col>
                 </Row>
-                <ModalBtns okText={okText} onClick={handleCancel} />
+                <ModalBtns okText={okText} onCancel={handleCancel} />
             </Form>
         </Modal>
     );

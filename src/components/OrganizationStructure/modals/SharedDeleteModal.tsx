@@ -22,14 +22,14 @@ const SharedDeleteModal: FC<IDivisionUnitDeleteModal> = ({
         setIsVisible(false);
     }, []);
 
-    const handleRemove = () => {
+    const handleRemove = useCallback(() => {
         onDeleteItem();
         handleCancel();
-    };
+    }, [handleCancel, onDeleteItem]);
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
-            <ModalBtns okText={okText} onClick={handleRemove} />
+            <ModalBtns okText={okText} onClick={handleRemove} onCancel={handleCancel} />
         </Modal>
     );
 };

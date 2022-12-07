@@ -33,6 +33,7 @@ import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import PhoneInput from "utils/PhoneInput";
 import { inputLengthHandler } from "utils/inputLengthHandler";
+import ValuesSelect from "./Select";
 
 export interface IUserAddDrawer {
     companyId?: number;
@@ -201,15 +202,15 @@ export const UserAddDrawer = ({
                             </Col>
                             <Col span={8}>
                                 <Form.Item
-                                    name="sex.id"
+                                    name="sex"
                                     label="Пол"
                                     rules={[{ required: true, message: "Пол" }]}
                                 >
-                                    <Select allowClear>
-                                        {sexes.map((el, i) => (
-                                            <Option key={i} children={el.nameRu} value={el.id} />
-                                        ))}
-                                    </Select>
+                                    <ValuesSelect
+                                        form={form}
+                                        selectValues={sexes}
+                                        propertyName={"sex"}
+                                    />
                                 </Form.Item>
                             </Col>
                             <Col span={24}>

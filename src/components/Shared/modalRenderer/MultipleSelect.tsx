@@ -3,26 +3,17 @@ import { FormInstance, Select as AntdSelect } from "antd";
 import { TLayoutModalData } from "data/types";
 import { ISimpleDictionaryViewModel } from "interfaces";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
-import { dictionaryCodesEnum } from "data/enums";
 
 const { Option } = AntdSelect;
 
-interface ISelect {
+interface IMultipleSelect {
     form: FormInstance;
     dataItemLayout: TLayoutModalData;
     currentDataItemInfo: any;
-    additionalModalFlag?: boolean;
 }
 
-const Select: FC<ISelect> = ({
-    form,
-    dataItemLayout,
-    currentDataItemInfo,
-    additionalModalFlag
-}) => {
-    const [selectValue, setSelectValue] = useState<ISimpleDictionaryViewModel | undefined>(
-        undefined
-    );
+const MultipleSelect: FC<IMultipleSelect> = ({ form, dataItemLayout, currentDataItemInfo }) => {
+    const [selectValue, setSelectValue] = useState<ISimpleDictionaryViewModel[]>([]);
     const [selectValues, setSelectValues] = useState<ISimpleDictionaryViewModel[]>([]);
 
     const { getDictionaryValues } = useSimpleHttpFunctions();
@@ -39,18 +30,18 @@ const Select: FC<ISelect> = ({
         const dictionaryCode = dataItemLayout.dictionaryCode;
         const url = `simple/${dictionaryCode}`;
         const currentSelectValues: ISimpleDictionaryViewModel[] = await getDictionaryValues(url);
-        setSelectValues(
-            additionalModalFlag && dictionaryCode === dictionaryCodesEnum.CONTRACT_TYPE
-                ? currentSelectValues.filter((v) => ["CONTRACT"].includes(v.code))
-                : currentSelectValues
-        );
+        setSelectValues(currentSelectValues);
     };
 
     const initSelectValue = () => {
         const id = currentDataItemInfo?.[dataItemLayout.propertyName]?.id;
         if (id) {
-            const currentSelectValue = selectValues.find((item) => item.id === id);
-            setSelectValue(currentSelectValue);
+            const currentSelectValue: ISimpleDictionaryViewModel | undefined = selectValues.find(
+                (item) => item.id === id
+            );
+            if (currentSelectValue) {
+                setSelectValue([currentSelectValue]);
+            }
         }
     };
 
@@ -60,10 +51,7 @@ const Select: FC<ISelect> = ({
 
     const handleChangeValue = useCallback(
         (v: any) => {
-            const currentValueObject: ISimpleDictionaryViewModel | undefined = selectValues.find(
-                (item) => item.id === v
-            );
-            setSelectValue(currentValueObject);
+            setSelectValue(v);
         },
         [selectValues]
     );
@@ -73,7 +61,7 @@ const Select: FC<ISelect> = ({
             showSearch={!!dataItemLayout.withSearch}
             disabled={dataItemLayout.disabled}
             optionFilterProp={dataItemLayout.withSearch ? "children" : undefined}
-            value={selectValue?.nameRu}
+            value={selectValue?.map((v) => v.nameRu)}
             placeholder={dataItemLayout.placeholder}
             onChange={handleChangeValue}
         >
@@ -85,4 +73,5 @@ const Select: FC<ISelect> = ({
         </AntdSelect>
     );
 };
-export default memo(Select);
+
+export default memo(MultipleSelect);

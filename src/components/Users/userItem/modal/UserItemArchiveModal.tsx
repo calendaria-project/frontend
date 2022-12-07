@@ -22,14 +22,14 @@ const UserItemArchiveModal: FC<UserItemArchiveModal> = ({
         setIsVisible(false);
     }, []);
 
-    const handleRemove = () => {
+    const handleRemove = useCallback(() => {
         handleDeleteUser();
         handleCancel();
-    };
+    }, [handleCancel, handleDeleteUser]);
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
-            <ModalBtns okText={okText} onClick={handleRemove} />
+            <ModalBtns okText={okText} onClick={handleRemove} onCancel={handleCancel} />
         </Modal>
     );
 };

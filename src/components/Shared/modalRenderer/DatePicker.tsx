@@ -35,6 +35,7 @@ const DatePicker: FC<IDatePicker> = ({ form, dataItemLayout, currentDataItemInfo
     return (
         <AntdDatePicker
             allowClear={false}
+            disabled={dataItemLayout.disabled}
             value={currentValue}
             onChange={handleChangeValue}
             className={classes.datePicker}

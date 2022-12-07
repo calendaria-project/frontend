@@ -234,17 +234,44 @@ export const modalData: TLayoutModalDataRecord = {
         },
         {
             type: layoutConstantTypes.INPUT,
-            propertyName: "salaryConstantPart",
+            propertyName: "salary",
             inputType: "number",
-            placeholder: "Постоянная часть з/п",
+            placeholder: "Общий оклад",
+            required: true
+        },
+        {
+            type: layoutConstantTypes.INPUT,
+            placeholder: "KPI",
+            inputType: "number",
+            span: 6,
+            suffix: "%",
+            propertyName: "salaryConstantPercent",
+            required: true
+        },
+        {
+            type: layoutConstantTypes.INPUT,
+            propertyName: "salaryConstantPart",
+            disabled: true,
+            inputType: "number",
+            placeholder: "Основная заработная плата",
+            span: 18
+        },
+        {
+            type: layoutConstantTypes.INPUT,
+            placeholder: "KPI",
+            inputType: "number",
+            span: 6,
+            suffix: "%",
+            propertyName: "salaryVariablePercent",
             required: true
         },
         {
             type: layoutConstantTypes.INPUT,
             propertyName: "salaryVariablePart",
+            disabled: true,
             inputType: "number",
-            placeholder: "Переменная часть з/п",
-            required: true
+            span: 18,
+            placeholder: "Переменная заработная плата"
         }
     ],
 

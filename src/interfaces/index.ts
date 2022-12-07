@@ -267,7 +267,7 @@ export interface IUsersDtoViewModel {
     patronymic: string;
     iin: string;
     birthDate: string;
-    sex: IDictionaryDtoModel;
+    sex: ISimpleDictionaryViewModel;
     company: ICompanyDtoModel;
     division: IDivisionDtoModel;
     position: IPositionDtoModel;

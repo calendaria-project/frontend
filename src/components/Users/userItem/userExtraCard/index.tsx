@@ -129,6 +129,7 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
     const saveModal = useCallback(
         (record: any) => {
             const recordWithDates = getObjectWithHandledDates(record);
+            const { salaryConstantPart, salaryVariablePart, ...modifiedRecord } = recordWithDates;
             const reqMethod = isObjectNotEmpty(currentUserDataItemInfo) ? "put" : "post";
 
             const sendRequest = (data: Object) => {
@@ -150,11 +151,11 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
             };
 
             if (reqMethod === "post") {
-                const data = removeEmptyObjectProperties({ ...recordWithDates, userId: usersId });
+                const data = removeEmptyObjectProperties({ ...modifiedRecord, userId: usersId });
                 console.log("DATA", data);
                 sendRequest(data);
             } else {
-                const data = _.merge(currentUserDataItemInfo, recordWithDates);
+                const data = _.merge(currentUserDataItemInfo, modifiedRecord);
                 console.log("DATA", data);
                 sendRequest(data);
             }
@@ -168,9 +169,10 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
     const saveAdditionalModal = useCallback(
         (record: any) => {
             const recordWithDates = getObjectWithHandledDates(record);
-            console.log(recordWithDates);
+            const { salaryConstantPart, salaryVariablePart, ...modifiedRecord } = recordWithDates;
 
             const sendRequest = (data: Object) => {
+                console.log(data);
                 const url = `${process.env.USER_URL}${getUserRequestUrl(
                     selectedKey,
                     "post",
@@ -232,7 +234,7 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                     });
             };
 
-            const data = removeEmptyObjectProperties({ ...recordWithDates, userId: usersId });
+            const data = removeEmptyObjectProperties({ ...modifiedRecord, userId: usersId });
             sendRequest(data);
         },
         [simpleForm, currentUserDataItemInfo, selectedKey, usersId]

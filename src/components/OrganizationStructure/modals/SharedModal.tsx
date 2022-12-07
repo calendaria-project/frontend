@@ -83,7 +83,7 @@ const SharedModal = ({
                     className="directoryModal"
                 >
                     {children}
-                    <ModalBtns okText={okText} onClick={handleCancel} />
+                    <ModalBtns okText={okText} onCancel={handleCancel} />
                 </Form>
             </Modal>
         );

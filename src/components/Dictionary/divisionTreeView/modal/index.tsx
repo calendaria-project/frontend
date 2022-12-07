@@ -93,7 +93,7 @@ export const DivisionDirectoryModal = ({
                         </Form.Item>
                     </Col>
                 </Row>
-                <ModalBtns okText={okText} onClick={handleCancel} />
+                <ModalBtns okText={okText} onCancel={handleCancel} />
             </Form>
         </Modal>
     );

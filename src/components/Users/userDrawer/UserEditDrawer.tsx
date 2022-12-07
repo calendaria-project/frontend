@@ -35,6 +35,7 @@ import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import { inputLengthHandler } from "utils/inputLengthHandler";
 import { IUsersDtoViewModel } from "interfaces";
+import ValuesSelect from "./Select";
 
 export interface IUserEditDrawer {
     userPhoto: string | null;
@@ -82,7 +83,7 @@ export const UserEditDrawer = ({
             firstname: userData.firstname,
             patronymic: userData.patronymic,
             iin: userData.iin,
-            "sex.id": userData?.sex?.id,
+            sex: userData.sex,
             birthDate: moment(userData?.birthDate, "YYYY-MM-DD"),
             employmentDate: moment(userData?.employmentDate, "YYYY-MM-DD"),
             "division.divisionId": userData?.division?.divisionId,
@@ -210,15 +211,16 @@ export const UserEditDrawer = ({
                             </Col>
                             <Col span={8}>
                                 <Form.Item
-                                    name="sex.id"
+                                    name="sex"
                                     label="Пол"
                                     rules={[{ required: true, message: "Пол" }]}
                                 >
-                                    <Select allowClear>
-                                        {sexes.map((el, i) => (
-                                            <Option key={i} children={el.nameRu} value={el.id} />
-                                        ))}
-                                    </Select>
+                                    <ValuesSelect
+                                        form={form}
+                                        initialValue={userData?.sex}
+                                        selectValues={sexes}
+                                        propertyName={"sex"}
+                                    />
                                 </Form.Item>
                             </Col>
                             <Col span={24}>

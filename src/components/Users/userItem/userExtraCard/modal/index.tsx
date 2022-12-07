@@ -69,38 +69,58 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                     {arrayKeyTypes.includes(selectedKey)
                         ? (modalCurrentDataItemInfo || []).map(
                               (dataItemInfo: any, index: number) => (
-                                  <Col xl={24} xs={24} key={index}>
+                                  <React.Fragment key={index}>
                                       {dataItemInfo?.contractType &&
                                       dataItemInfo.contractType.code !== "CONTRACT"
-                                          ? REDUCED_CONTRACT_INFO.map((dataItemLayout, index) => (
-                                                <WithFormItem
-                                                    key={"_" + dataItemLayout.propertyName + index}
-                                                    dataItemLayout={dataItemLayout}
-                                                >
-                                                    {getFormItemContent(
-                                                        form,
-                                                        dataItemLayout,
-                                                        dataItemInfo
-                                                    )}
-                                                </WithFormItem>
-                                            ))
-                                          : (currentDataLayout || []).map(
-                                                (dataItemLayout, index) => (
-                                                    <WithFormItem
+                                          ? REDUCED_CONTRACT_INFO.map((dataItemLayout, index) => {
+                                                const span = dataItemLayout.span;
+                                                return (
+                                                    <Col
                                                         key={
-                                                            "" + dataItemLayout.propertyName + index
+                                                            "_" +
+                                                            dataItemLayout.propertyName +
+                                                            index
                                                         }
-                                                        dataItemLayout={dataItemLayout}
+                                                        span={span ? span : 24}
                                                     >
-                                                        {getFormItemContent(
-                                                            form,
-                                                            dataItemLayout,
-                                                            dataItemInfo
-                                                        )}
-                                                    </WithFormItem>
-                                                )
+                                                        <WithFormItem
+                                                            dataItemLayout={dataItemLayout}
+                                                        >
+                                                            {getFormItemContent(
+                                                                form,
+                                                                dataItemLayout,
+                                                                dataItemInfo
+                                                            )}
+                                                        </WithFormItem>
+                                                    </Col>
+                                                );
+                                            })
+                                          : (currentDataLayout || []).map(
+                                                (dataItemLayout, index) => {
+                                                    const span = dataItemLayout.span;
+                                                    return (
+                                                        <Col
+                                                            key={
+                                                                "" +
+                                                                dataItemLayout.propertyName +
+                                                                index
+                                                            }
+                                                            span={span ? span : 24}
+                                                        >
+                                                            <WithFormItem
+                                                                dataItemLayout={dataItemLayout}
+                                                            >
+                                                                {getFormItemContent(
+                                                                    form,
+                                                                    dataItemLayout,
+                                                                    dataItemInfo
+                                                                )}
+                                                            </WithFormItem>
+                                                        </Col>
+                                                    );
+                                                }
                                             )}
-                                  </Col>
+                                  </React.Fragment>
                               )
                           )
                         : (currentDataLayout || []).map((dataItemLayout, index) => (
@@ -115,7 +135,7 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                               </Col>
                           ))}
                 </Row>
-                <ModalBtns okText={okText} onClick={handleCancel} />
+                <ModalBtns okText={okText} onCancel={handleCancel} />
             </Form>
         </Modal>
     );

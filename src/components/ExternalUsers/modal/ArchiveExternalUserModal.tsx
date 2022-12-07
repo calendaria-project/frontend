@@ -29,7 +29,7 @@ const ExternalUserArchiveModal: FC<IExternalUserArchiveModal> = ({
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
-            <ModalBtns okText={okText} onClick={handleRemove} />
+            <ModalBtns okText={okText} onCancel={handleCancel} onClick={handleRemove} />
         </Modal>
     );
 };

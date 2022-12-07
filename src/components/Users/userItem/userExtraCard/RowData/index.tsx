@@ -161,6 +161,7 @@ const ListRowData: FC<{
     const saveModal = useCallback(
         (record: any) => {
             const recordWithDates = getObjectWithHandledDates(record);
+            const { salaryConstantPart, salaryVariablePart, ...modifiedRecord } = recordWithDates;
             const reqMethod = "put";
 
             const sendRequest = (data: Object) => {
@@ -192,7 +193,7 @@ const ListRowData: FC<{
             };
 
             const data = removeEmptyObjectProperties(
-                _.merge(currentUserDataItemInfo[currentItemIndex], recordWithDates)
+                _.merge(currentUserDataItemInfo[currentItemIndex], modifiedRecord)
             );
             sendRequest(data);
 

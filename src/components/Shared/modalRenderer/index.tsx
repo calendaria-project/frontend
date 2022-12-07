@@ -5,6 +5,7 @@ import { Form, FormInstance, Typography } from "antd";
 import Select from "./Select";
 import Input from "./Input";
 import DatePicker from "./DatePicker";
+import MultipleSelect from "./MultipleSelect";
 
 const { Text } = Typography;
 
@@ -40,6 +41,12 @@ export const getFormItemContent = (
                 <Text strong style={{ fontSize: "18px" }}>
                     {dataItemLayout.placeholder}
                 </Text>
+            ) : dataItemLayout.type === layoutConstantTypes.MULTIPLE_SELECT ? (
+                <MultipleSelect
+                    form={form}
+                    dataItemLayout={dataItemLayout}
+                    currentDataItemInfo={dataItemInfo}
+                />
             ) : null}
         </>
     );

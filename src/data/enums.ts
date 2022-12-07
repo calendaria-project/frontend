@@ -2,6 +2,7 @@ export enum layoutConstantTypes {
     TITLE = "title",
     UNEDITABLE = "uneditable",
     SELECT = "select",
+    MULTIPLE_SELECT = "multipleSelect",
     INPUT = "input",
     TEXTAREA = "textArea",
     DATE = "date"

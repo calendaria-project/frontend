@@ -124,6 +124,18 @@ const useSimpleHttpFunctions = () => {
         });
     };
 
+    const calculatePercent = (amount: number, percent: number) => {
+        return actionMethodResultSync(
+            "USER",
+            `contract/calculate-percent`,
+            "post",
+            getRequestHeader(authContext.token),
+            { amount, percent }
+        ).then((data) => {
+            return data;
+        });
+    };
+
     return {
         companies,
         positions,
@@ -135,7 +147,8 @@ const useSimpleHttpFunctions = () => {
         getCompanyById,
         getDivisionById,
         getDivisionUnitById,
-        getTreeData
+        getTreeData,
+        calculatePercent
     };
 };
 export default useSimpleHttpFunctions;

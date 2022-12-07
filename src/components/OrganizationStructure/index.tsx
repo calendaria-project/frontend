@@ -22,7 +22,7 @@ import {
     IExtendedOrgStructureTreeItem,
     IOrgStructureTreeItem
 } from "interfaces";
-import DivisionUnitDeleteModal from "./modals/SharedDeleteModal";
+import SharedDeleteModal from "./modals/SharedDeleteModal";
 import { deletingOptions, layoutOptions, TLayoutOptions } from "./contants";
 import SharedModal from "./modals/SharedModal";
 import getOrgStructureModalTitle from "utils/getOrgStructureModalTitle";
@@ -400,7 +400,7 @@ const OrganizationStructure: FC = () => {
                     />
                 </Col>
             </Row>
-            <DivisionUnitDeleteModal
+            <SharedDeleteModal
                 okText={"Удалить"}
                 title={modalTitle}
                 isVisible={deleteModalVisible}
