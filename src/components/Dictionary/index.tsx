@@ -29,6 +29,9 @@ import { RelationshipTypeTable } from "./Tables/relationshipTypeTable";
 import { MilitaryRankTable } from "./Tables/militaryRankTable";
 import { WorkTypeTable } from "./Tables/workTypeTable";
 import { WorkKindTable } from "./Tables/workKindTable";
+import { ContractFormTypeTable } from "./Tables/contractFormTypeTable";
+import { ContractNormTypeTable } from "./Tables/contractNormTypeTable";
+import { ContractNormConditionTable } from "./Tables/contractNormConditionTable";
 
 const Dictionary = () => {
     const dispatch = useDispatch();
@@ -147,6 +150,21 @@ const Dictionary = () => {
             label: "Типы компаний",
             key: "20",
             children: <CompanyTypeList />
+        },
+        {
+            label: "Типы форм для доп. соглашений",
+            key: "21",
+            children: <ContractFormTypeTable />
+        },
+        {
+            label: "Типы нормирования труда",
+            key: "22",
+            children: <ContractNormTypeTable />
+        },
+        {
+            label: "Типы условий труда",
+            key: "23",
+            children: <ContractNormConditionTable />
         }
     ];
 

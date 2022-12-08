@@ -1,5 +1,6 @@
 import { MainActionTypes } from "../types";
 import { IAction } from "../interfaces";
+import { TLayoutModalData } from "data/types";
 
 export const UpdateToken = (payload: string | null): IAction => {
     return {
@@ -60,6 +61,12 @@ export const SetModalVariableSalary = (payload: number): IAction => {
 export const SetModalConstantSalary = (payload: number): IAction => {
     return {
         type: MainActionTypes.SET_MODAL_CONSTANT_SALARY,
+        payload
+    };
+};
+export const SetModalSimpleAddContractLayout = (payload: TLayoutModalData[]): IAction => {
+    return {
+        type: MainActionTypes.SET_MODAL_SIMPLE_ADD_CONTRACT_LAYOUT,
         payload
     };
 };

@@ -52,6 +52,8 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
 
     const [extraModalVisible, setExtraModalVisible] = useState(false);
     const selectedKey = useTypedSelector((state) => getSelectedKey(state.user));
+    const simpleContractLayout = useTypedSelector((state) => state.modal.contractAddLayout);
+    const isContractFlag = selectedKey === selectedKeyTypes.CONTRACT;
 
     const [currentErr, setCurrentErr] = useState<{ error: IErrorModifiedItem; errIndex: number }>(
         {} as { error: IErrorModifiedItem; errIndex: number }
@@ -80,6 +82,8 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
 
     console.log(copiedErrorArr);
 
+    console.log(currentDataLayout);
+
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
             <Form
@@ -94,7 +98,10 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
                 form={form}
             >
                 <Row gutter={16}>
-                    {(currentDataLayout || []).map((dataItemLayout, index) => {
+                    {(isContractFlag && simpleContractLayout.length
+                        ? simpleContractLayout
+                        : currentDataLayout || []
+                    ).map((dataItemLayout, index) => {
                         const span = dataItemLayout.span;
                         return (
                             <Col
@@ -107,36 +114,34 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
                             </Col>
                         );
                     })}
-                    {selectedKey === selectedKeyTypes.CONTRACT && errorMsg && (
+                    {isContractFlag && errorMsg && (
                         <Col className={classes.errorMsg} span={24}>
                             {errorMsg}
                         </Col>
                     )}
                 </Row>
-                {selectedKey === selectedKeyTypes.CONTRACT &&
-                    copiedErrorArr &&
-                    !!copiedErrorArr.length && (
-                        <Row className={classes.errArrWrapper}>
-                            {copiedErrorArr.map((errItem, index) => (
-                                <Row
-                                    key={errItem.selectedKey}
-                                    className={classes.errItem}
-                                    align={"middle"}
-                                    justify={"space-between"}
+                {isContractFlag && copiedErrorArr && !!copiedErrorArr.length && (
+                    <Row className={classes.errArrWrapper}>
+                        {copiedErrorArr.map((errItem, index) => (
+                            <Row
+                                key={errItem.selectedKey}
+                                className={classes.errItem}
+                                align={"middle"}
+                                justify={"space-between"}
+                            >
+                                <Col className={classes.errItemTitle}>{`${
+                                    errItem.field ? "Редактировать" : "Добавить"
+                                } ${getModalEditingNameByKey(errItem.selectedKey)}`}</Col>
+                                <Col
+                                    onClick={openExtraModal(errItem, index)}
+                                    className={classes.errItemAdd}
                                 >
-                                    <Col className={classes.errItemTitle}>{`${
-                                        errItem.field ? "Редактировать" : "Добавить"
-                                    } ${getModalEditingNameByKey(errItem.selectedKey)}`}</Col>
-                                    <Col
-                                        onClick={openExtraModal(errItem, index)}
-                                        className={classes.errItemAdd}
-                                    >
-                                        {errItem.addText}
-                                    </Col>
-                                </Row>
-                            ))}
-                        </Row>
-                    )}
+                                    {errItem.addText}
+                                </Col>
+                            </Row>
+                        ))}
+                    </Row>
+                )}
                 <ModalBtns okText={okText} onCancel={handleCancel} />
             </Form>
             <ExtraValidationModal

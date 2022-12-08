@@ -3,9 +3,11 @@ import { Col, Form, FormInstance, Modal, Row } from "antd";
 import React, { FC, memo, useCallback } from "react";
 
 import { validateMessages } from "data/validateMessages";
-import { arrayKeyTypes, REDUCED_CONTRACT_INFO } from "../constants";
+import { arrayKeyTypes, BASE_SUB_CONTRACT_INFO, REDUCED_CONTRACT_INFO } from "../constants";
 import { TLayoutModalData } from "data/types";
 import WithFormItem, { getFormItemContent } from "components/Shared/modalRenderer";
+
+import { CONTRACT, SUB_CONTRACT } from "data/values";
 
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { getCurrentUserDataItemInfo, getSelectedKey } from "store/reducers/userReducer";
@@ -68,60 +70,93 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                 <Row gutter={16}>
                     {arrayKeyTypes.includes(selectedKey)
                         ? (modalCurrentDataItemInfo || []).map(
-                              (dataItemInfo: any, index: number) => (
-                                  <React.Fragment key={index}>
-                                      {dataItemInfo?.contractType &&
-                                      dataItemInfo.contractType.code !== "CONTRACT"
-                                          ? REDUCED_CONTRACT_INFO.map((dataItemLayout, index) => {
-                                                const span = dataItemLayout.span;
-                                                return (
-                                                    <Col
-                                                        key={
-                                                            "_" +
-                                                            dataItemLayout.propertyName +
-                                                            index
-                                                        }
-                                                        span={span ? span : 24}
-                                                    >
-                                                        <WithFormItem
-                                                            dataItemLayout={dataItemLayout}
-                                                        >
-                                                            {getFormItemContent(
-                                                                form,
-                                                                dataItemLayout,
-                                                                dataItemInfo
-                                                            )}
-                                                        </WithFormItem>
-                                                    </Col>
-                                                );
-                                            })
-                                          : (currentDataLayout || []).map(
-                                                (dataItemLayout, index) => {
-                                                    const span = dataItemLayout.span;
-                                                    return (
-                                                        <Col
-                                                            key={
-                                                                "" +
-                                                                dataItemLayout.propertyName +
-                                                                index
-                                                            }
-                                                            span={span ? span : 24}
-                                                        >
-                                                            <WithFormItem
-                                                                dataItemLayout={dataItemLayout}
+                              (dataItemInfo: any, index: number) => {
+                                  const contractType = dataItemInfo?.contractType;
+                                  const contractCode = contractType?.code;
+                                  return (
+                                      <React.Fragment key={index}>
+                                          {contractType &&
+                                          contractCode !== CONTRACT &&
+                                          contractCode !== SUB_CONTRACT
+                                              ? REDUCED_CONTRACT_INFO.map(
+                                                    (dataItemLayout, index) => {
+                                                        const span = dataItemLayout.span;
+                                                        return (
+                                                            <Col
+                                                                key={
+                                                                    "_" +
+                                                                    dataItemLayout.propertyName +
+                                                                    index
+                                                                }
+                                                                span={span ? span : 24}
                                                             >
-                                                                {getFormItemContent(
-                                                                    form,
-                                                                    dataItemLayout,
-                                                                    dataItemInfo
-                                                                )}
-                                                            </WithFormItem>
-                                                        </Col>
-                                                    );
-                                                }
-                                            )}
-                                  </React.Fragment>
-                              )
+                                                                <WithFormItem
+                                                                    dataItemLayout={dataItemLayout}
+                                                                >
+                                                                    {getFormItemContent(
+                                                                        form,
+                                                                        dataItemLayout,
+                                                                        dataItemInfo
+                                                                    )}
+                                                                </WithFormItem>
+                                                            </Col>
+                                                        );
+                                                    }
+                                                )
+                                              : contractType && contractCode === SUB_CONTRACT
+                                              ? BASE_SUB_CONTRACT_INFO.map(
+                                                    (dataItemLayout, index) => {
+                                                        const span = dataItemLayout.span;
+                                                        return (
+                                                            <Col
+                                                                key={
+                                                                    "_" +
+                                                                    dataItemLayout.propertyName +
+                                                                    index
+                                                                }
+                                                                span={span ? span : 24}
+                                                            >
+                                                                <WithFormItem
+                                                                    dataItemLayout={dataItemLayout}
+                                                                >
+                                                                    {getFormItemContent(
+                                                                        form,
+                                                                        dataItemLayout,
+                                                                        dataItemInfo
+                                                                    )}
+                                                                </WithFormItem>
+                                                            </Col>
+                                                        );
+                                                    }
+                                                )
+                                              : (currentDataLayout || []).map(
+                                                    (dataItemLayout, index) => {
+                                                        const span = dataItemLayout.span;
+                                                        return (
+                                                            <Col
+                                                                key={
+                                                                    "" +
+                                                                    dataItemLayout.propertyName +
+                                                                    index
+                                                                }
+                                                                span={span ? span : 24}
+                                                            >
+                                                                <WithFormItem
+                                                                    dataItemLayout={dataItemLayout}
+                                                                >
+                                                                    {getFormItemContent(
+                                                                        form,
+                                                                        dataItemLayout,
+                                                                        dataItemInfo
+                                                                    )}
+                                                                </WithFormItem>
+                                                            </Col>
+                                                        );
+                                                    }
+                                                )}
+                                      </React.Fragment>
+                                  );
+                              }
                           )
                         : (currentDataLayout || []).map((dataItemLayout, index) => (
                               <Col xl={24} xs={24} key={"" + index + dataItemLayout.propertyName}>

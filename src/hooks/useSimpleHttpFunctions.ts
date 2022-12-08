@@ -47,13 +47,15 @@ const useSimpleHttpFunctions = () => {
         ).then((data) => data);
     };
 
-    const getDictionaryValues = (url: string) => {
+    const getDictionaryValues = (url: string, defUrl?: string) => {
         return actionMethodResultSync(
             "DICTIONARY",
             url,
             "get",
             getRequestHeader(authContext.token)
-        ).then((data) => data);
+        ).then((data) => {
+            return defUrl === "position" || defUrl === "division" ? data.content : data;
+        });
     };
 
     const getUsersWithPhotoId = async (data: any) => {

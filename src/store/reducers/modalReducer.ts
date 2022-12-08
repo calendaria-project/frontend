@@ -1,14 +1,17 @@
 import { MainActionTypes } from "../types";
 import { IAction } from "../interfaces";
+import { TLayoutModalData } from "data/types";
 
 interface IModalState {
     variableSalary: number | null;
     constantSalary: number | null;
+    contractAddLayout: TLayoutModalData[];
 }
 
 const initialState: IModalState = {
     variableSalary: null,
-    constantSalary: null
+    constantSalary: null,
+    contractAddLayout: []
 };
 
 const tokenReducer = (state = initialState, action: IAction): IModalState => {
@@ -23,6 +26,12 @@ const tokenReducer = (state = initialState, action: IAction): IModalState => {
             return {
                 ...state,
                 constantSalary: action.payload as number
+            };
+        }
+        case MainActionTypes.SET_MODAL_SIMPLE_ADD_CONTRACT_LAYOUT: {
+            return {
+                ...state,
+                contractAddLayout: action.payload as TLayoutModalData[]
             };
         }
         default:

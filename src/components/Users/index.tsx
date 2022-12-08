@@ -145,6 +145,8 @@ const Users: FC = () => {
             const userDataWithPhoto: IUsersWithPhoto[] = await getUsersWithPhotoId(userData);
             setTableData(userDataWithPhoto);
 
+            console.log(userData);
+
             const actionsSell: ColumnDefinition = {
                 headerSort: false,
                 title: "ФИО",
