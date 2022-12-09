@@ -40,6 +40,7 @@ import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import getObjectWithHandledDates from "utils/getObjectWithHandeledDates";
 import axios from "axios";
+import getCurrentSimpleError from "utils/getCurrentSimpleError";
 
 interface IUserExtraCard {
     usersId: string;
@@ -227,7 +228,8 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                             setErrorArr(errModals);
                             console.log(errMsgs, errModals);
                         } else {
-                            message.error("Ошибка");
+                            let currErr = getCurrentSimpleError(err.response?.data?.code);
+                            message.error(currErr ? currErr : "Ошибка");
                             setAdditionalModalVisibleFlag(false);
                             simpleForm.resetFields();
                         }

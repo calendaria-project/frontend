@@ -1,6 +1,7 @@
 import { MainActionTypes } from "../types";
 import { IAction } from "../interfaces";
 import { TLayoutModalData } from "data/types";
+import { BASE_SUB_CONTRACT_INFO } from "components/Users/userItem/userExtraCard/constants";
 
 interface IModalState {
     variableSalary: number | null;
@@ -11,7 +12,7 @@ interface IModalState {
 const initialState: IModalState = {
     variableSalary: null,
     constantSalary: null,
-    contractAddLayout: []
+    contractAddLayout: BASE_SUB_CONTRACT_INFO
 };
 
 const tokenReducer = (state = initialState, action: IAction): IModalState => {

@@ -39,14 +39,16 @@ const MultipleSelect: FC<IMultipleSelect> = ({ form, dataItemLayout, currentData
     };
 
     const initSelectValue = () => {
-        const id = currentDataItemInfo?.[dataItemLayout.propertyName]?.id;
-        if (id) {
-            const currentSelectValue: ISimpleDictionaryViewModel | undefined = selectValues.find(
-                (item) => item.id === id
-            );
-            if (currentSelectValue) {
-                setSelectValue([currentSelectValue]);
-            }
+        const initValue = currentDataItemInfo?.[dataItemLayout.propertyName];
+        let layoutForAdd: TLayoutModalData[] = [];
+
+        (initValue || []).forEach((v: any) => {
+            layoutForAdd = [...layoutForAdd, ...getExtraLayoutByCode(v.code)];
+        });
+        dispatch(SetModalSimpleAddContractLayout([...BASE_SUB_CONTRACT_INFO, ...layoutForAdd]));
+
+        if (initValue) {
+            setSelectValue(initValue);
         }
     };
 

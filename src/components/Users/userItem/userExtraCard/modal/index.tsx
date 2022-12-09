@@ -3,7 +3,7 @@ import { Col, Form, FormInstance, Modal, Row } from "antd";
 import React, { FC, memo, useCallback } from "react";
 
 import { validateMessages } from "data/validateMessages";
-import { arrayKeyTypes, BASE_SUB_CONTRACT_INFO, REDUCED_CONTRACT_INFO } from "../constants";
+import { arrayKeyTypes, REDUCED_CONTRACT_INFO } from "../constants";
 import { TLayoutModalData } from "data/types";
 import WithFormItem, { getFormItemContent } from "components/Shared/modalRenderer";
 
@@ -53,6 +53,10 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
             : [currentUserDataItemInfo?.[index!]];
 
     console.log(modalCurrentDataItemInfo);
+
+    const subContractCurrentLayout = useTypedSelector((state) => state.modal.contractAddLayout);
+
+    console.log(subContractCurrentLayout);
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
@@ -104,7 +108,7 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                                                     }
                                                 )
                                               : contractType && contractCode === SUB_CONTRACT
-                                              ? BASE_SUB_CONTRACT_INFO.map(
+                                              ? subContractCurrentLayout.map(
                                                     (dataItemLayout, index) => {
                                                         const span = dataItemLayout.span;
                                                         return (

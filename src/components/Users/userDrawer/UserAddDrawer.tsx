@@ -14,7 +14,6 @@ import {
     Typography
 } from "antd";
 import { AuthContext } from "context/AuthContextProvider";
-import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { useCallback, useContext, useState } from "react";
 const { Option } = Select;
@@ -34,6 +33,8 @@ import useStyles from "./styles";
 import PhoneInput from "utils/PhoneInput";
 import { inputLengthHandler } from "utils/inputLengthHandler";
 import ValuesSelect from "./Select";
+import axios from "axios";
+import getCurrentSimpleError from "utils/getCurrentSimpleError";
 
 export interface IUserAddDrawer {
     companyId?: number;
@@ -84,13 +85,19 @@ export const UserAddDrawer = ({
 
     const createUser = (data: any) => {
         console.log(data);
-        actionMethodResultSync("USER", "user", "post", getRequestHeader(authContext.token), data)
-            .then((data) => {
-                onFinishCreatingUser(data);
+        const url = `${process.env.USER_URL}user`;
+        axios
+            .post(url, data, getRequestHeader(authContext.token))
+            .then((res) => {
+                const result = res.data;
+                onFinishCreatingUser(result);
                 message.success("Успешно создано");
                 onClose();
             })
-            .catch(() => message.error("Ошибка создания"));
+            .catch((err) => {
+                let currErr = getCurrentSimpleError(err.response?.data?.code);
+                message.error(currErr ? currErr : "Ошибка создания");
+            });
     };
 
     return (

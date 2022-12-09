@@ -14,7 +14,6 @@ import {
     Typography
 } from "antd";
 import { AuthContext } from "context/AuthContextProvider";
-import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { useCallback, useContext, useEffect, useState } from "react";
 import moment from "moment";
@@ -36,6 +35,8 @@ import useStyles from "./styles";
 import { inputLengthHandler } from "utils/inputLengthHandler";
 import { IUsersDtoViewModel } from "interfaces";
 import ValuesSelect from "./Select";
+import axios from "axios";
+import getCurrentSimpleError from "utils/getCurrentSimpleError";
 
 export interface IUserEditDrawer {
     userPhoto: string | null;
@@ -110,13 +111,19 @@ export const UserEditDrawer = ({
     };
 
     const editUser = (data: any) => {
-        actionMethodResultSync("USER", "user", "put", getRequestHeader(authContext.token), data)
-            .then((data) => {
-                onFinishEditingUser(data);
+        const url = `${process.env.USER_URL}user`;
+        axios
+            .put(url, data, getRequestHeader(authContext.token))
+            .then((res) => {
+                const result = res.data;
+                onFinishEditingUser(result);
                 message.success("Успешно отредактирован");
                 onClose();
             })
-            .catch(() => message.error("Ошибка редактирования"));
+            .catch((err) => {
+                let currErr = getCurrentSimpleError(err.response?.data?.code);
+                message.error(currErr ? currErr : "Ошибка редактирования");
+            });
     };
 
     // @ts-ignore
