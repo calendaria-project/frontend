@@ -2,17 +2,33 @@ import { MainActionTypes } from "../types";
 import { IAction } from "../interfaces";
 import { TLayoutModalData } from "data/types";
 import { BASE_SUB_CONTRACT_INFO } from "components/Users/userItem/userExtraCard/constants";
+import { CONTRACT, TContracts } from "data/values";
+import { IPositionDtoModel } from "interfaces";
 
 interface IModalState {
     variableSalary: number | null;
     constantSalary: number | null;
-    contractAddLayout: TLayoutModalData[];
+    selectedContractType: TContracts;
+    initialDivision: {
+        divisionId: number | null;
+        position: IPositionDtoModel | null;
+    };
+    divisionId: number | null;
+    subContractLayout: TLayoutModalData[];
+    simpleSubContractLayout: TLayoutModalData[];
 }
 
 const initialState: IModalState = {
     variableSalary: null,
     constantSalary: null,
-    contractAddLayout: BASE_SUB_CONTRACT_INFO
+    selectedContractType: CONTRACT,
+    initialDivision: {
+        divisionId: null,
+        position: null
+    },
+    divisionId: null,
+    subContractLayout: BASE_SUB_CONTRACT_INFO,
+    simpleSubContractLayout: BASE_SUB_CONTRACT_INFO
 };
 
 const tokenReducer = (state = initialState, action: IAction): IModalState => {
@@ -29,10 +45,37 @@ const tokenReducer = (state = initialState, action: IAction): IModalState => {
                 constantSalary: action.payload as number
             };
         }
-        case MainActionTypes.SET_MODAL_SIMPLE_ADD_CONTRACT_LAYOUT: {
+        case MainActionTypes.SET_SELECTED_CONTRACT_TYPE: {
             return {
                 ...state,
-                contractAddLayout: action.payload as TLayoutModalData[]
+                selectedContractType: action.payload as TContracts
+            };
+        }
+        case MainActionTypes.SET_SUB_CONTRACT_INITIAL_DIVISION: {
+            return {
+                ...state,
+                initialDivision: action.payload as {
+                    divisionId: number;
+                    position: IPositionDtoModel;
+                }
+            };
+        }
+        case MainActionTypes.SET_SUB_CONTRACT_DIVISION_ID: {
+            return {
+                ...state,
+                divisionId: action.payload as number
+            };
+        }
+        case MainActionTypes.SET_MODAL_SUB_CONTRACT_LAYOUT: {
+            return {
+                ...state,
+                subContractLayout: action.payload as TLayoutModalData[]
+            };
+        }
+        case MainActionTypes.SET_SIMPLE_ADD_MODAL_SUB_CONTRACT_LAYOUT: {
+            return {
+                ...state,
+                simpleSubContractLayout: action.payload as TLayoutModalData[]
             };
         }
         default:

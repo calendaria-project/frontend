@@ -52,11 +52,11 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                 : undefined
             : [currentUserDataItemInfo?.[index!]];
 
-    console.log(modalCurrentDataItemInfo);
+    // console.log(modalCurrentDataItemInfo);
 
-    const subContractCurrentLayout = useTypedSelector((state) => state.modal.contractAddLayout);
+    const subContractLayout = useTypedSelector((state) => state.modal.subContractLayout);
 
-    console.log(subContractCurrentLayout);
+    // console.log(subContractLayout);
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
@@ -88,7 +88,7 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                                                         return (
                                                             <Col
                                                                 key={
-                                                                    "_" +
+                                                                    "" +
                                                                     dataItemLayout.propertyName +
                                                                     index
                                                                 }
@@ -108,38 +108,36 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                                                     }
                                                 )
                                               : contractType && contractCode === SUB_CONTRACT
-                                              ? subContractCurrentLayout.map(
-                                                    (dataItemLayout, index) => {
-                                                        const span = dataItemLayout.span;
-                                                        return (
-                                                            <Col
-                                                                key={
-                                                                    "_" +
-                                                                    dataItemLayout.propertyName +
-                                                                    index
-                                                                }
-                                                                span={span ? span : 24}
+                                              ? subContractLayout.map((dataItemLayout, index) => {
+                                                    const span = dataItemLayout.span;
+                                                    return (
+                                                        <Col
+                                                            key={
+                                                                "_" +
+                                                                dataItemLayout.propertyName +
+                                                                index
+                                                            }
+                                                            span={span ? span : 24}
+                                                        >
+                                                            <WithFormItem
+                                                                dataItemLayout={dataItemLayout}
                                                             >
-                                                                <WithFormItem
-                                                                    dataItemLayout={dataItemLayout}
-                                                                >
-                                                                    {getFormItemContent(
-                                                                        form,
-                                                                        dataItemLayout,
-                                                                        dataItemInfo
-                                                                    )}
-                                                                </WithFormItem>
-                                                            </Col>
-                                                        );
-                                                    }
-                                                )
+                                                                {getFormItemContent(
+                                                                    form,
+                                                                    dataItemLayout,
+                                                                    dataItemInfo
+                                                                )}
+                                                            </WithFormItem>
+                                                        </Col>
+                                                    );
+                                                })
                                               : (currentDataLayout || []).map(
                                                     (dataItemLayout, index) => {
                                                         const span = dataItemLayout.span;
                                                         return (
                                                             <Col
                                                                 key={
-                                                                    "" +
+                                                                    "__" +
                                                                     dataItemLayout.propertyName +
                                                                     index
                                                                 }
@@ -163,7 +161,7 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                               }
                           )
                         : (currentDataLayout || []).map((dataItemLayout, index) => (
-                              <Col xl={24} xs={24} key={"" + index + dataItemLayout.propertyName}>
+                              <Col span={24} key={"___" + index + dataItemLayout.propertyName}>
                                   <WithFormItem dataItemLayout={dataItemLayout}>
                                       {getFormItemContent(
                                           form,

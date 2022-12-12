@@ -16,7 +16,6 @@ const DatePicker: FC<IDatePicker> = ({ form, dataItemLayout, currentDataItemInfo
     const [currentValue, setCurrentValue] = useState<Moment | null>(null);
 
     useEffect(() => {
-        console.log(currentDataItemInfo?.[dataItemLayout.propertyName]);
         setCurrentValue(
             currentDataItemInfo?.[dataItemLayout.propertyName]
                 ? moment(currentDataItemInfo?.[dataItemLayout.propertyName], "YYYY-MM-DD")

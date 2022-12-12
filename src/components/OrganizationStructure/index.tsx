@@ -14,7 +14,7 @@ import {
     ClusterOutlined,
     DragOutlined,
     EditOutlined,
-    // CrownOutlined,
+    CrownOutlined,
     UserOutlined
 } from "@ant-design/icons";
 import {
@@ -331,13 +331,15 @@ const OrganizationStructure: FC = () => {
     );
 
     const getIcon = (treeItem: IOrgStructureTreeItem): JSX.Element => {
-        const { nodeType } = treeItem;
+        const { nodeType, isCompanyHead } = treeItem;
         return (
             <>
                 {nodeType === nodeTypeEnum.COMPANY ? (
                     <ClusterOutlined className={classes.typeIcon} />
                 ) : nodeType === nodeTypeEnum.DIVISION ? (
                     <BranchesOutlined className={classes.typeIcon} />
+                ) : isCompanyHead ? (
+                    <CrownOutlined className={classes.typeIcon} />
                 ) : (
                     <UserOutlined className={classes.typeIcon} />
                 )}

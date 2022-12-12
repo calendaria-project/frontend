@@ -1,6 +1,6 @@
 import { Col, Form, FormInstance, Modal, Row } from "antd";
 
-import React, { FC, memo, useCallback, useState, useEffect } from "react";
+import React, { FC, memo, useCallback, useEffect, useState } from "react";
 
 import { validateMessages } from "data/validateMessages";
 import { selectedKeyTypes } from "data/enums";
@@ -15,6 +15,7 @@ import WithFormItem, { getFormItemContent } from "components/Shared/modalRendere
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { getSelectedKey } from "store/reducers/userReducer";
 import ModalBtns from "components/Shared/modalRenderer/modalBtns";
+import { SUB_CONTRACT } from "data/values";
 
 interface IUserItemModal {
     okText: string;
@@ -43,6 +44,7 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
 }) => {
     const handleCancel = useCallback(() => {
         setIsVisible(false);
+        // form.resetFields();
     }, []);
 
     const theme = useTheme();
@@ -52,7 +54,11 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
 
     const [extraModalVisible, setExtraModalVisible] = useState(false);
     const selectedKey = useTypedSelector((state) => getSelectedKey(state.user));
-    const simpleContractLayout = useTypedSelector((state) => state.modal.contractAddLayout);
+
+    const simpleSubContractLayout = useTypedSelector(
+        (state) => state.modal.simpleSubContractLayout
+    );
+    const selectedContractType = useTypedSelector((state) => state.modal.selectedContractType);
     const isContractFlag = selectedKey === selectedKeyTypes.CONTRACT;
 
     const [currentErr, setCurrentErr] = useState<{ error: IErrorModifiedItem; errIndex: number }>(
@@ -79,10 +85,13 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
         },
         []
     );
+    //
+    // console.log(copiedErrorArr);
+    //
+    // console.log(currentDataLayout);
 
-    console.log(copiedErrorArr);
-
-    console.log(currentDataLayout);
+    // console.log(simpleSubContractLayout);
+    // console.log(currentDataLayout);
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
@@ -98,8 +107,8 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
                 form={form}
             >
                 <Row gutter={16}>
-                    {(isContractFlag && simpleContractLayout.length
-                        ? simpleContractLayout
+                    {(isContractFlag && selectedContractType === SUB_CONTRACT
+                        ? simpleSubContractLayout || []
                         : currentDataLayout || []
                     ).map((dataItemLayout, index) => {
                         const span = dataItemLayout.span;

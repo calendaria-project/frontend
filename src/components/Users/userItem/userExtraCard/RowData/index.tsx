@@ -164,6 +164,8 @@ const ListRowData: FC<{
             const { salaryConstantPart, salaryVariablePart, ...modifiedRecord } = recordWithDates;
             const reqMethod = "put";
 
+            console.log("RECORD", modifiedRecord);
+
             const sendRequest = (data: Object) => {
                 actionMethodResultSync(
                     "USER",
@@ -192,9 +194,21 @@ const ListRowData: FC<{
                     });
             };
 
+            const currentInfo: any = currentUserDataItemInfo?.[currentItemIndex] || {};
             const data = removeEmptyObjectProperties(
-                _.merge(currentUserDataItemInfo[currentItemIndex], modifiedRecord)
+                modifiedRecord.formTypes
+                    ? {
+                          ...modifiedRecord,
+                          contractId: currentInfo.contractId,
+                          createdAt: currentInfo.createdAt,
+                          updatedAt: currentInfo.updatedAt,
+                          userId: currentInfo.userId
+                      }
+                    : _.merge(currentInfo, modifiedRecord)
             );
+
+            console.log("DATA", data);
+
             sendRequest(data);
 
             setModalVisibleFlag(false);

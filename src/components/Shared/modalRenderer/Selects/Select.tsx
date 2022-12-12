@@ -1,13 +1,12 @@
 import { FC, memo, useCallback, useEffect, useState } from "react";
 import { FormInstance, Select as AntdSelect } from "antd";
 import { TLayoutModalData } from "data/types";
-import { ICurrentUserDtoViewModel, ISimpleDictionaryViewModel } from "interfaces";
+import { ISimpleDictionaryViewModel } from "interfaces";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { dictionaryCodesEnum } from "data/enums";
-import { SHORTENED_CONTRACT_ARRAY, SUB_CONTRACT } from "data/values";
+import { SHORTENED_CONTRACT_ARRAY, TContracts } from "data/values";
 import { useDispatch } from "react-redux";
-import { SetModalSimpleAddContractLayout } from "../../../store/actions";
-import { BASE_SUB_CONTRACT_INFO } from "../../Users/userItem/userExtraCard/constants";
+import { SetSelectedContractType } from "store/actions";
 
 const { Option } = AntdSelect;
 
@@ -26,17 +25,12 @@ const Select: FC<ISelect> = ({
 }) => {
     const dispatch = useDispatch();
 
-    const currentId =
-        dataItemLayout.dictionaryCode === "division"
-            ? "divisionId"
-            : dataItemLayout.dictionaryCode === "position"
-            ? "positionId"
-            : "id";
+    const [selectValue, setSelectValue] = useState<ISimpleDictionaryViewModel | undefined>(
+        undefined
+    );
+    const [selectValues, setSelectValues] = useState<ISimpleDictionaryViewModel[]>([]);
 
-    const [selectValue, setSelectValue] = useState<any>(undefined);
-    const [selectValues, setSelectValues] = useState<any[]>([]);
-
-    const { getDictionaryValues, getCurrentUserData } = useSimpleHttpFunctions();
+    const { getDictionaryValues } = useSimpleHttpFunctions();
 
     useEffect(() => {
         initSelectValues();
@@ -48,20 +42,9 @@ const Select: FC<ISelect> = ({
 
     const initSelectValues = async () => {
         const dictionaryCode = dataItemLayout.dictionaryCode;
-        let currCompanyId;
-        if (dictionaryCode === "division") {
-            const currentUser: ICurrentUserDtoViewModel = await getCurrentUserData();
-            currCompanyId = currentUser.company?.companyId;
-        }
-        const url =
-            dictionaryCode === "position"
-                ? `${dictionaryCode}?page=0&size=1000&sortingRule=positionId%3AASC`
-                : dictionaryCode === "division"
-                ? `${dictionaryCode}?companyId=${currCompanyId}&page=0&size=1000&sortingRule=divisionId%3AASC`
-                : `simple/${dictionaryCode}`;
+
         const currentSelectValues: ISimpleDictionaryViewModel[] = await getDictionaryValues(
-            url,
-            dictionaryCode
+            `simple/${dictionaryCode}`
         );
         setSelectValues(
             additionalModalFlag && dictionaryCode === dictionaryCodesEnum.CONTRACT_TYPE
@@ -73,18 +56,14 @@ const Select: FC<ISelect> = ({
     useEffect(() => {
         const dictionaryCode = dataItemLayout.dictionaryCode;
         if (additionalModalFlag && dictionaryCode === dictionaryCodesEnum.CONTRACT_TYPE) {
-            if (selectValue?.code === SUB_CONTRACT) {
-                dispatch(SetModalSimpleAddContractLayout(BASE_SUB_CONTRACT_INFO));
-            } else {
-                dispatch(SetModalSimpleAddContractLayout([]));
-            }
+            dispatch(SetSelectedContractType(selectValue?.code as TContracts));
         }
     }, [selectValue, dataItemLayout, additionalModalFlag]);
 
     const initSelectValue = () => {
-        const id = currentDataItemInfo?.[dataItemLayout.propertyName]?.[currentId];
+        const id = currentDataItemInfo?.[dataItemLayout.propertyName]?.id;
         if (id) {
-            const currentSelectValue = selectValues.find((item) => item?.[currentId] === id);
+            const currentSelectValue = selectValues.find((item) => item?.id === id);
             setSelectValue(currentSelectValue);
         }
     };
@@ -95,13 +74,11 @@ const Select: FC<ISelect> = ({
 
     const handleChangeValue = useCallback(
         (v: any) => {
-            const currentValueObject: any = selectValues.find((item) => item?.[currentId] === v);
+            const currentValueObject: any = selectValues.find((item) => item?.id === v);
             setSelectValue(currentValueObject);
         },
-        [selectValues]
+        [dataItemLayout, selectValues]
     );
-
-    console.log(selectValue, selectValues);
 
     return (
         <AntdSelect
@@ -113,7 +90,7 @@ const Select: FC<ISelect> = ({
             onChange={handleChangeValue}
         >
             {(selectValues || []).map((el, i) => (
-                <Option value={el?.[currentId]} key={i}>
+                <Option value={el?.id} key={i}>
                     {el.nameRu}
                 </Option>
             ))}

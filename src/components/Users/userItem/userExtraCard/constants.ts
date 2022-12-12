@@ -533,16 +533,18 @@ export const ADDITIONAL_TRANSFER: TLayoutModalData[] = [
         propertyName: ""
     },
     {
-        type: layoutConstantTypes.SELECT,
+        type: layoutConstantTypes.DIVISION_SELECT,
         propertyName: "division",
         dictionaryCode: "division",
-        placeholder: "Подразделение"
+        placeholder: "Подразделение",
+        required: true
     },
     {
-        type: layoutConstantTypes.SELECT,
+        type: layoutConstantTypes.POSITION_SELECT,
         propertyName: "position",
         dictionaryCode: "position",
-        placeholder: "Должность"
+        placeholder: "Должность",
+        required: true
     }
 ];
 

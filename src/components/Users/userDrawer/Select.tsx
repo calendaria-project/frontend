@@ -16,10 +16,6 @@ const Select: FC<ISelect> = ({ form, selectValues, propertyName, initialValue })
         undefined
     );
 
-    console.log(selectValue);
-
-    console.log(form.getFieldValue(propertyName));
-
     useEffect(() => {
         if (initialValue) {
             setSelectValue(initialValue);

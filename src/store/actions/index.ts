@@ -1,6 +1,8 @@
 import { MainActionTypes } from "../types";
 import { IAction } from "../interfaces";
 import { TLayoutModalData } from "data/types";
+import { TContracts } from "../../data/values";
+import { IPositionDtoModel } from "../../interfaces";
 
 export const UpdateToken = (payload: string | null): IAction => {
     return {
@@ -64,9 +66,41 @@ export const SetModalConstantSalary = (payload: number): IAction => {
         payload
     };
 };
-export const SetModalSimpleAddContractLayout = (payload: TLayoutModalData[]): IAction => {
+
+export const SetSelectedContractType = (payload: TContracts): IAction => {
     return {
-        type: MainActionTypes.SET_MODAL_SIMPLE_ADD_CONTRACT_LAYOUT,
+        type: MainActionTypes.SET_SELECTED_CONTRACT_TYPE,
+        payload
+    };
+};
+
+export const SetSubContractInitialDivisionId = (payload: {
+    divisionId: number;
+    position: IPositionDtoModel;
+}): IAction => {
+    return {
+        type: MainActionTypes.SET_SUB_CONTRACT_INITIAL_DIVISION,
+        payload
+    };
+};
+
+export const SetSubContractDivisionId = (payload: number): IAction => {
+    return {
+        type: MainActionTypes.SET_SUB_CONTRACT_DIVISION_ID,
+        payload
+    };
+};
+
+export const SetModalSubContractLayout = (payload: TLayoutModalData[]): IAction => {
+    return {
+        type: MainActionTypes.SET_MODAL_SUB_CONTRACT_LAYOUT,
+        payload
+    };
+};
+
+export const SetSimpleAddModalSubContractLayout = (payload: TLayoutModalData[]): IAction => {
+    return {
+        type: MainActionTypes.SET_SIMPLE_ADD_MODAL_SUB_CONTRACT_LAYOUT,
         payload
     };
 };

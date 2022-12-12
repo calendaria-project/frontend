@@ -4,9 +4,9 @@ import { TLayoutModalData } from "data/types";
 import { ISimpleDictionaryViewModel } from "interfaces";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { useDispatch } from "react-redux";
-import { SetModalSimpleAddContractLayout } from "store/actions";
+import { SetModalSubContractLayout, SetSimpleAddModalSubContractLayout } from "store/actions";
 import getExtraLayoutByCode from "utils/getExtraLayoutByCode";
-import { BASE_SUB_CONTRACT_INFO } from "../../Users/userItem/userExtraCard/constants";
+import { BASE_SUB_CONTRACT_INFO } from "../../../Users/userItem/userExtraCard/constants";
 
 const { Option } = AntdSelect;
 
@@ -14,9 +14,15 @@ interface IMultipleSelect {
     form: FormInstance;
     dataItemLayout: TLayoutModalData;
     currentDataItemInfo: any;
+    additionalModalFlag?: boolean;
 }
 
-const MultipleSelect: FC<IMultipleSelect> = ({ form, dataItemLayout, currentDataItemInfo }) => {
+const MultipleSelect: FC<IMultipleSelect> = ({
+    form,
+    dataItemLayout,
+    currentDataItemInfo,
+    additionalModalFlag
+}) => {
     const dispatch = useDispatch();
     const [selectValue, setSelectValue] = useState<ISimpleDictionaryViewModel[]>([]);
     const [selectValues, setSelectValues] = useState<ISimpleDictionaryViewModel[]>([]);
@@ -27,10 +33,6 @@ const MultipleSelect: FC<IMultipleSelect> = ({ form, dataItemLayout, currentData
         initSelectValues();
     }, []);
 
-    useEffect(() => {
-        initSelectValue();
-    }, [selectValues, currentDataItemInfo, dataItemLayout]);
-
     const initSelectValues = async () => {
         const dictionaryCode = dataItemLayout.dictionaryCode;
         const url = `simple/${dictionaryCode}`;
@@ -38,14 +40,31 @@ const MultipleSelect: FC<IMultipleSelect> = ({ form, dataItemLayout, currentData
         setSelectValues(currentSelectValues);
     };
 
+    useEffect(() => {
+        initSelectValue();
+    }, [additionalModalFlag, selectValues, currentDataItemInfo, dataItemLayout]);
+
+    useEffect(() => {
+        form.setFieldValue([dataItemLayout.propertyName], selectValue);
+    }, [selectValue]);
+
     const initSelectValue = () => {
         const initValue = currentDataItemInfo?.[dataItemLayout.propertyName];
-        let layoutForAdd: TLayoutModalData[] = [];
 
-        (initValue || []).forEach((v: any) => {
-            layoutForAdd = [...layoutForAdd, ...getExtraLayoutByCode(v.code)];
-        });
-        dispatch(SetModalSimpleAddContractLayout([...BASE_SUB_CONTRACT_INFO, ...layoutForAdd]));
+        if (dataItemLayout.propertyName === "formTypes") {
+            let layoutForAdd: TLayoutModalData[] = [];
+            (initValue || []).forEach((v: any) => {
+                layoutForAdd = [...layoutForAdd, ...getExtraLayoutByCode(v.code)];
+            });
+
+            if (additionalModalFlag) {
+                dispatch(
+                    SetSimpleAddModalSubContractLayout([...BASE_SUB_CONTRACT_INFO, ...layoutForAdd])
+                );
+            } else {
+                dispatch(SetModalSubContractLayout([...BASE_SUB_CONTRACT_INFO, ...layoutForAdd]));
+            }
+        }
 
         if (initValue) {
             setSelectValue(initValue);
@@ -53,19 +72,20 @@ const MultipleSelect: FC<IMultipleSelect> = ({ form, dataItemLayout, currentData
     };
 
     useEffect(() => {
-        form.setFieldValue([dataItemLayout.propertyName], selectValue);
-    }, [selectValue]);
-
-    useEffect(() => {
         if (dataItemLayout.propertyName === "formTypes") {
-            console.log(selectValue);
             let layoutForAdd: TLayoutModalData[] = [];
             selectValue.forEach((value) => {
                 layoutForAdd = [...layoutForAdd, ...getExtraLayoutByCode(value.code)];
             });
-            dispatch(SetModalSimpleAddContractLayout([...BASE_SUB_CONTRACT_INFO, ...layoutForAdd]));
+            if (additionalModalFlag) {
+                dispatch(
+                    SetSimpleAddModalSubContractLayout([...BASE_SUB_CONTRACT_INFO, ...layoutForAdd])
+                );
+            } else {
+                dispatch(SetModalSubContractLayout([...BASE_SUB_CONTRACT_INFO, ...layoutForAdd]));
+            }
         }
-    }, [dataItemLayout, selectValue]);
+    }, [additionalModalFlag, dataItemLayout, selectValue]);
 
     const handleChangeValue = useCallback(
         (v: any) => {
@@ -78,10 +98,6 @@ const MultipleSelect: FC<IMultipleSelect> = ({ form, dataItemLayout, currentData
         [selectValues, selectValue]
     );
 
-    console.log(selectValues);
-
-    console.log(selectValue);
-
     return (
         <AntdSelect
             mode="multiple"
@@ -92,8 +108,8 @@ const MultipleSelect: FC<IMultipleSelect> = ({ form, dataItemLayout, currentData
             placeholder={dataItemLayout.placeholder}
             onChange={handleChangeValue}
         >
-            {(selectValues || []).map((el, i) => (
-                <Option value={el.id} key={i}>
+            {(selectValues || []).map((el) => (
+                <Option value={el.id} key={el.code}>
                     {el.nameRu}
                 </Option>
             ))}

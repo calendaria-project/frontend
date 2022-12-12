@@ -420,6 +420,7 @@ export interface IOrgStructureTreeItem {
     nameRu: string;
     nodeType: nodeTypeEnum.DIVISION | nodeTypeEnum.DIVISION_UNIT | nodeTypeEnum.COMPANY;
     parentId?: number;
+    isCompanyHead: boolean;
     children: Array<IOrgStructureTreeItem> | [];
 }
 

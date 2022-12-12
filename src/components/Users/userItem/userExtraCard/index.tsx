@@ -361,7 +361,10 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                             {!arrayTypesFlag ? (
                                 currentDataLayout ? (
                                     currentDataLayout.map((dataItem, index) => (
-                                        <RowData key={index} dataItem={dataItem} />
+                                        <RowData
+                                            key={"_" + index + dataItem.propertyName}
+                                            dataItem={dataItem}
+                                        />
                                     ))
                                 ) : null
                             ) : (

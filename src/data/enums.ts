@@ -2,6 +2,8 @@ export enum layoutConstantTypes {
     TITLE = "title",
     UNEDITABLE = "uneditable",
     SELECT = "select",
+    POSITION_SELECT = "position_select",
+    DIVISION_SELECT = "division_select",
     MULTIPLE_SELECT = "multipleSelect",
     INPUT = "input",
     TEXTAREA = "textArea",
