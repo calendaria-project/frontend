@@ -22,6 +22,7 @@ import {
     SALARY_VARIABLE_PART,
     SALARY_VARIABLE_PERCENT
 } from "data/values";
+import { inputLengthHandler } from "utils/inputLengthHandler";
 
 interface IInput {
     form: FormInstance;
@@ -42,9 +43,11 @@ const Input: FC<IInput> = ({ form, dataItemLayout, currentDataItemInfo }) => {
 
     useEffect(() => {
         const initialValue = currentDataItemInfo?.[dataItemLayout.propertyName];
-        setCurrentValue(initialValue);
-        form.setFieldValue([dataItemLayout.propertyName], initialValue);
-    }, []);
+        if (initialValue !== currentValue) {
+            setCurrentValue(initialValue);
+            form.setFieldValue([dataItemLayout.propertyName], initialValue);
+        }
+    }, [currentDataItemInfo]);
 
     useEffect(() => {
         if (!dataItemLayout.propertyName.includes(SALARY)) {
@@ -60,7 +63,7 @@ const Input: FC<IInput> = ({ form, dataItemLayout, currentDataItemInfo }) => {
                 setCurrentValue(variableSalary);
             }
         }
-    }, [variableSalary]);
+    }, [dataItemLayout, variableSalary]);
 
     useEffect(() => {
         if (dataItemLayout.propertyName === SALARY_CONSTANT_PART) {
@@ -70,7 +73,7 @@ const Input: FC<IInput> = ({ form, dataItemLayout, currentDataItemInfo }) => {
                 setCurrentValue(constantSalary);
             }
         }
-    }, [constantSalary]);
+    }, [dataItemLayout, constantSalary]);
 
     const mobileInputFlag = dataItemLayout.customType && dataItemLayout.customType === "mobile";
 
@@ -116,7 +119,11 @@ const Input: FC<IInput> = ({ form, dataItemLayout, currentDataItemInfo }) => {
                     setCurrentValue(newValue);
                     form.setFieldValue([propertyName], +newValue);
                 } else {
-                    setCurrentValue(newValue);
+                    setCurrentValue(
+                        propertyName === "workingHoursCnt" || propertyName === "workingDaysCnt"
+                            ? +newValue
+                            : newValue
+                    );
                 }
             } else {
                 const pureValue = getValueWithoutReplacedSymbols(e.target.value, [
@@ -143,7 +150,7 @@ const Input: FC<IInput> = ({ form, dataItemLayout, currentDataItemInfo }) => {
                 }
             }
         },
-        [dataItemLayout]
+        [form, dataItemLayout]
     );
 
     const handleAutoCompleteValue = useCallback(
@@ -174,10 +181,16 @@ const Input: FC<IInput> = ({ form, dataItemLayout, currentDataItemInfo }) => {
                 </Tooltip>
             );
         } else {
+            const inputType = dataItemLayout.inputType;
+            const maxLength = dataItemLayout.maxLength;
             return (
                 <AntdInput
                     id={dataItemLayout.propertyName}
-                    type={dataItemLayout.inputType}
+                    type={inputType}
+                    maxLength={dataItemLayout.maxLength}
+                    onKeyPress={
+                        inputType === "number" && maxLength ? inputLengthHandler : undefined
+                    }
                     disabled={dataItemLayout.disabled}
                     suffix={dataItemLayout.suffix}
                     placeholder={dataItemLayout.placeholder}

@@ -52,11 +52,7 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                 : undefined
             : [currentUserDataItemInfo?.[index!]];
 
-    // console.log(modalCurrentDataItemInfo);
-
     const subContractLayout = useTypedSelector((state) => state.modal.subContractLayout);
-
-    // console.log(subContractLayout);
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>

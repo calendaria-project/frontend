@@ -3,6 +3,7 @@ export type TLayoutModalData = {
     placeholder: string; //плейсхолдер
     propertyName: string; //название поля из swagger для формирования запроса
     dictionaryCode?: string; //код справочника для type select для формирования запроса
+    maxLength?: number; //для длины input с type=number
     inputType?: string; //тип ввода для type=input (number)
     customType?: "mobile"; //для ввода мобильного телефона
     disabled?: boolean; //задизейблить

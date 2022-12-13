@@ -516,13 +516,19 @@ export const ADDITIONAL_WORKING_REGIME: TLayoutModalData[] = [
         type: layoutConstantTypes.INPUT,
         propertyName: "workingDaysCnt",
         inputType: "number",
-        placeholder: "Количество рабочих дней в неделю"
+        placeholder: "Количество рабочих дней в неделю",
+        pattern: new RegExp(/^[1-7]$/g),
+        patternMessage: "Введите число от 1 до 7",
+        maxLength: 1
     },
     {
         type: layoutConstantTypes.INPUT,
         propertyName: "workingHoursCnt",
         inputType: "number",
-        placeholder: "Количество часов в неделю"
+        placeholder: "Количество часов в неделю",
+        pattern: new RegExp(/^([1-9]|[0-9]{2}|1[0-6][0-8])$/g),
+        patternMessage: "Введите число от 1 до 168",
+        maxLength: 3
     }
 ];
 
