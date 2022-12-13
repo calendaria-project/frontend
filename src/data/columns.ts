@@ -105,3 +105,26 @@ export const externalUsersColumns: ColumnDefinition[] = [
         field: "position.nameRu"
     }
 ];
+
+export const usersByStaffingColumns: ColumnDefinition[] = [
+    {
+        headerSort: false,
+        title: "Должность",
+        field: "position.nameRu"
+    },
+    {
+        headerSort: false,
+        title: "Постоянная з/п",
+        field: "salaryConstantPart"
+    },
+    {
+        headerSort: false,
+        title: "Переменная з/п",
+        field: "salaryVariablePart"
+    },
+    {
+        headerSort: false,
+        title: "Оклад",
+        field: "salary"
+    }
+];

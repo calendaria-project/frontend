@@ -61,7 +61,7 @@ const AppLayout = () => {
         {
             key: mainMenuEnum.staffing,
             icon: <ScheduleOutlined className={classes.icon} />,
-            disabled: true,
+            // disabled: true,
             label: "Штатные расписания"
         },
         {

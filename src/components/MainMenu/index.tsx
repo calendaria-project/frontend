@@ -24,7 +24,7 @@ import { createTableViaTabulator } from "services/tabulator";
 import { externalUsersColumns } from "data/columns";
 import { ColumnDefinition } from "tabulator-tables";
 import StaffingCard from "./Cards/StaffingCard";
-import { ALL, ARCHIVE, ACTIVE } from "data/values";
+import { ALL, ARCHIVE, ACTIVE } from "data/constants";
 
 export interface IBirthStatItemWithPhoto extends IBirthDateStatItem {
     currentPhotoId: string;
@@ -199,11 +199,11 @@ const MainMenu: FC = () => {
         navigate("/users");
     }, []);
 
-    // const onStaffingCardClick = useCallback(() => {
-    //     dispatch(SetCurrentLayoutMenu(mainMenuEnum.users));
-    //     sessionStorage.setItem("mainMenuTab", mainMenuEnum.staffing);
-    //     navigate("/staffing");
-    // }, []);
+    const onStaffingCardClick = useCallback(() => {
+        dispatch(SetCurrentLayoutMenu(mainMenuEnum.users));
+        sessionStorage.setItem("mainMenuTab", mainMenuEnum.staffing);
+        navigate("/staffing");
+    }, []);
 
     const onShowAllExternalUsersClick = useCallback(() => {
         dispatch(SetCurrentLayoutMenu(mainMenuEnum.externalUsers));
@@ -257,7 +257,7 @@ const MainMenu: FC = () => {
                         <StaffingCard
                             divisionStatItems={allStatistics.divisionStatItems}
                             statsLoading={statsLoading}
-                            onClick={() => {}}
+                            onClick={onStaffingCardClick}
                         />
                     </div>
                 </Col>

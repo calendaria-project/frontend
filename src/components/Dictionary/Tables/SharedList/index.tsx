@@ -1,11 +1,10 @@
-import React, { FC, useCallback, useContext, useEffect, useState } from "react";
+import React, { FC, useCallback, useContext, useEffect, useState, Suspense } from "react";
 import { Button, Form, Input, Table } from "antd";
 
 import { AuthContext } from "context/AuthContextProvider";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { ISimpleDictionaryViewModel } from "interfaces";
-import { SharedModal } from "../SharedModal";
 import { ITable } from "../ITable";
 import SearchingRow from "../SearchingRow";
 import SaveIcon from "assets/svgComponents/SaveIcon";
@@ -14,6 +13,8 @@ import EditIcon from "assets/svgComponents/EditIcon";
 import RemoveIcon from "assets/svgComponents/RemoveIcon";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
+
+const SharedModal = React.lazy(() => import("../SharedModal"));
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     editing: boolean;
@@ -275,14 +276,16 @@ const SharedList: FC<ISharedList> = ({ dictionaryCode, modalTitle, selectionItem
                     position: ["bottomCenter"]
                 }}
             />
-            <SharedModal
-                okText="Создать"
-                title={modalTitle}
-                onFinish={save}
-                isVisible={isModalVisible}
-                setIsVisible={setIsModalVisible}
-                form={form}
-            />
+            <Suspense>
+                <SharedModal
+                    okText="Создать"
+                    title={modalTitle}
+                    onFinish={save}
+                    isVisible={isModalVisible}
+                    setIsVisible={setIsModalVisible}
+                    form={form}
+                />
+            </Suspense>
         </Form>
     );
 };

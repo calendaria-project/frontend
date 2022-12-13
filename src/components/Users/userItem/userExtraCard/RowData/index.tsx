@@ -1,4 +1,13 @@
-import React, { FC, useState, useEffect, memo, useMemo, useCallback, useContext } from "react";
+import React, {
+    FC,
+    useState,
+    useEffect,
+    memo,
+    useMemo,
+    useCallback,
+    useContext,
+    Suspense
+} from "react";
 import { Row, Col, Divider, Typography, Form, message, FormInstance } from "antd";
 import { TLayoutModalData } from "data/types";
 import { selectedKeyTypes, layoutConstantTypes } from "data/enums";
@@ -20,7 +29,6 @@ import {
 } from "interfaces";
 import { EditOutlined, DownloadOutlined } from "@ant-design/icons";
 
-import UserExtraCardModal from "../modal";
 import { getModalEditingNameByKey } from "utils/getModalEditingNameByKey";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import getUserRequestUrl from "functions/getUserRequestUrl";
@@ -33,6 +41,8 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import getObjectWithHandledDates from "utils/getObjectWithHandeledDates";
+
+const UserExtraCardModal = React.lazy(() => import("../modal"));
 
 const { Text } = Typography;
 
@@ -206,7 +216,6 @@ const ListRowData: FC<{
                       }
                     : _.merge(currentInfo, modifiedRecord)
             );
-
             console.log("DATA", data);
 
             sendRequest(data);
@@ -328,16 +337,18 @@ const ListRowData: FC<{
                           )
                       )
                     : null)}
-            <UserExtraCardModal
-                okText={"Сохранить"}
-                title={additionalModalTitle}
-                isVisible={modalVisibleFlag}
-                setIsVisible={setModalVisibleFlag}
-                onFinish={saveModal}
-                form={form}
-                currentDataLayout={currentDataLayout}
-                index={currentItemIndex}
-            />
+            <Suspense>
+                <UserExtraCardModal
+                    okText={"Сохранить"}
+                    title={additionalModalTitle}
+                    isVisible={modalVisibleFlag}
+                    setIsVisible={setModalVisibleFlag}
+                    onFinish={saveModal}
+                    form={form}
+                    currentDataLayout={currentDataLayout}
+                    index={currentItemIndex}
+                />
+            </Suspense>
         </>
     );
 };

@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useContext, useEffect, useState } from "react";
+import React, { FC, useCallback, useContext, useEffect, useState, Suspense } from "react";
 import { SetCurrentOpenedMenu } from "store/actions";
 import { mainMenuEnum, nodeTypeEnum } from "data/enums";
 import { useDispatch } from "react-redux";
@@ -22,15 +22,16 @@ import {
     IExtendedOrgStructureTreeItem,
     IOrgStructureTreeItem
 } from "interfaces";
-import SharedDeleteModal from "./modals/SharedDeleteModal";
 import { deletingOptions, layoutOptions, TLayoutOptions } from "./contants";
-import SharedModal from "./modals/SharedModal";
 import getOrgStructureModalTitle from "utils/getOrgStructureModalTitle";
 import parseModalData from "utils/parseModalData";
 
 import _ from "lodash";
 import contextMenu from "./contextMenu";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
+
+const SharedModal = React.lazy(() => import("./modals/SharedModal"));
+const SharedDeleteModal = React.lazy(() => import("./modals/SharedDeleteModal"));
 
 const OrganizationStructure: FC = () => {
     const authContext = useContext(AuthContext);
@@ -366,7 +367,18 @@ const OrganizationStructure: FC = () => {
                     ...newTreeData,
                     {
                         ...treeItem,
-                        title: treeItem.nameRu,
+                        title: (
+                            <span
+                                style={{
+                                    color:
+                                        treeItem.nodeType === nodeTypeEnum.DIVISION_UNIT
+                                            ? theme.color.mainText + ""
+                                            : theme.color.regular + ""
+                                }}
+                            >
+                                {treeItem.nameRu}
+                            </span>
+                        ),
                         key: treeItem.code,
                         children: formatTreeData(treeItem.children),
                         icon: getIcon(treeItem)
@@ -377,7 +389,18 @@ const OrganizationStructure: FC = () => {
                     ...newTreeData,
                     {
                         ...treeItem,
-                        title: treeItem.nameRu,
+                        title: (
+                            <span
+                                style={{
+                                    color:
+                                        treeItem.nodeType === nodeTypeEnum.DIVISION_UNIT
+                                            ? theme.color.mainText + ""
+                                            : theme.color.regular + ""
+                                }}
+                            >
+                                {treeItem.nameRu}
+                            </span>
+                        ),
                         key: treeItem.code,
                         icon: getIcon(treeItem)
                     }
@@ -402,24 +425,28 @@ const OrganizationStructure: FC = () => {
                     />
                 </Col>
             </Row>
-            <SharedDeleteModal
-                okText={"Удалить"}
-                title={modalTitle}
-                isVisible={deleteModalVisible}
-                setIsVisible={onSetDeleteModalIsVisible}
-                onDeleteItem={onDeleteItem}
-            />
-            <SharedModal
-                okText={"Сохранить"}
-                title={modalTitle}
-                setIsVisible={onSetModalIsVisible}
-                existingData={existingData}
-                onFinish={onFinishingModal}
-                selectedTreeEntity={selectedTreeEntity}
-                isVisible={modalIsVisible}
-                form={form}
-                positions={positions}
-            />
+            <Suspense>
+                <SharedDeleteModal
+                    okText={"Удалить"}
+                    title={modalTitle}
+                    isVisible={deleteModalVisible}
+                    setIsVisible={onSetDeleteModalIsVisible}
+                    onDeleteItem={onDeleteItem}
+                />
+            </Suspense>
+            <Suspense>
+                <SharedModal
+                    okText={"Сохранить"}
+                    title={modalTitle}
+                    setIsVisible={onSetModalIsVisible}
+                    existingData={existingData}
+                    onFinish={onFinishingModal}
+                    selectedTreeEntity={selectedTreeEntity}
+                    isVisible={modalIsVisible}
+                    form={form}
+                    positions={positions}
+                />
+            </Suspense>
         </Row>
     );
 };

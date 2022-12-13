@@ -8,7 +8,7 @@ import React from "react";
 import { ISharedModal } from "../../SharedModal";
 import ModalBtns from "components/Shared/modalRenderer/modalBtns";
 
-export const CompanyTypeModal = ({
+const CompanyTypeModal = ({
     title,
     okText,
     onFinish,
@@ -107,3 +107,5 @@ export const CompanyTypeModal = ({
         </Modal>
     );
 };
+
+export default CompanyTypeModal;

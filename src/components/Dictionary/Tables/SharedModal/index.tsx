@@ -16,14 +16,7 @@ export interface ISharedModal {
     form: FormInstance;
 }
 
-export const SharedModal = ({
-    title,
-    okText,
-    onFinish,
-    isVisible,
-    setIsVisible,
-    form
-}: ISharedModal) => {
+const SharedModal = ({ title, okText, onFinish, isVisible, setIsVisible, form }: ISharedModal) => {
     const handleCancel = () => {
         setIsVisible(false);
     };
@@ -93,3 +86,5 @@ export const SharedModal = ({
         </Modal>
     );
 };
+
+export default SharedModal;

@@ -1,8 +1,8 @@
 import { MainActionTypes } from "../types";
 import { IAction } from "../interfaces";
 import { TLayoutModalData } from "data/types";
-import { TContracts } from "../../data/values";
-import { IPositionDtoModel } from "../../interfaces";
+import { TContracts } from "data/constants";
+import { IPositionDtoModel } from "interfaces";
 
 export const UpdateToken = (payload: string | null): IAction => {
     return {

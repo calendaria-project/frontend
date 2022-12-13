@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useContext, useEffect, useState } from "react";
+import React, { FC, useCallback, useContext, useEffect, useState, Suspense } from "react";
 import { Button, Form, Input, Table } from "antd";
 
 import { AuthContext } from "context/AuthContextProvider";
@@ -13,9 +13,9 @@ import EditIcon from "assets/svgComponents/EditIcon";
 import RemoveIcon from "assets/svgComponents/RemoveIcon";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
-import { CompanyTypeModal } from "./modal";
-
 import useStyles from "./styles";
+
+const CompanyTypeModal = React.lazy(() => import("./modal"));
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     editing: boolean;
@@ -297,14 +297,16 @@ const CompanyTypeList: FC<ITable> = ({ selectionItems }) => {
                     position: ["bottomCenter"]
                 }}
             />
-            <CompanyTypeModal
-                okText="Создать"
-                title={"Добавить тип компании"}
-                onFinish={save}
-                isVisible={isModalVisible}
-                setIsVisible={setIsModalVisible}
-                form={form}
-            />
+            <Suspense>
+                <CompanyTypeModal
+                    okText="Создать"
+                    title={"Добавить тип компании"}
+                    onFinish={save}
+                    isVisible={isModalVisible}
+                    setIsVisible={setIsModalVisible}
+                    form={form}
+                />
+            </Suspense>
         </Form>
     );
 };

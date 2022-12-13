@@ -29,14 +29,15 @@ const DivisionSelect: FC<ISelect> = ({
     currentDataItemInfo,
     additionalModalFlag
 }) => {
-    const dispatch = useDispatch();
     // const { usersId } = useParams();
+    const dispatch = useDispatch();
 
     const [selectValue, setSelectValue] = useState<IDivisionViewModel | undefined>(undefined);
+    const [selectValues, setSelectValues] = useState<IDivisionViewModel[]>([]);
+
     const [currentUserDivisionId, setCurrentUserDivisionId] = useState<number | undefined>(
         undefined
     );
-    const [selectValues, setSelectValues] = useState<IDivisionViewModel[]>([]);
 
     const {
         getDivisionOptions,

@@ -1,310 +1,198 @@
-import React, { FC, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import { Col, Row, Button, Form, Table, Select, DatePicker } from "antd";
-import moment from "moment";
-
-import { AuthContext } from "context/AuthContextProvider";
-import { ICompanyViewModel, IStaffingModel } from "interfaces";
-import UIButton from "ui/Button";
-import { actionMethodResultSync } from "functions/actionMethodResult";
-import { getRequestHeader } from "functions/common";
-import { StaffingScheduleModal } from "./modal";
-import "./styles.scss";
+import React, { FC, useCallback, useContext, useEffect, useState } from "react";
 import { SetCurrentOpenedMenu } from "store/actions";
 import { mainMenuEnum } from "data/enums";
 import { useDispatch } from "react-redux";
-import { PlusOutlined } from "@ant-design/icons";
-
-interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
-    editing: boolean;
-    dataIndex: string;
-    title: any;
-    inputType: "date";
-    record: IStaffingModel;
-    index: number;
-    children: React.ReactNode;
-}
-
-const EditableCell: React.FC<EditableCellProps> = ({
-    editing,
-    dataIndex,
-    title,
-    inputType,
-    record,
-    index,
-    children,
-    ...restProps
-}) => {
-    const dateFormat = "DD/MM/YYYY";
-    if (dataIndex === "fromDate") {
-        record.fromDate = moment(record.fromDate, moment.ISO_8601);
-    }
-    if (dataIndex === "toDate") {
-        record.toDate = moment(record.toDate, moment.ISO_8601);
-    }
-    return (
-        <td {...restProps}>
-            {editing ? (
-                <Form.Item
-                    name={dataIndex}
-                    style={{ margin: 0 }}
-                    rules={[
-                        {
-                            required: dataIndex !== "toDate",
-                            message: "Обязательное поле!"
-                        }
-                    ]}
-                >
-                    <DatePicker format={dateFormat} />
-                </Form.Item>
-            ) : (
-                children
-            )}
-        </td>
-    );
-};
+import { AuthContext } from "context/AuthContextProvider";
+import { useTheme } from "react-jss";
+import { ITheme } from "styles/theme/interface";
+import useStyles from "./styles";
+import { Col, DatePicker, Input, Row, Select } from "antd";
+import {
+    ICurrentUserDtoViewModel,
+    IDivisionViewModel,
+    IUsersByStaffingDtoModel,
+    IUsersByStaffingDtoViewModel
+} from "interfaces";
+import { ALL } from "../../data/constants";
+import useDelayedInputSearch from "hooks/useDelayedInputSearch";
+import getFullName from "utils/getFullName";
+import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
+import questionImage from "assets/icons/question.png";
+import { createTableViaTabulator } from "services/tabulator";
+import { usersByStaffingColumns } from "data/columns";
+import { actionMethodResultSync } from "functions/actionMethodResult";
+import { getRequestHeader } from "functions/common";
+import { ColumnDefinition } from "tabulator-tables";
+import { SearchOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 
 const Staffing: FC = () => {
     const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const [data, setData] = useState<IStaffingModel[]>([]);
     const authContext = useContext(AuthContext);
-    const [form] = Form.useForm();
-    const [editingKey, setEditingKey] = useState(-1);
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [companies, setCompanies] = useState<ICompanyViewModel[]>([]);
-    const [selectedCompanyId, setSelectedCompanyId] = useState<number | undefined>(
-        Number(localStorage.getItem("staffing_company_id"))
-    );
 
     useEffect(() => {
         dispatch(SetCurrentOpenedMenu(mainMenuEnum.staffing));
     }, []);
 
-    const isEditing = (record: IStaffingModel) => record.staffingId === editingKey;
+    const theme = useTheme<ITheme>();
+    const classes = useStyles(theme);
 
-    const edit = (record: Partial<IStaffingModel>) => {
-        form.setFieldsValue({ fromDate: "", toDate: "", ...record });
-        setEditingKey(record.staffingId || -1);
-    };
+    const [companyId, setCompanyId] = useState<number | undefined>(undefined);
+    const [table, setTable] = useState<Tabulator | undefined>();
+    const [tableData, setTableData] = useState<IUsersByStaffingDtoViewModel[]>([]);
 
-    const save = async (record: IStaffingModel) => {
-        try {
-            let row = (await form.validateFields()) as IStaffingModel;
+    const { getCurrentUserData, getUsersWithPhotoId, getDivisionOptions } =
+        useSimpleHttpFunctions();
 
-            const newData = [...data];
-            const index = newData.findIndex((item) => record.staffingId === item.staffingId);
-            if (index > -1) {
-                const item = newData[index];
-                row = {
-                    ...item,
-                    fromDate: moment(row.fromDate._d).format("YYYY-MM-DD"),
-                    toDate: moment(row.toDate._d).format("YYYY-MM-DD")
-                };
-                newData.splice(index, 1, {
-                    ...item,
-                    ...row
-                });
-                actionMethodResultSync(
-                    "DICTIONARY",
-                    "staffing",
-                    "put",
-                    getRequestHeader(authContext.token),
-                    newData[index]
-                ).then(() => {
-                    setData(newData);
-                    setEditingKey(-1);
-                });
-            } else {
-                const reqBody = {
-                    companyId: selectedCompanyId,
-                    fromDate: moment(record.fromDate).format("YYYY-MM-DD"),
-                    toDate: moment(record.toDate).format("YYYY-MM-DD")
-                };
-                actionMethodResultSync(
-                    "DICTIONARY",
-                    "staffing",
-                    "post",
-                    getRequestHeader(authContext.token),
-                    reqBody
-                ).then((res) => {
-                    newData.push({ ...res });
-                    setData(newData);
-                    setIsModalVisible(false);
-                });
-            }
-        } catch (errInfo) {
-            console.log("Validate Failed:", errInfo);
-        }
-    };
-
-    const columns = [
-        {
-            title: "ID",
-            dataIndex: "staffingId",
-            width: 200
-        },
-        {
-            title: "Дата действия с",
-            dataIndex: "fromDate",
-            width: 250,
-            editable: true,
-            render: (_: any, record: IStaffingModel) =>
-                new Date(record.fromDate).toLocaleDateString("ru-RU")
-        },
-        {
-            title: "Дата действия по",
-            dataIndex: "toDate",
-            width: 250,
-            editable: true,
-            render: (_: any, record: IStaffingModel) =>
-                new Date(record.toDate).toLocaleDateString("ru-RU")
-        },
-        {
-            title: "Действие",
-            dataIndex: "operation",
-            width: 400,
-            render: (_: any, record: IStaffingModel) => {
-                const editable = isEditing(record);
-                return editable ? (
-                    <>
-                        <Button
-                            style={{ background: "#1890ff", color: "#fff", marginRight: 8 }}
-                            onClick={() => save(record)}
-                        >
-                            Сохранить
-                        </Button>
-                        <Button style={{ background: "#e6d87e" }} onClick={() => setEditingKey(-1)}>
-                            Отмена
-                        </Button>
-                    </>
-                ) : (
-                    <>
-                        <Button
-                            style={{ background: "#89b8ff", marginRight: 4 }}
-                            onClick={() => navigate(`/staffing/${record.staffingId}`)}
-                        >
-                            Посмотреть
-                        </Button>
-                        <Button
-                            style={{ background: "#e6d87e", marginRight: 4 }}
-                            disabled={editingKey !== -1}
-                            onClick={() => edit(record)}
-                        >
-                            Изменить
-                        </Button>
-                    </>
-                );
-            }
-        }
-    ];
-
-    const mergedColumns = columns.map((col) => {
-        if (!col.editable) {
-            return col;
-        }
-        return {
-            ...col,
-            onCell: (record: IStaffingModel) => ({
-                record,
-                inputType: "date",
-                dataIndex: col.dataIndex,
-                title: col.title,
-                editing: isEditing(record)
-            })
-        };
-    });
+    const [divisions, setDivisions] = useState<IDivisionViewModel[]>([]);
+    const [currentDivisionId, setCurrentDivisionId] = useState<string | number>(ALL);
+    const onChangeCurrentDivisionId = useCallback((v: any) => setCurrentDivisionId(v), []);
+    const divisionValues: any = [{ divisionId: ALL, nameRu: "Все подразделения" }, ...divisions];
 
     useEffect(() => {
-        getCompanies();
+        getDivisions();
+    }, [companyId]);
+    const getDivisions = async () => {
+        if (companyId) {
+            const divisions = await getDivisionOptions(companyId);
+            console.log(divisions);
+            setDivisions(divisions);
+        }
+    };
+
+    const [query, setQuery] = useState("");
+    const { searchStr } = useDelayedInputSearch(query);
+    const handleFiltrationChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setQuery(e.target.value);
     }, []);
 
-    const getCompanies = () => {
-        actionMethodResultSync(
-            "DICTIONARY",
-            "company?page=0&size=100&sortingRule=companyId%3AASC",
-            "get",
-            getRequestHeader(authContext.token)
-        ).then((res) => setCompanies(res.content));
-    };
+    useEffect(() => {
+        const searchedTableData = tableData.filter((tableItem) => {
+            const tableDataStr =
+                getFullName(tableItem.firstname, tableItem.lastname, tableItem.patronymic) +
+                (tableItem.position?.nameRu || "") +
+                (tableItem.salary || "") +
+                (tableItem.salaryVariablePart || "") +
+                (tableItem.salaryConstantPart || "");
+            return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
+        });
+
+        let searchedAndFilteredTableData =
+            currentDivisionId !== ALL
+                ? searchedTableData.filter(
+                      (item) => item.division?.divisionId === currentDivisionId
+                  )
+                : searchedTableData;
+
+        table?.replaceData(searchedAndFilteredTableData);
+        table?.redraw(true);
+    }, [searchStr, currentDivisionId]);
 
     useEffect(() => {
-        if (selectedCompanyId) {
-            actionMethodResultSync(
-                "DICTIONARY",
-                `staffing?companyId=${selectedCompanyId}`,
+        initData();
+    }, []);
+
+    const fullNameTableActionsFormatter = (cell: Tabulator.CellComponent) => {
+        const data: any = cell.getData();
+
+        const userPhoto = data.currentPhotoId;
+
+        let photoElement = document.createElement("img");
+        photoElement.setAttribute("src", userPhoto ? userPhoto : questionImage);
+        photoElement.setAttribute("class", classes.usersByStaffingPhoto);
+        photoElement.setAttribute("width", "30px");
+        photoElement.setAttribute("height", "30px");
+
+        let textElement = document.createElement("span");
+        textElement.setAttribute("class", classes.fullNameText);
+        textElement.textContent = `${data.lastname ?? ""} ${data.firstname ?? ""} ${
+            data.patronymic ?? ""
+        }`;
+
+        let wrap = document.createElement("div");
+        wrap.setAttribute("class", classes.fullNameWrap);
+        wrap.appendChild(photoElement);
+        wrap.appendChild(textElement);
+        return wrap;
+    };
+
+    const initData = async () => {
+        createTableViaTabulator("#staffingTable", usersByStaffingColumns, [], () => {}, true);
+        const currentUserData: ICurrentUserDtoViewModel = await getCurrentUserData();
+        if (currentUserData) {
+            const companyId = currentUserData.company.companyId;
+            setCompanyId(companyId);
+            const userDataByStaffing: IUsersByStaffingDtoModel[] = await actionMethodResultSync(
+                "USER",
+                `user/byStaffing?companyId=${companyId}`,
                 "get",
                 getRequestHeader(authContext.token)
-            ).then((resData) => {
-                setData(resData);
-            });
+            ).then((data) => data);
+
+            const userDataByStaffingWithFormattedSalary: IUsersByStaffingDtoModel[] =
+                userDataByStaffing.map((userItem) => ({
+                    ...userItem,
+                    salary: `${userItem.salary ?? 0} ₸`,
+                    salaryConstantPart: `${userItem.salaryConstantPart ?? 0} ₸`,
+                    salaryVariablePart: `${userItem.salaryVariablePart ?? 0} ₸`
+                }));
+
+            const userDataByStaffingWithPhoto: IUsersByStaffingDtoViewModel[] =
+                await getUsersWithPhotoId(userDataByStaffingWithFormattedSalary);
+
+            const actionsSell: ColumnDefinition = {
+                headerSort: false,
+                title: "ФИО",
+                field: "fullName",
+                formatter: fullNameTableActionsFormatter
+            };
+
+            setTableData(userDataByStaffingWithPhoto);
+
+            await setTable(
+                createTableViaTabulator(
+                    "#staffingTable",
+                    [actionsSell, ...usersByStaffingColumns],
+                    userDataByStaffingWithPhoto,
+                    () => {},
+                    undefined
+                )
+            );
         }
-    }, [selectedCompanyId]);
+    };
 
     return (
-        <Row style={{ padding: "20px", marginRight: 0, marginLeft: 0 }} gutter={[16, 16]}>
-            <Col style={{ paddingLeft: 0, paddingRight: 0 }} span={24}>
-                <Form form={form} component={false}>
-                    <Row align={"middle"} gutter={24}>
-                        <Col
-                            style={{ marginBottom: "14px", paddingLeft: 0, paddingRight: 0 }}
-                            span={12}
-                        >
-                            <Select
-                                placeholder="Выберите компанию"
-                                style={{ width: 250 }}
-                                value={selectedCompanyId || null}
-                                onChange={(val) => {
-                                    localStorage.setItem("staffing_company_id", val.toString());
-                                    setSelectedCompanyId(+val);
-                                }}
-                            >
-                                {companies.map((el, i) => (
-                                    <Option key={i} value={el.companyId}>
-                                        {el.nameRu}
-                                    </Option>
-                                ))}
-                            </Select>
-                            <UIButton
-                                customType={"regular"}
-                                style={{ marginLeft: "14px", height: "34px" }}
-                                disabled={!selectedCompanyId}
-                                onClick={() => setIsModalVisible(true)}
-                                icon={<PlusOutlined />}
-                            >
-                                Добавить
-                            </UIButton>
-                        </Col>
-                    </Row>
-                    <Table
-                        components={{
-                            body: {
-                                cell: EditableCell
-                            }
-                        }}
-                        bordered
-                        columns={mergedColumns}
-                        dataSource={data}
-                        rowKey="staffingId"
-                        rowClassName="editable-row"
-                        pagination={{
-                            onChange: () => setEditingKey(-1),
-                            pageSize: 5,
-                            position: ["bottomCenter"]
-                        }}
+        <Row className={classes.wrapper}>
+            <Row align={"middle"} justify={"space-between"} className={classes.selectionRow}>
+                <Col>
+                    <Select
+                        showSearch
+                        optionFilterProp={"children"}
+                        className={classes.select}
+                        value={currentDivisionId}
+                        onChange={onChangeCurrentDivisionId}
+                    >
+                        {divisionValues.map((el: any, index: number) => (
+                            <Option value={el.divisionId} key={index}>
+                                {el.nameRu}
+                            </Option>
+                        ))}
+                    </Select>
+                    <DatePicker className={classes.datePicker} />
+                </Col>
+                <Col>
+                    <Input
+                        className={classes.input}
+                        onChange={handleFiltrationChange}
+                        placeholder="Поиск"
+                        suffix={<SearchOutlined className={classes.suffix} />}
                     />
-                    <StaffingScheduleModal
-                        okText="Создать"
-                        title="Новое расписание"
-                        onFinish={save}
-                        isVisible={isModalVisible}
-                        setIsVisible={setIsModalVisible}
-                        form={form}
-                    />
-                </Form>
-            </Col>
+                </Col>
+            </Row>
+            <Row className={classes.usersByStaffingTableWrap}>
+                <div id="staffingTable" />
+            </Row>
         </Row>
     );
 };

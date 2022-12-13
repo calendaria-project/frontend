@@ -17,7 +17,7 @@ export interface IDivisionDirectoryModal {
     form: FormInstance<IDivisionCreateViewModel | IDivisionViewModel>;
 }
 
-export const DivisionDirectoryModal = ({
+const DivisionDirectoryModal = ({
     title,
     okText,
     onFinish,
@@ -98,3 +98,5 @@ export const DivisionDirectoryModal = ({
         </Modal>
     );
 };
+
+export default DivisionDirectoryModal;

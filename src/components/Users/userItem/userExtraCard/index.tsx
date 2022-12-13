@@ -1,5 +1,14 @@
 import { Card, Col, Form, Menu, MenuProps, message, Row } from "antd";
-import React, { FC, memo, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+    FC,
+    memo,
+    useCallback,
+    useContext,
+    useEffect,
+    useMemo,
+    useState,
+    Suspense
+} from "react";
 import _ from "lodash";
 import { additionalMenuTypes, arrayKeyTypes, modalData } from "./constants";
 import { TLayoutModalData } from "data/types";
@@ -21,7 +30,6 @@ import { useDispatch } from "react-redux";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { IErrorDetail, modalErrorCodes, errorCodes, IErrorModifiedItem } from "data/errorCodes";
 
-import UserExtraCardModal from "./modal";
 import { getModalEditingNameByKey } from "utils/getModalEditingNameByKey";
 
 import RowData, { ListedRowData } from "./RowData";
@@ -34,13 +42,17 @@ import { removeEmptyObjectProperties } from "utils/removeObjectProperties";
 import { SetCurrentUserDataItemInfo, SetUserSelectedKey } from "store/actions";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
 import getUserRequestUrl from "functions/getUserRequestUrl";
-import SimpleUserExtraCardAdditionalModal from "./modal/simpleAdditionalModal";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import getObjectWithHandledDates from "utils/getObjectWithHandeledDates";
 import axios from "axios";
 import getCurrentSimpleError from "utils/getCurrentSimpleError";
+
+const UserExtraCardModal = React.lazy(() => import("./modal"));
+const SimpleUserExtraCardAdditionalModal = React.lazy(
+    () => import("./modal/simpleAdditionalModal")
+);
 
 interface IUserExtraCard {
     usersId: string;
@@ -376,27 +388,31 @@ const UserExtraCard: FC<IUserExtraCard> = ({ usersId }) => {
                         </Row>
                     </Col>
                 </Row>
-                <UserExtraCardModal
-                    okText={"Сохранить"}
-                    title={modalTitle}
-                    isVisible={modalVisibleFlag}
-                    setIsVisible={setModalVisibleFlag}
-                    onFinish={saveModal}
-                    form={form}
-                    currentDataLayout={currentDataLayout}
-                />
-                <SimpleUserExtraCardAdditionalModal
-                    okText={"Сохранить"}
-                    title={additionalModalTitle}
-                    isVisible={additionalModalVisibleFlag}
-                    setIsVisible={setAdditionalModalVisibleFlag}
-                    onFinish={saveAdditionalModal}
-                    form={simpleForm}
-                    currentDataLayout={currentDataLayout}
-                    errorMsg={errorMessages}
-                    errorArr={errorArr}
-                    usersId={usersId}
-                />
+                <Suspense>
+                    <UserExtraCardModal
+                        okText={"Сохранить"}
+                        title={modalTitle}
+                        isVisible={modalVisibleFlag}
+                        setIsVisible={setModalVisibleFlag}
+                        onFinish={saveModal}
+                        form={form}
+                        currentDataLayout={currentDataLayout}
+                    />
+                </Suspense>
+                <Suspense>
+                    <SimpleUserExtraCardAdditionalModal
+                        okText={"Сохранить"}
+                        title={additionalModalTitle}
+                        isVisible={additionalModalVisibleFlag}
+                        setIsVisible={setAdditionalModalVisibleFlag}
+                        onFinish={saveAdditionalModal}
+                        form={simpleForm}
+                        currentDataLayout={currentDataLayout}
+                        errorMsg={errorMessages}
+                        errorArr={errorArr}
+                        usersId={usersId}
+                    />
+                </Suspense>
             </Form>
         </Card>
     );

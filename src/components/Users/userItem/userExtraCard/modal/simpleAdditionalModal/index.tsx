@@ -1,6 +1,6 @@
 import { Col, Form, FormInstance, Modal, Row } from "antd";
 
-import React, { FC, memo, useCallback, useEffect, useState } from "react";
+import React, { FC, memo, useCallback, useEffect, useState, Suspense } from "react";
 
 import { validateMessages } from "data/validateMessages";
 import { selectedKeyTypes } from "data/enums";
@@ -10,12 +10,13 @@ import useStyles from "./styles";
 import { IErrorModifiedItem } from "data/errorCodes";
 import { getModalEditingNameByKey } from "utils/getModalEditingNameByKey";
 import { useTheme } from "react-jss";
-import ExtraValidationModal from "./validationModal";
 import WithFormItem, { getFormItemContent } from "components/Shared/modalRenderer";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { getSelectedKey } from "store/reducers/userReducer";
 import ModalBtns from "components/Shared/modalRenderer/modalBtns";
-import { SUB_CONTRACT } from "data/values";
+import { SUB_CONTRACT } from "data/constants";
+
+const ExtraValidationModal = React.lazy(() => import("./validationModal"));
 
 interface IUserItemModal {
     okText: string;
@@ -85,13 +86,6 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
         },
         []
     );
-    //
-    // console.log(copiedErrorArr);
-    //
-    // console.log(currentDataLayout);
-
-    // console.log(simpleSubContractLayout);
-    // console.log(currentDataLayout);
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
@@ -108,7 +102,7 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
             >
                 <Row gutter={16}>
                     {(isContractFlag && selectedContractType === SUB_CONTRACT
-                        ? simpleSubContractLayout || []
+                        ? simpleSubContractLayout
                         : currentDataLayout || []
                     ).map((dataItemLayout, index) => {
                         const span = dataItemLayout.span;
@@ -153,16 +147,18 @@ const UserExtraCardAdditionalModal: FC<IUserItemModal> = ({
                 )}
                 <ModalBtns okText={okText} onCancel={handleCancel} />
             </Form>
-            <ExtraValidationModal
-                okText={"Сохранить"}
-                title={currentErr.error?.field ? "Редактировать " : "Добавить "}
-                isVisible={extraModalVisible}
-                setIsVisible={setExtraModalVisible}
-                form={extraForm}
-                currentErr={currentErr.error}
-                onChangeError={onChangeError}
-                usersId={usersId}
-            />
+            <Suspense>
+                <ExtraValidationModal
+                    okText={"Сохранить"}
+                    title={currentErr.error?.field ? "Редактировать " : "Добавить "}
+                    isVisible={extraModalVisible}
+                    setIsVisible={setExtraModalVisible}
+                    form={extraForm}
+                    currentErr={currentErr.error}
+                    onChangeError={onChangeError}
+                    usersId={usersId}
+                />
+            </Suspense>
         </Modal>
     );
 };

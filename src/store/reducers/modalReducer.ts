@@ -1,8 +1,8 @@
 import { MainActionTypes } from "../types";
 import { IAction } from "../interfaces";
 import { TLayoutModalData } from "data/types";
-import { BASE_SUB_CONTRACT_INFO } from "components/Users/userItem/userExtraCard/constants";
-import { CONTRACT, TContracts } from "data/values";
+import { BASE_SUB_CONTRACT_INFO } from "data/constants";
+import { CONTRACT, TContracts } from "data/constants";
 import { IPositionDtoModel } from "interfaces";
 
 interface IModalState {

@@ -316,6 +316,27 @@ export interface IExternalUsersDataModel extends IExternalUsersDtoViewModel {
     currentPhotoId?: string;
 }
 
+export interface IUsersByStaffingDtoModel {
+    userId: string;
+    lastname: string;
+    firstname: string;
+    patronymic: string;
+    iin: string;
+    division: IDivisionDtoModel;
+    position: IPositionDtoModel;
+    employmentDate: string;
+    salaryConstantPercent: number;
+    salaryConstantPart: number | string;
+    salaryVariablePercent: number;
+    salaryVariablePart: number | string;
+    salary: number | string;
+}
+
+export interface IUsersByStaffingDtoViewModel extends IUsersByStaffingDtoModel {
+    fullName?: string;
+    currentPhotoId?: string;
+}
+
 export interface IUsersCardModel {
     id: string | number;
     fullName: string;
@@ -430,7 +451,7 @@ export interface IDivisionUnitDtoModel {
 }
 
 export interface IExtendedOrgStructureTreeItem extends IOrgStructureTreeItem {
-    title: string;
+    title: JSX.Element;
     key: string;
     icon: JSX.Element;
 }

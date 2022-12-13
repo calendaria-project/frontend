@@ -1,11 +1,10 @@
-import React, { FC, useCallback, useContext, useEffect, useState } from "react";
+import React, { FC, useCallback, useContext, useEffect, useState, Suspense } from "react";
 import { Button, Form, Input, Table } from "antd";
 
 import { AuthContext } from "context/AuthContextProvider";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { IPositionViewModel } from "interfaces";
-import { SharedModal } from "../SharedModal";
 import { ITable } from "../ITable";
 import SearchingRow from "../SearchingRow";
 
@@ -13,6 +12,8 @@ import SaveIcon from "assets/svgComponents/SaveIcon";
 import CancelIcon from "assets/svgComponents/CancelIcon";
 import EditIcon from "assets/svgComponents/EditIcon";
 import { ITheme } from "styles/theme/interface";
+
+const SharedModal = React.lazy(() => import("../SharedModal"));
 
 import { useTheme } from "react-jss";
 
@@ -252,14 +253,16 @@ const PositionList: FC<ITable> = ({ selectionItems }) => {
                     position: ["bottomCenter"]
                 }}
             />
-            <SharedModal
-                okText="Создать"
-                title="Новая должность"
-                onFinish={save}
-                isVisible={isModalVisible}
-                setIsVisible={setIsModalVisible}
-                form={form}
-            />
+            <Suspense>
+                <SharedModal
+                    okText="Создать"
+                    title="Новая должность"
+                    onFinish={save}
+                    isVisible={isModalVisible}
+                    setIsVisible={setIsModalVisible}
+                    form={form}
+                />
+            </Suspense>
         </Form>
     );
 };

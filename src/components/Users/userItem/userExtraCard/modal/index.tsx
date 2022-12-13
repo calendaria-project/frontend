@@ -3,11 +3,11 @@ import { Col, Form, FormInstance, Modal, Row } from "antd";
 import React, { FC, memo, useCallback } from "react";
 
 import { validateMessages } from "data/validateMessages";
-import { arrayKeyTypes, REDUCED_CONTRACT_INFO } from "../constants";
+import { arrayKeyTypes } from "../constants";
 import { TLayoutModalData } from "data/types";
 import WithFormItem, { getFormItemContent } from "components/Shared/modalRenderer";
 
-import { CONTRACT, SUB_CONTRACT } from "data/values";
+import { CONTRACT, SUB_CONTRACT, REDUCED_CONTRACT_INFO } from "data/constants";
 
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { getCurrentUserDataItemInfo, getSelectedKey } from "store/reducers/userReducer";
@@ -34,14 +34,16 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
     currentDataLayout,
     index
 }) => {
-    const selectedKey = useTypedSelector((state) => getSelectedKey(state.user));
-    const currentUserDataItemInfo = useTypedSelector((state) =>
-        getCurrentUserDataItemInfo(state.user)
-    );
-
     const handleCancel = useCallback(() => {
         setIsVisible(false);
     }, []);
+
+    const selectedKey = useTypedSelector((state) => getSelectedKey(state.user));
+    const subContractLayout = useTypedSelector((state) => state.modal.subContractLayout);
+
+    const currentUserDataItemInfo = useTypedSelector((state) =>
+        getCurrentUserDataItemInfo(state.user)
+    );
 
     const modalCurrentDataItemInfo =
         index === null || index === undefined
@@ -51,8 +53,6 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                     : [{}]
                 : undefined
             : [currentUserDataItemInfo?.[index!]];
-
-    const subContractLayout = useTypedSelector((state) => state.modal.subContractLayout);
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
@@ -73,11 +73,11 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                               (dataItemInfo: any, index: number) => {
                                   const contractType = dataItemInfo?.contractType;
                                   const contractCode = contractType?.code;
+                                  const isSubContractFlag = contractCode === SUB_CONTRACT;
+                                  const isContractFlag = contractCode === CONTRACT;
                                   return (
                                       <React.Fragment key={index}>
-                                          {contractType &&
-                                          contractCode !== CONTRACT &&
-                                          contractCode !== SUB_CONTRACT
+                                          {contractType && !isContractFlag && !isSubContractFlag
                                               ? REDUCED_CONTRACT_INFO.map(
                                                     (dataItemLayout, index) => {
                                                         const span = dataItemLayout.span;
@@ -103,7 +103,7 @@ const UserExtraCardModal: FC<IUserItemModal> = ({
                                                         );
                                                     }
                                                 )
-                                              : contractType && contractCode === SUB_CONTRACT
+                                              : contractType && isSubContractFlag
                                               ? subContractLayout.map((dataItemLayout, index) => {
                                                     const span = dataItemLayout.span;
                                                     return (

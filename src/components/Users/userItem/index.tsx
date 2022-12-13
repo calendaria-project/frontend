@@ -1,4 +1,4 @@
-import React, { FC, memo, useCallback, useContext, useEffect, useState } from "react";
+import React, { FC, memo, useCallback, useContext, useEffect, useState, Suspense } from "react";
 import { Col, Row, Typography, Card, Divider, Image, message, Tooltip } from "antd";
 import cx from "classnames";
 import { QuestionCircleOutlined } from "@ant-design/icons";
@@ -12,7 +12,6 @@ import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import Header from "ui/Header";
 import UserExtraCard from "./userExtraCard";
-import { UserEditDrawer } from "../userDrawer/UserEditDrawer";
 import Spinner from "ui/Spinner";
 import { SetCurrentOpenedMenu, SetCurrentUserFio } from "store/actions";
 import { mainMenuEnum } from "data/enums";
@@ -23,9 +22,11 @@ import useStyles from "./styles";
 
 const { Title, Text } = Typography;
 
-import UserItemArchiveModal from "./modal/UserItemArchiveModal";
 import { ICurrentUserDtoViewModel } from "interfaces";
-import { ARCHIVE } from "data/values";
+import { ARCHIVE } from "data/constants";
+
+const UserEditDrawer = React.lazy(() => import("../userDrawer/UserEditDrawer"));
+const UserItemArchiveModal = React.lazy(() => import("./modal/UserItemArchiveModal"));
 
 const UserItem: FC = () => {
     const dispatch = useDispatch();
@@ -223,24 +224,28 @@ const UserItem: FC = () => {
                         </Row>
                     </Card>
                 </Col>
-                <UserEditDrawer
-                    userPhoto={currentUserPhoto}
-                    // userSign={currentUserSign}
-                    userData={currentUserData}
-                    divisionId={currentUserData.divisionId}
-                    companyId={currentUserData.company?.companyId}
-                    open={isVisibleEditUserDrawer}
-                    setOpen={setIsVisibleEditUserDrawer}
-                    companyName={currentUserData?.company?.nameRu}
-                    onFinishEditingUser={onFinishEditingUser}
-                />
-                <UserItemArchiveModal
-                    okText={"Удалить"}
-                    title={"Вы уверены что хотите перенести в архив текущего сотрудника?"}
-                    isVisible={archiveModalVisible}
-                    setIsVisible={setArchiveModalVisible}
-                    handleDeleteUser={handleDeleteUser}
-                />
+                <Suspense>
+                    <UserEditDrawer
+                        userPhoto={currentUserPhoto}
+                        // userSign={currentUserSign}
+                        userData={currentUserData}
+                        divisionId={currentUserData.divisionId}
+                        companyId={currentUserData.company?.companyId}
+                        open={isVisibleEditUserDrawer}
+                        setOpen={setIsVisibleEditUserDrawer}
+                        companyName={currentUserData?.company?.nameRu}
+                        onFinishEditingUser={onFinishEditingUser}
+                    />
+                </Suspense>
+                <Suspense>
+                    <UserItemArchiveModal
+                        okText={"Удалить"}
+                        title={"Вы уверены что хотите перенести в архив текущего сотрудника?"}
+                        isVisible={archiveModalVisible}
+                        setIsVisible={setArchiveModalVisible}
+                        handleDeleteUser={handleDeleteUser}
+                    />
+                </Suspense>
                 <Col className={classes.extraCardCol} span={16}>
                     <UserExtraCard usersId={usersId!} />
                 </Col>

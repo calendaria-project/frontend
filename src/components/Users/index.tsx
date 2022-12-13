@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, Suspense } from "react";
 
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { Col, Input, Row, Select } from "antd";
@@ -10,7 +10,6 @@ import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { useNavigate } from "react-router";
 import { createTableViaTabulator } from "services/tabulator";
-import { UserAddDrawer } from "./userDrawer/UserAddDrawer";
 import { ColumnDefinition } from "tabulator-tables";
 
 import useDelayedInputSearch from "hooks/useDelayedInputSearch";
@@ -26,10 +25,12 @@ import { ICurrentUserDtoViewModel, IUsersDtoViewModel } from "interfaces";
 import getFullName from "utils/getFullName";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import cx from "classnames";
-import { ALL } from "data/values";
+import { ALL } from "data/constants";
 import { requestTypeValues } from "./defaultValues";
 
 const { Option } = Select;
+
+const UserAddDrawer = React.lazy(() => import("./userDrawer/UserAddDrawer"));
 
 interface IUsersWithPhoto extends IUsersDtoViewModel {
     currentPhotoId: string;
@@ -219,13 +220,15 @@ const Users: FC = () => {
             <Row className={classes.usersTableWrapper}>
                 <div id="usersTable" />
             </Row>
-            <UserAddDrawer
-                companyId={companyId}
-                open={isVisibleAddUserDrawer}
-                setOpen={setIsVisibleAddUserDrawer}
-                companyName={companyName}
-                onFinishCreatingUser={onFinishCreatingUser}
-            />
+            <Suspense>
+                <UserAddDrawer
+                    companyId={companyId}
+                    open={isVisibleAddUserDrawer}
+                    setOpen={setIsVisibleAddUserDrawer}
+                    companyName={companyName}
+                    onFinishCreatingUser={onFinishCreatingUser}
+                />
+            </Suspense>
         </Row>
     );
 };

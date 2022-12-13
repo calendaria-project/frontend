@@ -30,7 +30,7 @@ const validateMessages = {
     required: "Обязательное поле!"
 };
 
-export const CompanyDirectoryModal = ({
+const CompanyDirectoryModal = ({
     title,
     okText,
     onFinish,
@@ -258,3 +258,5 @@ export const CompanyDirectoryModal = ({
         </Modal>
     );
 };
+
+export default CompanyDirectoryModal;

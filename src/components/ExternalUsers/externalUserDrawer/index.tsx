@@ -1,4 +1,4 @@
-import React, { FC, memo, useCallback, useContext, useState } from "react";
+import React, { FC, memo, useCallback, useContext, useState, Suspense } from "react";
 import { Drawer, Row, Col, Image, Typography, message, Form } from "antd";
 import cx from "classnames";
 import { IExternalUsersDataModel, IExternalUsersDtoViewModel } from "interfaces";
@@ -18,13 +18,14 @@ import Button from "ui/Button";
 import { AuthContext } from "context/AuthContextProvider";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
-import ArchiveExternalUserModal from "../modal/ArchiveExternalUserModal";
-import SharedExternalUserModal from "../modal/SharedExternalUserModal";
 import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
 import { parsePointObjectKey } from "utils/parsePointObjectKey";
 import _ from "lodash";
-import { ALL, ARCHIVE } from "data/values";
+import { ALL, ARCHIVE } from "data/constants";
 import { IFinishData } from "../index";
+
+const ArchiveExternalUserModal = React.lazy(() => import("../modal/ArchiveExternalUserModal"));
+const SharedExternalUserModal = React.lazy(() => import("../modal/SharedExternalUserModal"));
 
 const { Text, Title } = Typography;
 
@@ -202,22 +203,28 @@ const ExternalUserDrawer: FC<IExternalUserDrawer> = ({
                     )}
                 </Row>
             </Row>
-            <ArchiveExternalUserModal
-                okText={"Удалить"}
-                title={"Вы действительно хотите добавить в архив текущего внешнего пользователя"}
-                isVisible={archiveModalVisible}
-                setIsVisible={setArchiveModalVisible}
-                onArchiveItem={onArchiveExternalUser}
-            />
-            <SharedExternalUserModal
-                okText={"Сохранить"}
-                title={"Редактировать внешнего пользователя"}
-                setIsVisible={setEditModalVisible}
-                onFinish={onFinishEditExternalUserDrawer}
-                isVisible={editModalVisible}
-                form={editForm}
-                existingData={externalUserData}
-            />
+            <Suspense>
+                <ArchiveExternalUserModal
+                    okText={"Удалить"}
+                    title={
+                        "Вы действительно хотите добавить в архив текущего внешнего пользователя"
+                    }
+                    isVisible={archiveModalVisible}
+                    setIsVisible={setArchiveModalVisible}
+                    onArchiveItem={onArchiveExternalUser}
+                />
+            </Suspense>
+            <Suspense>
+                <SharedExternalUserModal
+                    okText={"Сохранить"}
+                    title={"Редактировать внешнего пользователя"}
+                    setIsVisible={setEditModalVisible}
+                    onFinish={onFinishEditExternalUserDrawer}
+                    isVisible={editModalVisible}
+                    form={editForm}
+                    existingData={externalUserData}
+                />
+            </Suspense>
         </Drawer>
     );
 };

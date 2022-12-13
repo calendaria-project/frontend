@@ -50,7 +50,7 @@ export interface IUserEditDrawer {
     onFinishEditingUser: (data: any) => void;
 }
 
-export const UserEditDrawer = ({
+const UserEditDrawer = ({
     userPhoto,
     // userSign,
     userData,
@@ -331,3 +331,5 @@ export const UserEditDrawer = ({
         </Drawer>
     );
 };
+
+export default UserEditDrawer;

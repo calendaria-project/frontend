@@ -1,4 +1,4 @@
-import { ALL, ACTIVE, ARCHIVE } from "data/values";
+import { ALL, ACTIVE, ARCHIVE } from "data/constants";
 export const requestTypeValues = [
     {
         type: ALL,

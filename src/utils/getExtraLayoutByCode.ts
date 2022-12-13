@@ -5,7 +5,7 @@ import {
     ADDITIONAL_SALARY,
     ADDITIONAL_WORK_TYPE,
     ADDITIONAL_WORKING_REGIME
-} from "components/Users/userItem/userExtraCard/constants";
+} from "data/constants";
 
 const getExtraLayoutByCode = (code: string): TLayoutModalData[] => {
     switch (code) {

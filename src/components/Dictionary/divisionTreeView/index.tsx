@@ -1,6 +1,6 @@
 import { Form, message, Select } from "antd";
 import type { DataNode } from "antd/es/tree";
-import React, { FC, useCallback, useContext, useEffect, useState } from "react";
+import React, { FC, useCallback, useContext, useEffect, useState, Suspense } from "react";
 import { ColumnDefinition } from "tabulator-tables";
 
 import { AuthContext } from "context/AuthContextProvider";
@@ -13,7 +13,6 @@ import {
     IDivisionViewModel
 } from "interfaces";
 import { createTableViaTabulator } from "services/tabulator";
-import { DivisionDirectoryModal } from "./modal";
 import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
 import { ITable } from "../Tables/ITable";
 import SearchingRow from "../Tables/SearchingRow";
@@ -27,6 +26,8 @@ import { ITheme } from "styles/theme/interface";
 import Button from "ui/Button";
 import { PlusOutlined } from "@ant-design/icons";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
+
+const DivisionDirectoryModal = React.lazy(() => import("./modal"));
 
 const { Option } = Select;
 
@@ -242,22 +243,26 @@ export const DivisionTreeView: FC<ITable> = ({ selectionItems }) => {
                     </Button>
                 </div>
             </div>
-            <DivisionDirectoryModal
-                okText="Создать"
-                title="Новое подразделение"
-                onFinish={hanldeAddDivision}
-                isVisible={isModalVisible}
-                setIsVisible={setIsModalVisible}
-                form={form}
-            />
-            <DivisionDirectoryModal
-                okText="Сохранить"
-                title="Изменение данные"
-                onFinish={hanldeUpdateDivision}
-                isVisible={isEditModalVisible}
-                setIsVisible={setIsEditModalVisible}
-                form={editForm}
-            />
+            <Suspense>
+                <DivisionDirectoryModal
+                    okText="Создать"
+                    title="Новое подразделение"
+                    onFinish={hanldeAddDivision}
+                    isVisible={isModalVisible}
+                    setIsVisible={setIsModalVisible}
+                    form={form}
+                />
+            </Suspense>
+            <Suspense>
+                <DivisionDirectoryModal
+                    okText="Сохранить"
+                    title="Изменение данные"
+                    onFinish={hanldeUpdateDivision}
+                    isVisible={isEditModalVisible}
+                    setIsVisible={setIsEditModalVisible}
+                    form={editForm}
+                />
+            </Suspense>
             <div id="divisionsTable" />
         </div>
     );

@@ -1,5 +1,5 @@
 import { Form, message } from "antd";
-import React, { FC, useCallback, useContext, useEffect, useState } from "react";
+import React, { FC, useCallback, useContext, useEffect, useState, Suspense } from "react";
 import { ColumnDefinition } from "tabulator-tables";
 
 import { AuthContext } from "context/AuthContextProvider";
@@ -8,12 +8,13 @@ import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { ICompanyCreateViewModel, ICompanyViewModel, ICompanyTreeNodeModel } from "interfaces";
 import { createTableViaTabulator } from "services/tabulator";
-import { CompanyDirectoryModal } from "./modal";
 import { DataNode } from "antd/es/tree";
 import { ITable } from "../Tables/ITable";
 import SearchingRow from "../Tables/SearchingRow";
 import editIcon from "assets/svg/editIcon.svg";
 import addIcon from "assets/svg/addIcon.svg";
+
+const CompanyDirectoryModal = React.lazy(() => import("./modal"));
 
 export type DataNodeItem = DataNode & ICompanyTreeNodeModel & { children: DataNodeItem[] };
 
@@ -206,23 +207,27 @@ export const CompanyTreeView: FC<ITable> = ({ selectionItems }) => {
                 onSetIsModalVisible={setIsModalVisible}
             />
             <div id="companiesTable" />
-            <CompanyDirectoryModal
-                okText="Создать"
-                title="Новая компания"
-                onFinish={handleAddCompany}
-                isVisible={isModalVisible}
-                setIsVisible={setIsModalVisible}
-                form={form}
-            />
-            <CompanyDirectoryModal
-                okText="Сохранить"
-                title="Изменить данные"
-                onFinish={handleUpdateCompany}
-                isVisible={isEditModalVisible}
-                setIsVisible={setIsEditModalVisible}
-                form={editForm}
-                companyData={companyData}
-            />
+            <Suspense>
+                <CompanyDirectoryModal
+                    okText="Создать"
+                    title="Новая компания"
+                    onFinish={handleAddCompany}
+                    isVisible={isModalVisible}
+                    setIsVisible={setIsModalVisible}
+                    form={form}
+                />
+            </Suspense>
+            <Suspense>
+                <CompanyDirectoryModal
+                    okText="Сохранить"
+                    title="Изменить данные"
+                    onFinish={handleUpdateCompany}
+                    isVisible={isEditModalVisible}
+                    setIsVisible={setIsEditModalVisible}
+                    form={editForm}
+                    companyData={companyData}
+                />
+            </Suspense>
         </>
     );
 };

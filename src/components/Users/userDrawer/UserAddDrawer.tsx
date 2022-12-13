@@ -44,7 +44,7 @@ export interface IUserAddDrawer {
     onFinishCreatingUser: (data: any) => void;
 }
 
-export const UserAddDrawer = ({
+const UserAddDrawer = ({
     companyId,
     companyName,
     open,
@@ -320,3 +320,5 @@ export const UserAddDrawer = ({
         </Drawer>
     );
 };
+
+export default UserAddDrawer;

@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useContext, useEffect, useState } from "react";
+import React, { FC, useCallback, useContext, useEffect, useState, Suspense } from "react";
 import { useDispatch } from "react-redux";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
@@ -8,7 +8,7 @@ import { SetCurrentOpenedMenu } from "store/actions";
 import { mainMenuEnum } from "data/enums";
 import { Row, Col, Select, Typography, Input, Form, message } from "antd";
 import { requestTypeValues, DATE, sortTypeValues } from "./defaultValues";
-import { ALL } from "data/values";
+import { ALL } from "data/constants";
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import Button from "ui/Button";
 import { actionMethodResultSync } from "functions/actionMethodResult";
@@ -20,17 +20,18 @@ import { createTableViaTabulator } from "services/tabulator";
 import { externalUsersColumns } from "data/columns";
 import { ColumnDefinition } from "tabulator-tables";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
-import ExternalUserDrawer from "./externalUserDrawer";
 import {
     ICurrentUserDtoViewModel,
     IExternalUsersDataModel,
     IExternalUsersDtoViewModel
 } from "interfaces";
-import SharedExternalUserModal from "./modal/SharedExternalUserModal";
 import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
 import { parsePointObjectKey } from "utils/parsePointObjectKey";
 import getSortedData from "./getSortedData";
 import getFullName from "utils/getFullName";
+
+const SharedExternalUserModal = React.lazy(() => import("./modal/SharedExternalUserModal"));
+const ExternalUserDrawer = React.lazy(() => import("./externalUserDrawer"));
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -282,21 +283,25 @@ const ExternalUsers: FC = () => {
             <Row className={classes.externalUsersTableWrap}>
                 <div id="externalUsersTable" />
             </Row>
-            <ExternalUserDrawer
-                requestType={requestType}
-                table={table}
-                open={externalUserDrawerOpen}
-                setOpen={setExternalUserDrawerOpen}
-                externalUserData={currentExternalUserInfo}
-            />
-            <SharedExternalUserModal
-                okText={"Добавить"}
-                title={"Добавить внешнего пользователя"}
-                setIsVisible={setAddExternalUserModalVisible}
-                onFinish={onFinishAddExternalUser}
-                isVisible={addExternalUserModalVisible}
-                form={form}
-            />
+            <Suspense>
+                <ExternalUserDrawer
+                    requestType={requestType}
+                    table={table}
+                    open={externalUserDrawerOpen}
+                    setOpen={setExternalUserDrawerOpen}
+                    externalUserData={currentExternalUserInfo}
+                />
+            </Suspense>
+            <Suspense>
+                <SharedExternalUserModal
+                    okText={"Добавить"}
+                    title={"Добавить внешнего пользователя"}
+                    setIsVisible={setAddExternalUserModalVisible}
+                    onFinish={onFinishAddExternalUser}
+                    isVisible={addExternalUserModalVisible}
+                    form={form}
+                />
+            </Suspense>
         </Row>
     );
 };

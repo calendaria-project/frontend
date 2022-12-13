@@ -84,11 +84,11 @@ const Header: FC = () => {
         []
     );
 
-    return (
-        <AntdHeader className={classes.header}>
+    const getHeaderTitle = () => {
+        return (
             <div>
                 {selectedMainMenuPoint === mainMenuEnum.staffing ? (
-                    <UIHeader size="h2">Штатные расписания</UIHeader>
+                    <UIHeader size="h2">Штатное расписание</UIHeader>
                 ) : selectedMainMenuPoint === mainMenuEnum.dictionary ? (
                     <UIHeader size="h2">Справочники</UIHeader>
                 ) : selectedMainMenuPoint === mainMenuEnum.users ? (
@@ -105,6 +105,12 @@ const Header: FC = () => {
                     <UIHeader size="h2">Внешние пользователи</UIHeader>
                 ) : null}
             </div>
+        );
+    };
+
+    return (
+        <AntdHeader className={classes.header}>
+            {getHeaderTitle()}
             <div className={classes.selections}>
                 <Select
                     className={classes.langSelection}

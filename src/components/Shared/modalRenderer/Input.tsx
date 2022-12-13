@@ -21,7 +21,7 @@ import {
     SALARY_CONSTANT_PERCENT,
     SALARY_VARIABLE_PART,
     SALARY_VARIABLE_PERCENT
-} from "data/values";
+} from "data/constants";
 import { inputLengthHandler } from "utils/inputLengthHandler";
 
 interface IInput {

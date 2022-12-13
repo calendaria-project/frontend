@@ -44,10 +44,10 @@ export default createUseStyles({
     },
     dragIcon: {
         marginLeft: "8px",
-        color: (theme: ITheme) => theme.image.color.regular
+        color: (theme: ITheme) => theme.image.color.secondary
     },
     editIcon: {
-        color: (theme: ITheme) => theme.image.color.regular
+        color: (theme: ITheme) => theme.image.color.secondary
     },
     typeIcon: {
         color: (theme: ITheme) => theme.image.color.secondary

@@ -6,7 +6,7 @@ import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { useDispatch } from "react-redux";
 import { SetModalSubContractLayout, SetSimpleAddModalSubContractLayout } from "store/actions";
 import getExtraLayoutByCode from "utils/getExtraLayoutByCode";
-import { BASE_SUB_CONTRACT_INFO } from "../../../Users/userItem/userExtraCard/constants";
+import { BASE_SUB_CONTRACT_INFO } from "data/constants";
 
 const { Option } = AntdSelect;
 

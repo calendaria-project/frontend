@@ -5,7 +5,7 @@ import React, { FC, memo, useCallback, useContext, useEffect, useState } from "r
 import { validateMessages } from "data/validateMessages";
 
 import { IErrorModifiedItem } from "data/errorCodes";
-import { modalData } from "../../../constants";
+import { modalData } from "components/Users/userItem/userExtraCard/constants";
 import { selectedKeyTypes } from "data/enums";
 import { TLayoutModalData } from "data/types";
 import { actionMethodResultSync } from "functions/actionMethodResult";
