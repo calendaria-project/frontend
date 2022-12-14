@@ -126,5 +126,10 @@ export const usersByStaffingColumns: ColumnDefinition[] = [
         headerSort: false,
         title: "Оклад",
         field: "salary"
+    },
+    {
+        headerSort: false,
+        title: "Дата приема",
+        field: "employmentDate"
     }
 ];

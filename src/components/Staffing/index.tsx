@@ -13,7 +13,7 @@ import {
     IUsersByStaffingDtoModel,
     IUsersByStaffingDtoViewModel
 } from "interfaces";
-import { ALL } from "../../data/constants";
+import { ALL } from "data/constants";
 import useDelayedInputSearch from "hooks/useDelayedInputSearch";
 import getFullName from "utils/getFullName";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
@@ -24,6 +24,7 @@ import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { ColumnDefinition } from "tabulator-tables";
 import { SearchOutlined } from "@ant-design/icons";
+import moment, { Moment } from "moment";
 
 const { Option } = Select;
 
@@ -38,16 +39,14 @@ const Staffing: FC = () => {
     const theme = useTheme<ITheme>();
     const classes = useStyles(theme);
 
-    const [companyId, setCompanyId] = useState<number | undefined>(undefined);
     const [table, setTable] = useState<Tabulator | undefined>();
     const [tableData, setTableData] = useState<IUsersByStaffingDtoViewModel[]>([]);
 
     const { getCurrentUserData, getUsersWithPhotoId, getDivisionOptions } =
         useSimpleHttpFunctions();
 
+    const [companyId, setCompanyId] = useState<number | undefined>(undefined);
     const [divisions, setDivisions] = useState<IDivisionViewModel[]>([]);
-    const [currentDivisionId, setCurrentDivisionId] = useState<string | number>(ALL);
-    const onChangeCurrentDivisionId = useCallback((v: any) => setCurrentDivisionId(v), []);
     const divisionValues: any = [{ divisionId: ALL, nameRu: "Все подразделения" }, ...divisions];
 
     useEffect(() => {
@@ -56,10 +55,33 @@ const Staffing: FC = () => {
     const getDivisions = async () => {
         if (companyId) {
             const divisions = await getDivisionOptions(companyId);
-            console.log(divisions);
             setDivisions(divisions);
         }
     };
+
+    const [currentDivisionId, setCurrentDivisionId] = useState<string | number>(
+        JSON.parse(sessionStorage.getItem("usersByStaffingDivision") as string) || ALL
+    );
+    const onChangeCurrentDivisionId = useCallback((v: any) => setCurrentDivisionId(v), []);
+
+    useEffect(() => {
+        sessionStorage.setItem("usersByStaffingDivision", JSON.stringify(currentDivisionId));
+    }, [divisions, currentDivisionId]);
+
+    const dateString = JSON.parse(sessionStorage.getItem("usersByStaffingDate") as string);
+    const [date, setDate] = useState<Moment | null>(
+        (dateString ? moment(dateString, "YYYY-MM-DD") : dateString) || null
+    );
+    const onChangeDate = useCallback((newDate: any, dateString: string) => {
+        dateString ? setDate(moment(dateString, "YYYY-MM-DD")) : setDate(null);
+    }, []);
+
+    useEffect(() => {
+        sessionStorage.setItem(
+            "usersByStaffingDate",
+            JSON.stringify(date ? (date as any)._i : null)
+        );
+    }, [date]);
 
     const [query, setQuery] = useState("");
     const { searchStr } = useDelayedInputSearch(query);
@@ -78,16 +100,22 @@ const Staffing: FC = () => {
             return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
         });
 
-        let searchedAndFilteredTableData =
+        const searchedAndFilteredTableData =
             currentDivisionId !== ALL
                 ? searchedTableData.filter(
                       (item) => item.division?.divisionId === currentDivisionId
                   )
                 : searchedTableData;
 
-        table?.replaceData(searchedAndFilteredTableData);
+        const resultDataFilteredByDate = date
+            ? searchedAndFilteredTableData.filter(
+                  (item) => item.employmentDate === (date as any)._i
+              )
+            : searchedAndFilteredTableData;
+
+        table?.replaceData(resultDataFilteredByDate);
         table?.redraw(true);
-    }, [searchStr, currentDivisionId]);
+    }, [tableData, searchStr, currentDivisionId, date]);
 
     useEffect(() => {
         initData();
@@ -179,7 +207,12 @@ const Staffing: FC = () => {
                             </Option>
                         ))}
                     </Select>
-                    <DatePicker className={classes.datePicker} />
+                    <DatePicker
+                        value={date}
+                        placeholder="Дата приема"
+                        onChange={onChangeDate}
+                        className={classes.datePicker}
+                    />
                 </Col>
                 <Col>
                     <Input
