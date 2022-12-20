@@ -47,6 +47,15 @@ const useSimpleHttpFunctions = () => {
         ).then((data) => data);
     };
 
+    const getUserData = (userId: string) => {
+        return actionMethodResultSync(
+            "USER",
+            `user/${userId}`,
+            "get",
+            getRequestHeader(authContext.token)
+        ).then((data) => data);
+    };
+
     const getDictionaryValues = (url: string) => {
         return actionMethodResultSync(
             "DICTIONARY",
@@ -54,6 +63,28 @@ const useSimpleHttpFunctions = () => {
             "get",
             getRequestHeader(authContext.token)
         ).then((data) => data);
+    };
+
+    const getDivisionOptions = (companyId: number) => {
+        if (companyId) {
+            return actionMethodResultSync(
+                "DICTIONARY",
+                `division?companyId=${companyId}&page=0&size=1000&sortingRule=divisionId%3AASC`,
+                "get",
+                getRequestHeader(authContext.token)
+            ).then((data) => data.content);
+        }
+    };
+
+    const getPositionOptionsByDivisionId = (divisionId: number) => {
+        if (divisionId) {
+            return actionMethodResultSync(
+                "DICTIONARY",
+                `position/divisionUnit?divisionId=${divisionId}`,
+                "get",
+                getRequestHeader(authContext.token)
+            ).then((data) => data);
+        }
     };
 
     const getUsersWithPhotoId = async (data: any) => {
@@ -124,18 +155,34 @@ const useSimpleHttpFunctions = () => {
         });
     };
 
+    const calculatePercent = (amount: number, percent: number) => {
+        return actionMethodResultSync(
+            "USER",
+            `contract/calculate-percent`,
+            "post",
+            getRequestHeader(authContext.token),
+            { amount, percent }
+        ).then((data) => {
+            return data;
+        });
+    };
+
     return {
         companies,
         positions,
         initPositionOptions,
         getPositionOptions,
         getCurrentUserData,
+        getUserData,
         getUsersWithPhotoId,
         getDictionaryValues,
         getCompanyById,
         getDivisionById,
         getDivisionUnitById,
-        getTreeData
+        getTreeData,
+        calculatePercent,
+        getDivisionOptions,
+        getPositionOptionsByDivisionId
     };
 };
 export default useSimpleHttpFunctions;

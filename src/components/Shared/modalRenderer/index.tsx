@@ -2,9 +2,12 @@ import React, { FC, memo } from "react";
 import { TLayoutModalData } from "data/types";
 import { layoutConstantTypes } from "data/enums";
 import { Form, FormInstance, Typography } from "antd";
-import Select from "./Select";
+import Select from "./Selects/Select";
 import Input from "./Input";
 import DatePicker from "./DatePicker";
+import MultipleSelect from "./Selects/MultipleSelect";
+import DivisionSelect from "./Selects/DivisionSelect";
+import PositionSelect from "./Selects/PositionSelect";
 
 const { Text } = Typography;
 
@@ -40,6 +43,27 @@ export const getFormItemContent = (
                 <Text strong style={{ fontSize: "18px" }}>
                     {dataItemLayout.placeholder}
                 </Text>
+            ) : dataItemLayout.type === layoutConstantTypes.MULTIPLE_SELECT ? (
+                <MultipleSelect
+                    form={form}
+                    dataItemLayout={dataItemLayout}
+                    currentDataItemInfo={dataItemInfo}
+                    additionalModalFlag={additionalModalFlag}
+                />
+            ) : dataItemLayout.type === layoutConstantTypes.DIVISION_SELECT ? (
+                <DivisionSelect
+                    form={form}
+                    dataItemLayout={dataItemLayout}
+                    currentDataItemInfo={dataItemInfo}
+                    additionalModalFlag={additionalModalFlag}
+                />
+            ) : dataItemLayout.type === layoutConstantTypes.POSITION_SELECT ? (
+                <PositionSelect
+                    form={form}
+                    dataItemLayout={dataItemLayout}
+                    currentDataItemInfo={dataItemInfo}
+                    additionalModalFlag={additionalModalFlag}
+                />
             ) : null}
         </>
     );

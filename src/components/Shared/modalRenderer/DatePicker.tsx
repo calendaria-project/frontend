@@ -16,7 +16,6 @@ const DatePicker: FC<IDatePicker> = ({ form, dataItemLayout, currentDataItemInfo
     const [currentValue, setCurrentValue] = useState<Moment | null>(null);
 
     useEffect(() => {
-        console.log(currentDataItemInfo?.[dataItemLayout.propertyName]);
         setCurrentValue(
             currentDataItemInfo?.[dataItemLayout.propertyName]
                 ? moment(currentDataItemInfo?.[dataItemLayout.propertyName], "YYYY-MM-DD")
@@ -35,6 +34,7 @@ const DatePicker: FC<IDatePicker> = ({ form, dataItemLayout, currentDataItemInfo
     return (
         <AntdDatePicker
             allowClear={false}
+            disabled={dataItemLayout.disabled}
             value={currentValue}
             onChange={handleChangeValue}
             className={classes.datePicker}

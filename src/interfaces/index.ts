@@ -267,7 +267,7 @@ export interface IUsersDtoViewModel {
     patronymic: string;
     iin: string;
     birthDate: string;
-    sex: IDictionaryDtoModel;
+    sex: ISimpleDictionaryViewModel;
     company: ICompanyDtoModel;
     division: IDivisionDtoModel;
     position: IPositionDtoModel;
@@ -312,6 +312,27 @@ export interface IExternalUsersDtoViewModel {
 }
 
 export interface IExternalUsersDataModel extends IExternalUsersDtoViewModel {
+    fullName?: string;
+    currentPhotoId?: string;
+}
+
+export interface IUsersByStaffingDtoModel {
+    userId: string;
+    lastname: string;
+    firstname: string;
+    patronymic: string;
+    iin: string;
+    division: IDivisionDtoModel;
+    position: IPositionDtoModel;
+    employmentDate: string;
+    salaryConstantPercent: number;
+    salaryConstantPart: number | string;
+    salaryVariablePercent: number;
+    salaryVariablePart: number | string;
+    salary: number | string;
+}
+
+export interface IUsersByStaffingDtoViewModel extends IUsersByStaffingDtoModel {
     fullName?: string;
     currentPhotoId?: string;
 }
@@ -420,6 +441,7 @@ export interface IOrgStructureTreeItem {
     nameRu: string;
     nodeType: nodeTypeEnum.DIVISION | nodeTypeEnum.DIVISION_UNIT | nodeTypeEnum.COMPANY;
     parentId?: number;
+    isCompanyHead: boolean;
     children: Array<IOrgStructureTreeItem> | [];
 }
 
@@ -429,7 +451,7 @@ export interface IDivisionUnitDtoModel {
 }
 
 export interface IExtendedOrgStructureTreeItem extends IOrgStructureTreeItem {
-    title: string;
+    title: JSX.Element;
     key: string;
     icon: JSX.Element;
 }

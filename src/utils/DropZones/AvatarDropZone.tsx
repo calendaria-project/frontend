@@ -1,7 +1,7 @@
 import React, { FC, memo, useEffect } from "react";
 import { Button, Space, Typography, FormInstance } from "antd";
 import Dropzone from "react-dropzone";
-import { getBase64 } from "components/Users/userDrawer/utils/getBase64";
+import { getBase64 } from "components/Modules/HRModule/Users/userDrawer/utils/getBase64";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { postFormDataHeader } from "functions/common";
 import { useContext, useState } from "react";

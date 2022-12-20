@@ -72,3 +72,29 @@ export const errorCodes: { [key: string]: string } = {
     [errors.USER_ADDRESS_INFO_NOT_FOUND]: "адрес сотрудника",
     [errors.USER_POSITION_NOT_FILLED]: "должность сотрудника"
 };
+
+enum simpleErrors {
+    DUPLICATE_USER_IIN = "DUPLICATE_USER_IIN",
+    USER_CONTRACT_TYPE_EXISTS = "USER_CONTRACT_TYPE_EXISTS",
+    ENTITY_NOT_FOUND = "ENTITY_NOT_FOUND",
+    NOT_NULL = "NOT_NULL",
+    INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR"
+}
+
+export type TSimpleErrors = simpleErrors;
+
+export const simpleErrorsArr = [
+    simpleErrors.DUPLICATE_USER_IIN,
+    simpleErrors.USER_CONTRACT_TYPE_EXISTS,
+    simpleErrors.ENTITY_NOT_FOUND,
+    simpleErrors.NOT_NULL,
+    simpleErrors.INTERNAL_SERVER_ERROR
+];
+
+export const simpleErrorCodes: { [key: string]: string } = {
+    [simpleErrors.DUPLICATE_USER_IIN]: "Введенный ИИН существует в системе",
+    [simpleErrors.USER_CONTRACT_TYPE_EXISTS]: "Трудовой договора уже существует у пользователя",
+    [simpleErrors.ENTITY_NOT_FOUND]: "Объект не найден по указанным идентификаторам",
+    [simpleErrors.NOT_NULL]: "Поле не может быть пустым или null",
+    [simpleErrors.INTERNAL_SERVER_ERROR]: "серверная ошибка, обратитесь к администратору"
+};

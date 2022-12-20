@@ -2,6 +2,9 @@ export enum layoutConstantTypes {
     TITLE = "title",
     UNEDITABLE = "uneditable",
     SELECT = "select",
+    POSITION_SELECT = "position_select",
+    DIVISION_SELECT = "division_select",
+    MULTIPLE_SELECT = "multipleSelect",
     INPUT = "input",
     TEXTAREA = "textArea",
     DATE = "date"
@@ -48,7 +51,10 @@ export enum dictionaryCodesEnum {
     RELATIONSHIP_TYPE = "RELATIONSHIP_TYPE",
     MILITARY_RANK = "MILITARY_RANK",
     WORK_TYPE = "WORK_TYPE",
-    WORK_KIND = "WORK_KIND"
+    WORK_KIND = "WORK_KIND",
+    CONTRACT_FORM_TYPE = "CONTRACT_FORM_TYPE",
+    CONTRACT_NORM_TYPE = "CONTRACT_NORM_TYPE",
+    CONTRACT_NORM_CONDITION = "CONTRACT_NORM_CONDITION"
 }
 
 export enum mainMenuEnum {
@@ -58,7 +64,11 @@ export enum mainMenuEnum {
     users = "users",
     userItem = "userItem",
     organizationStructure = "organizationStructure",
-    externalUsers = "externalUsers"
+    externalUsers = "externalUsers",
+    incoming = "incoming",
+    outgoing = "outgoing",
+    requests = "requests",
+    information = "information"
 }
 
 export enum nodeTypeEnum {

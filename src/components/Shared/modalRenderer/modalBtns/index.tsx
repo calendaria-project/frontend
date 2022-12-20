@@ -6,23 +6,41 @@ import useStyles from "./styles";
 
 interface IModalBtns {
     okText: string;
-    onClick: () => void;
+    onCancel?: () => void;
+    onClick?: () => void;
 }
 
-const ModalBtns: FC<IModalBtns> = ({ okText, onClick }) => {
+const ModalBtns: FC<IModalBtns> = ({ okText, onCancel, onClick }) => {
     const theme = useTheme();
     // @ts-ignore
     const classes = useStyles(theme);
 
+    const handleClick = () => {
+        if (onClick) {
+            onClick();
+        }
+    };
+
+    const handleCancel = () => {
+        if (onCancel) {
+            onCancel();
+        }
+    };
+
     return (
         <Row className={classes.btnRow} align={"middle"} justify={"center"} gutter={[16, 16]}>
             <Col span={12}>
-                <Button className={classes.modalBtns} customType={"regular"} htmlType="submit">
+                <Button
+                    className={classes.modalBtns}
+                    onClick={handleClick}
+                    customType={"regular"}
+                    htmlType="submit"
+                >
                     {okText}
                 </Button>
             </Col>
             <Col span={12}>
-                <Button className={classes.modalBtns} customType={"primary"} onClick={onClick}>
+                <Button className={classes.modalBtns} customType={"primary"} onClick={handleCancel}>
                     Отмена
                 </Button>
             </Col>

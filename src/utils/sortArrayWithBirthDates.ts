@@ -6,12 +6,20 @@ export const dateToYMD = (date: any) => {
 
 function sortArrayWithBirthDates<T>(arrWithDates: Array<T>): Array<T> {
     type TSample = { birthDate: string };
-    return arrWithDates.sort((a, b) =>
-        dateToYMD(new Date((a as TSample).birthDate)) >
-            dateToYMD(new Date((b as TSample).birthDate)) &&
-        dateToYMD(new Date((a as TSample).birthDate)) <= dateToYMD(new Date())
-            ? -1
-            : 1
+    const birthdayDates = arrWithDates.filter(
+        (item) => dateToYMD(new Date((item as TSample).birthDate)) === dateToYMD(new Date())
     );
+    const otherDates = arrWithDates.filter(
+        (item) => dateToYMD(new Date((item as TSample).birthDate)) !== dateToYMD(new Date())
+    );
+    return [
+        ...birthdayDates,
+        ...otherDates.sort((a, b) =>
+            dateToYMD(new Date((a as TSample).birthDate)) <
+            dateToYMD(new Date((b as TSample).birthDate))
+                ? -1
+                : 1
+        )
+    ];
 }
 export default sortArrayWithBirthDates;
