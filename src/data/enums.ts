@@ -64,7 +64,11 @@ export enum mainMenuEnum {
     users = "users",
     userItem = "userItem",
     organizationStructure = "organizationStructure",
-    externalUsers = "externalUsers"
+    externalUsers = "externalUsers",
+    incoming = "incoming",
+    outgoing = "outgoing",
+    requests = "requests",
+    information = "information"
 }
 
 export enum nodeTypeEnum {

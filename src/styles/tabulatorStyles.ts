@@ -7,9 +7,10 @@ export default createUseStyles({
         ".tabulator": {
             // backgroundColor: "transparent !important",
             // border: "none !important",
-            borderRadius: "6px !important",
-            border: "1px solid #C2C2C2 !important",
-            margin: "0 !important"
+            // borderRadius: "6px !important",
+            // border: "1px solid #C2C2C2 !important",
+            margin: "0 !important",
+            border: "none !important"
         },
         ".tabulator-selected": {
             width: "100% !important",
@@ -30,9 +31,10 @@ export default createUseStyles({
         },
         ".tabulator .tabulator-header, .tabulator .tabulator-header .tabulator-col": {
             // height: 68px !important,
-            background: "#E0E0E0 !important",
+            background: "#F4F6FB !important",
             minHeight: "50px !important",
-            border: "none !important"
+            border: "none !important",
+            borderRadius: "6px !important"
         },
         ".tabulator .tabulator-header .tabulator-col:last-child > div": {
             paddingRight: "0 !important"
@@ -55,8 +57,9 @@ export default createUseStyles({
             }
         },
         ".tabulator-tableHolder": {
-            border: `1px solid ${grey200} !important`, //брать из темы
-            ".tabulator-table": {
+            overflow: "hidden !important",
+            width: "100% !important",
+            "& .tabulator-table": {
                 width: "100% !important"
             }
         },
@@ -65,19 +68,25 @@ export default createUseStyles({
             color: "#333 !important" //из темы?
         },
         ".tabulator-row": {
+            borderRadius: "6px !important",
+            border: "1px solid #E0E0E0 !important",
             width: "100% !important",
             minHeight: "70px !important",
             height: "70px !important",
             display: "flex !important",
+            margin: "6px 0 !important",
             alignItems: "center !important",
             userSelect: "none",
             "-moz-user-select": "none",
             "-webkit-user-select": "none",
             maxHeight: "100px !important",
-            border: "none !important",
+            // border: "none !important",
             /* border-bottom: 2px solid #fff !important; */
             color: "#000 !important", //брать из темы
             cursor: "pointer",
+            "&.tabulator-group": {
+                paddingLeft: "20px !important"
+            },
             "&:hover": {
                 backgroundColor: "#f0f9fc !important" //из темы
             },
