@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useContext, useEffect, useState, Suspense } from "react";
+import React, { memo, FC, useCallback, useContext, useEffect, useState, Suspense } from "react";
 import { Button, Form, Input, Table } from "antd";
 
 import { AuthContext } from "context/AuthContextProvider";
@@ -63,7 +63,7 @@ interface ISharedList extends ITable {
     modalTitle: string;
 }
 
-const Index: FC<ISharedList> = ({ dictionaryCode, modalTitle, selectionItems }) => {
+const SharedList: FC<ISharedList> = ({ dictionaryCode, modalTitle, selectionItems }) => {
     const authContext = useContext(AuthContext);
     const theme = useTheme<ITheme>();
 
@@ -290,4 +290,4 @@ const Index: FC<ISharedList> = ({ dictionaryCode, modalTitle, selectionItems }) 
     );
 };
 
-export default Index;
+export default memo(SharedList);

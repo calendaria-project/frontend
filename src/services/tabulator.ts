@@ -1,7 +1,10 @@
 import Tabulator, { ColumnDefinition } from "tabulator-tables";
 import "tabulator-tables/dist/css/semantic-ui/tabulator_semantic-ui.css";
-import "./styles.scss";
+
 import emptyImg from "assets/icons/emptyImg.png";
+import questionImage from "assets/icons/question.png";
+
+import "./styles.scss";
 
 const getLoadingHtmlElem = () => {
     let tableContent = document.querySelector(".tabulator-tableHolder");
@@ -39,6 +42,7 @@ export function createTableViaTabulator(
         | ((value: any, count: number, data: any, group: Tabulator.GroupComponent) => string)
         | undefined
 ): Tabulator {
+    console.log(data);
     const token = sessionStorage.getItem("token");
     const table = new Tabulator(tagId, {
         placeholder: isLoading ? getLoadingHtmlElem() : getEmptyHtmlElem(),
@@ -57,3 +61,43 @@ export function createTableViaTabulator(
 
     return table;
 }
+
+export const fullNameTableActionsFormatter = (cell: Tabulator.CellComponent) => {
+    const data: any = cell.getData();
+
+    const userPhoto = data.currentPhotoId;
+
+    let photoElement = document.createElement("img");
+    photoElement.setAttribute("src", userPhoto ? userPhoto : questionImage);
+    photoElement.setAttribute("class", "photo");
+    photoElement.setAttribute("width", "30px");
+    photoElement.setAttribute("height", "30px");
+
+    let textElement = document.createElement("span");
+    textElement.setAttribute("class", "fullNameText");
+    textElement.textContent = `${data.lastname ?? ""} ${data.firstname ?? ""} ${
+        data.patronymic ?? ""
+    }`;
+
+    let wrap = document.createElement("div");
+    wrap.setAttribute("class", "fullNameWrap");
+    wrap.appendChild(photoElement);
+    wrap.appendChild(textElement);
+    return wrap;
+};
+
+export const customGroupHeader = (
+    value: any,
+    count: number,
+    data: any,
+    group: Tabulator.GroupComponent
+): any => {
+    let divisionName = "";
+    if (data.length !== 0) {
+        divisionName = data[0].division.nameRu;
+    }
+    let groupWrap = document.createElement("div");
+    groupWrap.setAttribute("class", "groupWrap");
+    groupWrap.appendChild(document.createTextNode(divisionName));
+    return groupWrap;
+};

@@ -15,13 +15,12 @@ import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { AuthContext } from "context/AuthContextProvider";
 import useDelayedInputSearch from "hooks/useDelayedInputSearch";
-import questionImage from "assets/icons/question.png";
-import { createTableViaTabulator } from "services/tabulator";
+import { createTableViaTabulator, fullNameTableActionsFormatter } from "services/tabulator";
 import { externalUsersColumns } from "data/columns";
 import { ColumnDefinition } from "tabulator-tables";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import {
-    ICurrentUserDtoViewModel,
+    IUsersDtoViewModel,
     IExternalUsersDataModel,
     IExternalUsersDtoViewModel
 } from "interfaces";
@@ -119,33 +118,9 @@ const ExternalUsers: FC = () => {
 
     const { getCurrentUserData, getUsersWithPhotoId } = useSimpleHttpFunctions();
 
-    const fullNameTableActionsFormatter = (cell: Tabulator.CellComponent) => {
-        const data: any = cell.getData();
-
-        const userPhoto = data.currentPhotoId;
-
-        let photoElement = document.createElement("img");
-        photoElement.setAttribute("src", userPhoto ? userPhoto : questionImage);
-        photoElement.setAttribute("class", classes.externalUserPhoto);
-        photoElement.setAttribute("width", "30px");
-        photoElement.setAttribute("height", "30px");
-
-        let textElement = document.createElement("span");
-        textElement.setAttribute("class", classes.fullNameText);
-        textElement.textContent = `${data.lastname ?? ""} ${data.firstname ?? ""} ${
-            data.patronymic ?? ""
-        }`;
-
-        let wrap = document.createElement("div");
-        wrap.setAttribute("class", classes.fullNameWrap);
-        wrap.appendChild(photoElement);
-        wrap.appendChild(textElement);
-        return wrap;
-    };
-
     const initData = async () => {
         createTableViaTabulator("#externalUsersTable", externalUsersColumns, [], () => {}, true);
-        const currentUserData: ICurrentUserDtoViewModel = await getCurrentUserData();
+        const currentUserData: IUsersDtoViewModel = await getCurrentUserData();
         if (currentUserData) {
             const companyId = currentUserData.company.companyId;
             setCompanyId(companyId);

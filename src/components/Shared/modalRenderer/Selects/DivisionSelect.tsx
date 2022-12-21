@@ -2,7 +2,7 @@ import { FC, memo, useCallback, useEffect, useState } from "react";
 import { FormInstance, Select as AntdSelect } from "antd";
 import { TLayoutModalData } from "data/types";
 import {
-    ICurrentUserDtoViewModel,
+    IUsersDtoViewModel,
     IDivisionViewModel
     //IUsersDtoViewModel
 } from "interfaces";
@@ -52,7 +52,7 @@ const DivisionSelect: FC<ISelect> = ({
     }, []); //[usersId]);
 
     const initSelectValues = async () => {
-        const currentUser: ICurrentUserDtoViewModel = await getCurrentUserData();
+        const currentUser: IUsersDtoViewModel = await getCurrentUserData();
         if (currentUser) {
             const currentCompanyId = currentUser.company?.companyId;
             const divisionId = currentUser.divisionId;

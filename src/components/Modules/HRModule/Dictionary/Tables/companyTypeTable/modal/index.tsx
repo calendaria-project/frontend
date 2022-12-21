@@ -5,7 +5,7 @@ import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import React from "react";
 
-import { ISharedModal } from "../../../../../../Shared/DictionaryTableRenderer/SharedModal";
+import { ISharedModal } from "../../../TableRenderer/SharedModal";
 import ModalBtns from "components/Shared/modalRenderer/modalBtns";
 
 const CompanyTypeModal = ({

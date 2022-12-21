@@ -2,13 +2,15 @@ import React, { memo, useContext } from "react";
 import { Route, Routes } from "react-router-dom";
 import Dictionary from "components/Modules/HRModule/Dictionary";
 import Staffing from "components/Modules/HRModule/Staffing";
-import UsersHR from "components/Modules/HRModule/Users";
+import HRUsers from "components/Modules/HRModule/Users";
 import UserItem from "components/Modules/HRModule/Users/userItem";
 import MainMenu from "components/Modules/HRModule/MainMenu";
 import OrganizationStructure from "components/Modules/HRModule/OrganizationStructure";
 import ExternalUsers from "components/Modules/HRModule/ExternalUsers";
 import { AuthContext } from "context/AuthContextProvider";
 import { BMS_ADMIN, BMS_HEAD, BMS_HR, BMS_USER } from "context/roles";
+import UserUsers from "components/Modules/UserModule/Users";
+import HeadUsers from "components/Modules/HeadModule/Users";
 
 const RoutesComponent = () => {
     const authContext = useContext(AuthContext);
@@ -16,7 +18,7 @@ const RoutesComponent = () => {
     const GET_USER_ROUTES = () => (
         <>
             <Route key="mainMenu-route" path="/" element={<>user mainMenu</>} />
-            <Route key="users-route" path="/users" element={<>user users</>} />
+            <Route key="users-route" path="/users" element={<UserUsers />} />
             <Route key="incoming-route" path="/incoming" element={<>user incoming</>} />
             <Route key="outgoing-route" path="/outgoing" element={<>user outgoing</>} />
             <Route key="requests-route" path="/requests" element={<>user requests</>} />
@@ -27,7 +29,7 @@ const RoutesComponent = () => {
     const GET_HEAD_ROUTES = () => (
         <>
             <Route key="mainMenu-route" path="/" element={<>head mainMenu</>} />
-            <Route key="users-route" path="/users" element={<>head users</>} />
+            <Route key="users-route" path="/users" element={<HeadUsers />} />
             <Route key="incoming-route" path="/incoming" element={<>head incoming</>} />
             <Route key="outgoing-route" path="/outgoing" element={<>head outgoing</>} />
             <Route key="requests-route" path="/requests" element={<>head requests</>} />
@@ -40,7 +42,7 @@ const RoutesComponent = () => {
             <Route key="mainMenu-route" path="/" element={<MainMenu />} />
             <Route key="dictionary-route" path="/dictionary" element={<Dictionary />} />
             <Route key="staffing-route" path="/staffing" element={<Staffing />} />
-            <Route key="users-route" path="/users" element={<UsersHR />} />
+            <Route key="users-route" path="/users" element={<HRUsers />} />
             <Route key="users-item-route" path="/users/:usersId" element={<UserItem />} />
             <Route
                 key="organizationStructure-route"

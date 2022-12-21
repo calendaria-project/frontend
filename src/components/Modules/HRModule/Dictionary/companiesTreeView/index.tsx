@@ -9,8 +9,8 @@ import { getRequestHeader } from "functions/common";
 import { ICompanyCreateViewModel, ICompanyViewModel, ICompanyTreeNodeModel } from "interfaces";
 import { createTableViaTabulator } from "services/tabulator";
 import { DataNode } from "antd/es/tree";
-import { ITable } from "components/Shared/DictionaryTableRenderer/ITable";
-import SearchingRow from "components/Shared/DictionaryTableRenderer/SearchingRow";
+import { ITable } from "../TableRenderer/ITable";
+import SearchingRow from "../TableRenderer/SearchingRow";
 import editIcon from "assets/svg/editIcon.svg";
 import addIcon from "assets/svg/addIcon.svg";
 

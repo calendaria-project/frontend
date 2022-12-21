@@ -7,12 +7,12 @@ import React, { FC, memo } from "react";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
-import { ICurrentUserDtoViewModel } from "interfaces";
+import { IUsersDtoViewModel } from "interfaces";
 
 interface ICurrentUserCard {
     photoLoading: boolean;
     currentUserPhoto: string | null;
-    currentUser: ICurrentUserDtoViewModel;
+    currentUser: IUsersDtoViewModel;
 }
 
 const CurrentUserCard: FC<ICurrentUserCard> = ({ photoLoading, currentUserPhoto, currentUser }) => {

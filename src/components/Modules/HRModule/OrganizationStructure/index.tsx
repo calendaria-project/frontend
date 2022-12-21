@@ -18,7 +18,7 @@ import {
     UserOutlined
 } from "@ant-design/icons";
 import {
-    ICurrentUserDtoViewModel,
+    IUsersDtoViewModel,
     IExtendedOrgStructureTreeItem,
     IOrgStructureTreeItem
 } from "interfaces";
@@ -66,7 +66,7 @@ const OrganizationStructure: FC = () => {
     }, []);
 
     const initData = async () => {
-        const currentUserData: ICurrentUserDtoViewModel = await getCurrentUserData();
+        const currentUserData: IUsersDtoViewModel = await getCurrentUserData();
         if (currentUserData) {
             const companyId = currentUserData.company.companyId;
             setCompanyId(companyId);

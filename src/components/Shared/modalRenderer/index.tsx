@@ -8,6 +8,7 @@ import DatePicker from "./DatePicker";
 import MultipleSelect from "./Selects/MultipleSelect";
 import DivisionSelect from "./Selects/DivisionSelect";
 import PositionSelect from "./Selects/PositionSelect";
+import Checkbox from "./Checkbox";
 
 const { Text } = Typography;
 
@@ -43,6 +44,12 @@ export const getFormItemContent = (
                 <Text strong style={{ fontSize: "18px" }}>
                     {dataItemLayout.placeholder}
                 </Text>
+            ) : dataItemLayout.type === layoutConstantTypes.CHECKBOX ? (
+                <Checkbox
+                    // form={form}
+                    dataItemLayout={dataItemLayout}
+                    // currentDataItemInfo={dataItemInfo}
+                />
             ) : dataItemLayout.type === layoutConstantTypes.MULTIPLE_SELECT ? (
                 <MultipleSelect
                     form={form}
@@ -80,10 +87,21 @@ const WithFormItem: FC<{ dataItemLayout: TLayoutModalData; children: any }> = ({
                   { pattern: dataItemLayout.pattern, message: dataItemLayout.patternMessage }
               ]
             : [{ required: dataItemLayout.required }];
-    return (
+
+    return dataItemLayout.type !== layoutConstantTypes.CHECKBOX ? (
         <Form.Item
             key={dataItemLayout.propertyName}
             name={dataItemLayout.propertyName}
+            rules={formItemRules}
+        >
+            {children}
+        </Form.Item>
+    ) : (
+        <Form.Item
+            key={dataItemLayout.propertyName}
+            initialValue={false}
+            name={dataItemLayout.propertyName}
+            valuePropName="checked"
             rules={formItemRules}
         >
             {children}

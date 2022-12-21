@@ -5,17 +5,15 @@ import { AuthContext } from "context/AuthContextProvider";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { IPositionViewModel } from "interfaces";
-import { ITable } from "components/Shared/DictionaryTableRenderer/ITable";
-import SearchingRow from "components/Shared/DictionaryTableRenderer/SearchingRow";
+import { ITable } from "../../TableRenderer/ITable";
+import SearchingRow from "../../TableRenderer/SearchingRow";
 
 import SaveIcon from "assets/svgComponents/SaveIcon";
 import CancelIcon from "assets/svgComponents/CancelIcon";
 import EditIcon from "assets/svgComponents/EditIcon";
 import { ITheme } from "styles/theme/interface";
 
-const SharedModal = React.lazy(
-    () => import("components/Shared/DictionaryTableRenderer/SharedModal")
-);
+const SharedModal = React.lazy(() => import("../../TableRenderer/SharedModal"));
 
 import { useTheme } from "react-jss";
 

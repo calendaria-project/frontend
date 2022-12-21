@@ -46,6 +46,10 @@ const Users: FC = () => {
     );
     const [userDrawerOpen, setUserDrawerOpen] = useState(false);
 
+    const [currentUserDivisionId, setCurrentUserDivisionId] = useState<number | undefined>(
+        undefined
+    );
+
     const [query, setQuery] = useState("");
     const { searchStr } = useDelayedInputSearch(query);
 
@@ -90,6 +94,7 @@ const Users: FC = () => {
         const currentUserData: IUsersDtoViewModel = await getCurrentUserData();
         if (currentUserData) {
             const companyId = currentUserData.company?.companyId;
+            setCurrentUserDivisionId(currentUserData.divisionId);
             const userData: IUsersDtoViewModel[] = await actionMethodResultSync(
                 "USER",
                 `user?companyId=${companyId}&requestType=ALL`,
@@ -143,6 +148,7 @@ const Users: FC = () => {
             </Row>
             <Suspense>
                 <UserDrawer
+                    divisionsEquality={currentUserInfo.divisionId === currentUserDivisionId}
                     open={userDrawerOpen}
                     setOpen={setUserDrawerOpen}
                     userData={currentUserInfo}

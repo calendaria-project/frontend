@@ -133,3 +133,26 @@ export const usersByStaffingColumns: ColumnDefinition[] = [
         field: "employmentDate"
     }
 ];
+
+export const userUsersColumns: ColumnDefinition[] = [
+    {
+        headerSort: false,
+        title: "Компания",
+        field: "company.nameRu"
+    },
+    {
+        headerSort: false,
+        title: "Подразделение",
+        field: "division.nameRu"
+    },
+    {
+        headerSort: false,
+        title: "Номер телефона",
+        field: "personalContact.mobilePhoneNumber"
+    },
+    {
+        headerSort: false,
+        title: "E-mail",
+        field: "personalContact.email"
+    }
+];

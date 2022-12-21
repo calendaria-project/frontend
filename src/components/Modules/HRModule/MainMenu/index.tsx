@@ -7,7 +7,7 @@ import { AuthContext } from "context/AuthContextProvider";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
-import { ICurrentUserDtoViewModel, IAllStatisticsModel, IBirthDateStatItem } from "interfaces";
+import { IUsersDtoViewModel, IAllStatisticsModel, IBirthDateStatItem } from "interfaces";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
@@ -19,8 +19,7 @@ import { UP, DOWN } from "./defaultValues";
 import PieChartCard from "./Cards/PieChartCard";
 import BirthdayInfoCard from "./Cards/BirthdayInfoCard";
 import CurrentUserCard from "./Cards/CurrentUserCard";
-import questionImage from "assets/icons/question.png";
-import { createTableViaTabulator } from "services/tabulator";
+import { createTableViaTabulator, fullNameTableActionsFormatter } from "services/tabulator";
 import { externalUsersColumns } from "data/columns";
 import { ColumnDefinition } from "tabulator-tables";
 import StaffingCard from "./Cards/StaffingCard";
@@ -50,9 +49,7 @@ const MainMenu: FC = () => {
     const [table, setTable] = useState<Tabulator | undefined>();
 
     const [companyId, setCompanyId] = useState<number | undefined>(undefined);
-    const [currentUser, setCurrentUser] = useState<ICurrentUserDtoViewModel>(
-        {} as ICurrentUserDtoViewModel
-    );
+    const [currentUser, setCurrentUser] = useState<IUsersDtoViewModel>({} as IUsersDtoViewModel);
     const [currentUserPhoto, setCurrentUserPhoto] = useState<string | null>(null);
     const [currentUserPhotoLoading, setCurrentUserPhotoLoading] = useState(false);
 
@@ -93,7 +90,7 @@ const MainMenu: FC = () => {
 
     const initCurrentUserData = async () => {
         setCurrentUserPhotoLoading(true);
-        const currentUserData: ICurrentUserDtoViewModel = await getCurrentUserData();
+        const currentUserData: IUsersDtoViewModel = await getCurrentUserData();
 
         setCompanyId(currentUserData.company?.companyId);
         setCurrentUser(currentUserData);
@@ -121,29 +118,6 @@ const MainMenu: FC = () => {
             setBirthStatsWithPhoto(currentBirthStatsWithPhoto);
             setBirthStatsLoading(false);
         }
-    };
-
-    const fullNameTableActionsFormatter = (cell: Tabulator.CellComponent) => {
-        const data: any = cell.getData();
-        const userPhoto = data.currentPhotoId;
-
-        let photoElement = document.createElement("img");
-        photoElement.setAttribute("src", userPhoto ? userPhoto : questionImage);
-        photoElement.setAttribute("class", classes.externalUserPhoto);
-        photoElement.setAttribute("width", "30px");
-        photoElement.setAttribute("height", "30px");
-
-        let textElement = document.createElement("span");
-        textElement.setAttribute("class", classes.fullNameText);
-        textElement.textContent = `${data.lastname ?? ""} ${data.firstname ?? ""} ${
-            data.patronymic ?? ""
-        }`;
-
-        let wrap = document.createElement("div");
-        wrap.setAttribute("class", classes.fullNameWrap);
-        wrap.appendChild(photoElement);
-        wrap.appendChild(textElement);
-        return wrap;
     };
 
     const initTableData = async () => {

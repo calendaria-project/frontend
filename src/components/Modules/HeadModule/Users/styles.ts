@@ -8,16 +8,6 @@ export default createUseStyles({
     selectionRow: {
         width: "100%"
     },
-    select: {
-        width: (theme: ITheme) => theme.input.width,
-        "& .ant-select-selector": {
-            borderColor: (theme: ITheme) => `${theme.color.lines} !important`
-        }
-    },
-    datePicker: {
-        width: (theme: ITheme) => theme.select.width,
-        marginLeft: (theme: ITheme) => theme.layout.margin
-    },
     input: {
         width: (theme: ITheme) => theme.input.width,
         borderRadius: (theme: ITheme) => theme.borderRadius,
@@ -27,7 +17,7 @@ export default createUseStyles({
     suffix: {
         color: (theme: ITheme) => theme.color.lines
     },
-    usersByStaffingTableWrap: {
+    tableWrap: {
         marginTop: (theme: ITheme) => theme.layout.margin,
         width: "100%"
     }

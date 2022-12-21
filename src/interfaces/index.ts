@@ -270,19 +270,16 @@ export interface IUsersDtoViewModel {
     sex: ISimpleDictionaryViewModel;
     company: ICompanyDtoModel;
     division: IDivisionDtoModel;
+    divisionId: number;
     position: IPositionDtoModel;
     employmentDate: string;
     signFileId: string;
     profilePhotoId: string;
+    enabled: boolean;
     personalContact: IPersonalContactDtoModel;
     businessContact: IBusinessContactDtoModel;
     createdAt: string;
     updatedAt: string;
-}
-
-export interface ICurrentUserDtoViewModel extends IUsersDtoViewModel {
-    divisionId: number;
-    enabled: boolean;
 }
 
 export interface IUsersTableModel {
