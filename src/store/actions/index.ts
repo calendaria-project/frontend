@@ -104,3 +104,10 @@ export const SetSimpleAddModalSubContractLayout = (payload: TLayoutModalData[]):
         payload
     };
 };
+
+export const SetAddReqSelectFields = (payload: { [key: string]: boolean }): IAction => {
+    return {
+        type: MainActionTypes.SET_ADD_REQ_SELECT_FIELDS,
+        payload
+    };
+};

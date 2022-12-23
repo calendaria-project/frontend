@@ -32,6 +32,9 @@ import { WorkKindTable } from "./Tables/workKindTable";
 import { ContractFormTypeTable } from "./Tables/contractFormTypeTable";
 import { ContractNormTypeTable } from "./Tables/contractNormTypeTable";
 import { ContractNormConditionTable } from "./Tables/contractNormConditionTable";
+import { TaskRoleTable } from "./Tables/taskRoleTable";
+import { SelectionMethodTypeTable } from "./Tables/selectionMethodTypeTable";
+import { AnalysisMethodTypeTable } from "./Tables/analysisMethodTypeTable";
 
 const Dictionary = () => {
     const dispatch = useDispatch();
@@ -165,6 +168,21 @@ const Dictionary = () => {
             label: "Типы условий труда",
             key: "23",
             children: <ContractNormConditionTable />
+        },
+        {
+            label: "Типы ролей",
+            key: "24",
+            children: <TaskRoleTable />
+        },
+        {
+            label: "Типы выбора метода",
+            key: "25",
+            children: <SelectionMethodTypeTable />
+        },
+        {
+            label: "Типы анализа метода",
+            key: "26",
+            children: <AnalysisMethodTypeTable />
         }
     ];
 

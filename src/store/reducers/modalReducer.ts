@@ -1,7 +1,7 @@
 import { MainActionTypes } from "../types";
 import { IAction } from "../interfaces";
 import { TLayoutModalData } from "data/types";
-import { BASE_SUB_CONTRACT_INFO } from "data/constants";
+import { BASE_SUB_CONTRACT_INFO, ONE_C, SERVICE_NUMBER, TENDERIX } from "data/constants";
 import { CONTRACT, TContracts } from "data/constants";
 import { IPositionDtoModel } from "interfaces";
 
@@ -16,6 +16,12 @@ interface IModalState {
     divisionId: number | null;
     subContractLayout: TLayoutModalData[];
     simpleSubContractLayout: TLayoutModalData[];
+
+    addReqSelectFields: {
+        [SERVICE_NUMBER]: boolean;
+        [ONE_C]: boolean;
+        [TENDERIX]: boolean;
+    };
 }
 
 const initialState: IModalState = {
@@ -28,7 +34,12 @@ const initialState: IModalState = {
     },
     divisionId: null,
     subContractLayout: BASE_SUB_CONTRACT_INFO,
-    simpleSubContractLayout: BASE_SUB_CONTRACT_INFO
+    simpleSubContractLayout: BASE_SUB_CONTRACT_INFO,
+    addReqSelectFields: {
+        [SERVICE_NUMBER]: false,
+        [ONE_C]: false,
+        [TENDERIX]: false
+    }
 };
 
 const tokenReducer = (state = initialState, action: IAction): IModalState => {
@@ -76,6 +87,15 @@ const tokenReducer = (state = initialState, action: IAction): IModalState => {
             return {
                 ...state,
                 simpleSubContractLayout: action.payload as TLayoutModalData[]
+            };
+        }
+        case MainActionTypes.SET_ADD_REQ_SELECT_FIELDS: {
+            return {
+                ...state,
+                addReqSelectFields: {
+                    ...state.addReqSelectFields,
+                    ...(action.payload as { [key: string]: boolean })
+                }
             };
         }
         default:

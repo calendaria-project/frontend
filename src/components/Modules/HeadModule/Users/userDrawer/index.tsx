@@ -1,5 +1,5 @@
-import React, { FC, memo, useCallback } from "react";
-import { Drawer, Row, Col, Image, Typography } from "antd";
+import React, { FC, memo, useCallback, Suspense, useState } from "react";
+import { Drawer, Row, Col, Image, Typography, Form, message } from "antd";
 import cx from "classnames";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
@@ -16,6 +16,7 @@ import { IUsersWithPhotoInfo } from "../index";
 import Button from "ui/Button";
 import emptyRequestsImage from "assets/icons/emptyRequests.png";
 
+const AddRequestModal = React.lazy(() => import("./modal"));
 const { Text, Title } = Typography;
 
 interface IExternalUserDrawer {
@@ -32,6 +33,16 @@ const UserDrawer: FC<IExternalUserDrawer> = ({ divisionsEquality, open, setOpen,
 
     const onClose = useCallback(() => setOpen(false), []);
     const profileImage = userData?.currentPhotoId;
+
+    const [form] = Form.useForm();
+    const [modalVisible, setModalVisible] = useState(false);
+    const handleOpenModal = useCallback(() => setModalVisible(true), []);
+
+    const onFinishModal = useCallback((data: any) => {
+        console.log(data);
+        message.success("Успешно добавлено");
+        form.resetFields();
+    }, []);
 
     return (
         <Drawer
@@ -93,7 +104,7 @@ const UserDrawer: FC<IExternalUserDrawer> = ({ divisionsEquality, open, setOpen,
                     <Row className={classes.row}>
                         <Button
                             disabled={!divisionsEquality}
-                            onClick={() => {}}
+                            onClick={handleOpenModal}
                             className={classes.btn}
                             customType={"regular"}
                         >
@@ -110,7 +121,11 @@ const UserDrawer: FC<IExternalUserDrawer> = ({ divisionsEquality, open, setOpen,
                                     Учетные записи отсуствуют. Создайте <br />
                                     заявку или ждите новых заявок!
                                 </Text>
-                                <Button className={classes.createBtn} customType={"cancel"}>
+                                <Button
+                                    onClick={handleOpenModal}
+                                    className={classes.createBtn}
+                                    customType={"cancel"}
+                                >
                                     Создать
                                 </Button>
                             </Col>
@@ -118,6 +133,21 @@ const UserDrawer: FC<IExternalUserDrawer> = ({ divisionsEquality, open, setOpen,
                     </Row>
                 )}
             </Row>
+            <Suspense>
+                <AddRequestModal
+                    form={form}
+                    title={"Добавить заявку"}
+                    isVisible={modalVisible}
+                    setIsVisible={setModalVisible}
+                    okText={"Добавить"}
+                    onFinish={onFinishModal}
+                    userName={getFullName(
+                        userData.firstname,
+                        userData.lastname,
+                        userData.patronymic
+                    )}
+                />
+            </Suspense>
         </Drawer>
     );
 };

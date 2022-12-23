@@ -199,3 +199,10 @@ export const ADDITIONAL_WORK_TYPE: TLayoutModalData[] = [
         placeholder: "Основная"
     }
 ];
+
+export const SERVICE_NUMBER = "serviceNumber";
+export const ONE_C = "oneC";
+export const TENDERIX = "tenderix";
+export const RATE = "rate"; //for SERVICE_NUMBER
+export const VIEW_MODE = "viewMode"; //for ONE_C
+export const ROLES = "roles"; //for TENDERIX
