@@ -2,9 +2,9 @@ import { FC, memo, useCallback, useEffect, useState } from "react";
 import { FormInstance, Select as AntdSelect } from "antd";
 import { TLayoutModalData } from "data/types";
 import {
-    IUsersDtoViewModel,
+    IUsersViewModel,
     IDivisionViewModel
-    //IUsersDtoViewModel
+    //IUsersViewModel
 } from "interfaces";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { useDispatch } from "react-redux";
@@ -52,7 +52,7 @@ const DivisionSelect: FC<ISelect> = ({
     }, []); //[usersId]);
 
     const initSelectValues = async () => {
-        const currentUser: IUsersDtoViewModel = await getCurrentUserData();
+        const currentUser: IUsersViewModel = await getCurrentUserData();
         if (currentUser) {
             const currentCompanyId = currentUser.company?.companyId;
             const divisionId = currentUser.divisionId;
@@ -63,7 +63,7 @@ const DivisionSelect: FC<ISelect> = ({
             setSelectValues(currentSelectValues);
         }
 
-        // const user: IUsersDtoViewModel = await getUserData(usersId!);
+        // const user: IUsersViewModel = await getUserData(usersId!);
         // if (user) {
         //     const currentCompanyId = user.company?.companyId;
         //     const divisionId = user?.division?.divisionId;

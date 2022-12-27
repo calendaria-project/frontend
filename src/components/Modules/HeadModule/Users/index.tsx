@@ -2,6 +2,7 @@ import React, { FC, useCallback, useContext, useEffect, useState, Suspense } fro
 import { useDispatch } from "react-redux";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
+import { IUsersWithPhotoModel, IUsersWithPhotoInfoModel } from "interfaces/extended";
 import useStyles from "./styles";
 import { SetCurrentOpenedMenu } from "store/actions";
 import { mainMenuEnum } from "data/enums";
@@ -19,18 +20,10 @@ import {
 import { userUsersColumns } from "data/columns";
 import { ColumnDefinition } from "tabulator-tables";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
-import { IUsersDtoViewModel } from "interfaces";
+import { IUsersViewModel } from "interfaces";
 import getFullName from "utils/getFullName";
 
 const UserDrawer = React.lazy(() => import("./userDrawer"));
-
-interface IUsersWithPhoto extends IUsersDtoViewModel {
-    currentPhotoId?: string;
-}
-
-export interface IUsersWithPhotoInfo extends IUsersWithPhoto {
-    fullName?: string;
-}
 
 const Users: FC = () => {
     const dispatch = useDispatch();
@@ -40,9 +33,9 @@ const Users: FC = () => {
     const classes = useStyles(theme);
 
     const [table, setTable] = useState<Tabulator | undefined>();
-    const [tableData, setTableData] = useState<IUsersWithPhoto[]>([]);
-    const [currentUserInfo, setCurrentUserInfo] = useState<IUsersWithPhotoInfo>(
-        {} as IUsersWithPhotoInfo
+    const [tableData, setTableData] = useState<IUsersWithPhotoModel[]>([]);
+    const [currentUserInfo, setCurrentUserInfo] = useState<IUsersWithPhotoInfoModel>(
+        {} as IUsersWithPhotoInfoModel
     );
     const [userDrawerOpen, setUserDrawerOpen] = useState(false);
 
@@ -91,18 +84,18 @@ const Users: FC = () => {
             true,
             customGroupHeader
         );
-        const currentUserData: IUsersDtoViewModel = await getCurrentUserData();
+        const currentUserData: IUsersViewModel = await getCurrentUserData();
         if (currentUserData) {
             const companyId = currentUserData.company?.companyId;
             setCurrentUserDivisionId(currentUserData.divisionId);
-            const userData: IUsersDtoViewModel[] = await actionMethodResultSync(
+            const userData: IUsersViewModel[] = await actionMethodResultSync(
                 "USER",
                 `user?companyId=${companyId}&requestType=ALL`,
                 "get",
                 getRequestHeader(authContext.token)
             ).then((data) => data);
 
-            const userDataWithPhoto: IUsersWithPhoto[] = await getUsersWithPhotoId(userData);
+            const userDataWithPhoto: IUsersWithPhotoModel[] = await getUsersWithPhotoId(userData);
 
             const actionsSell: ColumnDefinition = {
                 headerSort: false,

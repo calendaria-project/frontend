@@ -2,12 +2,11 @@ import { Col, Form, FormInstance, Modal, Row } from "antd";
 
 import React, { FC, memo, useCallback } from "react";
 
-import { validateMessages } from "data/validateMessages";
 import { arrayKeyTypes } from "../constants";
 import { TLayoutModalData } from "data/types";
 import WithFormItem, { getFormItemContent } from "components/Shared/modalRenderer";
 
-import { CONTRACT, SUB_CONTRACT, REDUCED_CONTRACT_INFO } from "data/constants";
+import { CONTRACT, SUB_CONTRACT, REDUCED_CONTRACT_INFO, validateMessages } from "data/constants";
 
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { getCurrentUserDataItemInfo, getSelectedKey } from "store/reducers/userReducer";

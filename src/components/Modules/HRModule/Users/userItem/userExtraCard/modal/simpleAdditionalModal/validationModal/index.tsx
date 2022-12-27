@@ -2,7 +2,7 @@ import { Col, Form, FormInstance, message, Modal, Row } from "antd";
 
 import React, { FC, memo, useCallback, useContext, useEffect, useState } from "react";
 
-import { validateMessages } from "data/validateMessages";
+import { validateMessages } from "data/constants";
 
 import { IErrorModifiedItem } from "data/errorCodes";
 import { modalData } from "components/Modules/HRModule/Users/userItem/userExtraCard/constants";

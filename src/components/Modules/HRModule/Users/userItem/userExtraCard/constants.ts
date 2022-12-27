@@ -1,5 +1,5 @@
 import { dictionaryCodesEnum } from "data/enums";
-import { phonePattern, mailPattern, phoneMessage, mailMessage } from "utils/patterns";
+import { phonePattern, mailPattern, phoneMessage, mailMessage } from "data/patterns";
 import { selectedKeyTypes } from "data/enums";
 import { TLayoutModalDataRecord } from "data/types";
 import { layoutConstantTypes } from "data/enums";

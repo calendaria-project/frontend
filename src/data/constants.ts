@@ -1,6 +1,10 @@
 import { TLayoutModalData } from "./types";
 import { dictionaryCodesEnum, layoutConstantTypes } from "./enums";
 
+export const validateMessages: { required: string } = {
+    required: "Обязательное поле!"
+};
+
 export const ALL = "ALL";
 export const ARCHIVE = "ARCHIVE";
 export const ACTIVE = "ACTIVE";
@@ -13,7 +17,6 @@ export const SALARY = "salary";
 
 export const CONTRACT = "CONTRACT";
 export const SUB_CONTRACT = "SUB_CONTRACT";
-export type TContracts = typeof CONTRACT | typeof SUB_CONTRACT;
 
 export const SHORTENED_CONTRACT_ARRAY = [CONTRACT, SUB_CONTRACT];
 

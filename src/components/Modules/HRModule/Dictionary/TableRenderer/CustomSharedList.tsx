@@ -1,27 +1,27 @@
-import React, { memo, FC, useCallback, useContext, useEffect, useState, Suspense } from "react";
+import React, { FC, useCallback, useContext, useEffect, useState, Suspense } from "react";
 import { Button, Form, Input, message, Table } from "antd";
 
 import { AuthContext } from "context/AuthContextProvider";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
-import { ISimpleDictionaryViewModel } from "interfaces";
 import { ITable } from "./ITable";
 import SearchingRow from "./SearchingRow";
+
 import SaveIcon from "assets/svgComponents/SaveIcon";
 import CancelIcon from "assets/svgComponents/CancelIcon";
 import EditIcon from "assets/svgComponents/EditIcon";
-import RemoveIcon from "assets/svgComponents/RemoveIcon";
-import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 
 const SharedModal = React.lazy(() => import("./SharedModal"));
+
+import { useTheme } from "react-jss";
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     editing: boolean;
     dataIndex: string;
     title: any;
     inputType: "text";
-    record: ISimpleDictionaryViewModel;
+    record: any;
     index: number;
     children: React.ReactNode;
 }
@@ -36,6 +36,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
     children,
     ...restProps
 }) => {
+    // console.log("record in editable cell", record);
     return (
         <td {...restProps}>
             {editing ? (
@@ -58,21 +59,23 @@ const EditableCell: React.FC<EditableCellProps> = ({
     );
 };
 
-interface ISharedList extends ITable {
-    dictionaryCode: string;
+interface ICustomSharedList extends ITable {
     modalTitle: string;
+    id: string;
+    url: string;
 }
 
-const SharedList: FC<ISharedList> = ({ dictionaryCode, modalTitle, selectionItems }) => {
+const CustomSharedList: FC<ICustomSharedList> = ({ selectionItems, modalTitle, id, url }) => {
     const authContext = useContext(AuthContext);
-    const theme = useTheme<ITheme>();
 
-    const [data, setData] = useState<ISimpleDictionaryViewModel[]>([]);
-    const [copiedData, setCopiedData] = useState<ISimpleDictionaryViewModel[]>([]);
+    const [data, setData] = useState<any[]>([]);
+    const [copiedData, setCopiedData] = useState<any[]>([]);
 
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState(-1);
     const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const theme = useTheme<ITheme>();
 
     const onSetIsModalVisible = useCallback((bool: boolean) => {
         setIsModalVisible(bool);
@@ -84,33 +87,21 @@ const SharedList: FC<ISharedList> = ({ dictionaryCode, modalTitle, selectionItem
         setSearchStr(v);
     }, []);
 
-    const isEditing = (record: ISimpleDictionaryViewModel) => record.id === editingKey;
+    const isEditing = (record: any) => record[id] === editingKey;
 
-    const edit = (record: Partial<ISimpleDictionaryViewModel>) => {
+    const edit = (record: Partial<any>) => {
+        // console.log("record in edit", record);
         form.setFieldsValue({ code: "", nameKz: "", nameRu: "", nameEn: "", ...record });
-        setEditingKey(record.id || -1);
+        setEditingKey(record[id] || -1);
     };
 
-    const remove = (record: Partial<ISimpleDictionaryViewModel>) => {
-        const newData = [...data];
-        actionMethodResultSync(
-            "DICTIONARY",
-            `simple/${dictionaryCode}/item/${record.id}`,
-            "delete",
-            getRequestHeader(authContext.token)
-        ).then(() => {
-            setData(newData.filter((dataItem) => dataItem.id !== record.id));
-            message.success("Успешно удалено");
-            setEditingKey(-1);
-        });
-    };
-
-    const save = async (record: ISimpleDictionaryViewModel) => {
+    const save = async (record: any) => {
         try {
-            const row = (await form.validateFields()) as ISimpleDictionaryViewModel;
+            // console.log("record in save", record);
+            const row = (await form.validateFields()) as any;
 
             const newData = [...data];
-            const index = newData.findIndex((item) => record.id === item.id);
+            const index = newData.findIndex((item) => record[id] === item[id]);
             if (index > -1) {
                 const item = newData[index];
                 newData.splice(index, 1, {
@@ -119,27 +110,27 @@ const SharedList: FC<ISharedList> = ({ dictionaryCode, modalTitle, selectionItem
                 });
                 actionMethodResultSync(
                     "DICTIONARY",
-                    `simple/${dictionaryCode}/update`,
+                    url,
                     "put",
                     getRequestHeader(authContext.token),
                     newData[index]
                 ).then(() => {
                     setData(newData);
-                    message.success("Успешно отредактировано");
                     setEditingKey(-1);
+                    message.success("Успешно отредактировано");
                 });
             } else {
                 actionMethodResultSync(
                     "DICTIONARY",
-                    `simple/${dictionaryCode}/create`,
+                    url,
                     "post",
                     getRequestHeader(authContext.token),
                     record
                 ).then((res) => {
-                    newData.push({ ...record, id: res.id });
+                    newData.push({ ...record, [id]: res[id] });
                     setData(newData);
-                    message.success("Успешно добавлено");
                     setIsModalVisible(false);
+                    message.success("Успешно добавлено");
                 });
             }
         } catch (errInfo) {
@@ -177,7 +168,7 @@ const SharedList: FC<ISharedList> = ({ dictionaryCode, modalTitle, selectionItem
             title: "Действие",
             dataIndex: "operation",
             width: 300,
-            render: (_: any, record: ISimpleDictionaryViewModel) => {
+            render: (_: any, record: any) => {
                 const editable = isEditing(record);
                 const disabled = editingKey !== -1;
                 return editable ? (
@@ -190,26 +181,15 @@ const SharedList: FC<ISharedList> = ({ dictionaryCode, modalTitle, selectionItem
                         </Button>
                     </>
                 ) : (
-                    <>
-                        <Button type={"link"} disabled={disabled} onClick={() => edit(record)}>
-                            <EditIcon
-                                color={
-                                    disabled
-                                        ? (theme.color.disabled as string)
-                                        : (theme.color.regular as string)
-                                }
-                            />
-                        </Button>
-                        <Button type={"link"} disabled={disabled} onClick={() => remove(record)}>
-                            <RemoveIcon
-                                color={
-                                    disabled
-                                        ? (theme.color.disabled as string)
-                                        : (theme.color.removing as string)
-                                }
-                            />
-                        </Button>
-                    </>
+                    <Button type={"link"} disabled={disabled} onClick={() => edit(record)}>
+                        <EditIcon
+                            color={
+                                disabled
+                                    ? (theme.color.disabled as string)
+                                    : (theme.color.regular as string)
+                            }
+                        />
+                    </Button>
                 );
             }
         }
@@ -221,7 +201,7 @@ const SharedList: FC<ISharedList> = ({ dictionaryCode, modalTitle, selectionItem
         }
         return {
             ...col,
-            onCell: (record: ISimpleDictionaryViewModel) => ({
+            onCell: (record: any) => ({
                 record,
                 inputType: "text",
                 dataIndex: col.dataIndex,
@@ -232,15 +212,13 @@ const SharedList: FC<ISharedList> = ({ dictionaryCode, modalTitle, selectionItem
     });
 
     useEffect(() => {
-        actionMethodResultSync(
-            "DICTIONARY",
-            `simple/${dictionaryCode}`,
-            "get",
-            getRequestHeader(authContext.token)
-        ).then((data) => {
-            setCopiedData(data);
-            setData(data);
-        });
+        actionMethodResultSync("DICTIONARY", url, "get", getRequestHeader(authContext.token)).then(
+            (res) => {
+                const data = res.content;
+                setCopiedData(data);
+                setData(data);
+            }
+        );
     }, []);
 
     useEffect(() => {
@@ -272,7 +250,7 @@ const SharedList: FC<ISharedList> = ({ dictionaryCode, modalTitle, selectionItem
                 bordered
                 columns={mergedColumns}
                 dataSource={data}
-                rowKey="id"
+                rowKey={id} //prop
                 rowClassName="editable-row"
                 pagination={{
                     onChange: () => setEditingKey(-1),
@@ -294,4 +272,4 @@ const SharedList: FC<ISharedList> = ({ dictionaryCode, modalTitle, selectionItem
     );
 };
 
-export default memo(SharedList);
+export default CustomSharedList;

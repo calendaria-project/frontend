@@ -33,7 +33,7 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import { inputLengthHandler } from "utils/inputLengthHandler";
-import { IUsersDtoViewModel } from "interfaces";
+import { IUsersViewModel } from "interfaces";
 import ValuesSelect from "./Select";
 import axios from "axios";
 import getCurrentSimpleError from "utils/getCurrentSimpleError";
@@ -41,7 +41,7 @@ import getCurrentSimpleError from "utils/getCurrentSimpleError";
 export interface IUserEditDrawer {
     userPhoto: string | null;
     // userSign: string | null;
-    userData: IUsersDtoViewModel;
+    userData: IUsersViewModel;
     companyId?: number;
     divisionId?: number;
     companyName: string | undefined;

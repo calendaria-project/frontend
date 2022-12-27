@@ -2,7 +2,6 @@ import { Col, Form, FormInstance, Modal, Row } from "antd";
 
 import React, { FC, memo, useCallback, useEffect, useState, Suspense } from "react";
 
-import { validateMessages } from "data/validateMessages";
 import { selectedKeyTypes } from "data/enums";
 import { TLayoutModalData } from "data/types";
 
@@ -14,7 +13,7 @@ import WithFormItem, { getFormItemContent } from "components/Shared/modalRendere
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { getSelectedKey } from "store/reducers/userReducer";
 import ModalBtns from "components/Shared/modalRenderer/modalBtns";
-import { SUB_CONTRACT } from "data/constants";
+import { SUB_CONTRACT, validateMessages } from "data/constants";
 
 const ExtraValidationModal = React.lazy(() => import("./validationModal"));
 

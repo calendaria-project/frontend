@@ -17,12 +17,9 @@ import {
     CrownOutlined,
     UserOutlined
 } from "@ant-design/icons";
-import {
-    IUsersDtoViewModel,
-    IExtendedOrgStructureTreeItem,
-    IOrgStructureTreeItem
-} from "interfaces";
-import { deletingOptions, layoutOptions, TLayoutOptions } from "./contants";
+import { IUsersViewModel, IOrgStructureTreeItemViewModel } from "interfaces";
+import { IExtendedOrgStructureTreeItem } from "interfaces/extended";
+import { deletingOptions, layoutOptions, TLayoutOptions } from "./constants";
 import getOrgStructureModalTitle from "utils/getOrgStructureModalTitle";
 import parseModalData from "utils/parseModalData";
 
@@ -66,7 +63,7 @@ const OrganizationStructure: FC = () => {
     }, []);
 
     const initData = async () => {
-        const currentUserData: IUsersDtoViewModel = await getCurrentUserData();
+        const currentUserData: IUsersViewModel = await getCurrentUserData();
         if (currentUserData) {
             const companyId = currentUserData.company.companyId;
             setCompanyId(companyId);
@@ -102,7 +99,10 @@ const OrganizationStructure: FC = () => {
         }
     };
 
-    type TSelectedTreeEntity = { treeItem: IOrgStructureTreeItem; layoutOption: TLayoutOptions };
+    type TSelectedTreeEntity = {
+        treeItem: IOrgStructureTreeItemViewModel;
+        layoutOption: TLayoutOptions;
+    };
     const [selectedTreeEntity, setSelectedTreeEntity] = useState<TSelectedTreeEntity>(
         {} as TSelectedTreeEntity
     );
@@ -149,7 +149,7 @@ const OrganizationStructure: FC = () => {
     const modalTitle = getOrgStructureModalTitle(selectedTreeEntity.layoutOption);
 
     const handleMenuClick =
-        (treeItem: IOrgStructureTreeItem, layoutOption: TLayoutOptions) => () => {
+        (treeItem: IOrgStructureTreeItemViewModel, layoutOption: TLayoutOptions) => () => {
             setSelectedTreeEntity({
                 treeItem,
                 layoutOption
@@ -163,7 +163,7 @@ const OrganizationStructure: FC = () => {
             }
         };
 
-    const handleEditClick = (treeItem: IOrgStructureTreeItem) => () => {
+    const handleEditClick = (treeItem: IOrgStructureTreeItemViewModel) => () => {
         const { nodeType, id } = treeItem || {};
         setSelectedTreeEntity({
             treeItem,
@@ -331,7 +331,7 @@ const OrganizationStructure: FC = () => {
         [selectedTreeEntity, existingData]
     );
 
-    const getIcon = (treeItem: IOrgStructureTreeItem): JSX.Element => {
+    const getIcon = (treeItem: IOrgStructureTreeItemViewModel): JSX.Element => {
         const { nodeType, isCompanyHead } = treeItem;
         return (
             <>
@@ -359,7 +359,7 @@ const OrganizationStructure: FC = () => {
         );
     };
 
-    const formatTreeData = (treeData: Array<IOrgStructureTreeItem>) => {
+    const formatTreeData = (treeData: Array<IOrgStructureTreeItemViewModel>) => {
         let newTreeData = [] as Array<IExtendedOrgStructureTreeItem>;
         treeData.forEach((treeItem) => {
             if (treeItem.children.length > 0) {

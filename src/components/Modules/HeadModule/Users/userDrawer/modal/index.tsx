@@ -1,7 +1,7 @@
 import React, { FC, useCallback } from "react";
 import { FormInstance } from "antd/es/form/Form";
 import { Col, Form, Input, Modal, Row } from "antd";
-import { validateMessages } from "data/validateMessages";
+import { validateMessages } from "data/constants";
 import WithFormItem, { getFormItemContent } from "components/Shared/modalRenderer";
 import ModalBtns from "components/Shared/modalRenderer/modalBtns";
 import { ADD_REQUEST_LAYOUT } from "./defaultValues";

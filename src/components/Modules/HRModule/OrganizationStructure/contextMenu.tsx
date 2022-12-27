@@ -1,12 +1,15 @@
-import { IOrgStructureTreeItem } from "interfaces";
+import { IOrgStructureTreeItemViewModel } from "interfaces";
 import { Menu } from "antd";
 import { nodeTypeEnum } from "data/enums";
-import { layoutOptions, TLayoutOptions } from "./contants";
+import { layoutOptions, TLayoutOptions } from "./constants";
 import React from "react";
 
 const contextMenu = (
-    treeItem: IOrgStructureTreeItem,
-    handleMenuClick: (treeItem: IOrgStructureTreeItem, layoutOption: TLayoutOptions) => () => void
+    treeItem: IOrgStructureTreeItemViewModel,
+    handleMenuClick: (
+        treeItem: IOrgStructureTreeItemViewModel,
+        layoutOption: TLayoutOptions
+    ) => () => void
 ) => (
     <Menu
         items={

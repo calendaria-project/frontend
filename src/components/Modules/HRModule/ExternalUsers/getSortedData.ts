@@ -1,5 +1,5 @@
 import { DATE, FULL_NAME, EMAIL, PHONE_NUMBER, COUNTER_PARTY, POSITION } from "./defaultValues";
-import { IExternalUsersDataModel } from "interfaces";
+import { IExternalUsersDataModel } from "interfaces/extended";
 
 const baseSortFoo = (firstVal: string, secondVal: string) =>
     firstVal.length > secondVal.length ? -1 : 1;

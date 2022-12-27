@@ -19,11 +19,8 @@ import { createTableViaTabulator, fullNameTableActionsFormatter } from "services
 import { externalUsersColumns } from "data/columns";
 import { ColumnDefinition } from "tabulator-tables";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
-import {
-    IUsersDtoViewModel,
-    IExternalUsersDataModel,
-    IExternalUsersDtoViewModel
-} from "interfaces";
+import { IUsersViewModel, IExternalUsersViewModel } from "interfaces";
+import { IExternalUsersDataModel } from "interfaces/extended";
 import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
 import { parsePointObjectKey } from "utils/parsePointObjectKey";
 import getSortedData from "./getSortedData";
@@ -120,11 +117,11 @@ const ExternalUsers: FC = () => {
 
     const initData = async () => {
         createTableViaTabulator("#externalUsersTable", externalUsersColumns, [], () => {}, true);
-        const currentUserData: IUsersDtoViewModel = await getCurrentUserData();
+        const currentUserData: IUsersViewModel = await getCurrentUserData();
         if (currentUserData) {
             const companyId = currentUserData.company.companyId;
             setCompanyId(companyId);
-            const externalUserData: IExternalUsersDtoViewModel[] = await actionMethodResultSync(
+            const externalUserData: IExternalUsersViewModel[] = await actionMethodResultSync(
                 "USER",
                 `user/external?companyId=${companyId}&requestType=${requestType}`,
                 "get",
@@ -166,7 +163,7 @@ const ExternalUsers: FC = () => {
         setExternalUserDrawerOpen(true);
     };
 
-    const getDataWithPhoto = async (data: IExternalUsersDtoViewModel) => {
+    const getDataWithPhoto = async (data: IExternalUsersViewModel) => {
         if (data && data.profilePhotoId) {
             const currentPhotoId = await actionMethodResultSync(
                 "FILE",
@@ -190,7 +187,7 @@ const ExternalUsers: FC = () => {
                     companyId + "",
                     form
                 );
-                const newData: IExternalUsersDtoViewModel = await actionMethodResultSync(
+                const newData: IExternalUsersViewModel = await actionMethodResultSync(
                     "USER",
                     `user/external`,
                     "post",

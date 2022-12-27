@@ -1,8 +1,8 @@
 import { MainActionTypes } from "../types";
 import { IAction } from "../interfaces";
-import { TLayoutModalData } from "data/types";
+import { TLayoutModalData, TContracts } from "data/types";
 import { BASE_SUB_CONTRACT_INFO, ONE_C, SERVICE_NUMBER, TENDERIX } from "data/constants";
-import { CONTRACT, TContracts } from "data/constants";
+import { CONTRACT } from "data/constants";
 import { IPositionDtoModel } from "interfaces";
 
 interface IModalState {

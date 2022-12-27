@@ -10,7 +10,7 @@ import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 
 import CompanySelect from "./Select";
-import { mailMessage, mailPattern } from "utils/patterns";
+import { mailMessage, mailPattern } from "data/patterns";
 import { inputLengthHandler } from "utils/inputLengthHandler";
 import ModalBtns from "components/Shared/modalRenderer/modalBtns";
 

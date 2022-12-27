@@ -24,7 +24,8 @@ import { mainMenuEnum } from "data/enums";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
-import { IUsersDtoViewModel } from "interfaces";
+import { IUsersViewModel } from "interfaces";
+import { IUsersWithPhotoModel } from "interfaces/extended";
 import getFullName from "utils/getFullName";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import cx from "classnames";
@@ -34,10 +35,6 @@ import { requestTypeValues } from "./defaultValues";
 const { Option } = Select;
 
 const UserAddDrawer = React.lazy(() => import("./userDrawer/UserAddDrawer"));
-
-interface IUsersWithPhoto extends IUsersDtoViewModel {
-    currentPhotoId: string;
-}
 
 const Users: FC = () => {
     const navigate = useNavigate();
@@ -51,7 +48,7 @@ const Users: FC = () => {
     const [companyName, setCompanyName] = useState<string | undefined>();
     const [isVisibleAddUserDrawer, setIsVisibleAddUserDrawer] = useState(false);
     const [table, setTable] = useState<Tabulator | undefined>();
-    const [tableData, setTableData] = useState<IUsersWithPhoto[]>([]);
+    const [tableData, setTableData] = useState<IUsersWithPhotoModel[]>([]);
 
     const [query, setQuery] = useState("");
     const { searchStr } = useDelayedInputSearch(query);
@@ -92,21 +89,21 @@ const Users: FC = () => {
 
     const initData = async () => {
         createTableViaTabulator("#usersTable", usersColumns, [], () => {}, true, customGroupHeader);
-        const currentUserData: IUsersDtoViewModel = await getCurrentUserData();
+        const currentUserData: IUsersViewModel = await getCurrentUserData();
         if (currentUserData) {
             const companyId = currentUserData.company.companyId;
             const companyName = currentUserData.company.nameRu;
 
             setCompanyId(companyId);
             setCompanyName(companyName);
-            const userData: IUsersDtoViewModel[] = await actionMethodResultSync(
+            const userData: IUsersViewModel[] = await actionMethodResultSync(
                 "USER",
                 `user?companyId=${companyId}&requestType=${requestType}`,
                 "get",
                 getRequestHeader(authContext.token)
             ).then((data) => data);
 
-            const userDataWithPhoto: IUsersWithPhoto[] = await getUsersWithPhotoId(userData);
+            const userDataWithPhoto: IUsersWithPhotoModel[] = await getUsersWithPhotoId(userData);
             setTableData(userDataWithPhoto);
 
             console.log(userData);

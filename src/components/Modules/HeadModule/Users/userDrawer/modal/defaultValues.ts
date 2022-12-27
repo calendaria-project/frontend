@@ -1,19 +1,9 @@
 import { TLayoutModalData } from "data/types";
-import {
-    //dictionaryCodesEnum,
-    layoutConstantTypes
-} from "data/enums";
+import { dictionaryCodesEnum, layoutConstantTypes } from "data/enums";
 
 import { ONE_C, RATE, ROLES, SERVICE_NUMBER, TENDERIX, VIEW_MODE } from "data/constants";
 
 export const ADD_REQUEST_LAYOUT: TLayoutModalData[] = [
-    {
-        type: layoutConstantTypes.SELECT,
-        propertyName: "forWho", //edit
-        dictionaryCode: "", //edit
-        placeholder: "Для кого"
-        // required: true
-    },
     {
         type: layoutConstantTypes.SELECT,
         propertyName: "reqType", //edit
@@ -40,9 +30,9 @@ export const ADD_REQUEST_LAYOUT: TLayoutModalData[] = [
     {
         type: layoutConstantTypes.SELECT,
         propertyName: RATE, //edit
-        dictionaryCode: "", //edit
-        placeholder: "Тариф"
-        // required: true
+        dictionaryCode: dictionaryCodesEnum.MOBILE_TARIFF,
+        placeholder: "Тариф",
+        required: true
     },
     {
         type: layoutConstantTypes.TITLE,

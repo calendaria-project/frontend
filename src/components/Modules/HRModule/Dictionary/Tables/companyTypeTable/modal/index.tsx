@@ -1,5 +1,5 @@
 import { Modal, Form, Input, Row, Col } from "antd";
-import { validateMessages } from "data/validateMessages";
+import { validateMessages } from "data/constants";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";

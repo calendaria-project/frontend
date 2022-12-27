@@ -1,14 +1,14 @@
 import { Modal, Form, Input, Row, Col, Select } from "antd";
 import { FormInstance } from "antd/es/form/Form";
-import { validateMessages } from "data/validateMessages";
+import { validateMessages } from "data/constants";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import React, { memo, useCallback, useEffect } from "react";
-import { mailMessage, mailPattern, phoneMessage, phonePattern } from "utils/patterns";
+import { mailMessage, mailPattern, phoneMessage, phonePattern } from "data/patterns";
 import PhoneInput from "utils/PhoneInput";
 import AvatarDropZone from "utils/DropZones/AvatarDropZone";
-import { IExternalUsersDataModel } from "interfaces";
+import { IExternalUsersDataModel } from "interfaces/extended";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import ModalBtns from "components/Shared/modalRenderer/modalBtns";
 
