@@ -1,7 +1,7 @@
 import { dictionaryCodesEnum } from "data/enums";
 import { FC } from "react";
-import { ITable } from "components/Shared/DictionaryTableRenderer/ITable";
-import SharedList from "components/Shared/DictionaryTableRenderer";
+import { ITable } from "../../TableRenderer/ITable";
+import SharedList from "../../TableRenderer";
 
 export const MilitaryRankTable: FC<ITable> = ({ selectionItems }) => (
     <SharedList

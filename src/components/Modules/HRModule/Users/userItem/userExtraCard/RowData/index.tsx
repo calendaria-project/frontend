@@ -19,13 +19,13 @@ import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { getCurrentUserDataItemInfo, getSelectedKey } from "store/reducers/userReducer";
 import {
-    IUsersAddressInfoModel,
-    IUsersContractModel,
-    IUsersDocumentModel,
-    IUsersEducationModel,
-    IUsersInventoryModel,
-    IUsersLanguageKnowledgeModel,
-    IUsersRelationshipModel
+    IAddressInfoViewModel,
+    IContractViewModel,
+    IDocumentViewModel,
+    IEducationViewModel,
+    IInventoryViewModel,
+    ILanguageKnowledgeViewModel,
+    IRelationshipViewModel
 } from "interfaces";
 import { EditOutlined, DownloadOutlined } from "@ant-design/icons";
 
@@ -142,8 +142,8 @@ const ListRowData: FC<{
     const onDownloadClick = useCallback(
         (index: number) => () => {
             if (userMenuDataExists) {
-                let contract: IUsersContractModel = {} as IUsersContractModel;
-                currentUserDataItemInfo.forEach((item: IUsersContractModel, itemIndex: number) => {
+                let contract: IContractViewModel = {} as IContractViewModel;
+                currentUserDataItemInfo.forEach((item: IContractViewModel, itemIndex: number) => {
                     if (index === itemIndex) {
                         contract = item;
                     }
@@ -236,7 +236,7 @@ const ListRowData: FC<{
             {userMenuDataExists &&
                 (currentSelectedKey === selectedKeyTypes.CONTRACT
                     ? (currentUserDataItemInfo || []).map(
-                          (dataInfo: IUsersContractModel, index: number) => (
+                          (dataInfo: IContractViewModel, index: number) => (
                               <ListItem
                                   key={"" + index + dataInfo.contractType?.nameRu}
                                   onClick={onIconClick}
@@ -251,7 +251,7 @@ const ListRowData: FC<{
                       )
                     : currentSelectedKey === selectedKeyTypes.DOCUMENT
                     ? (currentUserDataItemInfo || []).map(
-                          (dataInfo: IUsersDocumentModel, index: number) => (
+                          (dataInfo: IDocumentViewModel, index: number) => (
                               <ListItem
                                   key={"" + index + dataInfo.documentType?.nameRu}
                                   onClick={onIconClick}
@@ -265,7 +265,7 @@ const ListRowData: FC<{
                       )
                     : currentSelectedKey === selectedKeyTypes.INVENTORY
                     ? (currentUserDataItemInfo || []).map(
-                          (dataInfo: IUsersInventoryModel, index: number) => (
+                          (dataInfo: IInventoryViewModel, index: number) => (
                               <ListItem
                                   key={"" + index + dataInfo.inventoryType?.nameRu}
                                   onClick={onIconClick}
@@ -279,7 +279,7 @@ const ListRowData: FC<{
                       )
                     : currentSelectedKey === selectedKeyTypes.EDUCATION
                     ? (currentUserDataItemInfo || []).map(
-                          (dataInfo: IUsersEducationModel, index: number) => (
+                          (dataInfo: IEducationViewModel, index: number) => (
                               <ListItem
                                   key={"" + index + dataInfo.institution?.nameRu}
                                   onClick={onIconClick}
@@ -293,7 +293,7 @@ const ListRowData: FC<{
                       )
                     : currentSelectedKey === selectedKeyTypes.LANGUAGE_KNOWLEDGE
                     ? (currentUserDataItemInfo || []).map(
-                          (dataInfo: IUsersLanguageKnowledgeModel, index: number) => (
+                          (dataInfo: ILanguageKnowledgeViewModel, index: number) => (
                               <ListItem
                                   key={"" + index + dataInfo.language?.nameRu}
                                   onClick={onIconClick}
@@ -306,7 +306,7 @@ const ListRowData: FC<{
                       )
                     : currentSelectedKey === selectedKeyTypes.ADDRESS_INFO
                     ? (currentUserDataItemInfo || []).map(
-                          (dataInfo: IUsersAddressInfoModel, index: number) => (
+                          (dataInfo: IAddressInfoViewModel, index: number) => (
                               <ListItem
                                   key={"" + index + dataInfo.addressType?.nameRu}
                                   onClick={onIconClick}
@@ -320,7 +320,7 @@ const ListRowData: FC<{
                       )
                     : currentSelectedKey === selectedKeyTypes.RELATIONSHIP
                     ? (currentUserDataItemInfo || []).map(
-                          (dataInfo: IUsersRelationshipModel, index: number) => (
+                          (dataInfo: IRelationshipViewModel, index: number) => (
                               <ListItem
                                   key={"" + index + dataInfo.relationshipType?.nameRu}
                                   onClick={onIconClick}

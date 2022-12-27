@@ -9,19 +9,23 @@ import { usersColumns } from "data/columns";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { useNavigate } from "react-router";
-import { createTableViaTabulator } from "services/tabulator";
+import {
+    createTableViaTabulator,
+    customGroupHeader,
+    fullNameTableActionsFormatter
+} from "services/tabulator";
 import { ColumnDefinition } from "tabulator-tables";
 
 import useDelayedInputSearch from "hooks/useDelayedInputSearch";
 
-import questionImage from "assets/icons/question.png";
 import { useDispatch } from "react-redux";
 import { SetCurrentOpenedMenu } from "store/actions";
 import { mainMenuEnum } from "data/enums";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
-import { ICurrentUserDtoViewModel, IUsersDtoViewModel } from "interfaces";
+import { IUsersViewModel } from "interfaces";
+import { IUsersWithPhotoModel } from "interfaces/extended";
 import getFullName from "utils/getFullName";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import cx from "classnames";
@@ -31,10 +35,6 @@ import { requestTypeValues } from "./defaultValues";
 const { Option } = Select;
 
 const UserAddDrawer = React.lazy(() => import("./userDrawer/UserAddDrawer"));
-
-interface IUsersWithPhoto extends IUsersDtoViewModel {
-    currentPhotoId: string;
-}
 
 const Users: FC = () => {
     const navigate = useNavigate();
@@ -48,7 +48,7 @@ const Users: FC = () => {
     const [companyName, setCompanyName] = useState<string | undefined>();
     const [isVisibleAddUserDrawer, setIsVisibleAddUserDrawer] = useState(false);
     const [table, setTable] = useState<Tabulator | undefined>();
-    const [tableData, setTableData] = useState<IUsersWithPhoto[]>([]);
+    const [tableData, setTableData] = useState<IUsersWithPhotoModel[]>([]);
 
     const [query, setQuery] = useState("");
     const { searchStr } = useDelayedInputSearch(query);
@@ -87,63 +87,23 @@ const Users: FC = () => {
         table?.redraw(true);
     }, [searchStr]);
 
-    const fullNameTableActionsFormatter = (cell: Tabulator.CellComponent) => {
-        const data: any = cell.getData();
-
-        const userPhoto = data.currentPhotoId;
-
-        let photoElement = document.createElement("img");
-        photoElement.setAttribute("src", userPhoto ? userPhoto : questionImage);
-        photoElement.setAttribute("class", classes.userPhoto);
-        photoElement.setAttribute("width", "30px");
-        photoElement.setAttribute("height", "30px");
-
-        let textElement = document.createElement("span");
-        textElement.setAttribute("class", classes.fullNameText);
-        textElement.textContent = `${data.lastname ?? ""} ${data.firstname ?? ""} ${
-            data.patronymic ?? ""
-        }`;
-
-        let wrap = document.createElement("div");
-        wrap.setAttribute("class", classes.fullNameWrap);
-        wrap.appendChild(photoElement);
-        wrap.appendChild(textElement);
-        return wrap;
-    };
-
-    const customGroupHeader = (
-        value: any,
-        count: number,
-        data: any,
-        group: Tabulator.GroupComponent
-    ): any => {
-        let divisionName = "";
-        if (data.length !== 0) {
-            divisionName = data[0].division.nameRu;
-        }
-        let groupWrap = document.createElement("div");
-        groupWrap.setAttribute("class", classes.userGroupHeaderWrap);
-        groupWrap.appendChild(document.createTextNode(divisionName));
-        return groupWrap;
-    };
-
     const initData = async () => {
         createTableViaTabulator("#usersTable", usersColumns, [], () => {}, true, customGroupHeader);
-        const currentUserData: ICurrentUserDtoViewModel = await getCurrentUserData();
+        const currentUserData: IUsersViewModel = await getCurrentUserData();
         if (currentUserData) {
             const companyId = currentUserData.company.companyId;
             const companyName = currentUserData.company.nameRu;
 
             setCompanyId(companyId);
             setCompanyName(companyName);
-            const userData: IUsersDtoViewModel[] = await actionMethodResultSync(
+            const userData: IUsersViewModel[] = await actionMethodResultSync(
                 "USER",
                 `user?companyId=${companyId}&requestType=${requestType}`,
                 "get",
                 getRequestHeader(authContext.token)
             ).then((data) => data);
 
-            const userDataWithPhoto: IUsersWithPhoto[] = await getUsersWithPhotoId(userData);
+            const userDataWithPhoto: IUsersWithPhotoModel[] = await getUsersWithPhotoId(userData);
             setTableData(userDataWithPhoto);
 
             console.log(userData);

@@ -27,21 +27,6 @@ export default createUseStyles({
     suffix: {
         color: (theme: ITheme) => theme.color.lines
     },
-    fullNameWrap: {
-        display: "flex",
-        alignItems: "center",
-        rowGap: "6px",
-        flexDirection: "row"
-    },
-    fullNameText: {
-        marginLeft: (theme: ITheme) => theme.layout.margin,
-        color: (theme: ITheme) => theme.color.mainText,
-        overflow: "hidden !important",
-        textOverflow: "ellipsis !important"
-    },
-    usersByStaffingPhoto: {
-        borderRadius: "50%"
-    },
     usersByStaffingTableWrap: {
         marginTop: (theme: ITheme) => theme.layout.margin,
         width: "100%"

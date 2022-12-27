@@ -1,7 +1,7 @@
 import {
     layoutOptions,
     TLayoutOptions
-} from "components/Modules/HRModule/OrganizationStructure/contants";
+} from "components/Modules/HRModule/OrganizationStructure/constants";
 
 const getOrgStructureModalTitle = (layoutOption: TLayoutOptions | undefined) => {
     switch (layoutOption) {

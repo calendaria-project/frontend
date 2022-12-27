@@ -1,3 +1,5 @@
+import { CONTRACT, SUB_CONTRACT } from "./constants";
+
 export type TLayoutModalData = {
     type: string; //тип поля в модальном окне
     placeholder: string; //плейсхолдер
@@ -18,3 +20,5 @@ export type TLayoutModalData = {
 export type TLayoutModalDataRecord = {
     [key: string]: Array<TLayoutModalData>;
 };
+
+export type TContracts = typeof CONTRACT | typeof SUB_CONTRACT;

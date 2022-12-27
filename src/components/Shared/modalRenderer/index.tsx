@@ -8,6 +8,9 @@ import DatePicker from "./DatePicker";
 import MultipleSelect from "./Selects/MultipleSelect";
 import DivisionSelect from "./Selects/DivisionSelect";
 import PositionSelect from "./Selects/PositionSelect";
+import Checkbox from "./Checkbox";
+import { useTypedSelector } from "hooks/useTypedSelector";
+import { ONE_C, RATE, ROLES, SERVICE_NUMBER, TENDERIX, VIEW_MODE } from "data/constants";
 
 const { Text } = Typography;
 
@@ -43,6 +46,12 @@ export const getFormItemContent = (
                 <Text strong style={{ fontSize: "18px" }}>
                     {dataItemLayout.placeholder}
                 </Text>
+            ) : dataItemLayout.type === layoutConstantTypes.CHECKBOX ? (
+                <Checkbox
+                    form={form}
+                    dataItemLayout={dataItemLayout}
+                    currentDataItemInfo={dataItemInfo}
+                />
             ) : dataItemLayout.type === layoutConstantTypes.MULTIPLE_SELECT ? (
                 <MultipleSelect
                     form={form}
@@ -73,6 +82,8 @@ const WithFormItem: FC<{ dataItemLayout: TLayoutModalData; children: any }> = ({
     dataItemLayout,
     children
 }) => {
+    const reqSelectionFields = useTypedSelector((state) => state.modal.addReqSelectFields);
+
     const formItemRules: Array<{}> =
         dataItemLayout.pattern && dataItemLayout.patternMessage
             ? [
@@ -80,10 +91,24 @@ const WithFormItem: FC<{ dataItemLayout: TLayoutModalData; children: any }> = ({
                   { pattern: dataItemLayout.pattern, message: dataItemLayout.patternMessage }
               ]
             : [{ required: dataItemLayout.required }];
-    return (
+
+    return dataItemLayout.type !== layoutConstantTypes.CHECKBOX ? (
+        (dataItemLayout.propertyName === RATE && !reqSelectionFields[SERVICE_NUMBER]) ||
+        (dataItemLayout.propertyName === VIEW_MODE && !reqSelectionFields[ONE_C]) ||
+        (dataItemLayout.propertyName === ROLES && !reqSelectionFields[TENDERIX]) ? null : (
+            <Form.Item
+                key={dataItemLayout.propertyName}
+                name={dataItemLayout.propertyName}
+                rules={formItemRules}
+            >
+                {children}
+            </Form.Item>
+        )
+    ) : (
         <Form.Item
             key={dataItemLayout.propertyName}
             name={dataItemLayout.propertyName}
+            valuePropName="checked"
             rules={formItemRules}
         >
             {children}

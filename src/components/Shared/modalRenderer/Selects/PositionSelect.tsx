@@ -2,7 +2,7 @@ import { FC, memo, useCallback, useEffect, useState } from "react";
 import { FormInstance, Select as AntdSelect } from "antd";
 import { TLayoutModalData } from "data/types";
 import {
-    //ICurrentUserDtoViewModel,
+    //IUsersViewModel,
     IPositionViewModel
 } from "interfaces";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";

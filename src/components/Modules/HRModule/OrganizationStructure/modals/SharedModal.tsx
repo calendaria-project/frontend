@@ -7,11 +7,11 @@ import FormItemLabel from "antd/es/form/FormItemLabel";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
-import { validateMessages } from "data/validateMessages";
-import { IOrgStructureTreeItem, IPositionDtoModel } from "interfaces";
-import { editingOptions, layoutOptions, structureLayout, TLayoutOptions } from "../contants";
+import { validateMessages } from "data/constants";
+import { IOrgStructureTreeItemViewModel, IPositionViewModel } from "interfaces";
+import { editingOptions, layoutOptions, structureLayout, TLayoutOptions } from "../constants";
 import CompanySelect from "components/Modules/HRModule/Dictionary/companiesTreeView/modal/Select";
-import { mailMessage, mailPattern } from "utils/patterns";
+import { mailMessage, mailPattern } from "data/patterns";
 import { inputLengthHandler } from "utils/inputLengthHandler";
 import ModalBtns from "components/Shared/modalRenderer/modalBtns";
 
@@ -23,13 +23,13 @@ export interface ISharedModal {
     setIsVisible: (val: boolean) => void;
     onFinish: (values: any) => void;
     selectedTreeEntity: {
-        treeItem: IOrgStructureTreeItem;
+        treeItem: IOrgStructureTreeItemViewModel;
         layoutOption: TLayoutOptions;
     };
     existingData?: any;
     isVisible: boolean;
     form: FormInstance;
-    positions: Array<IPositionDtoModel>;
+    positions: IPositionViewModel[];
 }
 
 const SharedModal = ({

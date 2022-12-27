@@ -7,18 +7,13 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import { Col, DatePicker, Input, Row, Select } from "antd";
-import {
-    ICurrentUserDtoViewModel,
-    IDivisionViewModel,
-    IUsersByStaffingDtoModel,
-    IUsersByStaffingDtoViewModel
-} from "interfaces";
+import { IUsersViewModel, IDivisionViewModel, IUsersByStaffingViewModel } from "interfaces";
+import { IUsersByStaffingDtoViewModel } from "interfaces/extended";
 import { ALL } from "data/constants";
 import useDelayedInputSearch from "hooks/useDelayedInputSearch";
 import getFullName from "utils/getFullName";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
-import questionImage from "assets/icons/question.png";
-import { createTableViaTabulator } from "services/tabulator";
+import { createTableViaTabulator, fullNameTableActionsFormatter } from "services/tabulator";
 import { usersByStaffingColumns } from "data/columns";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
@@ -121,44 +116,20 @@ const Staffing: FC = () => {
         initData();
     }, []);
 
-    const fullNameTableActionsFormatter = (cell: Tabulator.CellComponent) => {
-        const data: any = cell.getData();
-
-        const userPhoto = data.currentPhotoId;
-
-        let photoElement = document.createElement("img");
-        photoElement.setAttribute("src", userPhoto ? userPhoto : questionImage);
-        photoElement.setAttribute("class", classes.usersByStaffingPhoto);
-        photoElement.setAttribute("width", "30px");
-        photoElement.setAttribute("height", "30px");
-
-        let textElement = document.createElement("span");
-        textElement.setAttribute("class", classes.fullNameText);
-        textElement.textContent = `${data.lastname ?? ""} ${data.firstname ?? ""} ${
-            data.patronymic ?? ""
-        }`;
-
-        let wrap = document.createElement("div");
-        wrap.setAttribute("class", classes.fullNameWrap);
-        wrap.appendChild(photoElement);
-        wrap.appendChild(textElement);
-        return wrap;
-    };
-
     const initData = async () => {
         createTableViaTabulator("#staffingTable", usersByStaffingColumns, [], () => {}, true);
-        const currentUserData: ICurrentUserDtoViewModel = await getCurrentUserData();
+        const currentUserData: IUsersViewModel = await getCurrentUserData();
         if (currentUserData) {
             const companyId = currentUserData.company.companyId;
             setCompanyId(companyId);
-            const userDataByStaffing: IUsersByStaffingDtoModel[] = await actionMethodResultSync(
+            const userDataByStaffing: IUsersByStaffingViewModel[] = await actionMethodResultSync(
                 "USER",
                 `user/byStaffing?companyId=${companyId}`,
                 "get",
                 getRequestHeader(authContext.token)
             ).then((data) => data);
 
-            const userDataByStaffingWithFormattedSalary: IUsersByStaffingDtoModel[] =
+            const userDataByStaffingWithFormattedSalary: IUsersByStaffingViewModel[] =
                 userDataByStaffing.map((userItem) => ({
                     ...userItem,
                     salary: `${userItem.salary ?? 0} ₸`,

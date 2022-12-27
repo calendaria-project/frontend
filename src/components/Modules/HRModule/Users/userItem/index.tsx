@@ -22,7 +22,7 @@ import useStyles from "./styles";
 
 const { Title, Text } = Typography;
 
-import { ICurrentUserDtoViewModel } from "interfaces";
+import { IUsersViewModel } from "interfaces";
 import { ARCHIVE } from "data/constants";
 
 const UserEditDrawer = React.lazy(() => import("../userDrawer/UserEditDrawer"));
@@ -41,9 +41,7 @@ const UserItem: FC = () => {
         dispatch(SetCurrentOpenedMenu(mainMenuEnum.userItem));
     }, []);
 
-    const [currentUserData, setCurrentUserData] = useState<ICurrentUserDtoViewModel>(
-        {} as ICurrentUserDtoViewModel
-    );
+    const [currentUserData, setCurrentUserData] = useState<IUsersViewModel>({} as IUsersViewModel);
     // const [currentUserSign, setCurrentUserSign] = useState<string | null>(null);
     const [currentUserPhoto, setCurrentUserPhoto] = useState<string | null>(null);
 

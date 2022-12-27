@@ -15,16 +15,12 @@ import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { AuthContext } from "context/AuthContextProvider";
 import useDelayedInputSearch from "hooks/useDelayedInputSearch";
-import questionImage from "assets/icons/question.png";
-import { createTableViaTabulator } from "services/tabulator";
+import { createTableViaTabulator, fullNameTableActionsFormatter } from "services/tabulator";
 import { externalUsersColumns } from "data/columns";
 import { ColumnDefinition } from "tabulator-tables";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
-import {
-    ICurrentUserDtoViewModel,
-    IExternalUsersDataModel,
-    IExternalUsersDtoViewModel
-} from "interfaces";
+import { IUsersViewModel, IExternalUsersViewModel } from "interfaces";
+import { IExternalUsersDataModel } from "interfaces/extended";
 import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
 import { parsePointObjectKey } from "utils/parsePointObjectKey";
 import getSortedData from "./getSortedData";
@@ -119,37 +115,13 @@ const ExternalUsers: FC = () => {
 
     const { getCurrentUserData, getUsersWithPhotoId } = useSimpleHttpFunctions();
 
-    const fullNameTableActionsFormatter = (cell: Tabulator.CellComponent) => {
-        const data: any = cell.getData();
-
-        const userPhoto = data.currentPhotoId;
-
-        let photoElement = document.createElement("img");
-        photoElement.setAttribute("src", userPhoto ? userPhoto : questionImage);
-        photoElement.setAttribute("class", classes.externalUserPhoto);
-        photoElement.setAttribute("width", "30px");
-        photoElement.setAttribute("height", "30px");
-
-        let textElement = document.createElement("span");
-        textElement.setAttribute("class", classes.fullNameText);
-        textElement.textContent = `${data.lastname ?? ""} ${data.firstname ?? ""} ${
-            data.patronymic ?? ""
-        }`;
-
-        let wrap = document.createElement("div");
-        wrap.setAttribute("class", classes.fullNameWrap);
-        wrap.appendChild(photoElement);
-        wrap.appendChild(textElement);
-        return wrap;
-    };
-
     const initData = async () => {
         createTableViaTabulator("#externalUsersTable", externalUsersColumns, [], () => {}, true);
-        const currentUserData: ICurrentUserDtoViewModel = await getCurrentUserData();
+        const currentUserData: IUsersViewModel = await getCurrentUserData();
         if (currentUserData) {
             const companyId = currentUserData.company.companyId;
             setCompanyId(companyId);
-            const externalUserData: IExternalUsersDtoViewModel[] = await actionMethodResultSync(
+            const externalUserData: IExternalUsersViewModel[] = await actionMethodResultSync(
                 "USER",
                 `user/external?companyId=${companyId}&requestType=${requestType}`,
                 "get",
@@ -191,7 +163,7 @@ const ExternalUsers: FC = () => {
         setExternalUserDrawerOpen(true);
     };
 
-    const getDataWithPhoto = async (data: IExternalUsersDtoViewModel) => {
+    const getDataWithPhoto = async (data: IExternalUsersViewModel) => {
         if (data && data.profilePhotoId) {
             const currentPhotoId = await actionMethodResultSync(
                 "FILE",
@@ -215,7 +187,7 @@ const ExternalUsers: FC = () => {
                     companyId + "",
                     form
                 );
-                const newData: IExternalUsersDtoViewModel = await actionMethodResultSync(
+                const newData: IExternalUsersViewModel = await actionMethodResultSync(
                     "USER",
                     `user/external`,
                     "post",

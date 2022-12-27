@@ -7,7 +7,8 @@ import { AuthContext } from "context/AuthContextProvider";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
-import { ICurrentUserDtoViewModel, IAllStatisticsModel, IBirthDateStatItem } from "interfaces";
+import { IUsersViewModel, IAllStatisticsViewModel } from "interfaces";
+import { IBirthStatItemWithPhotoModel } from "interfaces/extended";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
@@ -19,16 +20,11 @@ import { UP, DOWN } from "./defaultValues";
 import PieChartCard from "./Cards/PieChartCard";
 import BirthdayInfoCard from "./Cards/BirthdayInfoCard";
 import CurrentUserCard from "./Cards/CurrentUserCard";
-import questionImage from "assets/icons/question.png";
-import { createTableViaTabulator } from "services/tabulator";
+import { createTableViaTabulator, fullNameTableActionsFormatter } from "services/tabulator";
 import { externalUsersColumns } from "data/columns";
 import { ColumnDefinition } from "tabulator-tables";
 import StaffingCard from "./Cards/StaffingCard";
 import { ALL, ARCHIVE, ACTIVE } from "data/constants";
-
-export interface IBirthStatItemWithPhoto extends IBirthDateStatItem {
-    currentPhotoId: string;
-}
 
 const MainMenu: FC = () => {
     const navigate = useNavigate();
@@ -43,20 +39,20 @@ const MainMenu: FC = () => {
         dispatch(SetCurrentOpenedMenu(mainMenuEnum.mainMenu));
     }, []);
 
-    const [allStatistics, setAllStatistics] = useState<IAllStatisticsModel>(
-        {} as IAllStatisticsModel
+    const [allStatistics, setAllStatistics] = useState<IAllStatisticsViewModel>(
+        {} as IAllStatisticsViewModel
     );
     const [statsLoading, setStatsLoading] = useState(false);
     const [table, setTable] = useState<Tabulator | undefined>();
 
     const [companyId, setCompanyId] = useState<number | undefined>(undefined);
-    const [currentUser, setCurrentUser] = useState<ICurrentUserDtoViewModel>(
-        {} as ICurrentUserDtoViewModel
-    );
+    const [currentUser, setCurrentUser] = useState<IUsersViewModel>({} as IUsersViewModel);
     const [currentUserPhoto, setCurrentUserPhoto] = useState<string | null>(null);
     const [currentUserPhotoLoading, setCurrentUserPhotoLoading] = useState(false);
 
-    const [birthStatsWithPhoto, setBirthStatsWithPhoto] = useState<IBirthStatItemWithPhoto[]>([]);
+    const [birthStatsWithPhoto, setBirthStatsWithPhoto] = useState<IBirthStatItemWithPhotoModel[]>(
+        []
+    );
     const [birthStatsLoading, setBirthStatsLoading] = useState(false);
 
     const { getCurrentUserData, getUsersWithPhotoId } = useSimpleHttpFunctions();
@@ -80,7 +76,7 @@ const MainMenu: FC = () => {
     const initStatData = async () => {
         if (companyId) {
             setStatsLoading(true);
-            const statistics: IAllStatisticsModel = await actionMethodResultSync(
+            const statistics: IAllStatisticsViewModel = await actionMethodResultSync(
                 "USER",
                 `statistics/main?companyId=${companyId}`,
                 "get",
@@ -93,7 +89,7 @@ const MainMenu: FC = () => {
 
     const initCurrentUserData = async () => {
         setCurrentUserPhotoLoading(true);
-        const currentUserData: ICurrentUserDtoViewModel = await getCurrentUserData();
+        const currentUserData: IUsersViewModel = await getCurrentUserData();
 
         setCompanyId(currentUserData.company?.companyId);
         setCurrentUser(currentUserData);
@@ -115,35 +111,11 @@ const MainMenu: FC = () => {
     const initBirthStatItems = async () => {
         setBirthStatsLoading(true);
         if (allStatistics && allStatistics.birthDateStatItems) {
-            const currentBirthStatsWithPhoto: IBirthStatItemWithPhoto[] = await getUsersWithPhotoId(
-                allStatistics.birthDateStatItems
-            );
+            const currentBirthStatsWithPhoto: IBirthStatItemWithPhotoModel[] =
+                await getUsersWithPhotoId(allStatistics.birthDateStatItems);
             setBirthStatsWithPhoto(currentBirthStatsWithPhoto);
             setBirthStatsLoading(false);
         }
-    };
-
-    const fullNameTableActionsFormatter = (cell: Tabulator.CellComponent) => {
-        const data: any = cell.getData();
-        const userPhoto = data.currentPhotoId;
-
-        let photoElement = document.createElement("img");
-        photoElement.setAttribute("src", userPhoto ? userPhoto : questionImage);
-        photoElement.setAttribute("class", classes.externalUserPhoto);
-        photoElement.setAttribute("width", "30px");
-        photoElement.setAttribute("height", "30px");
-
-        let textElement = document.createElement("span");
-        textElement.setAttribute("class", classes.fullNameText);
-        textElement.textContent = `${data.lastname ?? ""} ${data.firstname ?? ""} ${
-            data.patronymic ?? ""
-        }`;
-
-        let wrap = document.createElement("div");
-        wrap.setAttribute("class", classes.fullNameWrap);
-        wrap.appendChild(photoElement);
-        wrap.appendChild(textElement);
-        return wrap;
     };
 
     const initTableData = async () => {
@@ -303,4 +275,5 @@ const MainMenu: FC = () => {
         </Row>
     );
 };
+
 export default MainMenu;

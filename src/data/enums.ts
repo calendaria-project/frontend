@@ -1,6 +1,7 @@
 export enum layoutConstantTypes {
     TITLE = "title",
     UNEDITABLE = "uneditable",
+    CHECKBOX = "checkbox",
     SELECT = "select",
     POSITION_SELECT = "position_select",
     DIVISION_SELECT = "division_select",
@@ -54,7 +55,12 @@ export enum dictionaryCodesEnum {
     WORK_KIND = "WORK_KIND",
     CONTRACT_FORM_TYPE = "CONTRACT_FORM_TYPE",
     CONTRACT_NORM_TYPE = "CONTRACT_NORM_TYPE",
-    CONTRACT_NORM_CONDITION = "CONTRACT_NORM_CONDITION"
+    CONTRACT_NORM_CONDITION = "CONTRACT_NORM_CONDITION",
+    TASK_ROLE = "TASK_ROLE",
+    SELECTION_METHOD_TYPE = "SELECTION_METHOD_TYPE",
+    ANALYSIS_METHOD_TYPE = "ANALYSIS_METHOD_TYPE",
+    APP_ITEM_TYPE = "APP_ITEM_TYPE",
+    MOBILE_TARIFF = "MOBILE_TARIFF"
 }
 
 export enum mainMenuEnum {

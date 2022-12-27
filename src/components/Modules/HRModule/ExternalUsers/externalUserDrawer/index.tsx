@@ -1,7 +1,8 @@
 import React, { FC, memo, useCallback, useContext, useState, Suspense } from "react";
 import { Drawer, Row, Col, Image, Typography, message, Form } from "antd";
 import cx from "classnames";
-import { IExternalUsersDataModel, IExternalUsersDtoViewModel } from "interfaces";
+import { IExternalUsersViewModel } from "interfaces";
+import { IExternalUsersDataModel } from "interfaces/extended";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
@@ -85,8 +86,8 @@ const ExternalUserDrawer: FC<IExternalUserDrawer> = ({
                 );
 
                 const { fullName, currentPhotoId, ...currentPureData } = externalUserData;
-                const finalData: IExternalUsersDtoViewModel = _.merge(currentPureData, gotData);
-                const editedData: IExternalUsersDtoViewModel = await actionMethodResultSync(
+                const finalData: IExternalUsersViewModel = _.merge(currentPureData, gotData);
+                const editedData: IExternalUsersViewModel = await actionMethodResultSync(
                     "USER",
                     `user/external`,
                     "put",
@@ -116,7 +117,7 @@ const ExternalUserDrawer: FC<IExternalUserDrawer> = ({
         [editForm, table, externalUserData]
     );
 
-    const getDataWithPhoto = async (data: IExternalUsersDtoViewModel) => {
+    const getDataWithPhoto = async (data: IExternalUsersViewModel) => {
         if (data && data.profilePhotoId) {
             const currentPhotoId = await actionMethodResultSync(
                 "FILE",

@@ -1,7 +1,7 @@
 import { FC } from "react";
-import SharedList from "components/Shared/DictionaryTableRenderer";
 import { dictionaryCodesEnum } from "data/enums";
-import { ITable } from "components/Shared/DictionaryTableRenderer/ITable";
+import { ITable } from "../../TableRenderer/ITable";
+import SharedList from "../../TableRenderer";
 
 export const AddressTypeTable: FC<ITable> = ({ selectionItems }) => (
     <SharedList

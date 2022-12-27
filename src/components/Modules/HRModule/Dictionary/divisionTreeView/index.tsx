@@ -14,8 +14,8 @@ import {
 } from "interfaces";
 import { createTableViaTabulator } from "services/tabulator";
 import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
-import { ITable } from "../../../../Shared/DictionaryTableRenderer/ITable";
-import SearchingRow from "../../../../Shared/DictionaryTableRenderer/SearchingRow";
+import { ITable } from "../TableRenderer/ITable";
+import SearchingRow from "../TableRenderer/SearchingRow";
 
 import editIcon from "assets/svg/editIcon.svg";
 import addIcon from "assets/svg/addIcon.svg";

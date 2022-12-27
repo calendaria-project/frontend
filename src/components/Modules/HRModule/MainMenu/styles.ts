@@ -2,23 +2,6 @@ import { createUseStyles } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 
 export default createUseStyles({
-    fullNameWrap: {
-        display: "flex",
-        alignItems: "center",
-        rowGap: "6px",
-        flexDirection: "row"
-    },
-    fullNameText: {
-        cursor: "pointer",
-        marginLeft: (theme: ITheme) => theme.layout.margin,
-        color: (theme: ITheme) => theme.color.mainText,
-        overflow: "hidden !important",
-        textOverflow: "ellipsis !important"
-    },
-    externalUserPhoto: {
-        borderRadius: "50%"
-    },
-
     container: {
         padding: (theme: ITheme) => theme.layout.padding
     },

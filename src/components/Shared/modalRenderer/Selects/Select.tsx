@@ -1,10 +1,10 @@
 import { FC, memo, useCallback, useEffect, useState } from "react";
 import { FormInstance, Select as AntdSelect } from "antd";
-import { TLayoutModalData } from "data/types";
+import { TLayoutModalData, TContracts } from "data/types";
 import { ISimpleDictionaryViewModel } from "interfaces";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { dictionaryCodesEnum } from "data/enums";
-import { SHORTENED_CONTRACT_ARRAY, TContracts } from "data/constants";
+import { SHORTENED_CONTRACT_ARRAY } from "data/constants";
 import { useDispatch } from "react-redux";
 import { SetSelectedContractType } from "store/actions";
 

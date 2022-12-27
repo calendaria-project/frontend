@@ -1,7 +1,6 @@
 import { MainActionTypes } from "../types";
 import { IAction } from "../interfaces";
-import { TLayoutModalData } from "data/types";
-import { TContracts } from "data/constants";
+import { TLayoutModalData, TContracts } from "data/types";
 import { IPositionDtoModel } from "interfaces";
 
 export const UpdateToken = (payload: string | null): IAction => {
@@ -101,6 +100,13 @@ export const SetModalSubContractLayout = (payload: TLayoutModalData[]): IAction 
 export const SetSimpleAddModalSubContractLayout = (payload: TLayoutModalData[]): IAction => {
     return {
         type: MainActionTypes.SET_SIMPLE_ADD_MODAL_SUB_CONTRACT_LAYOUT,
+        payload
+    };
+};
+
+export const SetAddReqSelectFields = (payload: { [key: string]: boolean }): IAction => {
+    return {
+        type: MainActionTypes.SET_ADD_REQ_SELECT_FIELDS,
         payload
     };
 };
