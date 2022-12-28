@@ -1,10 +1,17 @@
 import {
     IBirthDateStatItemViewModel,
+    IDictionaryBaseModel,
     IExternalUsersViewModel,
     IOrgStructureTreeItemViewModel,
     IUsersByStaffingViewModel,
     IUsersViewModel
 } from "interfaces";
+
+//dictionary base
+
+export interface IAppItemAccessOptionalTypeViewModel extends IDictionaryBaseModel {
+    appItemTypeId?: number;
+}
 
 //org structure
 export interface IExtendedOrgStructureTreeItem extends IOrgStructureTreeItemViewModel {

@@ -1,7 +1,7 @@
 import { MainActionTypes } from "../types";
 import { IAction } from "../interfaces";
 import { TLayoutModalData, TContracts } from "data/types";
-import { IPositionDtoModel } from "interfaces";
+import { IPositionViewModel } from "interfaces";
 
 export const UpdateToken = (payload: string | null): IAction => {
     return {
@@ -75,7 +75,7 @@ export const SetSelectedContractType = (payload: TContracts): IAction => {
 
 export const SetSubContractInitialDivisionId = (payload: {
     divisionId: number;
-    position: IPositionDtoModel;
+    position: IPositionViewModel;
 }): IAction => {
     return {
         type: MainActionTypes.SET_SUB_CONTRACT_INITIAL_DIVISION,
@@ -103,10 +103,10 @@ export const SetSimpleAddModalSubContractLayout = (payload: TLayoutModalData[]):
         payload
     };
 };
-
-export const SetAddReqSelectFields = (payload: { [key: string]: boolean }): IAction => {
-    return {
-        type: MainActionTypes.SET_ADD_REQ_SELECT_FIELDS,
-        payload
-    };
-};
+//
+// export const SetAddReqSelectFields = (payload: { [key: string]: boolean }): IAction => {
+//     return {
+//         type: MainActionTypes.SET_ADD_REQ_SELECT_FIELDS,
+//         payload
+//     };
+// };

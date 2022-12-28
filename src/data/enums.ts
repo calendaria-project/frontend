@@ -82,3 +82,8 @@ export enum nodeTypeEnum {
     DIVISION = "DIVISION",
     DIVISION_UNIT = "DIVISION_UNIT"
 }
+
+export enum appTypesEnum {
+    GET_ACCESS = "GET_ACCESS",
+    REMOVE_ACCESS = "REMOVE_ACCESS"
+}

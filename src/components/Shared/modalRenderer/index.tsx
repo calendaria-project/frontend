@@ -9,8 +9,6 @@ import MultipleSelect from "./Selects/MultipleSelect";
 import DivisionSelect from "./Selects/DivisionSelect";
 import PositionSelect from "./Selects/PositionSelect";
 import Checkbox from "./Checkbox";
-import { useTypedSelector } from "hooks/useTypedSelector";
-import { ONE_C, RATE, ROLES, SERVICE_NUMBER, TENDERIX, VIEW_MODE } from "data/constants";
 
 const { Text } = Typography;
 
@@ -82,7 +80,7 @@ const WithFormItem: FC<{ dataItemLayout: TLayoutModalData; children: any }> = ({
     dataItemLayout,
     children
 }) => {
-    const reqSelectionFields = useTypedSelector((state) => state.modal.addReqSelectFields);
+    // const reqSelectionFields = useTypedSelector((state) => state.modal.addReqSelectFields);
 
     const formItemRules: Array<{}> =
         dataItemLayout.pattern && dataItemLayout.patternMessage
@@ -93,17 +91,13 @@ const WithFormItem: FC<{ dataItemLayout: TLayoutModalData; children: any }> = ({
             : [{ required: dataItemLayout.required }];
 
     return dataItemLayout.type !== layoutConstantTypes.CHECKBOX ? (
-        (dataItemLayout.propertyName === RATE && !reqSelectionFields[SERVICE_NUMBER]) ||
-        (dataItemLayout.propertyName === VIEW_MODE && !reqSelectionFields[ONE_C]) ||
-        (dataItemLayout.propertyName === ROLES && !reqSelectionFields[TENDERIX]) ? null : (
-            <Form.Item
-                key={dataItemLayout.propertyName}
-                name={dataItemLayout.propertyName}
-                rules={formItemRules}
-            >
-                {children}
-            </Form.Item>
-        )
+        <Form.Item
+            key={dataItemLayout.propertyName}
+            name={dataItemLayout.propertyName}
+            rules={formItemRules}
+        >
+            {children}
+        </Form.Item>
     ) : (
         <Form.Item
             key={dataItemLayout.propertyName}

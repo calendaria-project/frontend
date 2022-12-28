@@ -2,12 +2,12 @@ import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "context/AuthContextProvider";
-import { ICompanyViewModel, IPositionDtoModel } from "interfaces";
+import { ICompanyViewModel, IPositionViewModel } from "interfaces";
 
 const useSimpleHttpFunctions = () => {
     const authContext = useContext(AuthContext);
     const [companies, setCompanies] = useState<ICompanyViewModel[]>([]);
-    const [positions, setPositions] = useState<IPositionDtoModel[]>([]);
+    const [positions, setPositions] = useState<IPositionViewModel[]>([]);
 
     useEffect(() => {
         actionMethodResultSync(
@@ -167,6 +167,17 @@ const useSimpleHttpFunctions = () => {
         });
     };
 
+    const getAccessApplicationByUserId = (userId: string) => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            `access-application/by-user?userId=${userId}`,
+            "get",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data;
+        });
+    };
+
     return {
         companies,
         positions,
@@ -182,7 +193,8 @@ const useSimpleHttpFunctions = () => {
         getTreeData,
         calculatePercent,
         getDivisionOptions,
-        getPositionOptionsByDivisionId
+        getPositionOptionsByDivisionId,
+        getAccessApplicationByUserId
     };
 };
 export default useSimpleHttpFunctions;

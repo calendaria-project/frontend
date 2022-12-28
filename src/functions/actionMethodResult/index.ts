@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { IActionMethodCallback, IRequestData } from "./interfaces";
 import exceptions from "./json/exceptions.json";
 import exceptionsV2 from "./json/exceptionsV2.json";
-import { ApyType } from "./types";
+import { TApiType } from "./types";
 
 const mode = "DEVELOPMENT";
 
@@ -64,7 +64,7 @@ export const actionMethodResultSync = async (
     /**
      * axios url
      */
-    apiType: ApyType,
+    apiType: TApiType,
     /**
      * axios url
      */
@@ -106,6 +106,9 @@ export const actionMethodResultSync = async (
                 break;
             case "USER":
                 baseUrl = String(process.env.USER_URL);
+                break;
+            case "HELPDESK":
+                baseUrl = String(process.env.HELPDESK_URL);
                 break;
             default:
                 break;

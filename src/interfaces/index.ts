@@ -1,4 +1,4 @@
-import { nodeTypeEnum } from "data/enums";
+import { appTypesEnum, nodeTypeEnum } from "data/enums";
 
 //simple dictionary
 export interface ISimpleDictionaryBaseModel {
@@ -38,6 +38,10 @@ export interface IDivisionTreeNodeViewModel extends IDictionaryBaseModel {
     nodeType: string;
 }
 
+export interface IPositionModel extends IDictionaryBaseModel {
+    positionId: number;
+}
+
 export interface IPositionViewModel extends IDictionaryBaseModel {
     positionId: number;
     createdAt: string;
@@ -48,10 +52,6 @@ export interface IDivisionViewModel extends IDictionaryBaseModel {
     divisionId: number;
     companyId: number;
     parentId: number;
-}
-
-export interface IPositionViewModel extends IDictionaryBaseModel {
-    positionId: number;
 }
 
 export interface ICompanyTypeViewModel extends IDictionaryBaseModel {
@@ -336,4 +336,20 @@ export interface IAllStatisticsViewModel {
     divisionStatItems: IDivisionStatItemsSimpleViewModel[];
     temporaryWorkersCnt: number;
     pieceWorkersCnt: number;
+}
+
+//access
+export interface IAccessApplicationItemViewModel {
+    appItemType: ISimpleDictionaryViewModel;
+    needAccess: boolean;
+    accessType?: IAppItemAccessTypeViewModel;
+    tariff?: ISimpleDictionaryViewModel;
+}
+
+export interface IAccessApplicationViewModel {
+    appType: appTypesEnum.GET_ACCESS | appTypesEnum.REMOVE_ACCESS;
+    endDate: string;
+    comment: string;
+    applicationUserId: string;
+    items: IAccessApplicationItemViewModel[];
 }

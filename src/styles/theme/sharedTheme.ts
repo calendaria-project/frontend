@@ -76,7 +76,7 @@ const sharedTheme: ITheme = {
     table: {
         header: {
             background: "#F2F2F2",
-            slight: "#F4F6FB",
+            light: "#F4F6FB",
             secondary: "#C2C2C2"
         },
         background: "#E0E0E0",
