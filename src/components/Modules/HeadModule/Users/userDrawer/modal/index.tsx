@@ -38,7 +38,7 @@ const AddRequestModal: FC<AddRequestModal> = ({
     }, []);
 
     return (
-        <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
+        <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel} destroyOnClose>
             <Form
                 name="addRequestModal"
                 validateMessages={validateMessages}

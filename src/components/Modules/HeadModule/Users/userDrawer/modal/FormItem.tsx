@@ -3,11 +3,10 @@ import React, { FC, useCallback, useEffect, useState } from "react";
 import { ISimpleDictionaryViewModel } from "interfaces";
 import { IAppItemAccessOptionalTypeViewModel } from "interfaces/extended";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
-import { appItemTypeValues } from "../utils";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { dictionaryCodesEnum } from "data/enums";
 import SharedEmptySelect from "components/Shared/modalRenderer/Selects/SharedEmptySelect";
-import { getPlaceholderOfAppItemTypeValue } from "../utils";
+import { getPlaceholderOfAppItemTypeValue, appItemTypeValues } from "../helpers";
 
 interface IFormItem {
     form: FormInstance;

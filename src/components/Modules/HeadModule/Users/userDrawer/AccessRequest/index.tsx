@@ -1,4 +1,4 @@
-import { Col, Row, Typography, Collapse, Checkbox } from "antd";
+import { Row, Typography, Collapse, Checkbox } from "antd";
 import React, { FC, memo } from "react";
 import useStyles from "./styles";
 import { useTheme } from "react-jss";
@@ -7,7 +7,8 @@ import { IAccessAppDataByCurrentUserViewModel } from "interfaces";
 import {
     accessRequestTranscripts,
     appTypesEnumTranscripts,
-    accessItemRequestTranscripts
+    accessItemRequestTranscripts,
+    accessItemRequestStatuses
 } from "data/enums";
 
 const { Panel } = Collapse;
@@ -20,16 +21,29 @@ const AccessRequest: FC<{ reqData: IAccessAppDataByCurrentUserViewModel }> = ({ 
 
     const getPanelHeader = (type: string, date: string, status: string) => {
         return (
-            <Row style={{ justifyContent: "space-between", alignItems: "center", width: "100%" }}>
-                <Text>{appTypesEnumTranscripts[type]}</Text>
-                <Text>{date}</Text>
-                <Text>{accessItemRequestTranscripts[status]}</Text>
+            <Row className={classes.panelContainer}>
+                <Text>{appTypesEnumTranscripts[type] ?? ""}</Text>
+                <Text>{new Date(date).toLocaleDateString("ru-RU")}</Text>
+                <div className={classes.panelStatusContainer}>
+                    <div
+                        className={classes.panelStatusBall}
+                        style={{
+                            background:
+                                status === accessItemRequestStatuses.CANCELED
+                                    ? theme.color.removing + ""
+                                    : status === accessItemRequestStatuses.DONE
+                                    ? theme.color.successful + ""
+                                    : theme.color.between + ""
+                        }}
+                    />
+                    <Text>{accessItemRequestTranscripts[status] ?? ""}</Text>
+                </div>
             </Row>
         );
     };
 
     return (
-        <Row className={classes.requestsContainer}>
+        <Row className={classes.accessRequestsContainer}>
             <Row>
                 <Text className={classes.title}>Учетные записи</Text>
             </Row>
@@ -44,7 +58,7 @@ const AccessRequest: FC<{ reqData: IAccessAppDataByCurrentUserViewModel }> = ({ 
                         <Row className={classes.reqTitle}>
                             <Text strong>{accessRequestTranscripts[key]}</Text>
                         </Row>
-                        {data.map((accessItem, aIndex) => (
+                        {(data || []).map((accessItem, aIndex) => (
                             <Collapse
                                 key={accessItem.applicationId}
                                 className={classes.reqCollapseItem}
@@ -57,18 +71,19 @@ const AccessRequest: FC<{ reqData: IAccessAppDataByCurrentUserViewModel }> = ({ 
                                         accessItem.items[0]?.status
                                     )}
                                 >
-                                    {accessItem.items.map((item, index) => (
+                                    {(accessItem.items || []).map((item, index) => (
                                         <Row
                                             key={"_" + item.accessType?.code + index}
-                                            style={{
-                                                margin: "8px 0px",
-                                                justifyContent: "space-between"
-                                            }}
+                                            className={classes.accessItemContainer}
                                         >
-                                            <Checkbox disabled checked={item.needAccess}>
+                                            <Checkbox
+                                                className={classes.accessItemCheckbox}
+                                                disabled
+                                                checked={item.needAccess}
+                                            >
                                                 {item.appItemType?.nameRu}
                                             </Checkbox>
-                                            <Text>
+                                            <Text className={classes.accessItemStatus}>
                                                 {item.accessType?.nameRu ??
                                                     item.tariff?.nameRu ??
                                                     ""}

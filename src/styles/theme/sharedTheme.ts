@@ -13,7 +13,8 @@ const sharedTheme: ITheme = {
         successful: "#27AE60",
         arrow: "#000000",
         lines: "#C2C2C2",
-        disabled: "rgba(0, 0, 0, 0.25)"
+        disabled: "rgba(0, 0, 0, 0.25)",
+        default: "rgba(0, 0, 0, 0.85)"
     },
     background: {
         primary: "#FFFFFF",

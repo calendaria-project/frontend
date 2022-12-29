@@ -24,6 +24,7 @@ export default createUseStyles({
         justifyContent: "space-between",
         flexWrap: "nowrap",
         height: "100%",
+        minHeight: "fit-content",
         width: "100%"
     },
     centeredRequestsContainer: {
@@ -38,18 +39,13 @@ export default createUseStyles({
         width: "40vw",
         minHeight: "100%",
         height: "fit-content",
-        overflowY: "auto"
+        overflowY: "auto",
+
+        alignSelf: "baseline"
     },
     cardContainer: {
         width: ({ theme, divisionsEquality }: { theme: ITheme; divisionsEquality: boolean }) =>
             divisionsEquality ? "20vw" : "100%",
-        borderRight: ({
-            theme,
-            divisionsEquality
-        }: {
-            theme: ITheme;
-            divisionsEquality: boolean;
-        }) => (divisionsEquality ? `${theme.border} ${theme.color.lines}` : "unset"),
         paddingRight: ({
             theme,
             divisionsEquality
@@ -59,7 +55,9 @@ export default createUseStyles({
         }) => (divisionsEquality ? "20px" : "0"),
         height: "100%",
         flexDirection: "column",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+
+        alignSelf: "start"
     },
     row: {
         width: "100%"

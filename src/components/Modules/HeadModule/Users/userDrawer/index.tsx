@@ -21,11 +21,11 @@ import {
     IAccessApplicationViewModel,
     ISimpleDictionaryViewModel
 } from "interfaces";
-import { dictionaryCodesEnum } from "data/enums";
+import { accessRequestStatuses, dictionaryCodesEnum } from "data/enums";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { AuthContext } from "context/AuthContextProvider";
 import getObjectWithHandledDates from "utils/getObjectWithHandeledDates";
-import { appItemTypeValues } from "./utils";
+import { appItemTypeValues } from "./helpers";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
@@ -86,8 +86,6 @@ const UserDrawer: FC<IExternalUserDrawer> = ({ divisionsEquality, open, setOpen,
         setRequestsLoading(false);
     };
 
-    console.log(currentAccessAppRequests);
-
     const onFinishModal = useCallback(
         (data: any) => {
             const filteredData = removeEmptyValuesFromAnyLevelObject(data);
@@ -130,12 +128,21 @@ const UserDrawer: FC<IExternalUserDrawer> = ({ divisionsEquality, open, setOpen,
                     message.success("Успешно создано");
                     console.log(d);
                     form.resetFields();
+                    setModalVisible(false);
+                    setCurrentAccessAppRequests({
+                        ...currentAccessAppRequests,
+                        [accessRequestStatuses.ON_APPROVEMENT]: currentAccessAppRequests[
+                            accessRequestStatuses.ON_APPROVEMENT
+                        ]
+                            ? [...currentAccessAppRequests[accessRequestStatuses.ON_APPROVEMENT], d]
+                            : [d]
+                    });
                 })
                 .catch(() => {
                     message.error("Ошибка создания!");
                 });
         },
-        [modalValues, userData]
+        [modalValues, userData, initAccessRequests]
     );
 
     return (
