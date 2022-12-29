@@ -26,10 +26,19 @@ export default createUseStyles({
         height: "100%",
         width: "100%"
     },
+    centeredRequestsContainer: {
+        height: "100%",
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+    },
     requestsContainer: {
         paddingLeft: ({ theme }: { theme: ITheme }) => `${theme.layout.padding} !important`,
         width: "40vw",
-        height: "100%"
+        minHeight: "100%",
+        height: "fit-content",
+        overflowY: "auto"
     },
     cardContainer: {
         width: ({ theme, divisionsEquality }: { theme: ITheme; divisionsEquality: boolean }) =>

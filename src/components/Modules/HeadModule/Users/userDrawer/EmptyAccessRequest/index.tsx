@@ -1,7 +1,7 @@
 import { Col, Row, Typography } from "antd";
 import emptyRequestsImage from "assets/icons/emptyRequests.png";
 import Button from "ui/Button";
-import React, { FC } from "react";
+import React, { FC, memo } from "react";
 import useStyles from "./styles";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
@@ -14,7 +14,7 @@ const EmptyAccessRequest: FC<{ onOpenModal: () => void }> = ({ onOpenModal }) =>
     const classes = useStyles({ theme });
 
     return (
-        <Row className={classes.emptyRequestsContainer}>
+        <Row className={classes.centeredRequestsContainer}>
             <Col className={classes.emptyRequests} span={24}>
                 <img src={emptyRequestsImage} alt={"empty-requests"} />
                 <Text className={classes.emptyRequestsText}>
@@ -29,4 +29,4 @@ const EmptyAccessRequest: FC<{ onOpenModal: () => void }> = ({ onOpenModal }) =>
     );
 };
 
-export default EmptyAccessRequest;
+export default memo(EmptyAccessRequest);

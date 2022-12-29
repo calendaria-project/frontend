@@ -8,7 +8,6 @@ import {
 } from "interfaces";
 
 //dictionary base
-
 export interface IAppItemAccessOptionalTypeViewModel extends IDictionaryBaseModel {
     appItemTypeId?: number;
 }

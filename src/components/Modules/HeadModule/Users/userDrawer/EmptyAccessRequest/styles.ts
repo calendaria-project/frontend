@@ -2,8 +2,7 @@ import { createUseStyles } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 
 export default createUseStyles({
-    emptyRequestsContainer: {
-        height: "100%",
+    centeredRequestsContainer: {
         width: "100%",
         display: "flex",
         alignItems: "center",

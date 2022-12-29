@@ -19,5 +19,8 @@ export const getPlaceholderOfAppItemTypeValue = (v: string) => {
         case appItemTypeValues.TENDERIX: {
             return "Админ";
         }
+        default: {
+            return undefined;
+        }
     }
 };

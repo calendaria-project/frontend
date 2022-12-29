@@ -16,7 +16,8 @@ import Button from "ui/Button";
 import { IUsersWithPhotoInfoModel } from "interfaces/extended";
 import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
 import {
-    IAccessApplicationItemViewModel,
+    IAccessAppDataByCurrentUserViewModel,
+    IAccessApplicationItemModel,
     IAccessApplicationViewModel,
     ISimpleDictionaryViewModel
 } from "interfaces";
@@ -30,6 +31,7 @@ import { getRequestHeader } from "functions/common";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
 import EmptyAccessRequest from "./EmptyAccessRequest";
 import AccessRequest from "./AccessRequest";
+import Spinner from "ui/Spinner";
 
 const AddRequestModal = React.lazy(() => import("./modal"));
 const { Text, Title } = Typography;
@@ -56,7 +58,9 @@ const UserDrawer: FC<IExternalUserDrawer> = ({ divisionsEquality, open, setOpen,
     const [modalValues, setModalValues] = useState<ISimpleDictionaryViewModel[]>([]);
     const handleOpenModal = useCallback(() => setModalVisible(true), []);
 
-    const [currentAccessAppRequests, setCurrentAccessAppRequests] = useState({});
+    const [requestsLoading, setRequestsLoading] = useState(false);
+    const [currentAccessAppRequests, setCurrentAccessAppRequests] =
+        useState<IAccessAppDataByCurrentUserViewModel>({} as IAccessAppDataByCurrentUserViewModel);
 
     const { getDictionaryValues, getAccessApplicationByUserId } = useSimpleHttpFunctions();
 
@@ -76,8 +80,10 @@ const UserDrawer: FC<IExternalUserDrawer> = ({ divisionsEquality, open, setOpen,
     }, [divisionsEquality, userId]);
 
     const initAccessRequests = async () => {
+        setRequestsLoading(true);
         const data = await getAccessApplicationByUserId(userId);
         setCurrentAccessAppRequests(data);
+        setRequestsLoading(false);
     };
 
     console.log(currentAccessAppRequests);
@@ -87,7 +93,7 @@ const UserDrawer: FC<IExternalUserDrawer> = ({ divisionsEquality, open, setOpen,
             const filteredData = removeEmptyValuesFromAnyLevelObject(data);
             const filteredDataWithDate = getObjectWithHandledDates(filteredData);
 
-            const reqItems: IAccessApplicationItemViewModel[] = [];
+            const reqItems: IAccessApplicationItemModel[] = [];
             modalValues.forEach((v) => {
                 const needAccess = !!data[v.code];
                 if (v.code === appItemTypeValues.MOBILE) {
@@ -202,7 +208,11 @@ const UserDrawer: FC<IExternalUserDrawer> = ({ divisionsEquality, open, setOpen,
                 </Row>
                 {divisionsEquality && (
                     <Row className={classes.requestsContainer}>
-                        {isObjectNotEmpty(currentAccessAppRequests) ? (
+                        {requestsLoading ? (
+                            <Row className={classes.centeredRequestsContainer}>
+                                <Spinner />
+                            </Row>
+                        ) : isObjectNotEmpty(currentAccessAppRequests) ? (
                             <AccessRequest reqData={currentAccessAppRequests} />
                         ) : (
                             <EmptyAccessRequest onOpenModal={handleOpenModal} />
