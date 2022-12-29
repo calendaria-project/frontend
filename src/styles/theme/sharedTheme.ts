@@ -13,7 +13,8 @@ const sharedTheme: ITheme = {
         successful: "#27AE60",
         arrow: "#000000",
         lines: "#C2C2C2",
-        disabled: "rgba(0, 0, 0, 0.25)"
+        disabled: "rgba(0, 0, 0, 0.25)",
+        default: "rgba(0, 0, 0, 0.85)"
     },
     background: {
         primary: "#FFFFFF",
@@ -76,7 +77,7 @@ const sharedTheme: ITheme = {
     table: {
         header: {
             background: "#F2F2F2",
-            slight: "#F4F6FB",
+            light: "#F4F6FB",
             secondary: "#C2C2C2"
         },
         background: "#E0E0E0",

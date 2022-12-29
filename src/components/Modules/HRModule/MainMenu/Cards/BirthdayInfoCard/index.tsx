@@ -10,11 +10,11 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 
-import { IBirthStatItemWithPhoto } from "../../index";
+import { IBirthStatItemWithPhotoModel } from "interfaces/extended";
 
 interface IBirthdayInfoCard {
     statItemsLoading: boolean;
-    statItemsWithPhotoId: IBirthStatItemWithPhoto[];
+    statItemsWithPhotoId: IBirthStatItemWithPhotoModel[];
 }
 
 const BirthdayInfoCard: FC<IBirthdayInfoCard> = ({ statItemsLoading, statItemsWithPhotoId }) => {

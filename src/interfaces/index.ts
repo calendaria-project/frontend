@@ -1,4 +1,4 @@
-import { nodeTypeEnum } from "data/enums";
+import { accessRequestStatuses, appTypesEnum, nodeTypeEnum } from "data/enums";
 
 //simple dictionary
 export interface ISimpleDictionaryBaseModel {
@@ -38,6 +38,10 @@ export interface IDivisionTreeNodeViewModel extends IDictionaryBaseModel {
     nodeType: string;
 }
 
+export interface IPositionModel extends IDictionaryBaseModel {
+    positionId: number;
+}
+
 export interface IPositionViewModel extends IDictionaryBaseModel {
     positionId: number;
     createdAt: string;
@@ -48,10 +52,6 @@ export interface IDivisionViewModel extends IDictionaryBaseModel {
     divisionId: number;
     companyId: number;
     parentId: number;
-}
-
-export interface IPositionViewModel extends IDictionaryBaseModel {
-    positionId: number;
 }
 
 export interface ICompanyTypeViewModel extends IDictionaryBaseModel {
@@ -337,3 +337,63 @@ export interface IAllStatisticsViewModel {
     temporaryWorkersCnt: number;
     pieceWorkersCnt: number;
 }
+
+//access
+export interface IAccessApplicationItemModel {
+    appItemType: ISimpleDictionaryViewModel;
+    needAccess: boolean;
+    accessType?: IAppItemAccessTypeViewModel;
+    tariff?: ISimpleDictionaryViewModel;
+}
+
+export interface IAccessApplicationItemViewModel extends IAccessApplicationItemModel {
+    applicationItemId: number;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface IAccessApplicationViewModel {
+    appType: appTypesEnum.GET_ACCESS | appTypesEnum.REMOVE_ACCESS;
+    endDate: string;
+    comment: string;
+    applicationUserId: string;
+    items: IAccessApplicationItemModel[];
+}
+
+export interface IAccessApplicationUserViewModel {
+    userId: string;
+    username: string;
+    lastname: string;
+    firstname: string;
+    patronymic: string;
+    iin: string;
+    birthDate: string;
+    sex: ISimpleDictionaryViewModel;
+    company: ICompanyViewModel;
+    division: IDivisionViewModel;
+    divisionId: number;
+    position: IPositionModel;
+    employmentDate: string;
+    profilePhotoId: string;
+}
+
+export interface IAccessAppDataByCurrentUserInKeyViewModel {
+    appType: appTypesEnum.GET_ACCESS | appTypesEnum.REMOVE_ACCESS;
+    applicationId: number;
+    companyId: number;
+    divisionId: number;
+    endDate: string;
+    cancelReason: string;
+    comment: string;
+    status: string;
+    applicationUser: IAccessApplicationUserViewModel;
+    creatorUser: IAccessApplicationUserViewModel;
+    items: IAccessApplicationItemViewModel[];
+    createdAt: string;
+    updatedAt: string;
+}
+
+export type IAccessAppDataByCurrentUserViewModel = {
+    [key in accessRequestStatuses]: IAccessAppDataByCurrentUserInKeyViewModel[];
+};

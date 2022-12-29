@@ -24,38 +24,40 @@ export default createUseStyles({
         justifyContent: "space-between",
         flexWrap: "nowrap",
         height: "100%",
+        minHeight: "fit-content",
         width: "100%"
     },
-    requestsContainer: {
-        paddingLeft: ({ theme }: { theme: ITheme }) => `${theme.layout.padding} !important`,
-        width: "40vw",
-        height: "100%"
-    },
-    emptyRequestsContainer: {
+    centeredRequestsContainer: {
         height: "100%",
         width: "100%",
         display: "flex",
         alignItems: "center",
         justifyContent: "center"
     },
-    emptyRequests: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "column",
-        rowGap: ({ theme }: { theme: ITheme }) => theme.layout.margin
-    },
-    emptyRequestsText: {
-        textAlign: "center",
-        fontWeight: ({ theme }: { theme: ITheme }) => theme.fontWeight.bold,
-        fontSize: ({ theme }: { theme: ITheme }) => theme.fontSize.title
+    requestsContainer: {
+        paddingLeft: ({ theme }: { theme: ITheme }) => `${theme.layout.padding} !important`,
+        width: "40vw",
+        minHeight: "100%",
+        height: "fit-content",
+        overflowY: "auto",
+
+        alignSelf: "baseline"
     },
     cardContainer: {
         width: ({ theme, divisionsEquality }: { theme: ITheme; divisionsEquality: boolean }) =>
             divisionsEquality ? "20vw" : "100%",
+        paddingRight: ({
+            theme,
+            divisionsEquality
+        }: {
+            theme: ITheme;
+            divisionsEquality: boolean;
+        }) => (divisionsEquality ? "20px" : "0"),
         height: "100%",
         flexDirection: "column",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+
+        alignSelf: "start"
     },
     row: {
         width: "100%"
@@ -98,11 +100,5 @@ export default createUseStyles({
     },
     btn: {
         width: "100%"
-    },
-    createBtn: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: "20px 40px !important"
     }
 });

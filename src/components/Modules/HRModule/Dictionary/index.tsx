@@ -37,7 +37,6 @@ import { SelectionMethodTypeTable } from "./Tables/selectionMethodTypeTable";
 import { AnalysisMethodTypeTable } from "./Tables/analysisMethodTypeTable";
 import { AppItemTypeTable } from "./Tables/appItemTypeTable";
 import { MobileTariffTable } from "./Tables/mobileTariffTable";
-import AppItemAccessTypeList from "./Tables/appItemAccessType";
 
 const Dictionary = () => {
     const dispatch = useDispatch();
@@ -196,11 +195,6 @@ const Dictionary = () => {
             label: "Мобильные тарифы",
             key: "28",
             children: <MobileTariffTable />
-        },
-        {
-            label: "Типы доступа",
-            key: "29",
-            children: <AppItemAccessTypeList />
         }
     ];
 

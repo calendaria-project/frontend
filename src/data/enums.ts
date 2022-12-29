@@ -82,3 +82,41 @@ export enum nodeTypeEnum {
     DIVISION = "DIVISION",
     DIVISION_UNIT = "DIVISION_UNIT"
 }
+
+export enum appTypesEnum {
+    GET_ACCESS = "GET_ACCESS",
+    REMOVE_ACCESS = "REMOVE_ACCESS"
+}
+
+export const appTypesEnumTranscripts: { [key: string]: string } = {
+    [appTypesEnum.GET_ACCESS]: "Получение доступа",
+    [appTypesEnum.REMOVE_ACCESS]: "Удаление доступа"
+};
+
+export enum accessRequestStatuses {
+    ON_APPROVEMENT = "ON_APPROVEMENT",
+    ON_PROCESS = "ON_PROCESS",
+    REJECTED = "REJECTED",
+    CANCELED = "CANCELED",
+    DONE = "DONE"
+}
+
+export const accessRequestTranscripts: { [key: string]: string } = {
+    [accessRequestStatuses.ON_APPROVEMENT]: "На согласовании",
+    [accessRequestStatuses.ON_PROCESS]: "В процессе",
+    [accessRequestStatuses.REJECTED]: "Отказано",
+    [accessRequestStatuses.CANCELED]: "Отменена",
+    [accessRequestStatuses.DONE]: "Завершена"
+};
+
+export enum accessItemRequestStatuses {
+    ON_PROCESS = "ON_PROCESS",
+    DONE = "DONE",
+    CANCELED = "CANCELED"
+}
+
+export const accessItemRequestTranscripts: { [key: string]: string } = {
+    [accessItemRequestStatuses.ON_PROCESS]: "В процессе",
+    [accessItemRequestStatuses.CANCELED]: "Отменено",
+    [accessItemRequestStatuses.DONE]: "Выполнено"
+};

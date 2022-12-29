@@ -32,9 +32,10 @@ import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import PhoneInput from "utils/PhoneInput";
 import { inputLengthHandler } from "utils/inputLengthHandler";
-import ValuesSelect from "./Select";
+// import ValuesSelect from "./Select";
 import axios from "axios";
 import getCurrentSimpleError from "utils/getCurrentSimpleError";
+import SharedEmptySelect from "components/Shared/modalRenderer/Selects/SharedEmptySelect";
 
 export interface IUserAddDrawer {
     companyId?: number;
@@ -213,11 +214,17 @@ const UserAddDrawer = ({
                                     label="Пол"
                                     rules={[{ required: true, message: "Пол" }]}
                                 >
-                                    <ValuesSelect
+                                    <SharedEmptySelect
                                         form={form}
                                         selectValues={sexes}
                                         propertyName={"sex"}
+                                        id={"id"}
                                     />
+                                    {/*<ValuesSelect*/}
+                                    {/*    form={form}*/}
+                                    {/*    selectValues={sexes}*/}
+                                    {/*    propertyName={"sex"}*/}
+                                    {/*/>*/}
                                 </Form.Item>
                             </Col>
                             <Col span={24}>
