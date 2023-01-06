@@ -12,14 +12,14 @@ import {
     ShoppingOutlined
 } from "@ant-design/icons";
 import getFullName from "utils/getFullName";
-import { IUsersWithPhotoInfo } from "../index";
+import { IUsersWithPhotoInfoModel } from "interfaces/extended";
 
 const { Text, Title } = Typography;
 
 interface IExternalUserDrawer {
     open: boolean;
     setOpen: (val: boolean) => void;
-    userData: IUsersWithPhotoInfo;
+    userData: IUsersWithPhotoInfoModel;
 }
 
 const userDrawer: FC<IExternalUserDrawer> = ({ open, setOpen, userData }) => {

@@ -51,7 +51,7 @@ const Users: FC = () => {
     const [tableData, setTableData] = useState<IUsersWithPhotoModel[]>([]);
 
     const [query, setQuery] = useState("");
-    const { searchStr } = useDelayedInputSearch(query);
+    const { searchStr, handleFiltrationChange } = useDelayedInputSearch(query, setQuery);
 
     const [requestType, setRequestType] = useState(sessionStorage.getItem("userReqType") || ALL);
 
@@ -135,10 +135,6 @@ const Users: FC = () => {
         table?.addData(data);
         table?.redraw(true);
     };
-
-    const handleFiltrationChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        setQuery(e.target.value);
-    }, []);
 
     const showDrawer = () => setIsVisibleAddUserDrawer(true);
 

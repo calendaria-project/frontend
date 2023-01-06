@@ -19,24 +19,24 @@ const AccessRequest: FC<{ reqData: IAccessAppDataByCurrentUserViewModel }> = ({ 
     // @ts-ignore
     const classes = useStyles(theme);
 
-    const getPanelHeader = (type: string, date: string, status: string) => {
+    const getPanelHeader = (appType: string, createdAt: string, itemStatus: string) => {
         return (
             <Row className={classes.panelContainer}>
-                <Text>{appTypesEnumTranscripts[type] ?? ""}</Text>
-                <Text>{new Date(date).toLocaleDateString("ru-RU")}</Text>
+                <Text>{appTypesEnumTranscripts[appType] ?? ""}</Text>
+                <Text>{new Date(createdAt).toLocaleDateString("ru-RU")}</Text>
                 <div className={classes.panelStatusContainer}>
                     <div
                         className={classes.panelStatusBall}
                         style={{
                             background:
-                                status === accessItemRequestStatuses.CANCELED
+                                itemStatus === accessItemRequestStatuses.CANCELED
                                     ? theme.color.removing + ""
-                                    : status === accessItemRequestStatuses.DONE
+                                    : itemStatus === accessItemRequestStatuses.DONE
                                     ? theme.color.successful + ""
                                     : theme.color.between + ""
                         }}
                     />
-                    <Text>{accessItemRequestTranscripts[status] ?? ""}</Text>
+                    <Text>{accessItemRequestTranscripts[itemStatus] ?? ""}</Text>
                 </div>
             </Row>
         );
@@ -68,7 +68,7 @@ const AccessRequest: FC<{ reqData: IAccessAppDataByCurrentUserViewModel }> = ({ 
                                     header={getPanelHeader(
                                         accessItem.appType,
                                         accessItem.createdAt,
-                                        accessItem.items[0]?.status
+                                        accessItem.items?.[0]?.status
                                     )}
                                 >
                                     {(accessItem.items || []).map((item, index) => (

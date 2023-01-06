@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useContext, useEffect, useState, Suspense } from "react";
+import React, { FC, useContext, useEffect, useState, Suspense } from "react";
 import { useDispatch } from "react-redux";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
@@ -32,6 +32,10 @@ const Users: FC = () => {
     const theme = useTheme<ITheme>();
     const classes = useStyles(theme);
 
+    useEffect(() => {
+        dispatch(SetCurrentOpenedMenu(mainMenuEnum.users));
+    }, []);
+
     const [table, setTable] = useState<Tabulator | undefined>();
     const [tableData, setTableData] = useState<IUsersWithPhotoModel[]>([]);
     const [currentUserInfo, setCurrentUserInfo] = useState<IUsersWithPhotoInfoModel>(
@@ -44,15 +48,7 @@ const Users: FC = () => {
     );
 
     const [query, setQuery] = useState("");
-    const { searchStr } = useDelayedInputSearch(query);
-
-    const handleFiltrationChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        setQuery(e.target.value);
-    }, []);
-
-    useEffect(() => {
-        dispatch(SetCurrentOpenedMenu(mainMenuEnum.users));
-    }, []);
+    const { searchStr, handleFiltrationChange } = useDelayedInputSearch(query, setQuery);
 
     useEffect(() => {
         initData();

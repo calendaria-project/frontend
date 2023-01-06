@@ -31,17 +31,13 @@ const SearchingRow: FC<ISearchingRow> = ({
     const tabActiveKey = useTypedSelector((state) => state.menu.tabActiveKey);
 
     const [query, setQuery] = useState("");
-    const { searchStr } = useDelayedInputSearch(query);
+    const { searchStr, handleFiltrationChange } = useDelayedInputSearch(query, setQuery);
 
     useEffect(() => {
         if (onSetSearchStr) {
             onSetSearchStr(searchStr);
         }
     }, [searchStr]);
-
-    const handleFiltrationChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        setQuery(e.target.value);
-    }, []);
 
     const handleChangeValue = (v: string) => {
         dispatch(SetDictionaryTabActiveKey(v));

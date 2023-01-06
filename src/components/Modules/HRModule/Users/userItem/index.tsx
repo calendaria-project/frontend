@@ -26,7 +26,9 @@ import { IUsersViewModel } from "interfaces";
 import { ARCHIVE } from "data/constants";
 
 const UserEditDrawer = React.lazy(() => import("../userDrawer/UserEditDrawer"));
-const UserItemArchiveModal = React.lazy(() => import("./modal/UserItemArchiveModal"));
+const UserItemArchiveModal = React.lazy(
+    () => import("components/Shared/modalRenderer/ReadyModals/SimpleConfirmationModal")
+);
 
 const UserItem: FC = () => {
     const dispatch = useDispatch();
@@ -241,7 +243,7 @@ const UserItem: FC = () => {
                         title={"Вы уверены что хотите перенести в архив текущего сотрудника?"}
                         isVisible={archiveModalVisible}
                         setIsVisible={setArchiveModalVisible}
-                        handleDeleteUser={handleDeleteUser}
+                        confirmAction={handleDeleteUser}
                     />
                 </Suspense>
                 <Col className={classes.extraCardCol} span={16}>

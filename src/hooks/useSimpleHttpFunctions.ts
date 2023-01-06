@@ -178,6 +178,50 @@ const useSimpleHttpFunctions = () => {
         });
     };
 
+    const getAccessApplicationByCurrentUser = () => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            `access-application/by-current-user`,
+            "get",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data;
+        });
+    };
+
+    const getOutgoingAccessApplication = () => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            `access-application/outgoing`,
+            "get",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data;
+        });
+    };
+
+    const getIncomingAccessApplication = () => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            `access-application/incoming`,
+            "get",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data;
+        });
+    };
+
+    const deleteAccessApplicationById = (id: number) => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            `access-application/${id}`,
+            "delete",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data;
+        });
+    };
+
     return {
         companies,
         positions,
@@ -194,7 +238,11 @@ const useSimpleHttpFunctions = () => {
         calculatePercent,
         getDivisionOptions,
         getPositionOptionsByDivisionId,
-        getAccessApplicationByUserId
+        getAccessApplicationByUserId,
+        getAccessApplicationByCurrentUser,
+        deleteAccessApplicationById,
+        getOutgoingAccessApplication,
+        getIncomingAccessApplication
     };
 };
 export default useSimpleHttpFunctions;

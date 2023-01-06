@@ -1,4 +1,5 @@
-import { accessRequestStatuses, appTypesEnum, nodeTypeEnum } from "data/enums";
+import { appTypesEnum, nodeTypeEnum } from "data/enums";
+import { IExtendedAccessApplicationUserViewModel } from "./extended";
 
 //simple dictionary
 export interface ISimpleDictionaryBaseModel {
@@ -387,7 +388,7 @@ export interface IAccessAppDataByCurrentUserInKeyViewModel {
     cancelReason: string;
     comment: string;
     status: string;
-    applicationUser: IAccessApplicationUserViewModel;
+    applicationUser: IExtendedAccessApplicationUserViewModel;
     creatorUser: IAccessApplicationUserViewModel;
     items: IAccessApplicationItemViewModel[];
     createdAt: string;
@@ -395,5 +396,5 @@ export interface IAccessAppDataByCurrentUserInKeyViewModel {
 }
 
 export type IAccessAppDataByCurrentUserViewModel = {
-    [key in accessRequestStatuses]: IAccessAppDataByCurrentUserInKeyViewModel[];
+    [key: string]: IAccessAppDataByCurrentUserInKeyViewModel[];
 };

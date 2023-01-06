@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 const delay = 500;
 
-const useDelayedInputSearch = (query: string) => {
+const useDelayedInputSearch = (query: string, setQuery: (v: string) => void) => {
     const [searchStr, setSearchStr] = useState("");
 
     useEffect(() => {
@@ -10,8 +10,13 @@ const useDelayedInputSearch = (query: string) => {
         return () => clearTimeout(timeOutId);
     }, [query]);
 
+    const handleFiltrationChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setQuery(e.target.value);
+    }, []);
+
     return {
-        searchStr
+        searchStr,
+        handleFiltrationChange
     };
 };
 export default useDelayedInputSearch;

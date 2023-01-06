@@ -65,7 +65,7 @@ export default createUseStyles({
         ".ant-modal-header": {
             borderBottom: "none !important",
             textAlign: "center !important",
-            padding: "30px 0px 10px 0px !important"
+            padding: "50px 0px 10px 0px !important"
         },
         ".ant-modal-mask": {
             backgroundColor: "rgba(0, 0, 0, 0.20) !important"

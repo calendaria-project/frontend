@@ -1,36 +1,37 @@
 import { Modal } from "antd";
 
 import React, { FC, memo, useCallback } from "react";
-import ModalBtns from "components/Shared/modalRenderer/modalBtns";
+import ModalBtns from "../modalBtns";
 
-interface UserItemArchiveModal {
+interface ISimpleConfirmationModal {
     okText: string;
     title: string;
     isVisible: boolean;
     setIsVisible: (bool: boolean) => void;
-    handleDeleteUser: () => void;
+    confirmAction: () => void;
 }
 
-const UserItemArchiveModal: FC<UserItemArchiveModal> = ({
+const SimpleConfirmationModal: FC<ISimpleConfirmationModal> = ({
     okText,
     title,
     isVisible,
     setIsVisible,
-    handleDeleteUser
+    confirmAction
 }) => {
     const handleCancel = useCallback(() => {
         setIsVisible(false);
     }, []);
 
     const handleRemove = useCallback(() => {
-        handleDeleteUser();
+        confirmAction();
         handleCancel();
-    }, [handleCancel, handleDeleteUser]);
+    }, [confirmAction, handleCancel]);
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
-            <ModalBtns okText={okText} onClick={handleRemove} onCancel={handleCancel} />
+            <ModalBtns okText={okText} onCancel={handleCancel} onClick={handleRemove} />
         </Modal>
     );
 };
-export default memo(UserItemArchiveModal);
+
+export default memo(SimpleConfirmationModal);
