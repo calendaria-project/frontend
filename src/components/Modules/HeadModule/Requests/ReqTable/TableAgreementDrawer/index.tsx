@@ -1,7 +1,11 @@
 import { FC, memo } from "react";
 import { LeftOutlined } from "@ant-design/icons";
-import { Drawer } from "antd";
+import { Col, Drawer, Row } from "antd";
 import { IAccessAppDataByCurrentUserInKeyViewModel } from "interfaces";
+import useStyles from "./styles";
+import { useTheme } from "react-jss";
+import ReqCard from "./Cards/ReqCard";
+import ReqActionsCard from "./Cards/ReqActionsCard";
 
 interface ITableAgreementDrawer {
     open: boolean;
@@ -14,6 +18,10 @@ const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({ open, setOpen, curren
         setOpen(false);
     };
 
+    const theme = useTheme();
+    // @ts-ignore
+    const classes = useStyles(theme);
+
     return (
         <Drawer
             title="Вернуться назад"
@@ -22,7 +30,14 @@ const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({ open, setOpen, curren
             open={open}
             closeIcon={<LeftOutlined />}
         >
-            sdf
+            <Row className={classes.container}>
+                <Col span={16} className={classes.reqCard}>
+                    <ReqCard reqData={currentReqData} />
+                </Col>
+                <Col span={8} className={classes.reqActions}>
+                    <ReqActionsCard reqData={currentReqData} />
+                </Col>
+            </Row>
         </Drawer>
     );
 };
