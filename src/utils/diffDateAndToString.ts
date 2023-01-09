@@ -1,6 +1,6 @@
 import moment from "moment";
 
-const diffDateAndToString = (smallDate: Date, hugeDate: Date) => {
+const diffDateAndToString = (smallDate: Date, hugeDate: Date, msg: string) => {
     const time = moment(smallDate, "DD/MM/YYYY");
     const time2 = moment(hugeDate, "DD/MM/YYYY");
 
@@ -17,6 +17,6 @@ const diffDateAndToString = (smallDate: Date, hugeDate: Date) => {
         ? `${minutesDiff} мин.`
         : secondsDiff > 0
         ? `${secondsDiff} сек.`
-        : "Время вышло";
+        : msg;
 };
 export default diffDateAndToString;

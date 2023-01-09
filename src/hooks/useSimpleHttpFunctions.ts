@@ -222,6 +222,39 @@ const useSimpleHttpFunctions = () => {
         });
     };
 
+    const getAccessApplicationHistoryById = (id: number) => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            `access-application/${id}/history`,
+            "get",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data;
+        });
+    };
+
+    const cancelAccessApplicationById = (id: number) => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            `access-application/${id}/cancel`,
+            "post",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data;
+        });
+    };
+
+    const approveAccessApplicationById = (id: number) => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            `access-application/${id}/approve`,
+            "post",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data;
+        });
+    };
+
     return {
         companies,
         positions,
@@ -242,7 +275,10 @@ const useSimpleHttpFunctions = () => {
         getAccessApplicationByCurrentUser,
         deleteAccessApplicationById,
         getOutgoingAccessApplication,
-        getIncomingAccessApplication
+        getIncomingAccessApplication,
+        getAccessApplicationHistoryById,
+        cancelAccessApplicationById,
+        approveAccessApplicationById
     };
 };
 export default useSimpleHttpFunctions;

@@ -64,7 +64,11 @@ const ReqCard: FC<IReqCard> = ({ reqData }) => {
                     <Col className={classes.creatorInfoCol} span={24}>
                         <Text strong>Осталось до выполнения: </Text>
                         <span className={classes.highlightedTime}>
-                            {diffDateAndToString(new Date(), new Date(reqData.endDate))}
+                            {diffDateAndToString(
+                                new Date(),
+                                new Date(reqData.endDate),
+                                "Время истекло"
+                            )}
                         </span>
                     </Col>
                     <Col className={classes.creatorInfoLastCol} span={24}>

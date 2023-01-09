@@ -31,10 +31,10 @@ const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({ open, setOpen, curren
             closeIcon={<LeftOutlined />}
         >
             <Row className={classes.container}>
-                <Col span={16} className={classes.reqCard}>
+                <Col span={20} className={classes.reqCard}>
                     <ReqCard reqData={currentReqData} />
                 </Col>
-                <Col span={8} className={classes.reqActions}>
+                <Col span={4} className={classes.reqActions}>
                     <ReqActionsCard reqData={currentReqData} />
                 </Col>
             </Row>

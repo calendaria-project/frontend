@@ -10,7 +10,13 @@ import { ITheme } from "styles/theme/interface";
 interface IButton {
     children?: any;
     className?: string;
-    customType?: "regular" | "removing" | "primary" | "cancel";
+    customType?:
+        | "regular"
+        | "removing"
+        | "primary"
+        | "cancel"
+        | "removingGrounded"
+        | "addingGrounded";
     block?: boolean;
     danger?: boolean;
     disabled?: boolean;

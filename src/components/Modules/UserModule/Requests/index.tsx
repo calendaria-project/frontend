@@ -4,7 +4,7 @@ import { accessItemRequestTranscripts, mainMenuEnum } from "data/enums";
 import { useDispatch } from "react-redux";
 import { useTheme } from "react-jss";
 
-import { Col, Input, Row, Select, Typography, Menu } from "antd";
+import { Col, Input, Row, Select, Typography, Menu, Space, Button, Dropdown } from "antd";
 
 import useStyles from "./styles";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
@@ -12,7 +12,7 @@ import {
     IAccessAppDataByCurrentUserInKeyViewModel,
     IAccessAppDataByCurrentUserViewModel
 } from "interfaces";
-import { SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined, DownOutlined, PlusOutlined } from "@ant-design/icons";
 import { MY_REQUESTS, BOOKING, selectReqValues } from "./defaultValues";
 import { ALL_BOOKINGS, DATE, sortAccessReqValues, sortAccessShowValues } from "data/constants";
 import cx from "classnames";
@@ -171,20 +171,20 @@ const Requests: FC = () => {
                         onChange={handleFiltrationChange}
                         suffix={<SearchOutlined className={classes.suffix} />}
                     />
-                    {/*{isRequestsSort ? (*/}
-                    {/*    <Dropdown overlay={dropdownItems}>*/}
-                    {/*        <Button className={classes.btn}>*/}
-                    {/*            <Space>*/}
-                    {/*                Создать*/}
-                    {/*                <DownOutlined />*/}
-                    {/*            </Space>*/}
-                    {/*        </Button>*/}
-                    {/*    </Dropdown>*/}
-                    {/*) : (*/}
-                    {/*    <Button className={classes.btn} icon={<PlusOutlined />}>*/}
-                    {/*        Добавить*/}
-                    {/*    </Button>*/}
-                    {/*)}*/}
+                    {!isBookingReq ? (
+                        <Dropdown overlay={dropdownItems}>
+                            <Button className={classes.btn}>
+                                <Space>
+                                    Создать
+                                    <DownOutlined />
+                                </Space>
+                            </Button>
+                        </Dropdown>
+                    ) : (
+                        <Button className={classes.btn} icon={<PlusOutlined />}>
+                            Добавить
+                        </Button>
+                    )}
                 </Col>
             </Row>
             {!isBookingReq ? (

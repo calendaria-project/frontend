@@ -22,14 +22,14 @@ const SimpleConfirmationModal: FC<ISimpleConfirmationModal> = ({
         setIsVisible(false);
     }, []);
 
-    const handleRemove = useCallback(() => {
+    const handleConfirm = useCallback(() => {
         confirmAction();
         handleCancel();
     }, [confirmAction, handleCancel]);
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel}>
-            <ModalBtns okText={okText} onCancel={handleCancel} onClick={handleRemove} />
+            <ModalBtns okText={okText} onCancel={handleCancel} onClick={handleConfirm} />
         </Modal>
     );
 };

@@ -398,3 +398,12 @@ export interface IAccessAppDataByCurrentUserInKeyViewModel {
 export type IAccessAppDataByCurrentUserViewModel = {
     [key: string]: IAccessAppDataByCurrentUserInKeyViewModel[];
 };
+
+export interface IAccessApplicationHistoryViewModel {
+    historyId: number;
+    comment: string;
+    status: string;
+    user: IAccessApplicationUserViewModel;
+    createdAt: string;
+    updatedAt: string;
+}
