@@ -12,7 +12,8 @@ export default createUseStyles({
         height: "100%",
         padding: (theme: ITheme) => theme.layout.padding,
         borderRadius: (theme: ITheme) => theme.borderRadius,
-        border: (theme: ITheme) => `1px solid ${theme.color.lines}`
+        border: (theme: ITheme) => `1px solid ${theme.color.lines}`,
+        overflow: "auto"
     },
     imageWrapper: {
         display: "flex",

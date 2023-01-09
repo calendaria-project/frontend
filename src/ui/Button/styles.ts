@@ -26,6 +26,18 @@ export default createUseStyles({
                 !disabled ? `${theme.background.primary} !important` : "",
             color: ({ theme, disabled }: { theme: ITheme; disabled: boolean }) =>
                 !disabled ? `${theme.color.secondary} !important` : ""
+        },
+        "&.removingGrounded": {
+            background: ({ theme, disabled }: { theme: ITheme; disabled: boolean }) =>
+                !disabled ? `${theme.color.removing} !important` : "",
+            color: ({ theme, disabled }: { theme: ITheme; disabled: boolean }) =>
+                !disabled ? `${theme.color.primary} !important` : ""
+        },
+        "&.addingGrounded": {
+            background: ({ theme, disabled }: { theme: ITheme; disabled: boolean }) =>
+                !disabled ? `${theme.color.successful} !important` : "",
+            color: ({ theme, disabled }: { theme: ITheme; disabled: boolean }) =>
+                !disabled ? `${theme.color.primary} !important` : ""
         }
     }
 });

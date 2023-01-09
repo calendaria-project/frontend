@@ -203,9 +203,49 @@ export const ADDITIONAL_WORK_TYPE: TLayoutModalData[] = [
     }
 ];
 
-// export const SERVICE_NUMBER = "serviceNumber";
-// export const ONE_C = "oneC";
-// export const TENDERIX = "tenderix";
-// export const RATE = "rate"; //for SERVICE_NUMBER
-// export const VIEW_MODE = "viewMode"; //for ONE_C
-// export const ROLES = "roles"; //for TENDERIX
+export const DATE = "createdAt";
+export const DEADLINE = "endDate";
+export const REQ_TYPE = "appType";
+export const sortAccessReqValues = [
+    {
+        value: DATE,
+        label: "Дате отправки"
+    },
+    {
+        value: REQ_TYPE,
+        label: "Виду заявки"
+    },
+    {
+        value: DEADLINE,
+        label: "По дедлайну заявки"
+    }
+];
+
+export const ALL_BOOKINGS = "allBookings";
+export const CONF_ROOM = "confRoom";
+export const VEHICLE = "vehicle";
+export const HISTORY = "history";
+export const CALENDAR = "calendar";
+
+export const sortAccessShowValues = [
+    {
+        value: ALL_BOOKINGS,
+        label: "Все брони"
+    },
+    {
+        value: CONF_ROOM,
+        label: "Конференц зал"
+    },
+    {
+        value: VEHICLE,
+        label: "Транспорт"
+    },
+    {
+        value: HISTORY,
+        label: "История"
+    },
+    {
+        value: CALENDAR,
+        label: "Календарь"
+    }
+];

@@ -27,8 +27,10 @@ import _ from "lodash";
 import contextMenu from "./contextMenu";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 
-const SharedModal = React.lazy(() => import("./modals/SharedModal"));
-const SharedDeleteModal = React.lazy(() => import("./modals/SharedDeleteModal"));
+const SharedModal = React.lazy(() => import("./modal"));
+const SharedDeleteModal = React.lazy(
+    () => import("components/Shared/modalRenderer/ReadyModals/SimpleConfirmationModal")
+);
 
 const OrganizationStructure: FC = () => {
     const authContext = useContext(AuthContext);
@@ -431,7 +433,7 @@ const OrganizationStructure: FC = () => {
                     title={modalTitle}
                     isVisible={deleteModalVisible}
                     setIsVisible={onSetDeleteModalIsVisible}
-                    onDeleteItem={onDeleteItem}
+                    confirmAction={onDeleteItem}
                 />
             </Suspense>
             <Suspense>

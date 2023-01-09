@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "context/AuthContextProvider";
-import { IDivisionViewModel, IPositionDtoModel, ISimpleDictionaryViewModel } from "interfaces";
+import { IDivisionViewModel, IPositionViewModel, ISimpleDictionaryViewModel } from "interfaces";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 
 export const useInitialData = (companyId?: number, divisionId?: number) => {
     const authContext = useContext(AuthContext);
     const [divisions, setDivisions] = useState<IDivisionViewModel[]>([]);
-    const [positions, setPositions] = useState<IPositionDtoModel[]>([]);
+    const [positions, setPositions] = useState<IPositionViewModel[]>([]);
     const [sexes, setSexes] = useState<ISimpleDictionaryViewModel[]>([]);
 
     useEffect(() => {

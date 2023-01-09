@@ -178,6 +178,83 @@ const useSimpleHttpFunctions = () => {
         });
     };
 
+    const getAccessApplicationByCurrentUser = () => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            `access-application/by-current-user`,
+            "get",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data;
+        });
+    };
+
+    const getOutgoingAccessApplication = () => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            `access-application/outgoing`,
+            "get",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data;
+        });
+    };
+
+    const getIncomingAccessApplication = () => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            `access-application/incoming`,
+            "get",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data;
+        });
+    };
+
+    const deleteAccessApplicationById = (id: number) => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            `access-application/${id}`,
+            "delete",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data;
+        });
+    };
+
+    const getAccessApplicationHistoryById = (id: number) => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            `access-application/${id}/history`,
+            "get",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data;
+        });
+    };
+
+    const cancelAccessApplicationById = (id: number) => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            `access-application/${id}/cancel`,
+            "post",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data;
+        });
+    };
+
+    const approveAccessApplicationById = (id: number) => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            `access-application/${id}/approve`,
+            "post",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data;
+        });
+    };
+
     return {
         companies,
         positions,
@@ -194,7 +271,14 @@ const useSimpleHttpFunctions = () => {
         calculatePercent,
         getDivisionOptions,
         getPositionOptionsByDivisionId,
-        getAccessApplicationByUserId
+        getAccessApplicationByUserId,
+        getAccessApplicationByCurrentUser,
+        deleteAccessApplicationById,
+        getOutgoingAccessApplication,
+        getIncomingAccessApplication,
+        getAccessApplicationHistoryById,
+        cancelAccessApplicationById,
+        approveAccessApplicationById
     };
 };
 export default useSimpleHttpFunctions;

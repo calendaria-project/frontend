@@ -25,8 +25,10 @@ import _ from "lodash";
 import { ALL, ARCHIVE } from "data/constants";
 import { IFinishData } from "../index";
 
-const ArchiveExternalUserModal = React.lazy(() => import("../modal/ArchiveExternalUserModal"));
-const SharedExternalUserModal = React.lazy(() => import("../modal/SharedExternalUserModal"));
+const ArchiveExternalUserModal = React.lazy(
+    () => import("components/Shared/modalRenderer/ReadyModals/SimpleConfirmationModal")
+);
+const SharedExternalUserModal = React.lazy(() => import("../modal"));
 
 const { Text, Title } = Typography;
 
@@ -212,7 +214,7 @@ const ExternalUserDrawer: FC<IExternalUserDrawer> = ({
                     }
                     isVisible={archiveModalVisible}
                     setIsVisible={setArchiveModalVisible}
-                    onArchiveItem={onArchiveExternalUser}
+                    confirmAction={onArchiveExternalUser}
                 />
             </Suspense>
             <Suspense>

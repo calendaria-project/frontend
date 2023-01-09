@@ -11,6 +11,8 @@ import { AuthContext } from "context/AuthContextProvider";
 import { BMS_ADMIN, BMS_HEAD, BMS_HR, BMS_USER } from "context/roles";
 import UserUsers from "components/Modules/UserModule/Users";
 import HeadUsers from "components/Modules/HeadModule/Users";
+import UserRequests from "components/Modules/UserModule/Requests";
+import HeadRequests from "components/Modules/HeadModule/Requests";
 
 const RoutesComponent = () => {
     const authContext = useContext(AuthContext);
@@ -21,7 +23,7 @@ const RoutesComponent = () => {
             <Route key="users-route" path="/users" element={<UserUsers />} />
             <Route key="incoming-route" path="/incoming" element={<>user incoming</>} />
             <Route key="outgoing-route" path="/outgoing" element={<>user outgoing</>} />
-            <Route key="requests-route" path="/requests" element={<>user requests</>} />
+            <Route key="requests-route" path="/requests" element={<UserRequests />} />
             <Route key="information-route" path="/information" element={<>user information</>} />
         </>
     );
@@ -32,7 +34,7 @@ const RoutesComponent = () => {
             <Route key="users-route" path="/users" element={<HeadUsers />} />
             <Route key="incoming-route" path="/incoming" element={<>head incoming</>} />
             <Route key="outgoing-route" path="/outgoing" element={<>head outgoing</>} />
-            <Route key="requests-route" path="/requests" element={<>head requests</>} />
+            <Route key="requests-route" path="/requests" element={<HeadRequests />} />
             <Route key="information-route" path="/information" element={<>head information</>} />
         </>
     );

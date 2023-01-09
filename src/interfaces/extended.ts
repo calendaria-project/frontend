@@ -1,4 +1,5 @@
 import {
+    IAccessApplicationUserViewModel,
     IBirthDateStatItemViewModel,
     IDictionaryBaseModel,
     IExternalUsersViewModel,
@@ -43,4 +44,9 @@ export interface IExternalUsersDataModel extends IExternalUsersViewModel {
 //stat items
 export interface IBirthStatItemWithPhotoModel extends IBirthDateStatItemViewModel {
     currentPhotoId: string;
+}
+
+//access
+export interface IExtendedAccessApplicationUserViewModel extends IAccessApplicationUserViewModel {
+    currentPhotoId?: string;
 }

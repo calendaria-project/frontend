@@ -28,7 +28,7 @@ export default createUseStyles({
         width: "100%"
     },
     centeredRequestsContainer: {
-        height: "100%",
+        minHeight: "100%",
         width: "100%",
         display: "flex",
         alignItems: "center",

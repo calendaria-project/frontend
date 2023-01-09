@@ -26,7 +26,7 @@ import { parsePointObjectKey } from "utils/parsePointObjectKey";
 import getSortedData from "./getSortedData";
 import getFullName from "utils/getFullName";
 
-const SharedExternalUserModal = React.lazy(() => import("./modal/SharedExternalUserModal"));
+const SharedExternalUserModal = React.lazy(() => import("./modal"));
 const ExternalUserDrawer = React.lazy(() => import("./externalUserDrawer"));
 
 const { Option } = Select;
@@ -82,11 +82,7 @@ const ExternalUsers: FC = () => {
     const onChangeSortType = useCallback((v: string) => setSortType(v), []);
 
     const [query, setQuery] = useState("");
-    const { searchStr } = useDelayedInputSearch(query);
-
-    const handleFiltrationChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        setQuery(e.target.value);
-    }, []);
+    const { searchStr, handleFiltrationChange } = useDelayedInputSearch(query, setQuery);
 
     useEffect(() => {
         dispatch(SetCurrentOpenedMenu(mainMenuEnum.externalUsers));

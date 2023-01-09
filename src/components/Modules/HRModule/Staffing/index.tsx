@@ -79,10 +79,7 @@ const Staffing: FC = () => {
     }, [date]);
 
     const [query, setQuery] = useState("");
-    const { searchStr } = useDelayedInputSearch(query);
-    const handleFiltrationChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        setQuery(e.target.value);
-    }, []);
+    const { searchStr, handleFiltrationChange } = useDelayedInputSearch(query, setQuery);
 
     useEffect(() => {
         const searchedTableData = tableData.filter((tableItem) => {

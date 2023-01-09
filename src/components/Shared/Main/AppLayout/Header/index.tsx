@@ -103,6 +103,8 @@ const Header: FC = () => {
                     <UIHeader size="h2">Орг структура</UIHeader>
                 ) : selectedMainMenuPoint === mainMenuEnum.externalUsers ? (
                     <UIHeader size="h2">Внешние пользователи</UIHeader>
+                ) : selectedMainMenuPoint === mainMenuEnum.requests ? (
+                    <UIHeader size="h2">Заявки</UIHeader>
                 ) : null}
             </div>
         );
