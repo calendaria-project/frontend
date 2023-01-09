@@ -38,19 +38,28 @@ export const editingOptions = [
 ];
 export const deletingOptions = [layoutOptions.DELETE_DIVISION_UNIT, layoutOptions.DELETE_DIVISION];
 
+export const IS_COUNTERPARTY = "isCounterparty";
+export const EMAIL = "email";
+export const COMPANY_ADDRESSES = "companyAddresses";
+export const BIN = "bin";
+export const POSITION = "position";
+export const COMPANY_TYPE = "companyType";
+export const IS_COMPANY_HEAD = "isCompanyHead";
+export const IS_DIVISION_HEAD = "isDivisionHead";
+
 export const structureLayout: IStructureLayout = {
     [nodeTypeEnum.COMPANY]: {
         [layoutOptions.EDIT_COMPANY]: [
-            { name: "isCounterparty", label: "Контрагент", required: true },
-            { name: "bin", placeholder: "БИН", required: true },
+            { name: IS_COUNTERPARTY, label: "Контрагент", required: true },
+            { name: BIN, placeholder: "БИН", required: true },
             { name: "nameRu", placeholder: "На Русском", required: true },
             { name: "nameKz", placeholder: "На Казахском", required: true },
             { name: "nameEn", placeholder: "На Английском" },
-            { name: "companyType", placeholder: "Тип компании", required: true },
+            { name: COMPANY_TYPE, placeholder: "Тип компании", required: true },
             { name: "companyIndex", placeholder: "Индекс", required: true },
             { name: "fax", placeholder: "Факс" },
-            { name: "email", placeholder: "Почта", required: true },
-            { name: "companyAddresses" }
+            { name: EMAIL, placeholder: "Почта", required: true },
+            { name: COMPANY_ADDRESSES }
         ],
         [layoutOptions.ADD_DIVISION]: [
             { name: "code", label: "Код", required: true },
@@ -73,16 +82,18 @@ export const structureLayout: IStructureLayout = {
             { name: "nameEn", label: "На Английском" }
         ],
         [layoutOptions.ADD_DIVISION_UNIT]: [
-            { name: "position", label: "Должность", required: true },
+            { name: POSITION, label: "Должность", required: true },
             { name: "priority", label: "Приоритет", required: true },
-            { name: "isCompanyHead", label: "Руководитель", required: true }
+            { name: IS_COMPANY_HEAD, label: "Руководитель компании", required: true },
+            { name: IS_DIVISION_HEAD, label: "Руководитель подразделения", required: true }
         ]
     },
     [nodeTypeEnum.DIVISION_UNIT]: {
         [layoutOptions.EDIT_DIVISION_UNIT]: [
-            { name: "position", label: "Должность", required: true },
+            { name: POSITION, label: "Должность", required: true },
             { name: "priority", label: "Приоритет", required: true },
-            { name: "isCompanyHead", label: "Руководитель", required: true }
+            { name: IS_COMPANY_HEAD, label: "Руководитель компании", required: true },
+            { name: IS_DIVISION_HEAD, label: "Руководитель подразделения", required: true }
         ]
     }
 };

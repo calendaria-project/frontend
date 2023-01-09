@@ -15,6 +15,7 @@ import {
     DragOutlined,
     EditOutlined,
     CrownOutlined,
+    CrownFilled,
     UserOutlined
 } from "@ant-design/icons";
 import { IUsersViewModel, IOrgStructureTreeItemViewModel } from "interfaces";
@@ -248,6 +249,7 @@ const OrganizationStructure: FC = () => {
                                 company: companyData,
                                 priority: parsedData.priority,
                                 isCompanyHead: parsedData.isCompanyHead,
+                                isDivisionHead: parsedData.isDivisionHead,
                                 position: parsedData.position,
                                 division: { divisionId: id }
                             }
@@ -312,7 +314,8 @@ const OrganizationStructure: FC = () => {
                         unitId: id,
                         priority: parsedData.priority,
                         position: parsedData.position,
-                        isCompanyHead: parsedData.isCompanyHead
+                        isCompanyHead: parsedData.isCompanyHead,
+                        isDivisionHead: parsedData.isDivisionHead
                     };
                     actionMethodResultSync(
                         "DICTIONARY",
@@ -334,7 +337,7 @@ const OrganizationStructure: FC = () => {
     );
 
     const getIcon = (treeItem: IOrgStructureTreeItemViewModel): JSX.Element => {
-        const { nodeType, isCompanyHead } = treeItem;
+        const { nodeType, isCompanyHead, isDivisionHead } = treeItem;
         return (
             <>
                 {nodeType === nodeTypeEnum.COMPANY ? (
@@ -342,6 +345,8 @@ const OrganizationStructure: FC = () => {
                 ) : nodeType === nodeTypeEnum.DIVISION ? (
                     <BranchesOutlined className={classes.typeIcon} />
                 ) : isCompanyHead ? (
+                    <CrownFilled className={classes.typeIcon} />
+                ) : isDivisionHead ? (
                     <CrownOutlined className={classes.typeIcon} />
                 ) : (
                     <UserOutlined className={classes.typeIcon} />
