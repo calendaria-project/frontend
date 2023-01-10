@@ -3,13 +3,14 @@ import React, { FC, memo, Suspense, useCallback, useState } from "react";
 import useStyles from "./styles";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
-import { IAccessAppDataByCurrentUserViewModel } from "interfaces";
+import { IAccessAppDataByCurrentUserViewModel, IAccessApplicationItemViewModel } from "interfaces";
 import {
     accessRequestTranscripts,
     appTypesEnumTranscripts,
     accessItemRequestTranscripts,
     accessItemRequestStatuses
 } from "data/enums";
+import { getFormattedDateFromNow } from "utils/getFormattedDates";
 
 import { CloseOutlined } from "@ant-design/icons";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
@@ -48,7 +49,15 @@ const ReqTable: FC<{
         }
     }, [cancelId]);
 
-    const getReqStatus = (itemStatus: string) => {
+    const getCurrentReqStatus = (items: IAccessApplicationItemViewModel[]) => {
+        return items.find((el) => el.status === accessItemRequestStatuses.ON_PROCESS)
+            ? accessItemRequestStatuses.ON_PROCESS
+            : items.find((el) => el.status === accessItemRequestStatuses.DONE)
+            ? accessItemRequestStatuses.DONE
+            : accessItemRequestStatuses.CANCELED;
+    };
+
+    const getReqStatusWithBall = (itemStatus: string) => {
         return (
             <div className={classes.statusContainer}>
                 <div
@@ -85,37 +94,34 @@ const ReqTable: FC<{
                                     {accessRequestTranscripts[key]}
                                 </Text>
                             </Row>
-                            {(data || []).map((accessItem) => (
-                                <Row
-                                    key={accessItem.applicationId}
-                                    className={classes.reqContainer}
-                                >
-                                    <Text strong>
-                                        {appTypesEnumTranscripts[accessItem.appType] ?? ""}
-                                    </Text>
-                                    <Text>
-                                        {new Date(accessItem.createdAt).toLocaleDateString("ru-RU")}
-                                    </Text>
-                                    <Text>
-                                        {new Date(accessItem.endDate).toLocaleDateString("ru-RU")}
-                                    </Text>
-                                    {getReqStatus(accessItem.items?.[0]?.status)}
-                                    {accessItem.items?.[0]?.status ===
-                                    accessItemRequestStatuses.ON_PROCESS ? (
-                                        <div
-                                            onClick={handleCancelBtnClick(accessItem.applicationId)}
-                                            className={classes.cancelReqTextContainer}
-                                        >
-                                            <CloseOutlined className={classes.cancelIcon} />
-                                            <span className={classes.cancelText}>
-                                                Отменить заявку
-                                            </span>
-                                        </div>
-                                    ) : (
-                                        <div />
-                                    )}
-                                </Row>
-                            ))}
+                            {(data || []).map((accessItem) => {
+                                const currentReqStatus = getCurrentReqStatus(accessItem.items);
+                                const applicationId = accessItem.applicationId;
+                                return (
+                                    <Row key={applicationId} className={classes.reqContainer}>
+                                        <Text className={classes.reqTypeText} strong>
+                                            {appTypesEnumTranscripts[accessItem.appType] ?? ""}
+                                        </Text>
+                                        <Text>{getFormattedDateFromNow(accessItem.createdAt)}</Text>
+                                        <Text>{getFormattedDateFromNow(accessItem.endDate)}</Text>
+                                        {getReqStatusWithBall(currentReqStatus)}
+                                        {currentReqStatus ===
+                                        accessItemRequestStatuses.ON_PROCESS ? (
+                                            <div
+                                                onClick={handleCancelBtnClick(applicationId)}
+                                                className={classes.cancelReqTextContainer}
+                                            >
+                                                <CloseOutlined className={classes.cancelIcon} />
+                                                <span className={classes.cancelText}>
+                                                    Отменить заявку
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            <div className={classes.emptyDiv} />
+                                        )}
+                                    </Row>
+                                );
+                            })}
                         </React.Fragment>
                     ))}
                 </Row>

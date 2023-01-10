@@ -24,6 +24,7 @@ import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
 import { appTypesEnumTranscripts } from "data/enums";
 import sortRequests from "utils/sortAccessRequests";
 import getFullName from "utils/getFullName";
+import { getFormattedDateFromNow } from "../../../../utils/getFormattedDates";
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -114,8 +115,8 @@ const Requests: FC = () => {
                                       req.applicationUser?.patronymic
                                   ) +
                                   (appTypesEnumTranscripts[req.appType] || "") +
-                                  (new Date(req.createdAt).toLocaleDateString("ru-RU") || "") +
-                                  (new Date(req.endDate).toLocaleDateString("ru-RU") || "") +
+                                  (getFormattedDateFromNow(req.createdAt) || "") +
+                                  (getFormattedDateFromNow(req.endDate) || "") +
                                   (accessItemRequestTranscripts[req.items?.[0]?.status] || "");
                               return reqDataStr.toLowerCase().includes(searchStr.toLowerCase());
                           })

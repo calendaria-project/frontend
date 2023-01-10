@@ -1,11 +1,11 @@
-import React, { FC, useCallback } from "react";
+import React, { FC, useCallback, useEffect } from "react";
 import { FormInstance } from "antd/es/form/Form";
 import { Col, Form, Input, Modal, Row, Select, Typography } from "antd";
 import { validateMessages } from "data/constants";
 import RendererInput from "components/Shared/modalRenderer/Input";
 import ModalBtns from "components/Shared/modalRenderer/modalBtns";
 import { ISimpleDictionaryViewModel } from "interfaces";
-import { appTypesEnum, layoutConstantTypes } from "data/enums";
+import { appTypesEnum, appTypesEnumTranscripts, layoutConstantTypes } from "data/enums";
 import FormItem from "./FormItem";
 import RendererDatePicker from "components/Shared/modalRenderer/DatePicker";
 
@@ -18,6 +18,7 @@ export interface AddRequestModal {
     form: FormInstance;
     userName: string;
     modalValues: ISimpleDictionaryViewModel[];
+    removeAccess?: boolean;
 }
 
 const { Text } = Typography;
@@ -31,11 +32,18 @@ const AddRequestModal: FC<AddRequestModal> = ({
     onFinish,
     form,
     userName,
-    modalValues
+    modalValues,
+    removeAccess
 }) => {
     const handleCancel = useCallback(() => {
         setIsVisible(false);
     }, []);
+
+    const reqTypeValue = removeAccess ? appTypesEnum.REMOVE_ACCESS : appTypesEnum.GET_ACCESS;
+
+    useEffect(() => {
+        form.setFieldValue(["appType"], reqTypeValue);
+    }, [reqTypeValue]);
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel} destroyOnClose>
@@ -55,9 +63,11 @@ const AddRequestModal: FC<AddRequestModal> = ({
                         <Form.Item initialValue={userName} name={"userName"}>
                             <Input disabled />
                         </Form.Item>
-                        <Form.Item initialValue={appTypesEnum.GET_ACCESS} name={"appType"}>
-                            <Select placeholder={"Тип заявки"} value={appTypesEnum.GET_ACCESS}>
-                                <Option value={appTypesEnum.GET_ACCESS}>Получение доступа</Option>
+                        <Form.Item name={"appType"}>
+                            <Select placeholder={"Тип заявки"} value={reqTypeValue}>
+                                <Option value={reqTypeValue}>
+                                    {appTypesEnumTranscripts[reqTypeValue]}
+                                </Option>
                             </Select>
                         </Form.Item>
                         <Form.Item
@@ -83,7 +93,11 @@ const AddRequestModal: FC<AddRequestModal> = ({
                                             Доступ к информационным системам
                                         </Text>
                                     )}
-                                    <FormItem form={form} currentDictionary={item} />
+                                    <FormItem
+                                        form={form}
+                                        currentDictionary={item}
+                                        removeAccess={removeAccess}
+                                    />
                                 </React.Fragment>
                             ))}
                         <Form.Item name={"comment"}>

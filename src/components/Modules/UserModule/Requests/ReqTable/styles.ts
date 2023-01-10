@@ -27,6 +27,9 @@ export default createUseStyles({
         fontSize: "20px",
         fontWeight: (theme: ITheme) => theme.fontWeight.bold
     },
+    reqTypeText: {
+        width: "150px"
+    },
     allReqsRow: {
         marginTop: (theme: ITheme) => theme.layout.margin,
         rowGap: (theme: ITheme) => theme.layout.mediumMargin
@@ -48,10 +51,10 @@ export default createUseStyles({
         whiteSpace: "nowrap"
     },
     statusContainer: {
-        width: "fit-content",
         display: "flex",
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
+        width: "160px"
     },
     statusBall: {
         width: "16px",
@@ -62,7 +65,8 @@ export default createUseStyles({
     cancelReqTextContainer: {
         display: "flex",
         alignItems: "center",
-        cursor: "pointer"
+        cursor: "pointer",
+        width: "160px"
     },
     cancelIcon: {
         color: (theme: ITheme) => theme.image.color.removing,
@@ -70,5 +74,8 @@ export default createUseStyles({
     },
     cancelText: {
         color: (theme: ITheme) => theme.color.removing
+    },
+    emptyDiv: {
+        width: "160px"
     }
 });

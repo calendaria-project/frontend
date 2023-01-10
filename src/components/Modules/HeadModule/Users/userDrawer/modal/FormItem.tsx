@@ -11,9 +11,10 @@ import { getPlaceholderOfAppItemTypeValue, appItemTypeValues } from "../helpers"
 interface IFormItem {
     form: FormInstance;
     currentDictionary: ISimpleDictionaryViewModel;
+    removeAccess?: boolean;
 }
 
-const FormItem: FC<IFormItem> = ({ form, currentDictionary }) => {
+const FormItem: FC<IFormItem> = ({ form, currentDictionary, removeAccess }) => {
     const name = currentDictionary.code;
     const id = currentDictionary.id;
     const mobileFlag = name === appItemTypeValues.MOBILE;
@@ -68,7 +69,10 @@ const FormItem: FC<IFormItem> = ({ form, currentDictionary }) => {
                     {currentDictionary.nameRu}
                 </Checkbox>
             </Form.Item>
-            {currentValue && extraDictionaryValues && extraDictionaryValues.length ? (
+            {!removeAccess &&
+            currentValue &&
+            extraDictionaryValues &&
+            extraDictionaryValues.length ? (
                 <Form.Item
                     name={`item.${name}`}
                     rules={[{ required: true, message: "Выберите значение" }]}

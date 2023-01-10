@@ -5,7 +5,8 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import {
     IAccessAppDataByCurrentUserInKeyViewModel,
-    IAccessAppDataByCurrentUserViewModel
+    IAccessAppDataByCurrentUserViewModel,
+    IAccessApplicationItemViewModel
 } from "interfaces";
 import {
     accessRequestTranscripts,
@@ -20,6 +21,7 @@ import getFullName from "utils/getFullName";
 import Button from "ui/Button";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
 import EmptyTableContent from "components/Shared/tableRenderer/EmptyTableContent";
+import { getFormattedDateFromNow } from "utils/getFormattedDates";
 
 const { Text } = Typography;
 const AgreementDrawer = React.lazy(() => import("./TableAgreementDrawer"));
@@ -42,7 +44,15 @@ const ReqTable: FC<{
         setAgreementDrawerOpened(true);
     };
 
-    const getReqStatus = (itemStatus: string) => {
+    const getCurrentReqStatus = (items: IAccessApplicationItemViewModel[]) => {
+        return items.find((el) => el.status === accessItemRequestStatuses.ON_PROCESS)
+            ? accessItemRequestStatuses.ON_PROCESS
+            : items.find((el) => el.status === accessItemRequestStatuses.DONE)
+            ? accessItemRequestStatuses.DONE
+            : accessItemRequestStatuses.CANCELED;
+    };
+
+    const getReqStatusWithBall = (itemStatus: string) => {
         return (
             <div className={classes.statusContainer}>
                 <div
@@ -81,6 +91,7 @@ const ReqTable: FC<{
                                 </Text>
                             </Row>
                             {(data || []).map((accessItem) => {
+                                const currentReqStatus = getCurrentReqStatus(accessItem.items);
                                 const profilePhoto = accessItem.applicationUser?.currentPhotoId;
                                 return (
                                     <Row
@@ -101,30 +112,23 @@ const ReqTable: FC<{
                                                 )}
                                             </span>
                                         </div>
-                                        <Text strong>
+                                        <Text className={classes.reqTypeText} strong>
                                             {appTypesEnumTranscripts[accessItem.appType] ?? ""}
                                         </Text>
-                                        <Text>
-                                            {new Date(accessItem.createdAt).toLocaleDateString(
-                                                "ru-RU"
-                                            )}
-                                        </Text>
-                                        <Text>
-                                            {new Date(accessItem.endDate).toLocaleDateString(
-                                                "ru-RU"
-                                            )}
-                                        </Text>
-                                        {getReqStatus(accessItem.items?.[0]?.status)}
-                                        {accessItem.items?.[0]?.status ===
+                                        <Text>{getFormattedDateFromNow(accessItem.createdAt)}</Text>
+                                        <Text>{getFormattedDateFromNow(accessItem.endDate)}</Text>
+                                        {getReqStatusWithBall(currentReqStatus)}
+                                        {currentReqStatus ===
                                         accessItemRequestStatuses.ON_PROCESS ? (
                                             <Button
                                                 customType={"regular"}
                                                 onClick={handleOpenDrawer(accessItem)}
+                                                className={classes.toAccessBtn}
                                             >
                                                 Перейти к согласованию
                                             </Button>
                                         ) : (
-                                            <div />
+                                            <div className={classes.emptyDiv} />
                                         )}
                                     </Row>
                                 );

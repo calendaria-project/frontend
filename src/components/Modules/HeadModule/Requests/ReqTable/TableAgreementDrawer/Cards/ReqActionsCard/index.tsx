@@ -12,6 +12,7 @@ import { actionMethodResultSync } from "functions/actionMethodResult";
 import getFullName from "utils/getFullName";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import cx from "classnames";
+import { getFormattedDateFromNowWithTime } from "utils/getFormattedDates";
 
 const { Text } = Typography;
 const CancelReqModal = React.lazy(() => import("./modal"));
@@ -160,13 +161,7 @@ const ReqActionsCard: FC<IReqCard> = ({ reqData }) => {
                                             histUser.firstname[0] + "."
                                         }${histUser.patronymic?.[0] || ""}`}</div>
                                         <div className={classes.extraText}>
-                                            {`${new Date(histItem.createdAt).toLocaleDateString(
-                                                "ru-RU",
-                                                {
-                                                    hour: "2-digit",
-                                                    minute: "2-digit"
-                                                }
-                                            )}`}
+                                            {getFormattedDateFromNowWithTime(histItem.createdAt)}
                                         </div>
                                     </Row>
                                     {index !== appHistory.length - 1 && (

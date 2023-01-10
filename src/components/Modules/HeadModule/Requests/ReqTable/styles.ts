@@ -27,6 +27,9 @@ export default createUseStyles({
         fontSize: "20px",
         fontWeight: (theme: ITheme) => theme.fontWeight.bold
     },
+    reqTypeText: {
+        width: "150px"
+    },
     allReqsRow: {
         marginTop: (theme: ITheme) => theme.layout.margin,
         rowGap: (theme: ITheme) => theme.layout.mediumMargin
@@ -48,7 +51,7 @@ export default createUseStyles({
         whiteSpace: "nowrap"
     },
     statusContainer: {
-        width: "fit-content",
+        width: "160px",
         display: "flex",
         alignItems: "center",
         justifyContent: "center"
@@ -79,5 +82,11 @@ export default createUseStyles({
     },
     accessItemFioText: {
         marginLeft: (theme: ITheme) => theme.layout.margin
+    },
+    emptyDiv: {
+        width: "220px"
+    },
+    toAccessBtn: {
+        width: "220px"
     }
 });

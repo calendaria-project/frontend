@@ -10,6 +10,7 @@ import {
     accessItemRequestTranscripts,
     accessItemRequestStatuses
 } from "data/enums";
+import { getFormattedDateFromNow } from "utils/getFormattedDates";
 
 const { Panel } = Collapse;
 const { Text } = Typography;
@@ -23,7 +24,7 @@ const AccessRequest: FC<{ reqData: IAccessAppDataByCurrentUserViewModel }> = ({ 
         return (
             <Row className={classes.panelContainer}>
                 <Text>{appTypesEnumTranscripts[appType] ?? ""}</Text>
-                <Text>{new Date(createdAt).toLocaleDateString("ru-RU")}</Text>
+                <Text>{getFormattedDateFromNow(createdAt)}</Text>
                 <div className={classes.panelStatusContainer}>
                     <div
                         className={classes.panelStatusBall}

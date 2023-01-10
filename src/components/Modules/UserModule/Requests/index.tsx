@@ -1,16 +1,37 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import React, { FC, Suspense, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { SetCurrentOpenedMenu } from "store/actions";
-import { accessItemRequestTranscripts, mainMenuEnum } from "data/enums";
+import {
+    accessItemRequestTranscripts,
+    accessRequestStatuses,
+    dictionaryCodesEnum,
+    mainMenuEnum
+} from "data/enums";
 import { useDispatch } from "react-redux";
 import { useTheme } from "react-jss";
 
-import { Col, Input, Row, Select, Typography, Menu, Space, Button, Dropdown } from "antd";
+import {
+    Col,
+    Input,
+    Row,
+    Select,
+    Typography,
+    Menu,
+    Space,
+    Button,
+    Dropdown,
+    Form,
+    message
+} from "antd";
 
 import useStyles from "./styles";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import {
     IAccessAppDataByCurrentUserInKeyViewModel,
-    IAccessAppDataByCurrentUserViewModel
+    IAccessAppDataByCurrentUserViewModel,
+    IAccessApplicationItemModel,
+    IAccessApplicationViewModel,
+    ISimpleDictionaryViewModel,
+    IUsersViewModel
 } from "interfaces";
 import { SearchOutlined, DownOutlined, PlusOutlined } from "@ant-design/icons";
 import { MY_REQUESTS, BOOKING, selectReqValues } from "./defaultValues";
@@ -24,11 +45,24 @@ import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
 
 import { appTypesEnumTranscripts } from "data/enums";
 import sortRequests from "utils/sortAccessRequests";
+import getFullName from "utils/getFullName";
+import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
+import getObjectWithHandledDates from "utils/getObjectWithHandeledDates";
+import { appItemTypeValues } from "components/Modules/HeadModule/Users/userDrawer/helpers";
+import { actionMethodResultSync } from "functions/actionMethodResult";
+import { getRequestHeader } from "functions/common";
+import { AuthContext } from "context/AuthContextProvider";
+import { getFormattedDateFromNow } from "utils/getFormattedDates";
+
+const AddRequestModal = React.lazy(
+    () => import("components/Modules/HeadModule/Users/userDrawer/modal")
+);
 
 const { Option } = Select;
 const { Text } = Typography;
 
 const Requests: FC = () => {
+    const authContext = useContext(AuthContext);
     const dispatch = useDispatch();
 
     const theme = useTheme<ITheme>();
@@ -38,6 +72,14 @@ const Requests: FC = () => {
     useEffect(() => {
         dispatch(SetCurrentOpenedMenu(mainMenuEnum.requests));
     }, []);
+
+    const [form] = Form.useForm();
+
+    const [currUserData, setCurrUserData] = useState<IUsersViewModel>({} as IUsersViewModel);
+    const userId = currUserData.userId;
+    const [modalValues, setModalValues] = useState<ISimpleDictionaryViewModel[]>([]);
+    const [reqModalVisible, setReqModalVisible] = useState(false);
+    const [isAddReqFlag, setIsAddReqFlag] = useState(false);
 
     const [allRequests, setAllRequests] = useState<IAccessAppDataByCurrentUserViewModel>(
         {} as IAccessAppDataByCurrentUserViewModel
@@ -55,7 +97,8 @@ const Requests: FC = () => {
 
     const [query, setQuery] = useState("");
     const { searchStr, handleFiltrationChange } = useDelayedInputSearch(query, setQuery);
-    const { getAccessApplicationByCurrentUser } = useSimpleHttpFunctions();
+    const { getAccessApplicationByCurrentUser, getCurrentUserData, getDictionaryValues } =
+        useSimpleHttpFunctions();
 
     useEffect(() => {
         !isBookingReq
@@ -76,6 +119,24 @@ const Requests: FC = () => {
     };
 
     useEffect(() => {
+        initCurrUserData();
+    }, []);
+
+    useEffect(() => {
+        initModalData();
+    }, []);
+
+    const initModalData = async () => {
+        const data = await getDictionaryValues(`simple/${dictionaryCodesEnum.APP_ITEM_TYPE}`);
+        setModalValues(data);
+    };
+
+    const initCurrUserData = async () => {
+        const data = await getCurrentUserData();
+        setCurrUserData(data);
+    };
+
+    useEffect(() => {
         if (!isBookingReq && isObjectNotEmpty(copiedRequests)) {
             const searchedData: [string, IAccessAppDataByCurrentUserInKeyViewModel[]][] = searchStr
                 ? Object.entries(copiedRequests).map(([key, allReqsInKey]) => {
@@ -84,8 +145,8 @@ const Requests: FC = () => {
                           allReqsInKey.filter((req) => {
                               const tableDataStr =
                                   (appTypesEnumTranscripts[req.appType] || "") +
-                                  (new Date(req.createdAt).toLocaleDateString("ru-RU") || "") +
-                                  (new Date(req.endDate).toLocaleDateString("ru-RU") || "") +
+                                  (getFormattedDateFromNow(req.createdAt) || "") +
+                                  (getFormattedDateFromNow(req.endDate) || "") +
                                   (accessItemRequestTranscripts[req.items?.[0]?.status] || "");
                               return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
                           })
@@ -114,17 +175,90 @@ const Requests: FC = () => {
         [isBookingReq]
     );
 
+    const onFinishAddReqModal = useCallback(
+        (data: any) => {
+            console.log(data);
+            const filteredData = removeEmptyValuesFromAnyLevelObject(data);
+            const filteredDataWithDate = getObjectWithHandledDates(filteredData);
+
+            const reqItems: IAccessApplicationItemModel[] = [];
+            modalValues.forEach((v) => {
+                const needAccess = !!data[v.code];
+                if (v.code === appItemTypeValues.MOBILE) {
+                    reqItems.push({
+                        appItemType: v,
+                        needAccess,
+                        ...(needAccess ? { tariff: data[`item.${v.code}`] } : {})
+                    });
+                } else {
+                    reqItems.push({
+                        appItemType: v,
+                        needAccess,
+                        ...(needAccess ? { accessType: data[`item.${v.code}`] } : {})
+                    });
+                }
+            });
+
+            const finalReqData: IAccessApplicationViewModel = {
+                appType: filteredDataWithDate.appType,
+                endDate: filteredDataWithDate.endDate,
+                comment: filteredDataWithDate.comment || null,
+                applicationUserId: userId,
+                items: reqItems
+            };
+
+            actionMethodResultSync(
+                "HELPDESK",
+                "access-application",
+                "post",
+                getRequestHeader(authContext.token),
+                finalReqData
+            )
+                .then((d) => {
+                    message.success("Успешно создано");
+                    console.log(d);
+                    form.resetFields();
+                    setReqModalVisible(false);
+                    setAllRequests({
+                        ...allRequests,
+                        [accessRequestStatuses.ON_APPROVEMENT]: allRequests[
+                            accessRequestStatuses.ON_APPROVEMENT
+                        ]
+                            ? [...allRequests[accessRequestStatuses.ON_APPROVEMENT], d]
+                            : [d]
+                    });
+                })
+                .catch(() => {
+                    message.error("Ошибка создания!");
+                });
+        },
+        [modalValues, initRequestsData, userId]
+    );
+
+    const handleOpenReqModal = (addReqFlag: boolean) => () => {
+        setIsAddReqFlag(addReqFlag);
+        setReqModalVisible(true);
+    };
+
     const dropdownItems = useMemo(
         () => (
             <Menu
                 items={[
                     {
                         key: "1",
-                        label: <span onClick={() => {}}>Заявка на предоставление доступа</span>
+                        label: (
+                            <span onClick={handleOpenReqModal(true)}>
+                                Заявка на предоставление доступа
+                            </span>
+                        )
                     },
                     {
                         key: "2",
-                        label: <span onClick={() => {}}>Заявка на удаление доступа</span>
+                        label: (
+                            <span onClick={handleOpenReqModal(false)}>
+                                Заявка на удаление доступа
+                            </span>
+                        )
                     }
                 ]}
             />
@@ -198,6 +332,23 @@ const Requests: FC = () => {
             ) : (
                 <></>
             )}
+            <Suspense>
+                <AddRequestModal
+                    form={form}
+                    title={"Добавить заявку"}
+                    isVisible={reqModalVisible}
+                    setIsVisible={setReqModalVisible}
+                    okText={"Добавить"}
+                    onFinish={onFinishAddReqModal}
+                    userName={getFullName(
+                        currUserData.firstname,
+                        currUserData.lastname,
+                        currUserData.patronymic
+                    )}
+                    modalValues={modalValues}
+                    removeAccess={!isAddReqFlag}
+                />
+            </Suspense>
         </Row>
     );
 };

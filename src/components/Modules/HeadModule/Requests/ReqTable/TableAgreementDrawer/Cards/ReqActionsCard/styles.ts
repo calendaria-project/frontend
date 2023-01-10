@@ -20,7 +20,8 @@ export default createUseStyles({
         width: "100%",
         border: (theme: ITheme) => `1px solid ${theme.color.lines}`,
         borderRadius: (theme: ITheme) => theme.borderRadius,
-        marginBottom: (theme: ITheme) => theme.layout.margin
+        marginBottom: (theme: ITheme) => theme.layout.margin,
+        overflow: "auto"
     },
     titleContainer: {
         width: "100%",
@@ -33,8 +34,7 @@ export default createUseStyles({
     innerSectionContainer: {
         width: "100%",
         padding: (theme: ITheme) => theme.layout.padding,
-        alignItems: "center",
-        overflow: "auto"
+        alignItems: "center"
     },
     img: {
         marginRight: (theme: ITheme) => theme.layout.margin,
@@ -58,7 +58,8 @@ export default createUseStyles({
         marginRight: (theme: ITheme) => theme.layout.margin
     },
     histRow: {
-        width: "100%"
+        width: "100%",
+        flexDirection: "column"
     },
     histArrow: {
         margin: (theme: ITheme) => `${theme.layout.margin} 0`

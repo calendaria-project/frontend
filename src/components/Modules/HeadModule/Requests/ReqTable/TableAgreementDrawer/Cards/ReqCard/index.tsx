@@ -5,6 +5,7 @@ import { useTheme } from "react-jss";
 import { Row, Col, Typography, Checkbox } from "antd";
 import getFullName from "utils/getFullName";
 import diffDateAndToString from "utils/diffDateAndToString";
+import { getFormattedDateFromNowWithTime } from "utils/getFormattedDates";
 
 interface IReqCard {
     reqData: IAccessAppDataByCurrentUserInKeyViewModel;
@@ -47,18 +48,12 @@ const ReqCard: FC<IReqCard> = ({ reqData }) => {
                     </Col>
                     <Col className={classes.creatorInfoCol} span={24}>
                         <Text strong>Заявка подана: </Text>
-                        {`${new Date(creationTime).toLocaleDateString("ru-RU", {
-                            hour: "2-digit",
-                            minute: "2-digit"
-                        })}`}
+                        {getFormattedDateFromNowWithTime(creationTime)}
                     </Col>
-                    {reqData.updatedAt && (
+                    {editionTime && (
                         <Col span={24}>
-                            <Text strong>Дата последнего изменения: </Text>{" "}
-                            {`${new Date(editionTime).toLocaleDateString("ru-RU", {
-                                hour: "2-digit",
-                                minute: "2-digit"
-                            })}`}
+                            <Text strong>Дата последнего изменения: </Text>
+                            {getFormattedDateFromNowWithTime(editionTime)}
                         </Col>
                     )}
                     <Col className={classes.creatorInfoCol} span={24}>
