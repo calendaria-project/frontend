@@ -388,10 +388,10 @@ const Requests: FC = () => {
             <Suspense>
                 <AccessReqModal
                     form={form}
-                    title={"Добавить заявку"}
+                    title={isAddReqFlag ? "Добавить заявку" : "Отзыв прав"}
                     isVisible={reqModalVisible}
                     setIsVisible={setReqModalVisible}
-                    okText={"Добавить"}
+                    okText={isAddReqFlag ? "Добавить" : "Отправить"}
                     onFinish={onFinishReqModal}
                     usersData={allUsers}
                     modalValues={modalValues}

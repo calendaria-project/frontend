@@ -52,7 +52,7 @@ const AccessReqModal: FC<AddRequestModal> = ({
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel} destroyOnClose>
             <Form
-                name="addRequestModal"
+                name="requestModal"
                 validateMessages={validateMessages}
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}

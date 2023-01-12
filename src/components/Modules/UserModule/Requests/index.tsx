@@ -339,10 +339,10 @@ const Requests: FC = () => {
             <Suspense>
                 <AddRequestModal
                     form={form}
-                    title={"Добавить заявку"}
+                    title={isAddReqFlag ? "Добавить заявку" : "Отзыв прав"}
                     isVisible={reqModalVisible}
                     setIsVisible={setReqModalVisible}
-                    okText={"Добавить"}
+                    okText={isAddReqFlag ? "Добавить" : "Отправить"}
                     onFinish={onFinishAddReqModal}
                     userName={getFullName(
                         currUserData.firstname,
