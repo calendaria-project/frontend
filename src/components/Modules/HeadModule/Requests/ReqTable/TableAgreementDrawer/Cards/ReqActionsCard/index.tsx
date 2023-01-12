@@ -1,6 +1,7 @@
 import React, { FC, memo, useCallback, useEffect, useState, Suspense } from "react";
 import {
     IAccessAppDataByCurrentUserInKeyViewModel,
+    IAccessAppDataByCurrentUserViewModel,
     IAccessApplicationHistoryViewModel
 } from "interfaces";
 import useStyles from "./styles";
@@ -13,15 +14,20 @@ import getFullName from "utils/getFullName";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import cx from "classnames";
 import { getFormattedDateFromNowWithTime } from "utils/getFormattedDates";
+import { accessRequestStatuses } from "data/enums";
+import { accessRequestHistoryTranscripts } from "data/transcripts";
+import getReqDataForUpdate from "utils/getReqDataForUpdate";
 
 const { Text } = Typography;
 const CancelReqModal = React.lazy(() => import("./modal"));
 
 interface IReqCard {
-    reqData: IAccessAppDataByCurrentUserInKeyViewModel;
+    reqData: IAccessAppDataByCurrentUserViewModel;
+    currentReqData: IAccessAppDataByCurrentUserInKeyViewModel;
+    updateReqData: (data: IAccessAppDataByCurrentUserViewModel) => void;
 }
 
-const ReqActionsCard: FC<IReqCard> = ({ reqData }) => {
+const ReqActionsCard: FC<IReqCard> = ({ reqData, currentReqData, updateReqData }) => {
     const theme = useTheme();
     // @ts-ignore
     const classes = useStyles(theme);
@@ -30,24 +36,27 @@ const ReqActionsCard: FC<IReqCard> = ({ reqData }) => {
 
     const [appHistory, setAppHistory] = useState<IAccessApplicationHistoryViewModel[]>([]);
 
-    const applicationId = reqData.applicationId;
-    const comment = reqData.comment;
+    const applicationId = currentReqData.applicationId;
+    const comment = currentReqData.comment;
 
-    const creatorUser = reqData.creatorUser;
+    const creatorUser = currentReqData.creatorUser;
     const [creatorUserPhoto, setCreatorUserPhoto] = useState<string | undefined>(undefined);
 
     const [reqApproved, setReqApproved] = useState(false);
-    const [reqCancelled, setReqCancelled] = useState<{ comment: string | undefined }>({
-        comment: undefined
-    });
+    const [reqCancelled, setReqCancelled] = useState(false);
 
     const [cancelModalVisible, setCancelModalVisible] = useState(false);
 
     const {
         approveAccessApplicationById,
-        cancelAccessApplicationById,
+        rejectAccessApplicationById,
         getAccessApplicationHistoryById
     } = useSimpleHttpFunctions();
+
+    useEffect(() => {
+        setReqApproved(false);
+        setReqCancelled(false);
+    }, [applicationId]);
 
     useEffect(() => {
         initAppHistory();
@@ -57,11 +66,6 @@ const ReqActionsCard: FC<IReqCard> = ({ reqData }) => {
         const hist = await getAccessApplicationHistoryById(applicationId);
         setAppHistory(hist);
     };
-
-    useEffect(() => {
-        setReqApproved(false);
-        setReqCancelled({ comment: undefined });
-    }, [applicationId]);
 
     useEffect(() => {
         if (comment) {
@@ -78,20 +82,41 @@ const ReqActionsCard: FC<IReqCard> = ({ reqData }) => {
 
     const onApproveRequest = useCallback(async () => {
         await approveAccessApplicationById(applicationId);
+
+        //transform and add current req to approved reqs
+        const dataForUpdate = getReqDataForUpdate(
+            reqData,
+            currentReqData,
+            applicationId,
+            accessRequestStatuses.ON_PROCESS
+        );
+
+        updateReqData(dataForUpdate);
+        initAppHistory();
         setReqApproved(true);
-    }, [applicationId]);
+    }, [applicationId, reqData, currentReqData, updateReqData, initAppHistory]);
 
     const onCancelRequest = useCallback(async () => {
         setCancelModalVisible(true);
     }, []);
 
     const onFinishCancelModal = useCallback(
-        async (data: { comment: string }) => {
-            await cancelAccessApplicationById(applicationId);
-            setReqCancelled(data);
+        async (data: { reason: string }) => {
+            await rejectAccessApplicationById(data, applicationId);
+
+            const dataForUpdate = getReqDataForUpdate(
+                reqData,
+                currentReqData,
+                applicationId,
+                accessRequestStatuses.REJECTED
+            );
+
+            updateReqData(dataForUpdate);
+            initAppHistory();
+            setReqCancelled(true);
             setCancelModalVisible(false);
         },
-        [applicationId]
+        [applicationId, reqData, currentReqData, updateReqData, initAppHistory]
     );
 
     return (
@@ -99,7 +124,7 @@ const ReqActionsCard: FC<IReqCard> = ({ reqData }) => {
             <Row justify={"space-between"} className={classes.btnContainer}>
                 {reqApproved ? (
                     <span className={classes.agreedText}>Заявка успешно подписана!</span>
-                ) : reqCancelled.comment ? (
+                ) : reqCancelled ? (
                     <span className={classes.cancelledText}>Заявка отклонена!</span>
                 ) : (
                     <>
@@ -157,12 +182,19 @@ const ReqActionsCard: FC<IReqCard> = ({ reqData }) => {
                             return (
                                 <React.Fragment key={histItem.historyId}>
                                     <Row className={classes.histRow}>
-                                        <div>{`${histItem.status} ${histUser.lastname} ${
-                                            histUser.firstname[0] + "."
-                                        }${histUser.patronymic?.[0] || ""}`}</div>
-                                        <div className={classes.extraText}>
+                                        <Text strong>
+                                            {accessRequestHistoryTranscripts[histItem.status]}
+                                        </Text>
+                                        <Text>
+                                            {histUser.lastname +
+                                                " " +
+                                                histUser.firstname[0] +
+                                                "." +
+                                                histUser.patronymic?.[0] || ""}
+                                        </Text>
+                                        <Text className={classes.extraText}>
                                             {getFormattedDateFromNowWithTime(histItem.createdAt)}
-                                        </div>
+                                        </Text>
                                     </Row>
                                     {index !== appHistory.length - 1 && (
                                         <Row

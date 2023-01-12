@@ -21,11 +21,10 @@ import {
     IAccessApplicationViewModel,
     ISimpleDictionaryViewModel
 } from "interfaces";
-import { accessRequestStatuses, dictionaryCodesEnum } from "data/enums";
+import { accessRequestStatuses, dictionaryCodesEnum, appItemTypeValues } from "data/enums";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { AuthContext } from "context/AuthContextProvider";
 import getObjectWithHandledDates from "utils/getObjectWithHandeledDates";
-import { appItemTypeValues } from "./helpers";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
@@ -33,7 +32,9 @@ import EmptyAccessRequest from "./EmptyAccessRequest";
 import AccessRequest from "./AccessRequest";
 import Spinner from "ui/Spinner";
 
-const AddRequestModal = React.lazy(() => import("./modal"));
+const AddRequestModal = React.lazy(
+    () => import("components/Shared/modalRenderer/ReadyModals/AccessReqModal")
+);
 const { Text, Title } = Typography;
 
 interface IExternalUserDrawer {
@@ -142,7 +143,7 @@ const UserDrawer: FC<IExternalUserDrawer> = ({ divisionsEquality, open, setOpen,
                     message.error("Ошибка создания!");
                 });
         },
-        [modalValues, userData, initAccessRequests]
+        [modalValues, userData, currentAccessAppRequests]
     );
 
     return (

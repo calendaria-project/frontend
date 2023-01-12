@@ -54,7 +54,7 @@ export default createUseStyles({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        width: "160px"
+        width: "180px"
     },
     statusBall: {
         width: "16px",

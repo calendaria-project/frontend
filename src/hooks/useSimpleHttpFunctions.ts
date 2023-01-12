@@ -3,6 +3,7 @@ import { getRequestHeader } from "functions/common";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "context/AuthContextProvider";
 import { ICompanyViewModel, IPositionViewModel } from "interfaces";
+import { ALL, ARCHIVE, ACTIVE } from "data/constants";
 
 const useSimpleHttpFunctions = () => {
     const authContext = useContext(AuthContext);
@@ -51,6 +52,18 @@ const useSimpleHttpFunctions = () => {
         return actionMethodResultSync(
             "USER",
             `user/${userId}`,
+            "get",
+            getRequestHeader(authContext.token)
+        ).then((data) => data);
+    };
+
+    const getUsersByCompanyId = (
+        companyId: number,
+        reqType: typeof ALL | typeof ARCHIVE | typeof ACTIVE = ALL
+    ) => {
+        return actionMethodResultSync(
+            "USER",
+            `user/?companyId=${companyId}&requestType=${reqType}`,
             "get",
             getRequestHeader(authContext.token)
         ).then((data) => data);
@@ -200,22 +213,11 @@ const useSimpleHttpFunctions = () => {
         });
     };
 
-    const getIncomingAccessApplication = () => {
+    const getIncomingAccessApplication = (companyId: number) => {
         return actionMethodResultSync(
             "HELPDESK",
-            `access-application/incoming`,
+            `access-application/incoming?companyId=${companyId}`,
             "get",
-            getRequestHeader(authContext.token)
-        ).then((data) => {
-            return data;
-        });
-    };
-
-    const deleteAccessApplicationById = (id: number) => {
-        return actionMethodResultSync(
-            "HELPDESK",
-            `access-application/${id}`,
-            "delete",
             getRequestHeader(authContext.token)
         ).then((data) => {
             return data;
@@ -244,6 +246,18 @@ const useSimpleHttpFunctions = () => {
         });
     };
 
+    const rejectAccessApplicationById = (data: { reason: string }, id: number) => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            `access-application/${id}/reject`,
+            "post",
+            getRequestHeader(authContext.token),
+            data
+        ).then((data) => {
+            return data;
+        });
+    };
+
     const approveAccessApplicationById = (id: number) => {
         return actionMethodResultSync(
             "HELPDESK",
@@ -262,6 +276,7 @@ const useSimpleHttpFunctions = () => {
         getPositionOptions,
         getCurrentUserData,
         getUserData,
+        getUsersByCompanyId,
         getUsersWithPhotoId,
         getDictionaryValues,
         getCompanyById,
@@ -273,12 +288,12 @@ const useSimpleHttpFunctions = () => {
         getPositionOptionsByDivisionId,
         getAccessApplicationByUserId,
         getAccessApplicationByCurrentUser,
-        deleteAccessApplicationById,
         getOutgoingAccessApplication,
         getIncomingAccessApplication,
         getAccessApplicationHistoryById,
         cancelAccessApplicationById,
-        approveAccessApplicationById
+        approveAccessApplicationById,
+        rejectAccessApplicationById
     };
 };
 export default useSimpleHttpFunctions;

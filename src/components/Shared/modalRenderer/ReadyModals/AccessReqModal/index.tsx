@@ -1,13 +1,15 @@
-import React, { FC, useCallback, useEffect } from "react";
+import React, { FC, memo, useCallback, useEffect } from "react";
 import { FormInstance } from "antd/es/form/Form";
 import { Col, Form, Input, Modal, Row, Select, Typography } from "antd";
 import { validateMessages } from "data/constants";
 import RendererInput from "components/Shared/modalRenderer/Input";
 import ModalBtns from "components/Shared/modalRenderer/modalBtns";
 import { ISimpleDictionaryViewModel } from "interfaces";
-import { appTypesEnum, appTypesEnumTranscripts, layoutConstantTypes } from "data/enums";
+import { appTypesEnum, layoutConstantTypes } from "data/enums";
+import { appTypesEnumTranscripts } from "data/transcripts";
 import FormItem from "./FormItem";
 import RendererDatePicker from "components/Shared/modalRenderer/DatePicker";
+import { IUsersWithInfoModel } from "interfaces/extended";
 
 export interface AddRequestModal {
     okText: string;
@@ -16,7 +18,8 @@ export interface AddRequestModal {
     setIsVisible: (val: boolean) => void;
     onFinish: (data: any) => void;
     form: FormInstance;
-    userName: string;
+    userName?: string;
+    usersData?: IUsersWithInfoModel[];
     modalValues: ISimpleDictionaryViewModel[];
     removeAccess?: boolean;
 }
@@ -24,7 +27,7 @@ export interface AddRequestModal {
 const { Text } = Typography;
 const { Option } = Select;
 
-const AddRequestModal: FC<AddRequestModal> = ({
+const AccessReqModal: FC<AddRequestModal> = ({
     okText,
     title,
     isVisible,
@@ -32,6 +35,7 @@ const AddRequestModal: FC<AddRequestModal> = ({
     onFinish,
     form,
     userName,
+    usersData,
     modalValues,
     removeAccess
 }) => {
@@ -60,9 +64,21 @@ const AddRequestModal: FC<AddRequestModal> = ({
             >
                 <Row align={"middle"} justify={"center"} gutter={[16, 16]}>
                     <Col xl={24} xs={24}>
-                        <Form.Item initialValue={userName} name={"userName"}>
-                            <Input disabled />
-                        </Form.Item>
+                        {userName ? (
+                            <Form.Item initialValue={userName} name={"userName"}>
+                                <Input disabled />
+                            </Form.Item>
+                        ) : usersData ? (
+                            <Form.Item name={"applicationUserId"}>
+                                <Select placeholder={"Для кого"}>
+                                    {usersData.map((user, index) => (
+                                        <Option key={"" + user.userId + index} value={user.userId}>
+                                            {user.fullName}
+                                        </Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                        ) : null}
                         <Form.Item name={"appType"}>
                             <Select placeholder={"Тип заявки"} value={reqTypeValue}>
                                 <Option value={reqTypeValue}>
@@ -118,4 +134,4 @@ const AddRequestModal: FC<AddRequestModal> = ({
         </Modal>
     );
 };
-export default AddRequestModal;
+export default memo(AccessReqModal);

@@ -25,6 +25,10 @@ export interface IUsersWithPhotoModel extends IUsersViewModel {
     currentPhotoId: string;
 }
 
+export interface IUsersWithInfoModel extends IUsersViewModel {
+    fullName?: string;
+}
+
 export interface IUsersWithPhotoInfoModel extends IUsersWithPhotoModel {
     fullName?: string;
 }

@@ -6,27 +6,41 @@ import { Row, Col, Typography, Checkbox } from "antd";
 import getFullName from "utils/getFullName";
 import diffDateAndToString from "utils/diffDateAndToString";
 import { getFormattedDateFromNowWithTime } from "utils/getFormattedDates";
+import { getReqBallStyle } from "utils/getReqBallStyle";
+import { accessRequestTranscripts } from "data/transcripts";
+import { ITheme } from "styles/theme/interface";
 
 interface IReqCard {
-    reqData: IAccessAppDataByCurrentUserInKeyViewModel;
+    currentReqData: IAccessAppDataByCurrentUserInKeyViewModel;
 }
 
 const { Text } = Typography;
 
-const ReqCard: FC<IReqCard> = ({ reqData }) => {
-    const theme = useTheme();
+const ReqCard: FC<IReqCard> = ({ currentReqData }) => {
+    const theme = useTheme<ITheme>();
     // @ts-ignore
     const classes = useStyles(theme);
 
-    const creatorUserData = reqData.creatorUser;
-    const applicationUserData = reqData.applicationUser;
-    const creationTime = reqData.createdAt;
-    const editionTime = reqData.updatedAt;
+    const getItemNameAndItemStatusWithBall = (name: string, status: string) => {
+        return (
+            <div className={classes.statusContainer}>
+                <Text>{name}</Text>
+                <div className={classes.statusDivider}>—</div>
+                <div className={classes.statusBall} style={getReqBallStyle(theme, status)} />
+                <Text>{accessRequestTranscripts[status] ?? ""}</Text>
+            </div>
+        );
+    };
+
+    const creatorUserData = currentReqData.creatorUser;
+    const applicationUserData = currentReqData.applicationUser;
+    const creationTime = currentReqData.createdAt;
+    const editionTime = currentReqData.updatedAt;
 
     return (
         <Row className={classes.container}>
             <Row align={"middle"} className={classes.titleContainer}>
-                <Text className={classes.title}>Заявка #{reqData.applicationId}</Text>
+                <Text className={classes.title}>Заявка #{currentReqData.applicationId}</Text>
             </Row>
             <Row className={classes.contentContainer}>
                 <Row className={classes.creatorContainer}>
@@ -61,7 +75,7 @@ const ReqCard: FC<IReqCard> = ({ reqData }) => {
                         <span className={classes.highlightedTime}>
                             {diffDateAndToString(
                                 new Date(),
-                                new Date(reqData.endDate),
+                                new Date(currentReqData.endDate),
                                 "Время истекло"
                             )}
                         </span>
@@ -71,7 +85,7 @@ const ReqCard: FC<IReqCard> = ({ reqData }) => {
                     </Col>
                 </Row>
                 <Row className={classes.aboutReqContainer}>
-                    {(reqData.items || []).map((item, index) => (
+                    {(currentReqData.items || []).map((item, index) => (
                         <Row
                             key={"_" + item.accessType?.code + index}
                             className={classes.aboutReqItemContainer}
@@ -81,7 +95,10 @@ const ReqCard: FC<IReqCard> = ({ reqData }) => {
                                 disabled
                                 checked={item.needAccess}
                             >
-                                {item.appItemType?.nameRu}
+                                {getItemNameAndItemStatusWithBall(
+                                    item.appItemType?.nameRu,
+                                    item.status
+                                )}
                             </Checkbox>
                             <Text className={classes.aboutReqItemStatus}>
                                 {item.accessType?.nameRu ?? item.tariff?.nameRu ?? ""}

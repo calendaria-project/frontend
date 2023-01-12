@@ -1,7 +1,10 @@
 import { FC, memo } from "react";
 import { LeftOutlined } from "@ant-design/icons";
 import { Col, Drawer, Row } from "antd";
-import { IAccessAppDataByCurrentUserInKeyViewModel } from "interfaces";
+import {
+    IAccessAppDataByCurrentUserInKeyViewModel,
+    IAccessAppDataByCurrentUserViewModel
+} from "interfaces";
 import useStyles from "./styles";
 import { useTheme } from "react-jss";
 import ReqCard from "./Cards/ReqCard";
@@ -10,10 +13,18 @@ import ReqActionsCard from "./Cards/ReqActionsCard";
 interface ITableAgreementDrawer {
     open: boolean;
     setOpen: (val: boolean) => void;
+    reqData: IAccessAppDataByCurrentUserViewModel;
     currentReqData: IAccessAppDataByCurrentUserInKeyViewModel;
+    updateReqData: (data: IAccessAppDataByCurrentUserViewModel) => void;
 }
 
-const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({ open, setOpen, currentReqData }) => {
+const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({
+    open,
+    setOpen,
+    reqData,
+    currentReqData,
+    updateReqData
+}) => {
     const onClose = () => {
         setOpen(false);
     };
@@ -32,10 +43,14 @@ const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({ open, setOpen, curren
         >
             <Row className={classes.container}>
                 <Col span={20} className={classes.reqCard}>
-                    <ReqCard reqData={currentReqData} />
+                    <ReqCard currentReqData={currentReqData} />
                 </Col>
                 <Col span={4} className={classes.reqActions}>
-                    <ReqActionsCard reqData={currentReqData} />
+                    <ReqActionsCard
+                        reqData={reqData}
+                        currentReqData={currentReqData}
+                        updateReqData={updateReqData}
+                    />
                 </Col>
             </Row>
         </Drawer>

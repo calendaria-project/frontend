@@ -1,11 +1,7 @@
 import React, { FC, Suspense, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { SetCurrentOpenedMenu } from "store/actions";
-import {
-    accessItemRequestTranscripts,
-    accessRequestStatuses,
-    dictionaryCodesEnum,
-    mainMenuEnum
-} from "data/enums";
+import { accessRequestStatuses, dictionaryCodesEnum, mainMenuEnum } from "data/enums";
+import { accessItemRequestTranscripts } from "data/transcripts";
 import { useDispatch } from "react-redux";
 import { useTheme } from "react-jss";
 
@@ -43,19 +39,19 @@ import { ITheme } from "styles/theme/interface";
 import useDelayedInputSearch from "hooks/useDelayedInputSearch";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
 
-import { appTypesEnumTranscripts } from "data/enums";
+import { appItemTypeValues } from "data/enums";
+import { appTypesEnumTranscripts } from "data/transcripts";
 import sortRequests from "utils/sortAccessRequests";
 import getFullName from "utils/getFullName";
 import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
 import getObjectWithHandledDates from "utils/getObjectWithHandeledDates";
-import { appItemTypeValues } from "components/Modules/HeadModule/Users/userDrawer/helpers";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { AuthContext } from "context/AuthContextProvider";
 import { getFormattedDateFromNow } from "utils/getFormattedDates";
 
 const AddRequestModal = React.lazy(
-    () => import("components/Modules/HeadModule/Users/userDrawer/modal")
+    () => import("components/Shared/modalRenderer/ReadyModals/AccessReqModal")
 );
 
 const { Option } = Select;
@@ -158,6 +154,14 @@ const Requests: FC = () => {
         }
     }, [searchStr, isBookingReq, copiedRequests, sortValue]);
 
+    const updateReqData = useCallback(
+        (data: IAccessAppDataByCurrentUserViewModel) => {
+            setAllRequests(data);
+            setCopiedRequests(data);
+        },
+        [allRequests, copiedRequests]
+    );
+
     const handleChangeSelectReqValue = useCallback((v: string) => {
         sessionStorage.setItem("selectUserRequestsValue", v);
         setSelectReqValue(v);
@@ -219,7 +223,7 @@ const Requests: FC = () => {
                     console.log(d);
                     form.resetFields();
                     setReqModalVisible(false);
-                    setAllRequests({
+                    updateReqData({
                         ...allRequests,
                         [accessRequestStatuses.ON_APPROVEMENT]: allRequests[
                             accessRequestStatuses.ON_APPROVEMENT
@@ -232,7 +236,7 @@ const Requests: FC = () => {
                     message.error("Ошибка создания!");
                 });
         },
-        [modalValues, initRequestsData, userId]
+        [modalValues, allRequests, userId, updateReqData]
     );
 
     const handleOpenReqModal = (addReqFlag: boolean) => () => {
@@ -327,7 +331,7 @@ const Requests: FC = () => {
                         <Spinner style={{ color: theme.color.regular + "" }} />
                     </div>
                 ) : (
-                    <ReqTable reqData={allRequests} setReqData={setAllRequests} />
+                    <ReqTable reqData={allRequests} updateReqData={updateReqData} />
                 )
             ) : (
                 <></>

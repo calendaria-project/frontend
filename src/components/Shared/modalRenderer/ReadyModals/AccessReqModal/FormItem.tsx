@@ -4,9 +4,9 @@ import { ISimpleDictionaryViewModel } from "interfaces";
 import { IAppItemAccessOptionalTypeViewModel } from "interfaces/extended";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
-import { dictionaryCodesEnum } from "data/enums";
+import { dictionaryCodesEnum, appItemTypeValues } from "data/enums";
 import SharedEmptySelect from "components/Shared/modalRenderer/Selects/SharedEmptySelect";
-import { getPlaceholderOfAppItemTypeValue, appItemTypeValues } from "../helpers";
+import getPlaceholderOfAppItemTypeValue from "utils/getPlaceholderOfAppItemTypeValue";
 
 interface IFormItem {
     form: FormInstance;

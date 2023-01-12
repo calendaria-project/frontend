@@ -5,15 +5,11 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import {
     IAccessAppDataByCurrentUserInKeyViewModel,
-    IAccessAppDataByCurrentUserViewModel,
-    IAccessApplicationItemViewModel
+    IAccessAppDataByCurrentUserViewModel
 } from "interfaces";
-import {
-    accessRequestTranscripts,
-    appTypesEnumTranscripts,
-    accessItemRequestTranscripts,
-    accessItemRequestStatuses
-} from "data/enums";
+import { accessRequestStatuses } from "data/enums";
+
+import { accessRequestTranscripts, appTypesEnumTranscripts } from "data/transcripts";
 
 import emptyImage from "assets/icons/question.png";
 
@@ -22,14 +18,15 @@ import Button from "ui/Button";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
 import EmptyTableContent from "components/Shared/tableRenderer/EmptyTableContent";
 import { getFormattedDateFromNow } from "utils/getFormattedDates";
+import { getReqBallStyle } from "utils/getReqBallStyle";
 
 const { Text } = Typography;
 const AgreementDrawer = React.lazy(() => import("./TableAgreementDrawer"));
 
 const ReqTable: FC<{
     reqData: IAccessAppDataByCurrentUserViewModel;
-    setReqData: (v: IAccessAppDataByCurrentUserViewModel) => void;
-}> = ({ reqData, setReqData }) => {
+    updateReqData: (data: IAccessAppDataByCurrentUserViewModel) => void;
+}> = ({ reqData, updateReqData }) => {
     const theme = useTheme<ITheme>();
     // @ts-ignore
     const classes = useStyles(theme);
@@ -44,32 +41,16 @@ const ReqTable: FC<{
         setAgreementDrawerOpened(true);
     };
 
-    const getCurrentReqStatus = (items: IAccessApplicationItemViewModel[]) => {
-        return items.find((el) => el.status === accessItemRequestStatuses.ON_PROCESS)
-            ? accessItemRequestStatuses.ON_PROCESS
-            : items.find((el) => el.status === accessItemRequestStatuses.DONE)
-            ? accessItemRequestStatuses.DONE
-            : accessItemRequestStatuses.CANCELED;
-    };
-
-    const getReqStatusWithBall = (itemStatus: string) => {
+    const getReqStatusWithBall = (status: string) => {
         return (
             <div className={classes.statusContainer}>
-                <div
-                    className={classes.statusBall}
-                    style={{
-                        background:
-                            itemStatus === accessItemRequestStatuses.CANCELED
-                                ? theme.color.removing + ""
-                                : itemStatus === accessItemRequestStatuses.DONE
-                                ? theme.color.successful + ""
-                                : theme.color.between + ""
-                    }}
-                />
-                <Text strong>{accessItemRequestTranscripts[itemStatus] ?? ""}</Text>
+                <div className={classes.statusBall} style={getReqBallStyle(theme, status)} />
+                <Text strong>{accessRequestTranscripts[status] ?? ""}</Text>
             </div>
         );
     };
+
+    console.log(reqData);
 
     return (
         <Row className={classes.wrapper}>
@@ -91,8 +72,9 @@ const ReqTable: FC<{
                                 </Text>
                             </Row>
                             {(data || []).map((accessItem) => {
-                                const currentReqStatus = getCurrentReqStatus(accessItem.items);
                                 const profilePhoto = accessItem.applicationUser?.currentPhotoId;
+                                const reqStatus = accessItem.status;
+                                console.log(reqStatus);
                                 return (
                                     <Row
                                         key={accessItem.applicationId}
@@ -117,9 +99,8 @@ const ReqTable: FC<{
                                         </Text>
                                         <Text>{getFormattedDateFromNow(accessItem.createdAt)}</Text>
                                         <Text>{getFormattedDateFromNow(accessItem.endDate)}</Text>
-                                        {getReqStatusWithBall(currentReqStatus)}
-                                        {currentReqStatus ===
-                                        accessItemRequestStatuses.ON_PROCESS ? (
+                                        {getReqStatusWithBall(reqStatus)}
+                                        {reqStatus === accessRequestStatuses.ON_APPROVEMENT ? (
                                             <Button
                                                 customType={"regular"}
                                                 onClick={handleOpenDrawer(accessItem)}
@@ -143,7 +124,9 @@ const ReqTable: FC<{
                 <AgreementDrawer
                     open={agreementDrawerOpened}
                     setOpen={setAgreementDrawerOpened}
+                    reqData={reqData}
                     currentReqData={currentReqData}
+                    updateReqData={updateReqData}
                 />
             </Suspense>
         </Row>

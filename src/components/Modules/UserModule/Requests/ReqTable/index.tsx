@@ -3,19 +3,20 @@ import React, { FC, memo, Suspense, useCallback, useState } from "react";
 import useStyles from "./styles";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
-import { IAccessAppDataByCurrentUserViewModel, IAccessApplicationItemViewModel } from "interfaces";
 import {
-    accessRequestTranscripts,
-    appTypesEnumTranscripts,
-    accessItemRequestTranscripts,
-    accessItemRequestStatuses
-} from "data/enums";
+    IAccessAppDataByCurrentUserInKeyViewModel,
+    IAccessAppDataByCurrentUserViewModel
+} from "interfaces";
+import { accessRequestStatuses } from "data/enums";
+import { accessRequestTranscripts, appTypesEnumTranscripts } from "data/transcripts";
 import { getFormattedDateFromNow } from "utils/getFormattedDates";
 
 import { CloseOutlined } from "@ant-design/icons";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
 import EmptyTableContent from "components/Shared/tableRenderer/EmptyTableContent";
+import { getReqBallStyle } from "utils/getReqBallStyle";
+import getReqDataForUpdate from "utils/getReqDataForUpdate";
 
 const CancelReqModal = React.lazy(
     () => import("components/Shared/modalRenderer/ReadyModals/SimpleConfirmationModal")
@@ -25,53 +26,48 @@ const { Text } = Typography;
 
 const ReqTable: FC<{
     reqData: IAccessAppDataByCurrentUserViewModel;
-    setReqData: (v: IAccessAppDataByCurrentUserViewModel) => void;
-}> = ({ reqData, setReqData }) => {
+    updateReqData: (data: IAccessAppDataByCurrentUserViewModel) => void;
+}> = ({ reqData, updateReqData }) => {
     const theme = useTheme<ITheme>();
     // @ts-ignore
     const classes = useStyles(theme);
 
-    const [cancelId, setCancelId] = useState<number | undefined>();
+    const [reqForCancel, setReqForCancel] = useState<IAccessAppDataByCurrentUserInKeyViewModel>(
+        {} as IAccessAppDataByCurrentUserInKeyViewModel
+    );
     const [cancelReqModalVisible, setCancelReqModalVisible] = useState(false);
 
-    const { deleteAccessApplicationById } = useSimpleHttpFunctions();
+    const { cancelAccessApplicationById } = useSimpleHttpFunctions();
 
-    const handleCancelBtnClick = (id: number) => () => {
-        setCancelId(id);
+    const handleCancelBtnClick = (req: IAccessAppDataByCurrentUserInKeyViewModel) => () => {
+        setReqForCancel(req);
         setCancelReqModalVisible(true);
     };
 
     const onCancelRequest = useCallback(async () => {
+        const cancelId = reqForCancel.applicationId;
         if (cancelId) {
-            const data = await deleteAccessApplicationById(cancelId).catch(() =>
+            await cancelAccessApplicationById(cancelId).catch(() =>
                 message.error("Ошибка отмены заявки!")
             );
+
+            const dataForUpdate = getReqDataForUpdate(
+                reqData,
+                reqForCancel,
+                cancelId,
+                accessRequestStatuses.CANCELED
+            );
+
+            updateReqData(dataForUpdate);
+            message.success("Заявка отменена!");
         }
-    }, [cancelId]);
+    }, [reqForCancel, reqData, updateReqData]);
 
-    const getCurrentReqStatus = (items: IAccessApplicationItemViewModel[]) => {
-        return items.find((el) => el.status === accessItemRequestStatuses.ON_PROCESS)
-            ? accessItemRequestStatuses.ON_PROCESS
-            : items.find((el) => el.status === accessItemRequestStatuses.DONE)
-            ? accessItemRequestStatuses.DONE
-            : accessItemRequestStatuses.CANCELED;
-    };
-
-    const getReqStatusWithBall = (itemStatus: string) => {
+    const getReqStatusWithBall = (status: string) => {
         return (
             <div className={classes.statusContainer}>
-                <div
-                    className={classes.statusBall}
-                    style={{
-                        background:
-                            itemStatus === accessItemRequestStatuses.CANCELED
-                                ? theme.color.removing + ""
-                                : itemStatus === accessItemRequestStatuses.DONE
-                                ? theme.color.successful + ""
-                                : theme.color.between + ""
-                    }}
-                />
-                <Text strong>{accessItemRequestTranscripts[itemStatus] ?? ""}</Text>
+                <div className={classes.statusBall} style={getReqBallStyle(theme, status)} />
+                <Text strong>{accessRequestTranscripts[status] ?? ""}</Text>
             </div>
         );
     };
@@ -95,7 +91,7 @@ const ReqTable: FC<{
                                 </Text>
                             </Row>
                             {(data || []).map((accessItem) => {
-                                const currentReqStatus = getCurrentReqStatus(accessItem.items);
+                                const reqStatus = accessItem.status;
                                 const applicationId = accessItem.applicationId;
                                 return (
                                     <Row key={applicationId} className={classes.reqContainer}>
@@ -104,11 +100,10 @@ const ReqTable: FC<{
                                         </Text>
                                         <Text>{getFormattedDateFromNow(accessItem.createdAt)}</Text>
                                         <Text>{getFormattedDateFromNow(accessItem.endDate)}</Text>
-                                        {getReqStatusWithBall(currentReqStatus)}
-                                        {currentReqStatus ===
-                                        accessItemRequestStatuses.ON_PROCESS ? (
+                                        {getReqStatusWithBall(reqStatus)}
+                                        {reqStatus === accessRequestStatuses.ON_APPROVEMENT ? (
                                             <div
-                                                onClick={handleCancelBtnClick(applicationId)}
+                                                onClick={handleCancelBtnClick(accessItem)}
                                                 className={classes.cancelReqTextContainer}
                                             >
                                                 <CloseOutlined className={classes.cancelIcon} />

@@ -6,7 +6,8 @@ export default createUseStyles({
         width: "100%",
         height: "100%",
         border: (theme: ITheme) => `1px solid ${theme.color.lines}`,
-        borderRadius: (theme: ITheme) => theme.borderRadius
+        borderRadius: (theme: ITheme) => theme.borderRadius,
+        overflow: "auto"
     },
     titleContainer: {
         background: (theme: ITheme) => theme.background.secondary,
@@ -68,5 +69,20 @@ export default createUseStyles({
             backgroundColor: "#1890ff !important",
             borderColor: "#1890ff !important"
         }
+    },
+    statusContainer: {
+        width: "fit-content",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    statusBall: {
+        width: "16px",
+        height: "16px",
+        borderRadius: "50%",
+        marginRight: "8px"
+    },
+    statusDivider: {
+        margin: (theme: ITheme) => `0 ${theme.layout.margin}`
     }
 });
