@@ -20,7 +20,7 @@ export const accessRequestTranscripts: { [key: string]: string } = {
 
 export const accessItemRequestTranscripts: { [key: string]: string } = {
     [accessItemRequestStatuses.ON_PROCESS]: "В процессе",
-    [accessItemRequestStatuses.CANCELED]: "Отменено",
+    [accessItemRequestStatuses.CANCELED]: "Отмена задачи",
     [accessItemRequestStatuses.DONE]: "Выполнено"
 };
 

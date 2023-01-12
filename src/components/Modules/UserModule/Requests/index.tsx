@@ -1,7 +1,7 @@
 import React, { FC, Suspense, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { SetCurrentOpenedMenu } from "store/actions";
 import { accessRequestStatuses, dictionaryCodesEnum, mainMenuEnum } from "data/enums";
-import { accessItemRequestTranscripts } from "data/transcripts";
+import { accessRequestTranscripts } from "data/transcripts";
 import { useDispatch } from "react-redux";
 import { useTheme } from "react-jss";
 
@@ -143,7 +143,7 @@ const Requests: FC = () => {
                                   (appTypesEnumTranscripts[req.appType] || "") +
                                   (getFormattedDateFromNow(req.createdAt) || "") +
                                   (getFormattedDateFromNow(req.endDate) || "") +
-                                  (accessItemRequestTranscripts[req.items?.[0]?.status] || "");
+                                  (accessRequestTranscripts[req.status] || "");
                               return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
                           })
                       ];

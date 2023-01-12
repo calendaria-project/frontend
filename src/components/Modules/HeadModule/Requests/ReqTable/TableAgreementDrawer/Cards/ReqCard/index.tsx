@@ -7,7 +7,7 @@ import getFullName from "utils/getFullName";
 import diffDateAndToString from "utils/diffDateAndToString";
 import { getFormattedDateFromNowWithTime } from "utils/getFormattedDates";
 import { getReqBallStyle } from "utils/getReqBallStyle";
-import { accessRequestTranscripts } from "data/transcripts";
+import { accessItemRequestTranscripts } from "data/transcripts";
 import { ITheme } from "styles/theme/interface";
 
 interface IReqCard {
@@ -27,7 +27,7 @@ const ReqCard: FC<IReqCard> = ({ currentReqData }) => {
                 <Text>{name}</Text>
                 <div className={classes.statusDivider}>—</div>
                 <div className={classes.statusBall} style={getReqBallStyle(theme, status)} />
-                <Text>{accessRequestTranscripts[status] ?? ""}</Text>
+                <Text>{accessItemRequestTranscripts[status] ?? ""}</Text>
             </div>
         );
     };

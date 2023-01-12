@@ -6,7 +6,7 @@ import {
     dictionaryCodesEnum,
     mainMenuEnum
 } from "data/enums";
-import { accessItemRequestTranscripts } from "data/transcripts";
+import { accessRequestTranscripts } from "data/transcripts";
 import { useDispatch } from "react-redux";
 import { useTheme } from "react-jss";
 import {
@@ -193,7 +193,7 @@ const Requests: FC = () => {
                                   (appTypesEnumTranscripts[req.appType] || "") +
                                   (getFormattedDateFromNow(req.createdAt) || "") +
                                   (getFormattedDateFromNow(req.endDate) || "") +
-                                  (accessItemRequestTranscripts[req.items?.[0]?.status] || "");
+                                  (accessRequestTranscripts[req.status] || "");
                               return reqDataStr.toLowerCase().includes(searchStr.toLowerCase());
                           })
                       ];
