@@ -103,7 +103,7 @@ const useSimpleHttpFunctions = () => {
     const getUsersWithPhotoId = async (data: any) => {
         const dataWithPhotoId = [];
         for (let i = 0; i < data.length; ++i) {
-            const profilePhotoId = data[i].profilePhotoId;
+            const profilePhotoId = data[i]?.profilePhotoId;
             let currentPhotoId;
             if (profilePhotoId) {
                 currentPhotoId = await actionMethodResultSync(
@@ -269,6 +269,17 @@ const useSimpleHttpFunctions = () => {
         });
     };
 
+    const doAccessApplicationTaskById = (id: number) => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            `access-application/${id}/do-app-task`,
+            "post",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data;
+        });
+    };
+
     return {
         companies,
         positions,
@@ -293,7 +304,8 @@ const useSimpleHttpFunctions = () => {
         getAccessApplicationHistoryById,
         cancelAccessApplicationById,
         approveAccessApplicationById,
-        rejectAccessApplicationById
+        rejectAccessApplicationById,
+        doAccessApplicationTaskById
     };
 };
 export default useSimpleHttpFunctions;

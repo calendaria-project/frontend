@@ -206,10 +206,12 @@ const Requests: FC = () => {
 
     const updateReqData = useCallback(
         (data: IAccessAppDataByCurrentUserViewModel) => {
-            setAllRequests(data);
-            setCopiedRequests(data);
+            if (selectReqValue === OUTGOING) {
+                setAllRequests(data);
+                setCopiedRequests(data);
+            }
         },
-        [allRequests, copiedRequests]
+        [allRequests, copiedRequests, selectReqValue]
     );
 
     const handleChangeSelectReqValue = useCallback((v: string) => {
@@ -359,14 +361,16 @@ const Requests: FC = () => {
                         suffix={<SearchOutlined className={classes.suffix} />}
                     />
                     {!isBooking ? (
-                        <Dropdown overlay={dropdownItems}>
-                            <Button className={classes.btn}>
-                                <Space>
-                                    Создать
-                                    <DownOutlined />
-                                </Space>
-                            </Button>
-                        </Dropdown>
+                        selectReqValue === OUTGOING && (
+                            <Dropdown overlay={dropdownItems}>
+                                <Button className={classes.btn}>
+                                    <Space>
+                                        Создать
+                                        <DownOutlined />
+                                    </Space>
+                                </Button>
+                            </Dropdown>
+                        )
                     ) : (
                         <Button className={classes.btn} icon={<PlusOutlined />}>
                             Добавить
