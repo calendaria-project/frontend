@@ -9,10 +9,12 @@ const getReqDataForUpdate = (
     reqData: IAccessAppDataByCurrentUserViewModel,
     currReqData: IAccessAppDataByCurrentUserInKeyViewModel,
     appIdForFilterFromApprovement: number,
-    extractedReqStatus: string
+    extractedReqStatus: string,
+    baseReqStatus: string = accessRequestStatuses.ON_APPROVEMENT,
+    onlyFilter?: boolean
 ) => {
     const {
-        [accessRequestStatuses.ON_APPROVEMENT]: onApprovedData,
+        [baseReqStatus]: onApprovedData,
         [extractedReqStatus]: extractedData,
         ...restReqData
     } = reqData || {};
@@ -22,14 +24,18 @@ const getReqDataForUpdate = (
         ...(restReqData || {}),
         ...(getObjectLength(onApprovedData) > 1
             ? {
-                  [accessRequestStatuses.ON_APPROVEMENT]: onApprovedData.filter(
+                  [baseReqStatus]: onApprovedData.filter(
                       (reqItem) => reqItem.applicationId !== appIdForFilterFromApprovement
                   )
               }
             : {}),
-        [extractedReqStatus]: extractedData
-            ? [...extractedData, { ...currReqData, status: extractedReqStatus }]
-            : [{ ...currReqData, status: extractedReqStatus }]
+        ...(!onlyFilter
+            ? {
+                  [extractedReqStatus]: extractedData
+                      ? [...extractedData, { ...currReqData, status: extractedReqStatus }]
+                      : [{ ...currReqData, status: extractedReqStatus }]
+              }
+            : {})
     };
 };
 export default getReqDataForUpdate;

@@ -3,7 +3,6 @@ import { LeftOutlined } from "@ant-design/icons";
 import { Col, Drawer, Row } from "antd";
 import {
     IAccessAppDataByCurrentUserInKeyViewModel,
-    IAccessAppDataByCurrentUserViewModel,
     IAccessApplicationHistoryViewModel
 } from "interfaces";
 import useStyles from "./styles";
@@ -15,18 +14,10 @@ import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 interface ITableAgreementDrawer {
     open: boolean;
     setOpen: (val: boolean) => void;
-    reqData: IAccessAppDataByCurrentUserViewModel;
     currentAppId: number;
-    updateReqData: (data: IAccessAppDataByCurrentUserViewModel) => void;
 }
 
-const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({
-    open,
-    setOpen,
-    reqData,
-    currentAppId,
-    updateReqData
-}) => {
+const SharedRequestInfoDrawer: FC<ITableAgreementDrawer> = ({ open, setOpen, currentAppId }) => {
     const onClose = () => {
         setOpen(false);
     };
@@ -64,6 +55,8 @@ const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({
         setCurrentReqData(data);
     };
 
+    console.log(currentReqData);
+
     return (
         <Drawer
             title="Вернуться назад"
@@ -74,12 +67,7 @@ const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({
         >
             <Row className={classes.container}>
                 <Col span={20} className={classes.reqCard}>
-                    <ReqCard
-                        reqData={reqData}
-                        currentReqData={currentReqData}
-                        updateReqData={updateReqData}
-                        initAppHistory={initAppHistory}
-                    />
+                    <ReqCard currentReqData={currentReqData} />
                 </Col>
                 <Col span={4} className={classes.reqActions}>
                     <ReqExtraCard currentReqData={currentReqData} appHistory={appHistory} />
@@ -88,4 +76,4 @@ const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({
         </Drawer>
     );
 };
-export default memo(TableAgreementDrawer);
+export default memo(SharedRequestInfoDrawer);

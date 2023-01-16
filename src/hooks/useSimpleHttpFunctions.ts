@@ -180,6 +180,17 @@ const useSimpleHttpFunctions = () => {
         });
     };
 
+    const getAccessApplicationById = (id: number) => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            `access-application/${id}`,
+            "get",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data;
+        });
+    };
+
     const getAccessApplicationByUserId = (userId: string) => {
         return actionMethodResultSync(
             "HELPDESK",
@@ -297,6 +308,7 @@ const useSimpleHttpFunctions = () => {
         calculatePercent,
         getDivisionOptions,
         getPositionOptionsByDivisionId,
+        getAccessApplicationById,
         getAccessApplicationByUserId,
         getAccessApplicationByCurrentUser,
         getOutgoingAccessApplication,

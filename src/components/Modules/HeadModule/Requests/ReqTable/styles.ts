@@ -70,6 +70,7 @@ export default createUseStyles({
         color: (theme: ITheme) => theme.color.removing
     },
     accessItemFioContainer: {
+        cursor: "pointer",
         width: "150px",
         textOverflow: "ellipsis",
         whiteSpace: "nowrap",

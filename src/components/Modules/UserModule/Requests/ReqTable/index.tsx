@@ -21,6 +21,7 @@ import getReqDataForUpdate from "utils/getReqDataForUpdate";
 const CancelReqModal = React.lazy(
     () => import("components/Shared/modalRenderer/ReadyModals/SimpleConfirmationModal")
 );
+const SharedInfoDrawer = React.lazy(() => import("components/Shared/SharedRequestInfoDrawer"));
 
 const { Text } = Typography;
 
@@ -35,9 +36,18 @@ const ReqTable: FC<{
     const [reqForCancel, setReqForCancel] = useState<IAccessAppDataByCurrentUserInKeyViewModel>(
         {} as IAccessAppDataByCurrentUserInKeyViewModel
     );
+
+    const [sharedInfoDrawerOpened, setSharedInfoDrawerOpened] = useState(false);
+    const [currentAppId, setCurrentAppId] = useState<number | undefined>();
+
     const [cancelReqModalVisible, setCancelReqModalVisible] = useState(false);
 
     const { cancelAccessApplicationById } = useSimpleHttpFunctions();
+
+    const handleOpenInfoDrawer = (applicationId: number) => () => {
+        setCurrentAppId(applicationId);
+        setSharedInfoDrawerOpened(true);
+    };
 
     const handleCancelBtnClick = (req: IAccessAppDataByCurrentUserInKeyViewModel) => () => {
         setReqForCancel(req);
@@ -95,7 +105,11 @@ const ReqTable: FC<{
                                 const applicationId = accessItem.applicationId;
                                 return (
                                     <Row key={applicationId} className={classes.reqContainer}>
-                                        <Text className={classes.reqTypeText} strong>
+                                        <Text
+                                            onClick={handleOpenInfoDrawer(applicationId)}
+                                            className={classes.reqTypeText}
+                                            strong
+                                        >
                                             {appTypesEnumTranscripts[accessItem.appType] ?? ""}
                                         </Text>
                                         <Text>{getFormattedDateFromNow(accessItem.createdAt)}</Text>
@@ -130,6 +144,13 @@ const ReqTable: FC<{
                     isVisible={cancelReqModalVisible}
                     setIsVisible={setCancelReqModalVisible}
                     confirmAction={onCancelRequest}
+                />
+            </Suspense>
+            <Suspense>
+                <SharedInfoDrawer
+                    open={sharedInfoDrawerOpened}
+                    setOpen={setSharedInfoDrawerOpened}
+                    currentAppId={currentAppId!}
                 />
             </Suspense>
         </Row>

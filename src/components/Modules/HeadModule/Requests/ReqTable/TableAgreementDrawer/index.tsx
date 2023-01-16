@@ -1,4 +1,4 @@
-import { FC, memo } from "react";
+import { FC, memo, useEffect, useState } from "react";
 import { LeftOutlined } from "@ant-design/icons";
 import { Col, Drawer, Row } from "antd";
 import {
@@ -9,12 +9,13 @@ import useStyles from "./styles";
 import { useTheme } from "react-jss";
 import ReqCard from "./Cards/ReqCard";
 import ReqActionsCard from "./Cards/ReqActionsCard";
+import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 
 interface ITableAgreementDrawer {
     open: boolean;
     setOpen: (val: boolean) => void;
     reqData: IAccessAppDataByCurrentUserViewModel;
-    currentReqData: IAccessAppDataByCurrentUserInKeyViewModel;
+    currentAppId: number;
     updateReqData: (data: IAccessAppDataByCurrentUserViewModel) => void;
 }
 
@@ -22,7 +23,7 @@ const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({
     open,
     setOpen,
     reqData,
-    currentReqData,
+    currentAppId,
     updateReqData
 }) => {
     const onClose = () => {
@@ -32,6 +33,23 @@ const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({
     const theme = useTheme();
     // @ts-ignore
     const classes = useStyles(theme);
+
+    const [currentReqData, setCurrentReqData] = useState<IAccessAppDataByCurrentUserInKeyViewModel>(
+        {} as IAccessAppDataByCurrentUserInKeyViewModel
+    );
+
+    const { getAccessApplicationById } = useSimpleHttpFunctions();
+
+    useEffect(() => {
+        if (currentAppId) {
+            initCurrentReqData();
+        }
+    }, [currentAppId]);
+
+    const initCurrentReqData = async () => {
+        const data = await getAccessApplicationById(currentAppId);
+        setCurrentReqData(data);
+    };
 
     return (
         <Drawer

@@ -206,10 +206,8 @@ const Requests: FC = () => {
 
     const updateReqData = useCallback(
         (data: IAccessAppDataByCurrentUserViewModel) => {
-            if (selectReqValue === OUTGOING) {
-                setAllRequests(data);
-                setCopiedRequests(data);
-            }
+            setAllRequests(data);
+            setCopiedRequests(data);
         },
         [allRequests, copiedRequests, selectReqValue]
     );

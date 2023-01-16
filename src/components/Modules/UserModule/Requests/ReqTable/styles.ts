@@ -28,6 +28,7 @@ export default createUseStyles({
         fontWeight: (theme: ITheme) => theme.fontWeight.bold
     },
     reqTypeText: {
+        cursor: "pointer",
         width: "150px"
     },
     allReqsRow: {

@@ -12,6 +12,7 @@ import getFullName from "utils/getFullName";
 import cx from "classnames";
 import { getFormattedDateFromNowWithTime } from "utils/getFormattedDates";
 import { accessRequestHistoryTranscripts } from "data/transcripts";
+import getLastNameWithInitials from "utils/getLastNameWithInitials";
 
 const { Text } = Typography;
 
@@ -39,6 +40,8 @@ const ReqActionsCard: FC<IReqCard> = ({ currentReqData, appHistory }) => {
                         setCreatorUserPhoto(res);
                     }
                 );
+            } else {
+                setCreatorUserPhoto(undefined);
             }
         }
     }, [creatorUser, comment]);
@@ -79,9 +82,6 @@ const ReqActionsCard: FC<IReqCard> = ({ currentReqData, appHistory }) => {
                     <Row className={classes.innerSectionContainer}>
                         {appHistory.map((histItem, index) => {
                             const histUser = histItem.user ?? {};
-                            const lastName = histUser.lastname;
-                            const firstNameInitial = histUser.firstname?.[0];
-                            const patronymicInitial = histUser.patronymic?.[0];
                             return (
                                 <React.Fragment key={histItem.historyId}>
                                     <Row className={classes.histRow}>
@@ -89,9 +89,11 @@ const ReqActionsCard: FC<IReqCard> = ({ currentReqData, appHistory }) => {
                                             {accessRequestHistoryTranscripts[histItem.status]}
                                         </Text>
                                         <Text>
-                                            {(lastName ? lastName + " " : "") +
-                                                (firstNameInitial ? firstNameInitial + "." : "") +
-                                                (patronymicInitial || "")}
+                                            {getLastNameWithInitials(
+                                                histUser.firstname,
+                                                histUser.lastname,
+                                                histUser.patronymic
+                                            )}
                                         </Text>
                                         <Text className={classes.extraText}>
                                             {getFormattedDateFromNowWithTime(histItem.createdAt)}

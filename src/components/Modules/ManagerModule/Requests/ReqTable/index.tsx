@@ -4,7 +4,6 @@ import useStyles from "./styles";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import {
-    IAccessAppDataByCurrentUserInKeyViewModel,
     IAccessAppDataByCurrentUserViewModel
 } from "interfaces";
 import { accessRequestStatuses } from "data/enums";
@@ -22,6 +21,7 @@ import { getReqBallStyle } from "utils/getReqBallStyle";
 
 const { Text } = Typography;
 const AgreementDrawer = React.lazy(() => import("./TableAgreementDrawer"));
+const SharedInfoDrawer = React.lazy(() => import("components/Shared/SharedRequestInfoDrawer"));
 
 const ReqTable: FC<{
     reqData: IAccessAppDataByCurrentUserViewModel;
@@ -32,13 +32,17 @@ const ReqTable: FC<{
     const classes = useStyles(theme);
 
     const [agreementDrawerOpened, setAgreementDrawerOpened] = useState(false);
-    const [currentReqData, setCurrentReqData] = useState(
-        {} as IAccessAppDataByCurrentUserInKeyViewModel
-    );
+    const [sharedInfoDrawerOpened, setSharedInfoDrawerOpened] = useState(false);
+    const [currentAppId, setCurrentAppId] = useState<number | undefined>();
 
-    const handleOpenDrawer = (data: IAccessAppDataByCurrentUserInKeyViewModel) => () => {
-        setCurrentReqData(data);
+    const handleOpenDrawer = (applicationId: number) => () => {
+        setCurrentAppId(applicationId);
         setAgreementDrawerOpened(true);
+    };
+
+    const handleOpenInfoDrawer = (applicationId: number) => () => {
+        setCurrentAppId(applicationId);
+        setSharedInfoDrawerOpened(true);
     };
 
     const getReqStatusWithBall = (status: string) => {
@@ -49,8 +53,6 @@ const ReqTable: FC<{
             </div>
         );
     };
-
-    console.log(reqData);
 
     return (
         <Row className={classes.wrapper}>
@@ -74,13 +76,13 @@ const ReqTable: FC<{
                             {(data || []).map((accessItem) => {
                                 const profilePhoto = accessItem.applicationUser?.currentPhotoId;
                                 const reqStatus = accessItem.status;
-                                console.log(reqStatus);
+                                const applicationId = accessItem.applicationId;
                                 return (
-                                    <Row
-                                        key={accessItem.applicationId}
-                                        className={classes.reqContainer}
-                                    >
-                                        <div className={classes.accessItemFioContainer}>
+                                    <Row key={applicationId} className={classes.reqContainer}>
+                                        <div
+                                            onClick={handleOpenInfoDrawer(applicationId)}
+                                            className={classes.accessItemFioContainer}
+                                        >
                                             <img
                                                 className={classes.accessItemFioImg}
                                                 alt={""}
@@ -103,7 +105,7 @@ const ReqTable: FC<{
                                         {reqStatus === accessRequestStatuses.ON_PROCESS ? (
                                             <Button
                                                 customType={"regular"}
-                                                onClick={handleOpenDrawer(accessItem)}
+                                                onClick={handleOpenDrawer(applicationId)}
                                                 className={classes.toAccessBtn}
                                             >
                                                 Согласовать заявку
@@ -125,8 +127,15 @@ const ReqTable: FC<{
                     open={agreementDrawerOpened}
                     setOpen={setAgreementDrawerOpened}
                     reqData={reqData}
-                    currentReqData={currentReqData}
+                    currentAppId={currentAppId!}
                     updateReqData={updateReqData}
+                />
+            </Suspense>
+            <Suspense>
+                <SharedInfoDrawer
+                    open={sharedInfoDrawerOpened}
+                    setOpen={setSharedInfoDrawerOpened}
+                    currentAppId={currentAppId!}
                 />
             </Suspense>
         </Row>
