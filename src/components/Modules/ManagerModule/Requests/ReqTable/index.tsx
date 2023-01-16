@@ -3,9 +3,7 @@ import React, { FC, memo, Suspense, useState } from "react";
 import useStyles from "./styles";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
-import {
-    IAccessAppDataByCurrentUserViewModel
-} from "interfaces";
+import { IAccessAppDataByCurrentUserViewModel } from "interfaces";
 import { accessRequestStatuses } from "data/enums";
 
 import { accessRequestTranscripts, appTypesEnumTranscripts } from "data/transcripts";
