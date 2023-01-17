@@ -77,6 +77,7 @@ const Requests: FC = () => {
     const [allUsers, setAllUsers] = useState<IUsersWithInfoModel[]>([]);
     const [isAddReqFlag, setIsAddReqFlag] = useState(false);
     const [modalValues, setModalValues] = useState<ISimpleDictionaryViewModel[]>([]);
+    const [currentUser, setCurrentUser] = useState<IUsersViewModel>({} as IUsersViewModel);
 
     const [reqModalVisible, setReqModalVisible] = useState(false);
 
@@ -122,19 +123,29 @@ const Requests: FC = () => {
     };
 
     useEffect(() => {
-        initAllUsersData();
+        initCurrentUserData();
     }, []);
 
-    const initAllUsersData = async () => {
+    const initCurrentUserData = async () => {
         const currUserData: IUsersViewModel = await getCurrentUserData();
-        const company = currUserData.company;
-        if (company) {
-            const usersData: IUsersViewModel[] = await getUsersByCompanyId(company.companyId);
-            const usersDataWithFullName = usersData.map((user) => ({
-                ...user,
-                fullName: getFullName(user.firstname, user.lastname, user.patronymic)
-            }));
-            setAllUsers(usersDataWithFullName);
+        setCurrentUser(currUserData);
+    };
+
+    useEffect(() => {
+        initAllUsersData();
+    }, [currentUser]);
+
+    const initAllUsersData = async () => {
+        if (isObjectNotEmpty(currentUser)) {
+            const company = currentUser.company;
+            if (company) {
+                const usersData: IUsersViewModel[] = await getUsersByCompanyId(company.companyId);
+                const usersDataWithFullName = usersData.map((user) => ({
+                    ...user,
+                    fullName: getFullName(user.firstname, user.lastname, user.patronymic)
+                }));
+                setAllUsers(usersDataWithFullName);
+            }
         }
     };
 
@@ -382,7 +393,11 @@ const Requests: FC = () => {
                         <Spinner style={{ color: theme.color.regular + "" }} />
                     </div>
                 ) : (
-                    <ReqTable reqData={allRequests} updateReqData={updateReqData} />
+                    <ReqTable
+                        currentUserId={currentUser?.userId}
+                        reqData={allRequests}
+                        updateReqData={updateReqData}
+                    />
                 )
             ) : (
                 <></>

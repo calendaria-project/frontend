@@ -22,9 +22,10 @@ const AgreementDrawer = React.lazy(() => import("./TableAgreementDrawer"));
 const SharedInfoDrawer = React.lazy(() => import("components/Shared/SharedRequestInfoDrawer"));
 
 const ReqTable: FC<{
+    currentUserId: string;
     reqData: IAccessAppDataByCurrentUserViewModel;
     updateReqData: (data: IAccessAppDataByCurrentUserViewModel) => void;
-}> = ({ reqData, updateReqData }) => {
+}> = ({ currentUserId, reqData, updateReqData }) => {
     const theme = useTheme<ITheme>();
     // @ts-ignore
     const classes = useStyles(theme);
@@ -105,6 +106,9 @@ const ReqTable: FC<{
                                         {reqStatus === accessRequestStatuses.ON_APPROVEMENT ? (
                                             <Button
                                                 customType={"regular"}
+                                                disabled={
+                                                    currentUserId === accessItem.creatorUser?.userId
+                                                }
                                                 onClick={handleOpenDrawer(applicationId)}
                                                 className={classes.toAccessBtn}
                                             >

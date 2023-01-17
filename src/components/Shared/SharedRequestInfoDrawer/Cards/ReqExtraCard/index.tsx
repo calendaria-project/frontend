@@ -13,6 +13,7 @@ import cx from "classnames";
 import { getFormattedDateFromNowWithTime } from "utils/getFormattedDates";
 import { accessRequestHistoryTranscripts } from "data/transcripts";
 import getLastNameWithInitials from "utils/getLastNameWithInitials";
+import { accessRequestHistoryStatuses } from "data/enums";
 
 const { Text } = Typography;
 
@@ -27,6 +28,7 @@ const ReqActionsCard: FC<IReqCard> = ({ currentReqData, appHistory }) => {
     const classes = useStyles(theme);
 
     const comment = currentReqData.comment;
+    const cancelReason = currentReqData.cancelReason;
     const creatorUser = currentReqData.creatorUser ?? {};
     const [creatorUserPhoto, setCreatorUserPhoto] = useState<string | undefined>(undefined);
 
@@ -81,12 +83,17 @@ const ReqActionsCard: FC<IReqCard> = ({ currentReqData, appHistory }) => {
                     <Row className={classes.innerSectionContainer}>
                         {appHistory.map((histItem, index) => {
                             const histUser = histItem.user ?? {};
+                            const status = histItem.status;
                             return (
                                 <React.Fragment key={histItem.historyId}>
                                     <Row className={classes.histRow}>
                                         <Text strong>
-                                            {accessRequestHistoryTranscripts[histItem.status]}
+                                            {accessRequestHistoryTranscripts[status]}
                                         </Text>
+                                        {cancelReason &&
+                                            status === accessRequestHistoryStatuses.REJECTED && (
+                                                <Text>Причина: {cancelReason}</Text>
+                                            )}
                                         <Text>
                                             {getLastNameWithInitials(
                                                 histUser.firstname,

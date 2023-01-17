@@ -14,7 +14,7 @@ import getFullName from "utils/getFullName";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import cx from "classnames";
 import { getFormattedDateFromNowWithTime } from "utils/getFormattedDates";
-import { accessRequestStatuses } from "data/enums";
+import { accessRequestHistoryStatuses, accessRequestStatuses } from "data/enums";
 import { accessRequestHistoryTranscripts } from "data/transcripts";
 import getReqDataForUpdate from "utils/getReqDataForUpdate";
 import getLastNameWithInitials from "utils/getLastNameWithInitials";
@@ -39,6 +39,7 @@ const ReqActionsCard: FC<IReqCard> = ({ reqData, currentReqData, updateReqData }
 
     const applicationId = currentReqData.applicationId;
     const comment = currentReqData.comment;
+    const cancelReason = currentReqData.cancelReason;
 
     const creatorUser = currentReqData.creatorUser || {};
     const [creatorUserPhoto, setCreatorUserPhoto] = useState<string | undefined>(undefined);
@@ -188,12 +189,17 @@ const ReqActionsCard: FC<IReqCard> = ({ reqData, currentReqData, updateReqData }
                     <Row className={classes.innerSectionContainer}>
                         {appHistory.map((histItem, index) => {
                             const histUser = histItem.user ?? {};
+                            const status = histItem.status;
                             return (
                                 <React.Fragment key={histItem.historyId}>
                                     <Row className={classes.histRow}>
                                         <Text strong>
                                             {accessRequestHistoryTranscripts[histItem.status]}
                                         </Text>
+                                        {cancelReason &&
+                                            status === accessRequestHistoryStatuses.REJECTED && (
+                                                <Text>Причина: {cancelReason}</Text>
+                                            )}
                                         <Text>
                                             {getLastNameWithInitials(
                                                 histUser.firstname,
