@@ -83,15 +83,20 @@ export enum nodeTypeEnum {
     DIVISION_UNIT = "DIVISION_UNIT"
 }
 
+export enum appItemTypeValues {
+    SKUD = "skud",
+    MOBILE = "mobile",
+    EMAIL = "email",
+    BITRIX = "bitrix",
+    ONE_C = "1c",
+    TENDERIX = "tenderix",
+    ADATA = "adata"
+}
+
 export enum appTypesEnum {
     GET_ACCESS = "GET_ACCESS",
     REMOVE_ACCESS = "REMOVE_ACCESS"
 }
-
-export const appTypesEnumTranscripts: { [key: string]: string } = {
-    [appTypesEnum.GET_ACCESS]: "Получение доступа",
-    [appTypesEnum.REMOVE_ACCESS]: "Удаление доступа"
-};
 
 export enum accessRequestStatuses {
     ON_APPROVEMENT = "ON_APPROVEMENT",
@@ -101,22 +106,24 @@ export enum accessRequestStatuses {
     DONE = "DONE"
 }
 
-export const accessRequestTranscripts: { [key: string]: string } = {
-    [accessRequestStatuses.ON_APPROVEMENT]: "На согласовании",
-    [accessRequestStatuses.ON_PROCESS]: "В процессе",
-    [accessRequestStatuses.REJECTED]: "Отказано",
-    [accessRequestStatuses.CANCELED]: "Отменена",
-    [accessRequestStatuses.DONE]: "Завершена"
-};
-
 export enum accessItemRequestStatuses {
     ON_PROCESS = "ON_PROCESS",
     DONE = "DONE",
     CANCELED = "CANCELED"
 }
 
-export const accessItemRequestTranscripts: { [key: string]: string } = {
-    [accessItemRequestStatuses.ON_PROCESS]: "В процессе",
-    [accessItemRequestStatuses.CANCELED]: "Отменено",
-    [accessItemRequestStatuses.DONE]: "Выполнено"
-};
+export enum accessRequestHistoryStatuses {
+    CREATED = "CREATED",
+    REJECTED = "REJECTED",
+    ON_APPROVEMENT = "ON_APPROVEMENT",
+    APPROVED = "APPROVED",
+    SYSTEM_ACCOUNTS_CREATED = "SYSTEM_ACCOUNTS_CREATED",
+    ACCOUNT_TENDERIX_CREATED = "ACCOUNT_TENDERIX_CREATED",
+    ACCOUNT_1C_CREATED = "ACCOUNT_1C_CREATED",
+    ACCOUNT_ADATA_CREATED = "ACCOUNT_ADATA_CREATED",
+    SKUD_CREATED = "SKUD_CREATED",
+    ACCOUNT_BITRIX_CREATED = "ACCOUNT_BITRIX_CREATED",
+    MOBILE_NUM_ISSUED = "MOBILE_NUM_ISSUED",
+    FINISHED = "FINISHED",
+    CANCELED = "CANCELED"
+}

@@ -1,5 +1,5 @@
 import { DATE, DEADLINE, REQ_TYPE } from "data/constants";
-import { appTypesEnumTranscripts } from "data/enums";
+import { appTypesEnumTranscripts } from "data/transcripts";
 
 import { IAccessAppDataByCurrentUserInKeyViewModel } from "interfaces";
 

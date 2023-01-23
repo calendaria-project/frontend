@@ -304,7 +304,8 @@ export interface IOrgStructureTreeItemViewModel {
     nodeType: nodeTypeEnum.DIVISION | nodeTypeEnum.DIVISION_UNIT | nodeTypeEnum.COMPANY;
     parentId?: number;
     isCompanyHead: boolean;
-    children: Array<IOrgStructureTreeItemViewModel> | [];
+    isDivisionHead: boolean;
+    children: IOrgStructureTreeItemViewModel[] | [];
 }
 
 //stats - main menu

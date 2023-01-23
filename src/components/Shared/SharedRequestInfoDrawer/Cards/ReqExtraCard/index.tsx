@@ -1,79 +1,40 @@
-import React, { FC, memo, useCallback, useEffect, useState, Suspense } from "react";
+import React, { FC, memo, useEffect, useState } from "react";
 import {
     IAccessAppDataByCurrentUserInKeyViewModel,
-    IAccessAppDataByCurrentUserViewModel,
     IAccessApplicationHistoryViewModel
 } from "interfaces";
 import useStyles from "./styles";
 import { useTheme } from "react-jss";
-import { Col, Form, Row, Typography } from "antd";
-import Button from "ui/Button";
-import { CloseOutlined, CheckOutlined, ArrowDownOutlined } from "@ant-design/icons";
+import { Col, Row, Typography } from "antd";
+import { ArrowDownOutlined } from "@ant-design/icons";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import getFullName from "utils/getFullName";
-import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import cx from "classnames";
 import { getFormattedDateFromNowWithTime } from "utils/getFormattedDates";
-import { accessRequestHistoryStatuses, accessRequestStatuses } from "data/enums";
 import { accessRequestHistoryTranscripts } from "data/transcripts";
-import getReqDataForUpdate from "utils/getReqDataForUpdate";
 import getLastNameWithInitials from "utils/getLastNameWithInitials";
+import { accessRequestHistoryStatuses } from "data/enums";
 
 const { Text } = Typography;
-const CancelReqModal = React.lazy(() => import("./modal"));
 
 interface IReqCard {
-    reqData: IAccessAppDataByCurrentUserViewModel;
     currentReqData: IAccessAppDataByCurrentUserInKeyViewModel;
-    updateReqData: (data: IAccessAppDataByCurrentUserViewModel) => void;
+    appHistory: IAccessApplicationHistoryViewModel[];
 }
 
-const ReqActionsCard: FC<IReqCard> = ({ reqData, currentReqData, updateReqData }) => {
+const ReqActionsCard: FC<IReqCard> = ({ currentReqData, appHistory }) => {
     const theme = useTheme();
     // @ts-ignore
     const classes = useStyles(theme);
 
-    const [form] = Form.useForm();
-
-    const [appHistory, setAppHistory] = useState<IAccessApplicationHistoryViewModel[]>([]);
-
-    const applicationId = currentReqData.applicationId;
     const comment = currentReqData.comment;
     const cancelReason = currentReqData.cancelReason;
-
-    const creatorUser = currentReqData.creatorUser || {};
+    const creatorUser = currentReqData.creatorUser ?? {};
     const [creatorUserPhoto, setCreatorUserPhoto] = useState<string | undefined>(undefined);
-
-    const [reqApproved, setReqApproved] = useState(false);
-    const [reqCancelled, setReqCancelled] = useState(false);
-
-    const [cancelModalVisible, setCancelModalVisible] = useState(false);
-
-    const {
-        approveAccessApplicationById,
-        rejectAccessApplicationById,
-        getAccessApplicationHistoryById
-    } = useSimpleHttpFunctions();
-
-    useEffect(() => {
-        setReqApproved(false);
-        setReqCancelled(false);
-    }, [applicationId]);
-
-    useEffect(() => {
-        if (applicationId) {
-            initAppHistory();
-        }
-    }, [applicationId]);
-
-    const initAppHistory = async () => {
-        const hist = await getAccessApplicationHistoryById(applicationId);
-        setAppHistory(hist);
-    };
 
     useEffect(() => {
         if (comment) {
-            const photoId = creatorUser?.profilePhotoId;
+            const photoId = creatorUser.profilePhotoId;
             if (photoId) {
                 actionMethodResultSync("FILE", `file/download/${photoId}/base64`, "get").then(
                     (res) => {
@@ -86,75 +47,8 @@ const ReqActionsCard: FC<IReqCard> = ({ reqData, currentReqData, updateReqData }
         }
     }, [creatorUser, comment]);
 
-    const onApproveRequest = useCallback(async () => {
-        await approveAccessApplicationById(applicationId);
-
-        //transform and add current req to approved reqs
-        const dataForUpdate = getReqDataForUpdate(
-            reqData,
-            currentReqData,
-            applicationId,
-            accessRequestStatuses.ON_PROCESS,
-            accessRequestStatuses.ON_APPROVEMENT,
-            true
-        );
-
-        updateReqData(dataForUpdate);
-        initAppHistory();
-        setReqApproved(true);
-    }, [applicationId, reqData, currentReqData, updateReqData, initAppHistory]);
-
-    const onCancelRequest = useCallback(async () => {
-        setCancelModalVisible(true);
-    }, []);
-
-    const onFinishCancelModal = useCallback(
-        async (data: { reason: string }) => {
-            await rejectAccessApplicationById(data, applicationId);
-
-            const dataForUpdate = getReqDataForUpdate(
-                reqData,
-                currentReqData,
-                applicationId,
-                accessRequestStatuses.REJECTED,
-                accessRequestStatuses.ON_APPROVEMENT,
-                true
-            );
-
-            updateReqData(dataForUpdate);
-            initAppHistory();
-            setReqCancelled(true);
-            setCancelModalVisible(false);
-        },
-        [applicationId, reqData, currentReqData, updateReqData, initAppHistory]
-    );
-
     return (
         <Row className={classes.container}>
-            <Row justify={"space-between"} className={classes.btnContainer}>
-                {reqApproved ? (
-                    <span className={classes.agreedText}>Заявка успешно подписана!</span>
-                ) : reqCancelled ? (
-                    <span className={classes.cancelledText}>Заявка отклонена!</span>
-                ) : (
-                    <>
-                        <Button
-                            onClick={onCancelRequest}
-                            customType={"removingGrounded"}
-                            icon={<CloseOutlined />}
-                        >
-                            Отклонить
-                        </Button>
-                        <Button
-                            onClick={onApproveRequest}
-                            customType={"addingGrounded"}
-                            icon={<CheckOutlined />}
-                        >
-                            Подписать
-                        </Button>
-                    </>
-                )}
-            </Row>
             {comment && (
                 <Row className={classes.sectionContainer}>
                     <Row align={"middle"} className={classes.titleContainer}>
@@ -194,7 +88,7 @@ const ReqActionsCard: FC<IReqCard> = ({ reqData, currentReqData, updateReqData }
                                 <React.Fragment key={histItem.historyId}>
                                     <Row className={classes.histRow}>
                                         <Text strong>
-                                            {accessRequestHistoryTranscripts[histItem.status]}
+                                            {accessRequestHistoryTranscripts[status]}
                                         </Text>
                                         {cancelReason &&
                                             status === accessRequestHistoryStatuses.REJECTED && (
@@ -225,16 +119,6 @@ const ReqActionsCard: FC<IReqCard> = ({ reqData, currentReqData, updateReqData }
                     </Row>
                 </Row>
             )}
-            <Suspense>
-                <CancelReqModal
-                    form={form}
-                    okText={"Отправить"}
-                    title={"При отклонении заявки необходимо указать причину"}
-                    isVisible={cancelModalVisible}
-                    setIsVisible={setCancelModalVisible}
-                    onFinish={onFinishCancelModal}
-                />
-            </Suspense>
         </Row>
     );
 };

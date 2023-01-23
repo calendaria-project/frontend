@@ -1,15 +1,37 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import React, { FC, useCallback, useEffect, useMemo, useState, Suspense, useContext } from "react";
 import { SetCurrentOpenedMenu } from "store/actions";
-import { accessItemRequestTranscripts, mainMenuEnum } from "data/enums";
+import {
+    accessRequestStatuses,
+    appItemTypeValues,
+    dictionaryCodesEnum,
+    mainMenuEnum
+} from "data/enums";
+import { accessRequestTranscripts } from "data/transcripts";
 import { useDispatch } from "react-redux";
 import { useTheme } from "react-jss";
-import { Col, Input, Row, Select, Typography, Menu, Dropdown, Space, Button } from "antd";
+import {
+    Col,
+    Input,
+    Row,
+    Select,
+    Typography,
+    Menu,
+    Dropdown,
+    Space,
+    Button,
+    Form,
+    message
+} from "antd";
 
 import useStyles from "./styles";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import {
     IAccessAppDataByCurrentUserInKeyViewModel,
-    IAccessAppDataByCurrentUserViewModel
+    IAccessAppDataByCurrentUserViewModel,
+    IAccessApplicationItemModel,
+    IAccessApplicationViewModel,
+    ISimpleDictionaryViewModel,
+    IUsersViewModel
 } from "interfaces";
 import { SearchOutlined, DownOutlined, PlusOutlined } from "@ant-design/icons";
 import { BOOKING, OUTGOING, selectReqValues } from "./defaultValues";
@@ -21,14 +43,25 @@ import { ITheme } from "styles/theme/interface";
 import useDelayedInputSearch from "hooks/useDelayedInputSearch";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
 
-import { appTypesEnumTranscripts } from "data/enums";
+import { appTypesEnumTranscripts } from "data/transcripts";
 import sortRequests from "utils/sortAccessRequests";
 import getFullName from "utils/getFullName";
+import { getFormattedDateFromNow } from "utils/getFormattedDates";
+import { IUsersWithInfoModel } from "interfaces/extended";
+import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
+import getObjectWithHandledDates from "utils/getObjectWithHandeledDates";
+import { actionMethodResultSync } from "functions/actionMethodResult";
+import { getRequestHeader } from "functions/common";
+import { AuthContext } from "context/AuthContextProvider";
 
+const AccessReqModal = React.lazy(
+    () => import("components/Shared/modalRenderer/ReadyModals/AccessReqModal")
+);
 const { Option } = Select;
 const { Text } = Typography;
 
 const Requests: FC = () => {
+    const authContext = useContext(AuthContext);
     const dispatch = useDispatch();
 
     const theme = useTheme<ITheme>();
@@ -38,6 +71,15 @@ const Requests: FC = () => {
     useEffect(() => {
         dispatch(SetCurrentOpenedMenu(mainMenuEnum.requests));
     }, []);
+
+    const [form] = Form.useForm();
+
+    const [allUsers, setAllUsers] = useState<IUsersWithInfoModel[]>([]);
+    const [isAddReqFlag, setIsAddReqFlag] = useState(false);
+    const [modalValues, setModalValues] = useState<ISimpleDictionaryViewModel[]>([]);
+    const [currentUser, setCurrentUser] = useState<IUsersViewModel>({} as IUsersViewModel);
+
+    const [reqModalVisible, setReqModalVisible] = useState(false);
 
     const [allRequests, setAllRequests] = useState<IAccessAppDataByCurrentUserViewModel>(
         {} as IAccessAppDataByCurrentUserViewModel
@@ -56,8 +98,14 @@ const Requests: FC = () => {
 
     const [query, setQuery] = useState("");
     const { searchStr, handleFiltrationChange } = useDelayedInputSearch(query, setQuery);
-    const { getOutgoingAccessApplication, getIncomingAccessApplication, getUsersWithPhotoId } =
-        useSimpleHttpFunctions();
+    const {
+        getOutgoingAccessApplication,
+        getIncomingAccessApplication,
+        getUsersWithPhotoId,
+        getCurrentUserData,
+        getUsersByCompanyId,
+        getDictionaryValues
+    } = useSimpleHttpFunctions();
 
     useEffect(() => {
         !isBooking
@@ -66,20 +114,60 @@ const Requests: FC = () => {
     }, [isBooking]);
 
     useEffect(() => {
+        initModalData();
+    }, []);
+
+    const initModalData = async () => {
+        const data = await getDictionaryValues(`simple/${dictionaryCodesEnum.APP_ITEM_TYPE}`);
+        setModalValues(data);
+    };
+
+    useEffect(() => {
+        initCurrentUserData();
+    }, []);
+
+    const initCurrentUserData = async () => {
+        const currUserData: IUsersViewModel = await getCurrentUserData();
+        setCurrentUser(currUserData);
+    };
+
+    useEffect(() => {
+        initAllUsersData();
+    }, [currentUser]);
+
+    const initAllUsersData = async () => {
+        if (isObjectNotEmpty(currentUser)) {
+            const company = currentUser.company;
+            if (company) {
+                const usersData: IUsersViewModel[] = await getUsersByCompanyId(company.companyId);
+                const usersDataWithFullName = usersData.map((user) => ({
+                    ...user,
+                    fullName: getFullName(user.firstname, user.lastname, user.patronymic)
+                }));
+                setAllUsers(usersDataWithFullName);
+            }
+        }
+    };
+
+    useEffect(() => {
         initReqData();
     }, [isBooking, selectReqValue]);
 
     const initReqData = async () => {
         if (!isBooking) {
             setLoadingRequests(true);
-            const data: IAccessAppDataByCurrentUserViewModel =
-                selectReqValue === OUTGOING
-                    ? await getOutgoingAccessApplication()
-                    : await getIncomingAccessApplication();
+            let reqData: IAccessAppDataByCurrentUserViewModel;
+
+            if (selectReqValue === OUTGOING) {
+                reqData = await getOutgoingAccessApplication();
+            } else {
+                const currUserData: IUsersViewModel = await getCurrentUserData();
+                reqData = await getIncomingAccessApplication(currUserData.company?.companyId);
+            }
 
             const newData: [string, IAccessAppDataByCurrentUserInKeyViewModel[]][] =
                 await Promise.all(
-                    Object.entries(data || {}).map(async ([key, allReqsInKey]) => {
+                    Object.entries(reqData || {}).map(async ([key, allReqsInKey]) => {
                         const reqs = await Promise.all(
                             allReqsInKey.map(async (req) => {
                                 const modifiedReq = await getUsersWithPhotoId([
@@ -114,9 +202,9 @@ const Requests: FC = () => {
                                       req.applicationUser?.patronymic
                                   ) +
                                   (appTypesEnumTranscripts[req.appType] || "") +
-                                  (new Date(req.createdAt).toLocaleDateString("ru-RU") || "") +
-                                  (new Date(req.endDate).toLocaleDateString("ru-RU") || "") +
-                                  (accessItemRequestTranscripts[req.items?.[0]?.status] || "");
+                                  (getFormattedDateFromNow(req.createdAt) || "") +
+                                  (getFormattedDateFromNow(req.endDate) || "") +
+                                  (accessRequestTranscripts[req.status] || "");
                               return reqDataStr.toLowerCase().includes(searchStr.toLowerCase());
                           })
                       ];
@@ -126,6 +214,14 @@ const Requests: FC = () => {
             setAllRequests(Object.fromEntries(searchedAndSortedData));
         }
     }, [searchStr, isBooking, copiedRequests, sortValue]);
+
+    const updateReqData = useCallback(
+        (data: IAccessAppDataByCurrentUserViewModel) => {
+            setAllRequests(data);
+            setCopiedRequests(data);
+        },
+        [allRequests, copiedRequests, selectReqValue]
+    );
 
     const handleChangeSelectReqValue = useCallback((v: string) => {
         sessionStorage.setItem("selectHeadRequestsValue", v);
@@ -144,17 +240,89 @@ const Requests: FC = () => {
         [isBooking]
     );
 
+    const onFinishReqModal = useCallback(
+        (data: any) => {
+            const filteredData = removeEmptyValuesFromAnyLevelObject(data);
+            const filteredDataWithDate = getObjectWithHandledDates(filteredData);
+
+            const reqItems: IAccessApplicationItemModel[] = [];
+            modalValues.forEach((v) => {
+                const needAccess = !!data[v.code];
+                if (v.code === appItemTypeValues.MOBILE) {
+                    reqItems.push({
+                        appItemType: v,
+                        needAccess,
+                        ...(needAccess ? { tariff: data[`item.${v.code}`] } : {})
+                    });
+                } else {
+                    reqItems.push({
+                        appItemType: v,
+                        needAccess,
+                        ...(needAccess ? { accessType: data[`item.${v.code}`] } : {})
+                    });
+                }
+            });
+
+            const finalReqData: IAccessApplicationViewModel = {
+                appType: filteredDataWithDate.appType,
+                endDate: filteredDataWithDate.endDate,
+                comment: filteredDataWithDate.comment || null,
+                applicationUserId: filteredDataWithDate.applicationUserId,
+                items: reqItems
+            };
+
+            actionMethodResultSync(
+                "HELPDESK",
+                "access-application",
+                "post",
+                getRequestHeader(authContext.token),
+                finalReqData
+            )
+                .then((d) => {
+                    message.success("Успешно создано");
+                    console.log(d);
+                    form.resetFields();
+                    setReqModalVisible(false);
+                    updateReqData({
+                        ...allRequests,
+                        [accessRequestStatuses.ON_APPROVEMENT]: allRequests[
+                            accessRequestStatuses.ON_APPROVEMENT
+                        ]
+                            ? [...allRequests[accessRequestStatuses.ON_APPROVEMENT], d]
+                            : [d]
+                    });
+                })
+                .catch(() => {
+                    message.error("Ошибка создания!");
+                });
+        },
+        [modalValues, allRequests, updateReqData]
+    );
+
+    const handleOpenReqModal = (addReqFlag: boolean) => () => {
+        setIsAddReqFlag(addReqFlag);
+        setReqModalVisible(true);
+    };
+
     const dropdownItems = useMemo(
         () => (
             <Menu
                 items={[
                     {
                         key: "1",
-                        label: <span onClick={() => {}}>Заявка на предоставление доступа</span>
+                        label: (
+                            <span onClick={handleOpenReqModal(true)}>
+                                Заявка на предоставление доступа
+                            </span>
+                        )
                     },
                     {
                         key: "2",
-                        label: <span onClick={() => {}}>Заявка на удаление доступа</span>
+                        label: (
+                            <span onClick={handleOpenReqModal(false)}>
+                                Заявка на удаление доступа
+                            </span>
+                        )
                     }
                 ]}
             />
@@ -202,14 +370,16 @@ const Requests: FC = () => {
                         suffix={<SearchOutlined className={classes.suffix} />}
                     />
                     {!isBooking ? (
-                        <Dropdown overlay={dropdownItems}>
-                            <Button className={classes.btn}>
-                                <Space>
-                                    Создать
-                                    <DownOutlined />
-                                </Space>
-                            </Button>
-                        </Dropdown>
+                        selectReqValue === OUTGOING && (
+                            <Dropdown overlay={dropdownItems}>
+                                <Button className={classes.btn}>
+                                    <Space>
+                                        Создать
+                                        <DownOutlined />
+                                    </Space>
+                                </Button>
+                            </Dropdown>
+                        )
                     ) : (
                         <Button className={classes.btn} icon={<PlusOutlined />}>
                             Добавить
@@ -223,11 +393,28 @@ const Requests: FC = () => {
                         <Spinner style={{ color: theme.color.regular + "" }} />
                     </div>
                 ) : (
-                    <ReqTable reqData={allRequests} setReqData={setAllRequests} />
+                    <ReqTable
+                        currentUserId={currentUser?.userId}
+                        reqData={allRequests}
+                        updateReqData={updateReqData}
+                    />
                 )
             ) : (
                 <></>
             )}
+            <Suspense>
+                <AccessReqModal
+                    form={form}
+                    title={isAddReqFlag ? "Добавить заявку" : "Отзыв прав"}
+                    isVisible={reqModalVisible}
+                    setIsVisible={setReqModalVisible}
+                    okText={isAddReqFlag ? "Добавить" : "Отправить"}
+                    onFinish={onFinishReqModal}
+                    usersData={allUsers}
+                    modalValues={modalValues}
+                    removeAccess={!isAddReqFlag}
+                />
+            </Suspense>
         </Row>
     );
 };

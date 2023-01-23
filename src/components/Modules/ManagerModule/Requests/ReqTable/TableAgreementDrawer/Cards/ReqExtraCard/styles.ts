@@ -3,19 +3,6 @@ import { ITheme } from "styles/theme/interface";
 
 export default createUseStyles({
     container: {},
-    agreedText: {
-        fontSize: "18px",
-        color: (theme: ITheme) => theme.color.successful
-    },
-    cancelledText: {
-        fontSize: "18px",
-        color: (theme: ITheme) => theme.color.removing
-    },
-    btnContainer: {
-        width: "100%",
-        rowGap: "6px",
-        marginBottom: (theme: ITheme) => theme.layout.margin
-    },
     sectionContainer: {
         width: "100%",
         border: (theme: ITheme) => `1px solid ${theme.color.lines}`,

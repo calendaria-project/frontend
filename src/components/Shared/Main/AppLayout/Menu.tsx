@@ -21,7 +21,14 @@ import {
     QuestionCircleOutlined
 } from "@ant-design/icons";
 import { AuthContext } from "context/AuthContextProvider";
-import { BMS_ADMIN, BMS_HEAD, BMS_HR, BMS_USER } from "context/roles";
+import {
+    BMS_1C_MANAGER,
+    BMS_HEAD,
+    BMS_HR,
+    BMS_OFFICE_MANAGER,
+    BMS_SYS_ADMIN,
+    BMS_USER
+} from "context/roles";
 
 const MenuComponent: FC = () => {
     const authContext = useContext(AuthContext);
@@ -83,7 +90,7 @@ const MenuComponent: FC = () => {
         }
     ];
 
-    const USER_ITEMS = [
+    const USER_DEFAULT_ITEMS = [
         {
             key: mainMenuEnum.incoming,
             icon: <ImportOutlined className={classes.icon} />,
@@ -110,19 +117,21 @@ const MenuComponent: FC = () => {
 
     const roles = authContext.roles;
     const getItems = (): MenuProps["items"] => {
-        if (roles.includes(BMS_ADMIN)) {
-            return [];
-        } else {
-            let items = SHARED_ITEMS as MenuProps["items"];
-            if (roles.includes(BMS_HR)) {
-                items = [...items!, ...HR_ITEMS];
-            }
-            if (roles.includes(BMS_USER) || roles.includes(BMS_HEAD)) {
-                items = [...items!, ...USER_ITEMS];
-            }
-
-            return items;
+        let items = SHARED_ITEMS as MenuProps["items"];
+        if (roles.includes(BMS_HR)) {
+            items = [...items!, ...HR_ITEMS];
         }
+        if (
+            roles.includes(BMS_USER) ||
+            roles.includes(BMS_HEAD) ||
+            roles.includes(BMS_SYS_ADMIN) ||
+            roles.includes(BMS_1C_MANAGER) ||
+            roles.includes(BMS_OFFICE_MANAGER)
+        ) {
+            items = [...items!, ...USER_DEFAULT_ITEMS];
+        }
+
+        return items;
     };
 
     return (

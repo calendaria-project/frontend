@@ -4,12 +4,9 @@ import useStyles from "./styles";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import { IAccessAppDataByCurrentUserViewModel } from "interfaces";
-import {
-    accessRequestTranscripts,
-    appTypesEnumTranscripts,
-    accessItemRequestTranscripts,
-    accessItemRequestStatuses
-} from "data/enums";
+import { accessRequestTranscripts, appTypesEnumTranscripts } from "data/transcripts";
+import { getFormattedDateFromNow } from "utils/getFormattedDates";
+import { getReqBallStyle } from "utils/getReqBallStyle";
 
 const { Panel } = Collapse;
 const { Text } = Typography;
@@ -19,24 +16,17 @@ const AccessRequest: FC<{ reqData: IAccessAppDataByCurrentUserViewModel }> = ({ 
     // @ts-ignore
     const classes = useStyles(theme);
 
-    const getPanelHeader = (appType: string, createdAt: string, itemStatus: string) => {
+    const getPanelHeader = (appType: string, createdAt: string, status: string) => {
         return (
             <Row className={classes.panelContainer}>
                 <Text>{appTypesEnumTranscripts[appType] ?? ""}</Text>
-                <Text>{new Date(createdAt).toLocaleDateString("ru-RU")}</Text>
+                <Text>{getFormattedDateFromNow(createdAt)}</Text>
                 <div className={classes.panelStatusContainer}>
                     <div
                         className={classes.panelStatusBall}
-                        style={{
-                            background:
-                                itemStatus === accessItemRequestStatuses.CANCELED
-                                    ? theme.color.removing + ""
-                                    : itemStatus === accessItemRequestStatuses.DONE
-                                    ? theme.color.successful + ""
-                                    : theme.color.between + ""
-                        }}
+                        style={getReqBallStyle(theme, status)}
                     />
-                    <Text>{accessItemRequestTranscripts[itemStatus] ?? ""}</Text>
+                    <Text strong>{accessRequestTranscripts[status] ?? ""}</Text>
                 </div>
             </Row>
         );
@@ -68,7 +58,7 @@ const AccessRequest: FC<{ reqData: IAccessAppDataByCurrentUserViewModel }> = ({ 
                                     header={getPanelHeader(
                                         accessItem.appType,
                                         accessItem.createdAt,
-                                        accessItem.items?.[0]?.status
+                                        accessItem.status
                                     )}
                                 >
                                     {(accessItem.items || []).map((item, index) => (

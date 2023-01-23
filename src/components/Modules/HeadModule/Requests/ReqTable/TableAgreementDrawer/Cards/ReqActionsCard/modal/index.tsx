@@ -11,7 +11,7 @@ interface ICancelReqModal {
     title: string;
     isVisible: boolean;
     setIsVisible: (bool: boolean) => void;
-    onFinish: (data: { comment: string }) => void;
+    onFinish: (data: { reason: string }) => void;
 }
 
 const CancelReqModal: FC<ICancelReqModal> = ({
@@ -42,7 +42,10 @@ const CancelReqModal: FC<ICancelReqModal> = ({
             >
                 <Row>
                     <Col span={24}>
-                        <Form.Item name={"comment"}>
+                        <Form.Item
+                            rules={[{ required: true, message: "Укажите причину" }]}
+                            name={"reason"}
+                        >
                             <Input placeholder={"Опишите здесь причину"} />
                         </Form.Item>
                     </Col>

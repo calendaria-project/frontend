@@ -9,7 +9,20 @@ import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import { validateMessages } from "data/constants";
 import { IOrgStructureTreeItemViewModel, IPositionViewModel } from "interfaces";
-import { editingOptions, layoutOptions, structureLayout, TLayoutOptions } from "../constants";
+import {
+    BIN,
+    COMPANY_ADDRESSES,
+    COMPANY_TYPE,
+    editingOptions,
+    EMAIL,
+    IS_COMPANY_HEAD,
+    IS_COUNTERPARTY,
+    IS_DIVISION_HEAD,
+    layoutOptions,
+    POSITION,
+    structureLayout,
+    TLayoutOptions
+} from "../constants";
 import CompanySelect from "components/Modules/HRModule/Dictionary/companiesTreeView/modal/Select";
 import { mailMessage, mailPattern } from "data/patterns";
 import { inputLengthHandler } from "utils/inputLengthHandler";
@@ -97,7 +110,7 @@ const SharedModal = ({
         >
             {(currentStructureLayout || []).map(({ name, label, placeholder, required }) => (
                 <React.Fragment key={name}>
-                    {name === "bin" ? (
+                    {name === BIN ? (
                         <Col span={colSpan}>
                             <Form.Item
                                 name={name}
@@ -118,7 +131,7 @@ const SharedModal = ({
                                 />
                             </Form.Item>
                         </Col>
-                    ) : name === "position" ? (
+                    ) : name === POSITION ? (
                         <Col span={colSpan}>
                             <Form.Item
                                 name="position.positionId"
@@ -136,10 +149,10 @@ const SharedModal = ({
                                 </Select>
                             </Form.Item>
                         </Col>
-                    ) : name === "companyType" ? (
+                    ) : name === COMPANY_TYPE ? (
                         <Col span={colSpan}>
                             <Form.Item
-                                name="companyType"
+                                name={name}
                                 initialValue={existingData?.companyType}
                                 rules={[{ required: true }]}
                             >
@@ -153,7 +166,7 @@ const SharedModal = ({
                                 />
                             </Form.Item>
                         </Col>
-                    ) : name === "isCompanyHead" ? (
+                    ) : name === IS_COMPANY_HEAD || name === IS_DIVISION_HEAD ? (
                         <Col span={24}>
                             <Form.Item
                                 initialValue={false}
@@ -164,7 +177,7 @@ const SharedModal = ({
                                 <Checkbox defaultChecked={false}>{label}</Checkbox>
                             </Form.Item>
                         </Col>
-                    ) : name === "isCounterparty" ? (
+                    ) : name === IS_COUNTERPARTY ? (
                         <Col span={colSpan}>
                             <Form.Item
                                 initialValue={false}
@@ -175,7 +188,7 @@ const SharedModal = ({
                                 <Checkbox defaultChecked={false}>{label}</Checkbox>
                             </Form.Item>
                         </Col>
-                    ) : name === "email" ? (
+                    ) : name === EMAIL ? (
                         <Col span={colSpan}>
                             <Form.Item
                                 name={name}
@@ -187,12 +200,12 @@ const SharedModal = ({
                                 <Input placeholder={placeholder} />
                             </Form.Item>
                         </Col>
-                    ) : name === "companyAddresses" ? (
+                    ) : name === COMPANY_ADDRESSES ? (
                         <>
                             <Col className={classes.addressLabel} span={24}>
                                 <FormItemLabel prefixCls="" required={false} label="Адреса" />
                             </Col>
-                            <Form.List name={["companyAddresses"]}>
+                            <Form.List name={[COMPANY_ADDRESSES]}>
                                 {(fields, { add, remove }) => (
                                     <>
                                         {fields.map(({ name, key, ...restField }) => {

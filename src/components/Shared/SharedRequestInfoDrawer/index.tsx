@@ -3,29 +3,21 @@ import { LeftOutlined } from "@ant-design/icons";
 import { Col, Drawer, Row } from "antd";
 import {
     IAccessAppDataByCurrentUserInKeyViewModel,
-    IAccessAppDataByCurrentUserViewModel
+    IAccessApplicationHistoryViewModel
 } from "interfaces";
 import useStyles from "./styles";
 import { useTheme } from "react-jss";
 import ReqCard from "./Cards/ReqCard";
-import ReqActionsCard from "./Cards/ReqActionsCard";
+import ReqExtraCard from "./Cards/ReqExtraCard";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 
 interface ITableAgreementDrawer {
     open: boolean;
     setOpen: (val: boolean) => void;
-    reqData: IAccessAppDataByCurrentUserViewModel;
     currentAppId: number;
-    updateReqData: (data: IAccessAppDataByCurrentUserViewModel) => void;
 }
 
-const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({
-    open,
-    setOpen,
-    reqData,
-    currentAppId,
-    updateReqData
-}) => {
+const SharedRequestInfoDrawer: FC<ITableAgreementDrawer> = ({ open, setOpen, currentAppId }) => {
     const onClose = () => {
         setOpen(false);
     };
@@ -37,8 +29,20 @@ const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({
     const [currentReqData, setCurrentReqData] = useState<IAccessAppDataByCurrentUserInKeyViewModel>(
         {} as IAccessAppDataByCurrentUserInKeyViewModel
     );
+    const [appHistory, setAppHistory] = useState<IAccessApplicationHistoryViewModel[]>([]);
 
-    const { getAccessApplicationById } = useSimpleHttpFunctions();
+    const { getAccessApplicationHistoryById, getAccessApplicationById } = useSimpleHttpFunctions();
+
+    useEffect(() => {
+        if (currentAppId) {
+            initAppHistory();
+        }
+    }, [currentAppId]);
+
+    const initAppHistory = async () => {
+        const hist = await getAccessApplicationHistoryById(currentAppId);
+        setAppHistory(hist);
+    };
 
     useEffect(() => {
         if (currentAppId) {
@@ -50,6 +54,8 @@ const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({
         const data = await getAccessApplicationById(currentAppId);
         setCurrentReqData(data);
     };
+
+    console.log(currentReqData);
 
     return (
         <Drawer
@@ -64,14 +70,10 @@ const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({
                     <ReqCard currentReqData={currentReqData} />
                 </Col>
                 <Col span={4} className={classes.reqActions}>
-                    <ReqActionsCard
-                        reqData={reqData}
-                        currentReqData={currentReqData}
-                        updateReqData={updateReqData}
-                    />
+                    <ReqExtraCard currentReqData={currentReqData} appHistory={appHistory} />
                 </Col>
             </Row>
         </Drawer>
     );
 };
-export default memo(TableAgreementDrawer);
+export default memo(SharedRequestInfoDrawer);

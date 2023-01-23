@@ -9,6 +9,23 @@ export default createUseStyles({
         borderRadius: (theme: ITheme) => theme.borderRadius,
         overflow: "auto"
     },
+    btnsCol: {
+        display: "flex",
+        flexWrap: "nowrap",
+        columnGap: (theme: ITheme) => theme.layout.margin
+    },
+    statusBtn: {
+        border: "1px solid transparent",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "0 20px",
+        borderRadius: (theme: ITheme) => theme.borderRadius,
+        color: (theme: ITheme) => theme.color.primary
+    },
+    solveBtn: {
+        borderColor: "transparent !important"
+    },
     titleContainer: {
         background: (theme: ITheme) => theme.background.secondary,
         width: "100%",

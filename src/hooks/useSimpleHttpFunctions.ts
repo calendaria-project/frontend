@@ -3,6 +3,7 @@ import { getRequestHeader } from "functions/common";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "context/AuthContextProvider";
 import { ICompanyViewModel, IPositionViewModel } from "interfaces";
+import { ALL, ARCHIVE, ACTIVE } from "data/constants";
 
 const useSimpleHttpFunctions = () => {
     const authContext = useContext(AuthContext);
@@ -56,6 +57,18 @@ const useSimpleHttpFunctions = () => {
         ).then((data) => data);
     };
 
+    const getUsersByCompanyId = (
+        companyId: number,
+        reqType: typeof ALL | typeof ARCHIVE | typeof ACTIVE = ALL
+    ) => {
+        return actionMethodResultSync(
+            "USER",
+            `user/?companyId=${companyId}&requestType=${reqType}`,
+            "get",
+            getRequestHeader(authContext.token)
+        ).then((data) => data);
+    };
+
     const getDictionaryValues = (url: string) => {
         return actionMethodResultSync(
             "DICTIONARY",
@@ -90,7 +103,7 @@ const useSimpleHttpFunctions = () => {
     const getUsersWithPhotoId = async (data: any) => {
         const dataWithPhotoId = [];
         for (let i = 0; i < data.length; ++i) {
-            const profilePhotoId = data[i].profilePhotoId;
+            const profilePhotoId = data[i]?.profilePhotoId;
             let currentPhotoId;
             if (profilePhotoId) {
                 currentPhotoId = await actionMethodResultSync(
@@ -167,6 +180,17 @@ const useSimpleHttpFunctions = () => {
         });
     };
 
+    const getAccessApplicationById = (id: number) => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            `access-application/${id}`,
+            "get",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data;
+        });
+    };
+
     const getAccessApplicationByUserId = (userId: string) => {
         return actionMethodResultSync(
             "HELPDESK",
@@ -200,22 +224,11 @@ const useSimpleHttpFunctions = () => {
         });
     };
 
-    const getIncomingAccessApplication = () => {
+    const getIncomingAccessApplication = (companyId: number) => {
         return actionMethodResultSync(
             "HELPDESK",
-            `access-application/incoming`,
+            `access-application/incoming?companyId=${companyId}`,
             "get",
-            getRequestHeader(authContext.token)
-        ).then((data) => {
-            return data;
-        });
-    };
-
-    const deleteAccessApplicationById = (id: number) => {
-        return actionMethodResultSync(
-            "HELPDESK",
-            `access-application/${id}`,
-            "delete",
             getRequestHeader(authContext.token)
         ).then((data) => {
             return data;
@@ -244,10 +257,33 @@ const useSimpleHttpFunctions = () => {
         });
     };
 
+    const rejectAccessApplicationById = (data: { reason: string }, id: number) => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            `access-application/${id}/reject`,
+            "post",
+            getRequestHeader(authContext.token),
+            data
+        ).then((data) => {
+            return data;
+        });
+    };
+
     const approveAccessApplicationById = (id: number) => {
         return actionMethodResultSync(
             "HELPDESK",
             `access-application/${id}/approve`,
+            "post",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data;
+        });
+    };
+
+    const doAccessApplicationTaskById = (id: number) => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            `access-application/${id}/do-app-task`,
             "post",
             getRequestHeader(authContext.token)
         ).then((data) => {
@@ -262,6 +298,7 @@ const useSimpleHttpFunctions = () => {
         getPositionOptions,
         getCurrentUserData,
         getUserData,
+        getUsersByCompanyId,
         getUsersWithPhotoId,
         getDictionaryValues,
         getCompanyById,
@@ -271,14 +308,16 @@ const useSimpleHttpFunctions = () => {
         calculatePercent,
         getDivisionOptions,
         getPositionOptionsByDivisionId,
+        getAccessApplicationById,
         getAccessApplicationByUserId,
         getAccessApplicationByCurrentUser,
-        deleteAccessApplicationById,
         getOutgoingAccessApplication,
         getIncomingAccessApplication,
         getAccessApplicationHistoryById,
         cancelAccessApplicationById,
-        approveAccessApplicationById
+        approveAccessApplicationById,
+        rejectAccessApplicationById,
+        doAccessApplicationTaskById
     };
 };
 export default useSimpleHttpFunctions;

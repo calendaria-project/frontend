@@ -3,12 +3,13 @@ import { LeftOutlined } from "@ant-design/icons";
 import { Col, Drawer, Row } from "antd";
 import {
     IAccessAppDataByCurrentUserInKeyViewModel,
-    IAccessAppDataByCurrentUserViewModel
+    IAccessAppDataByCurrentUserViewModel,
+    IAccessApplicationHistoryViewModel
 } from "interfaces";
 import useStyles from "./styles";
 import { useTheme } from "react-jss";
 import ReqCard from "./Cards/ReqCard";
-import ReqActionsCard from "./Cards/ReqActionsCard";
+import ReqExtraCard from "./Cards/ReqExtraCard";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 
 interface ITableAgreementDrawer {
@@ -37,8 +38,20 @@ const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({
     const [currentReqData, setCurrentReqData] = useState<IAccessAppDataByCurrentUserInKeyViewModel>(
         {} as IAccessAppDataByCurrentUserInKeyViewModel
     );
+    const [appHistory, setAppHistory] = useState<IAccessApplicationHistoryViewModel[]>([]);
 
-    const { getAccessApplicationById } = useSimpleHttpFunctions();
+    const { getAccessApplicationHistoryById, getAccessApplicationById } = useSimpleHttpFunctions();
+
+    useEffect(() => {
+        if (currentAppId) {
+            initAppHistory();
+        }
+    }, [currentAppId]);
+
+    const initAppHistory = async () => {
+        const hist = await getAccessApplicationHistoryById(currentAppId);
+        setAppHistory(hist);
+    };
 
     useEffect(() => {
         if (currentAppId) {
@@ -61,14 +74,15 @@ const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({
         >
             <Row className={classes.container}>
                 <Col span={20} className={classes.reqCard}>
-                    <ReqCard currentReqData={currentReqData} />
-                </Col>
-                <Col span={4} className={classes.reqActions}>
-                    <ReqActionsCard
+                    <ReqCard
                         reqData={reqData}
                         currentReqData={currentReqData}
                         updateReqData={updateReqData}
+                        initAppHistory={initAppHistory}
                     />
+                </Col>
+                <Col span={4} className={classes.reqActions}>
+                    <ReqExtraCard currentReqData={currentReqData} appHistory={appHistory} />
                 </Col>
             </Row>
         </Drawer>

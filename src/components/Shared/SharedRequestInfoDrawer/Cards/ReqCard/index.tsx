@@ -39,7 +39,7 @@ const ReqCard: FC<IReqCard> = ({ currentReqData }) => {
 
     return (
         <Row className={classes.container}>
-            <Row align={"middle"} className={classes.titleContainer}>
+            <Row align={"middle"} justify={"space-between"} className={classes.titleContainer}>
                 <Text className={classes.title}>Заявка #{currentReqData.applicationId}</Text>
             </Row>
             <Row className={classes.contentContainer}>

@@ -3,66 +3,81 @@ import React, { FC, memo, Suspense, useCallback, useState } from "react";
 import useStyles from "./styles";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
-import { IAccessAppDataByCurrentUserViewModel } from "interfaces";
 import {
-    accessRequestTranscripts,
-    appTypesEnumTranscripts,
-    accessItemRequestTranscripts,
-    accessItemRequestStatuses
-} from "data/enums";
+    IAccessAppDataByCurrentUserInKeyViewModel,
+    IAccessAppDataByCurrentUserViewModel
+} from "interfaces";
+import { accessRequestStatuses } from "data/enums";
+import { accessRequestTranscripts, appTypesEnumTranscripts } from "data/transcripts";
+import { getFormattedDateFromNow } from "utils/getFormattedDates";
 
 import { CloseOutlined } from "@ant-design/icons";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
 import EmptyTableContent from "components/Shared/tableRenderer/EmptyTableContent";
+import { getReqBallStyle } from "utils/getReqBallStyle";
+import getReqDataForUpdate from "utils/getReqDataForUpdate";
 
 const CancelReqModal = React.lazy(
     () => import("components/Shared/modalRenderer/ReadyModals/SimpleConfirmationModal")
 );
+const SharedInfoDrawer = React.lazy(() => import("components/Shared/SharedRequestInfoDrawer"));
 
 const { Text } = Typography;
 
 const ReqTable: FC<{
     reqData: IAccessAppDataByCurrentUserViewModel;
-    setReqData: (v: IAccessAppDataByCurrentUserViewModel) => void;
-}> = ({ reqData, setReqData }) => {
+    updateReqData: (data: IAccessAppDataByCurrentUserViewModel) => void;
+}> = ({ reqData, updateReqData }) => {
     const theme = useTheme<ITheme>();
     // @ts-ignore
     const classes = useStyles(theme);
 
-    const [cancelId, setCancelId] = useState<number | undefined>();
+    const [reqForCancel, setReqForCancel] = useState<IAccessAppDataByCurrentUserInKeyViewModel>(
+        {} as IAccessAppDataByCurrentUserInKeyViewModel
+    );
+
+    const [sharedInfoDrawerOpened, setSharedInfoDrawerOpened] = useState(false);
+    const [currentAppId, setCurrentAppId] = useState<number | undefined>();
+
     const [cancelReqModalVisible, setCancelReqModalVisible] = useState(false);
 
-    const { deleteAccessApplicationById } = useSimpleHttpFunctions();
+    const { cancelAccessApplicationById } = useSimpleHttpFunctions();
 
-    const handleCancelBtnClick = (id: number) => () => {
-        setCancelId(id);
+    const handleOpenInfoDrawer = (applicationId: number) => () => {
+        setCurrentAppId(applicationId);
+        setSharedInfoDrawerOpened(true);
+    };
+
+    const handleCancelBtnClick = (req: IAccessAppDataByCurrentUserInKeyViewModel) => () => {
+        setReqForCancel(req);
         setCancelReqModalVisible(true);
     };
 
     const onCancelRequest = useCallback(async () => {
+        const cancelId = reqForCancel.applicationId;
         if (cancelId) {
-            const data = await deleteAccessApplicationById(cancelId).catch(() =>
+            await cancelAccessApplicationById(cancelId).catch(() =>
                 message.error("Ошибка отмены заявки!")
             );
-        }
-    }, [cancelId]);
 
-    const getReqStatus = (itemStatus: string) => {
+            const dataForUpdate = getReqDataForUpdate(
+                reqData,
+                reqForCancel,
+                cancelId,
+                accessRequestStatuses.CANCELED
+            );
+
+            updateReqData(dataForUpdate);
+            message.success("Заявка отменена!");
+        }
+    }, [reqForCancel, reqData, updateReqData]);
+
+    const getReqStatusWithBall = (status: string) => {
         return (
             <div className={classes.statusContainer}>
-                <div
-                    className={classes.statusBall}
-                    style={{
-                        background:
-                            itemStatus === accessItemRequestStatuses.CANCELED
-                                ? theme.color.removing + ""
-                                : itemStatus === accessItemRequestStatuses.DONE
-                                ? theme.color.successful + ""
-                                : theme.color.between + ""
-                    }}
-                />
-                <Text strong>{accessItemRequestTranscripts[itemStatus] ?? ""}</Text>
+                <div className={classes.statusBall} style={getReqBallStyle(theme, status)} />
+                <Text strong>{accessRequestTranscripts[status] ?? ""}</Text>
             </div>
         );
     };
@@ -85,37 +100,37 @@ const ReqTable: FC<{
                                     {accessRequestTranscripts[key]}
                                 </Text>
                             </Row>
-                            {(data || []).map((accessItem) => (
-                                <Row
-                                    key={accessItem.applicationId}
-                                    className={classes.reqContainer}
-                                >
-                                    <Text strong>
-                                        {appTypesEnumTranscripts[accessItem.appType] ?? ""}
-                                    </Text>
-                                    <Text>
-                                        {new Date(accessItem.createdAt).toLocaleDateString("ru-RU")}
-                                    </Text>
-                                    <Text>
-                                        {new Date(accessItem.endDate).toLocaleDateString("ru-RU")}
-                                    </Text>
-                                    {getReqStatus(accessItem.items?.[0]?.status)}
-                                    {accessItem.items?.[0]?.status ===
-                                    accessItemRequestStatuses.ON_PROCESS ? (
-                                        <div
-                                            onClick={handleCancelBtnClick(accessItem.applicationId)}
-                                            className={classes.cancelReqTextContainer}
+                            {(data || []).map((accessItem) => {
+                                const reqStatus = accessItem.status;
+                                const applicationId = accessItem.applicationId;
+                                return (
+                                    <Row key={applicationId} className={classes.reqContainer}>
+                                        <Text
+                                            onClick={handleOpenInfoDrawer(applicationId)}
+                                            className={classes.reqTypeText}
+                                            strong
                                         >
-                                            <CloseOutlined className={classes.cancelIcon} />
-                                            <span className={classes.cancelText}>
-                                                Отменить заявку
-                                            </span>
-                                        </div>
-                                    ) : (
-                                        <div />
-                                    )}
-                                </Row>
-                            ))}
+                                            {appTypesEnumTranscripts[accessItem.appType] ?? ""}
+                                        </Text>
+                                        <Text>{getFormattedDateFromNow(accessItem.createdAt)}</Text>
+                                        <Text>{getFormattedDateFromNow(accessItem.endDate)}</Text>
+                                        {getReqStatusWithBall(reqStatus)}
+                                        {reqStatus === accessRequestStatuses.ON_APPROVEMENT ? (
+                                            <div
+                                                onClick={handleCancelBtnClick(accessItem)}
+                                                className={classes.cancelReqTextContainer}
+                                            >
+                                                <CloseOutlined className={classes.cancelIcon} />
+                                                <span className={classes.cancelText}>
+                                                    Отменить заявку
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            <div className={classes.emptyDiv} />
+                                        )}
+                                    </Row>
+                                );
+                            })}
                         </React.Fragment>
                     ))}
                 </Row>
@@ -129,6 +144,13 @@ const ReqTable: FC<{
                     isVisible={cancelReqModalVisible}
                     setIsVisible={setCancelReqModalVisible}
                     confirmAction={onCancelRequest}
+                />
+            </Suspense>
+            <Suspense>
+                <SharedInfoDrawer
+                    open={sharedInfoDrawerOpened}
+                    setOpen={setSharedInfoDrawerOpened}
+                    currentAppId={currentAppId!}
                 />
             </Suspense>
         </Row>
