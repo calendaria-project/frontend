@@ -107,7 +107,7 @@ const ReqTable: FC<{
                                             <Button
                                                 customType={"regular"}
                                                 disabled={
-                                                    currentUserId === accessItem.creatorUser?.userId
+                                                    currentUserId === accessItem.creatorUserId
                                                 }
                                                 onClick={handleOpenDrawer(applicationId)}
                                                 className={classes.toAccessBtn}

@@ -391,6 +391,7 @@ export interface IAccessAppDataByCurrentUserInKeyViewModel {
     status: string;
     applicationUser: IExtendedAccessApplicationUserViewModel;
     creatorUser: IAccessApplicationUserViewModel;
+    creatorUserId: string;
     items: IAccessApplicationItemViewModel[];
     createdAt: string;
     updatedAt: string;
