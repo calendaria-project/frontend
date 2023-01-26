@@ -17,11 +17,13 @@ import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
 import EmptyTableContent from "components/Shared/tableRenderer/EmptyTableContent";
 import { getReqBallStyle } from "utils/getReqBallStyle";
 import getReqDataForUpdate from "utils/getReqDataForUpdate";
+import Button from "ui/Button";
 
 const CancelReqModal = React.lazy(
     () => import("components/Shared/modalRenderer/ReadyModals/SimpleConfirmationModal")
 );
 const SharedInfoDrawer = React.lazy(() => import("components/Shared/SharedRequestInfoDrawer"));
+const SignModal = React.lazy(() => import("./modal"));
 
 const { Text } = Typography;
 
@@ -33,7 +35,9 @@ const ReqTable: FC<{
     // @ts-ignore
     const classes = useStyles(theme);
 
-    const [reqForCancel, setReqForCancel] = useState<IAccessAppDataByCurrentUserInKeyViewModel>(
+    const [signModalVisible, setSignModalVisible] = useState(false);
+
+    const [currentReq, setCurrentReq] = useState<IAccessAppDataByCurrentUserInKeyViewModel>(
         {} as IAccessAppDataByCurrentUserInKeyViewModel
     );
 
@@ -42,7 +46,7 @@ const ReqTable: FC<{
 
     const [cancelReqModalVisible, setCancelReqModalVisible] = useState(false);
 
-    const { cancelAccessApplicationById } = useSimpleHttpFunctions();
+    const { cancelAccessApplicationById, signAccessApplicationTaskById } = useSimpleHttpFunctions();
 
     const handleOpenInfoDrawer = (applicationId: number) => () => {
         setCurrentAppId(applicationId);
@@ -50,12 +54,12 @@ const ReqTable: FC<{
     };
 
     const handleCancelBtnClick = (req: IAccessAppDataByCurrentUserInKeyViewModel) => () => {
-        setReqForCancel(req);
+        setCurrentReq(req);
         setCancelReqModalVisible(true);
     };
 
     const onCancelRequest = useCallback(async () => {
-        const cancelId = reqForCancel.applicationId;
+        const cancelId = currentReq.applicationId;
         if (cancelId) {
             await cancelAccessApplicationById(cancelId).catch(() =>
                 message.error("Ошибка отмены заявки!")
@@ -63,7 +67,7 @@ const ReqTable: FC<{
 
             const dataForUpdate = getReqDataForUpdate(
                 reqData,
-                reqForCancel,
+                currentReq,
                 cancelId,
                 accessRequestStatuses.CANCELED
             );
@@ -71,7 +75,31 @@ const ReqTable: FC<{
             updateReqData(dataForUpdate);
             message.success("Заявка отменена!");
         }
-    }, [reqForCancel, reqData, updateReqData]);
+    }, [currentReq, reqData, updateReqData]);
+
+    const handleOpenSignModal = (req: IAccessAppDataByCurrentUserInKeyViewModel) => () => {
+        setCurrentReq(req);
+        setSignModalVisible(true);
+    };
+
+    const handleSignTask = useCallback(async () => {
+        const signId = currentReq.applicationId;
+        if (signId) {
+            await signAccessApplicationTaskById(signId);
+
+            const dataForUpdate = getReqDataForUpdate(
+                reqData,
+                currentReq,
+                signId,
+                accessRequestStatuses.DONE,
+                accessRequestStatuses.ON_EMPLOYER_SIGN
+            );
+
+            updateReqData(dataForUpdate);
+            message.success("Заявка подписана!");
+            setSignModalVisible(false);
+        }
+    }, [currentReq, reqData, updateReqData]);
 
     const getReqStatusWithBall = (status: string) => {
         return (
@@ -125,6 +153,13 @@ const ReqTable: FC<{
                                                     Отменить заявку
                                                 </span>
                                             </div>
+                                        ) : reqStatus === accessRequestStatuses.ON_EMPLOYER_SIGN ? (
+                                            <Button
+                                                customType={"regular"}
+                                                onClick={handleOpenSignModal(accessItem)}
+                                            >
+                                                Подписать
+                                            </Button>
                                         ) : (
                                             <div className={classes.emptyDiv} />
                                         )}
@@ -151,6 +186,14 @@ const ReqTable: FC<{
                     open={sharedInfoDrawerOpened}
                     setOpen={setSharedInfoDrawerOpened}
                     currentAppId={currentAppId!}
+                />
+            </Suspense>
+            <Suspense>
+                <SignModal
+                    title={"Подпишите соглашение"}
+                    isVisible={signModalVisible}
+                    setIsVisible={setSignModalVisible}
+                    onSignTask={handleSignTask}
                 />
             </Suspense>
         </Row>

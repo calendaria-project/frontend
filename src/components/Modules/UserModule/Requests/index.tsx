@@ -132,6 +132,8 @@ const Requests: FC = () => {
         setCurrUserData(data);
     };
 
+    console.log(allRequests);
+
     useEffect(() => {
         if (!isBookingReq && isObjectNotEmpty(copiedRequests)) {
             const searchedData: [string, IAccessAppDataByCurrentUserInKeyViewModel[]][] = searchStr
@@ -182,8 +184,7 @@ const Requests: FC = () => {
     );
 
     const onFinishAddReqModal = useCallback(
-        (data: any) => {
-            console.log(data);
+        async (data: any) => {
             const filteredData = removeEmptyValuesFromAnyLevelObject(data);
             const filteredDataWithDate = getObjectWithHandledDates(filteredData);
 
@@ -213,6 +214,8 @@ const Requests: FC = () => {
                 items: reqItems
             };
 
+            console.log(finalReqData);
+
             actionMethodResultSync(
                 "HELPDESK",
                 "access-application",
@@ -220,9 +223,8 @@ const Requests: FC = () => {
                 getRequestHeader(authContext.token),
                 finalReqData
             )
-                .then((d) => {
+                .then((data: IAccessAppDataByCurrentUserInKeyViewModel) => {
                     message.success("Успешно создано");
-                    console.log(d);
                     form.resetFields();
                     setReqModalVisible(false);
                     updateReqData({
@@ -230,8 +232,8 @@ const Requests: FC = () => {
                         [accessRequestStatuses.ON_APPROVEMENT]: allRequests[
                             accessRequestStatuses.ON_APPROVEMENT
                         ]
-                            ? [...allRequests[accessRequestStatuses.ON_APPROVEMENT], d]
-                            : [d]
+                            ? [...allRequests[accessRequestStatuses.ON_APPROVEMENT], data]
+                            : [data]
                     });
                 })
                 .catch(() => {
@@ -341,10 +343,10 @@ const Requests: FC = () => {
             <Suspense>
                 <AddRequestModal
                     form={form}
-                    title={isAddReqFlag ? "Добавить заявку" : "Отзыв прав"}
+                    title={isAddReqFlag ? "Добавить и подписать заявку" : "Отзыв прав"}
                     isVisible={reqModalVisible}
                     setIsVisible={setReqModalVisible}
-                    okText={isAddReqFlag ? "Добавить" : "Отправить"}
+                    okText={isAddReqFlag ? "Добавить и подписать" : "Отправить"}
                     onFinish={onFinishAddReqModal}
                     userName={getFullName(
                         currUserData.firstname,

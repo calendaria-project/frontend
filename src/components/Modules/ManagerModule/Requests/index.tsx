@@ -50,9 +50,9 @@ import { getFormattedDateFromNow } from "utils/getFormattedDates";
 import { IUsersWithInfoModel } from "interfaces/extended";
 import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
 import getObjectWithHandledDates from "utils/getObjectWithHandeledDates";
-import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { AuthContext } from "context/AuthContextProvider";
+import axios from "axios";
 
 const AccessReqModal = React.lazy(
     () => import("components/Shared/modalRenderer/ReadyModals/AccessReqModal")
@@ -260,14 +260,14 @@ const Requests: FC = () => {
                 items: reqItems
             };
 
-            actionMethodResultSync(
-                "HELPDESK",
-                "access-application",
-                "post",
-                getRequestHeader(authContext.token),
-                finalReqData
-            )
-                .then((d) => {
+            axios
+                .post(
+                    `${process.env.HELPDESK_URL}access-application`,
+                    finalReqData,
+                    getRequestHeader(authContext.token)
+                )
+                .then((record) => {
+                    const d = record.data;
                     message.success("Успешно создано");
                     console.log(d);
                     form.resetFields();
@@ -281,9 +281,39 @@ const Requests: FC = () => {
                             : [d]
                     });
                 })
-                .catch(() => {
-                    message.error("Ошибка создания!");
+                .catch((e) => {
+                    if (e.response?.data?.message === "PROCESS_HEAD_USER_NOT_FOUND") {
+                        message.error("Не найден управлющий процессом!");
+                    } else {
+                        message.error("Ошибка создания!");
+                    }
                 });
+
+            // actionMethodResultSync(
+            //     "HELPDESK",
+            //     "access-application",
+            //     "post",
+            //     getRequestHeader(authContext.token),
+            //     finalReqData
+            // )
+            //     .then((d) => {
+            //         message.success("Успешно создано");
+            //         console.log(d);
+            //         form.resetFields();
+            //         setReqModalVisible(false);
+            //         updateReqData({
+            //             ...allRequests,
+            //             [accessRequestStatuses.ON_APPROVEMENT]: allRequests[
+            //                 accessRequestStatuses.ON_APPROVEMENT
+            //             ]
+            //                 ? [...allRequests[accessRequestStatuses.ON_APPROVEMENT], d]
+            //                 : [d]
+            //         });
+            //     })
+            //     .catch((e) => {
+            //         console.log(e);
+            //         message.error("Ошибка создания!");
+            //     });
         },
         [modalValues, allRequests, updateReqData]
     );

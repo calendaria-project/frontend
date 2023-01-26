@@ -14,7 +14,7 @@ const getReqDataForUpdate = (
     onlyFilter?: boolean
 ) => {
     const {
-        [baseReqStatus]: onApprovedData,
+        [baseReqStatus]: baseData,
         [extractedReqStatus]: extractedData,
         ...restReqData
     } = reqData || {};
@@ -22,9 +22,9 @@ const getReqDataForUpdate = (
     //transform and add current req to extracted(may be reject, cancel and so on) reqs
     return {
         ...(restReqData || {}),
-        ...(getObjectLength(onApprovedData) > 1
+        ...(getObjectLength(baseData) > 1
             ? {
-                  [baseReqStatus]: onApprovedData.filter(
+                  [baseReqStatus]: baseData.filter(
                       (reqItem) => reqItem.applicationId !== appIdForFilterFromApprovement
                   )
               }
