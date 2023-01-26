@@ -2,7 +2,7 @@ import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "context/AuthContextProvider";
-import { ICompanyViewModel, IPositionViewModel } from "interfaces";
+import { IAccessApplicationViewModel, ICompanyViewModel, IPositionViewModel } from "interfaces";
 import { ALL, ARCHIVE, ACTIVE } from "data/constants";
 
 const useSimpleHttpFunctions = () => {
@@ -180,6 +180,16 @@ const useSimpleHttpFunctions = () => {
         });
     };
 
+    const postAccessApplication = (record: IAccessApplicationViewModel) => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            "access-application",
+            "post",
+            getRequestHeader(authContext.token),
+            record
+        ).then((data) => data);
+    };
+
     const getAccessApplicationById = (id: number) => {
         return actionMethodResultSync(
             "HELPDESK",
@@ -291,6 +301,17 @@ const useSimpleHttpFunctions = () => {
         });
     };
 
+    const signAccessApplicationTaskById = (id: number) => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            `access-application/${id}/sign`,
+            "get",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data;
+        });
+    };
+
     return {
         companies,
         positions,
@@ -308,6 +329,7 @@ const useSimpleHttpFunctions = () => {
         calculatePercent,
         getDivisionOptions,
         getPositionOptionsByDivisionId,
+        postAccessApplication,
         getAccessApplicationById,
         getAccessApplicationByUserId,
         getAccessApplicationByCurrentUser,
@@ -317,7 +339,8 @@ const useSimpleHttpFunctions = () => {
         cancelAccessApplicationById,
         approveAccessApplicationById,
         rejectAccessApplicationById,
-        doAccessApplicationTaskById
+        doAccessApplicationTaskById,
+        signAccessApplicationTaskById
     };
 };
 export default useSimpleHttpFunctions;

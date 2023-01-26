@@ -51,7 +51,7 @@ export default createUseStyles({
         whiteSpace: "nowrap"
     },
     statusContainer: {
-        width: "180px",
+        width: "260px",
         display: "flex",
         alignItems: "center",
         justifyContent: "center"

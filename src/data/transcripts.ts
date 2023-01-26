@@ -15,7 +15,8 @@ export const accessRequestTranscripts: { [key: string]: string } = {
     [accessRequestStatuses.ON_PROCESS]: "В процессе",
     [accessRequestStatuses.REJECTED]: "Отказано",
     [accessRequestStatuses.CANCELED]: "Отменена",
-    [accessRequestStatuses.DONE]: "Завершена"
+    [accessRequestStatuses.DONE]: "Завершена",
+    [accessRequestStatuses.ON_EMPLOYER_SIGN]: "На подписании сотрудником"
 };
 
 export const accessItemRequestTranscripts: { [key: string]: string } = {
@@ -28,6 +29,7 @@ export const accessRequestHistoryTranscripts: { [key: string]: string } = {
     [accessRequestHistoryStatuses.CREATED]: "Заявка создана",
     [accessRequestHistoryStatuses.REJECTED]: "Заявка отклонена согласующим",
     [accessRequestHistoryStatuses.ON_APPROVEMENT]: "На согласовании",
+    [accessRequestStatuses.ON_EMPLOYER_SIGN]: "На подписании сотрудником",
     [accessRequestHistoryStatuses.APPROVED]: "Заявка согласована",
     [accessRequestHistoryStatuses.SYSTEM_ACCOUNTS_CREATED]: "Cистемные учетные записи созданы",
     [accessRequestHistoryStatuses.ACCOUNT_TENDERIX_CREATED]: "Аккаунт tenderix создан",

@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useMemo, useState, Suspense, useContext } from "react";
+import React, { FC, useCallback, useEffect, useMemo, useState, Suspense } from "react";
 import { SetCurrentOpenedMenu } from "store/actions";
 import {
     accessRequestStatuses,
@@ -50,9 +50,6 @@ import { getFormattedDateFromNow } from "utils/getFormattedDates";
 import { IUsersWithInfoModel } from "interfaces/extended";
 import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
 import getObjectWithHandledDates from "utils/getObjectWithHandeledDates";
-import { actionMethodResultSync } from "functions/actionMethodResult";
-import { getRequestHeader } from "functions/common";
-import { AuthContext } from "context/AuthContextProvider";
 
 const AccessReqModal = React.lazy(
     () => import("components/Shared/modalRenderer/ReadyModals/AccessReqModal")
@@ -61,7 +58,6 @@ const { Option } = Select;
 const { Text } = Typography;
 
 const Requests: FC = () => {
-    const authContext = useContext(AuthContext);
     const dispatch = useDispatch();
 
     const theme = useTheme<ITheme>();
@@ -99,6 +95,7 @@ const Requests: FC = () => {
     const [query, setQuery] = useState("");
     const { searchStr, handleFiltrationChange } = useDelayedInputSearch(query, setQuery);
     const {
+        postAccessApplication,
         getOutgoingAccessApplication,
         getIncomingAccessApplication,
         getUsersWithPhotoId,
@@ -241,7 +238,7 @@ const Requests: FC = () => {
     );
 
     const onFinishReqModal = useCallback(
-        (data: any) => {
+        async (data: any) => {
             const filteredData = removeEmptyValuesFromAnyLevelObject(data);
             const filteredDataWithDate = getObjectWithHandledDates(filteredData);
 
@@ -271,30 +268,59 @@ const Requests: FC = () => {
                 items: reqItems
             };
 
-            actionMethodResultSync(
-                "HELPDESK",
-                "access-application",
-                "post",
-                getRequestHeader(authContext.token),
-                finalReqData
-            )
-                .then((d) => {
-                    message.success("Успешно создано");
-                    console.log(d);
-                    form.resetFields();
-                    setReqModalVisible(false);
-                    updateReqData({
-                        ...allRequests,
-                        [accessRequestStatuses.ON_APPROVEMENT]: allRequests[
-                            accessRequestStatuses.ON_APPROVEMENT
-                        ]
-                            ? [...allRequests[accessRequestStatuses.ON_APPROVEMENT], d]
-                            : [d]
-                    });
-                })
-                .catch(() => {
-                    message.error("Ошибка создания!");
+            const accessAppData: IAccessAppDataByCurrentUserInKeyViewModel =
+                await postAccessApplication(finalReqData).catch(() =>
+                    message.error("Ошибка создания!")
+                );
+
+            if (accessAppData && isObjectNotEmpty(accessAppData)) {
+                const { applicationUser } = accessAppData;
+
+                const applicationUserWithPhoto = await getUsersWithPhotoId([applicationUser]);
+
+                const finalAccessAppData = {
+                    ...accessAppData,
+                    applicationUser: applicationUserWithPhoto?.[0]
+                };
+
+                message.success("Успешно создано");
+                form.resetFields();
+                setReqModalVisible(false);
+
+                updateReqData({
+                    ...allRequests,
+                    [accessRequestStatuses.ON_PROCESS]: allRequests[
+                        accessRequestStatuses.ON_PROCESS
+                    ]
+                        ? [...allRequests[accessRequestStatuses.ON_PROCESS], finalAccessAppData]
+                        : [finalAccessAppData]
                 });
+            }
+
+            // actionMethodResultSync(
+            //     "HELPDESK",
+            //     "access-application",
+            //     "post",
+            //     getRequestHeader(authContext.token),
+            //     finalReqData
+            // )
+            //     .then((d) => {
+            //         message.success("Успешно создано");
+            //         console.log(d);
+            //         form.resetFields();
+            //         setReqModalVisible(false);
+            //         updateReqData({
+            //             ...allRequests,
+            //             [accessRequestStatuses.ON_PROCESS]: allRequests[
+            //                 accessRequestStatuses.ON_PROCESS
+            //             ]
+            //                 ? [...allRequests[accessRequestStatuses.ON_PROCESS], d]
+            //                 : [d]
+            //         });
+            //     })
+            //     .catch(() => {
+            //         message.error("Ошибка создания!");
+            //     });
         },
         [modalValues, allRequests, updateReqData]
     );
