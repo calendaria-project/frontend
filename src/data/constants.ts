@@ -1,5 +1,6 @@
 import { TLayoutModalData } from "./types";
-import { dictionaryCodesEnum, layoutConstantTypes } from "./enums";
+import { accessRequestStatuses, dictionaryCodesEnum, layoutConstantTypes } from "./enums";
+import { accessRequestTranscripts } from "./transcripts";
 
 export const validateMessages: { required: string } = {
     required: "Обязательное поле!"
@@ -203,21 +204,34 @@ export const ADDITIONAL_WORK_TYPE: TLayoutModalData[] = [
     }
 ];
 
-export const DATE = "createdAt";
-export const DEADLINE = "endDate";
-export const REQ_TYPE = "appType";
-export const sortAccessReqValues = [
+export const accessReqStatuses = [
     {
-        value: DATE,
-        label: "Дате отправки"
+        value: ALL,
+        label: "Все статусы"
     },
     {
-        value: REQ_TYPE,
-        label: "Виду заявки"
+        value: accessRequestStatuses.ON_APPROVEMENT,
+        label: accessRequestTranscripts[accessRequestStatuses.ON_APPROVEMENT]
     },
     {
-        value: DEADLINE,
-        label: "По дедлайну заявки"
+        value: accessRequestStatuses.ON_PROCESS,
+        label: accessRequestTranscripts[accessRequestStatuses.ON_PROCESS]
+    },
+    {
+        value: accessRequestStatuses.DONE,
+        label: accessRequestTranscripts[accessRequestStatuses.DONE]
+    },
+    {
+        value: accessRequestStatuses.ON_EMPLOYER_SIGN,
+        label: accessRequestTranscripts[accessRequestStatuses.ON_EMPLOYER_SIGN]
+    },
+    {
+        value: accessRequestStatuses.REJECTED,
+        label: accessRequestTranscripts[accessRequestStatuses.REJECTED]
+    },
+    {
+        value: accessRequestStatuses.CANCELED,
+        label: accessRequestTranscripts[accessRequestStatuses.CANCELED]
     }
 ];
 
@@ -226,8 +240,9 @@ export const CONF_ROOM = "confRoom";
 export const VEHICLE = "vehicle";
 export const HISTORY = "history";
 export const CALENDAR = "calendar";
+export const accessShowValuesNamesArr = [ALL_BOOKINGS, CONF_ROOM, VEHICLE, HISTORY, CALENDAR];
 
-export const sortAccessShowValues = [
+export const accessShowValues = [
     {
         value: ALL_BOOKINGS,
         label: "Все брони"

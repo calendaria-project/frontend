@@ -31,7 +31,13 @@ import {
 } from "interfaces";
 import { SearchOutlined, DownOutlined, PlusOutlined } from "@ant-design/icons";
 import { MY_REQUESTS, BOOKING, selectReqValues } from "./defaultValues";
-import { ALL_BOOKINGS, DATE, sortAccessReqValues, sortAccessShowValues } from "data/constants";
+import {
+    ALL,
+    ALL_BOOKINGS,
+    accessReqStatuses,
+    accessShowValues,
+    accessShowValuesNamesArr
+} from "data/constants";
 import cx from "classnames";
 import ReqTable from "./ReqTable";
 import Spinner from "ui/Spinner";
@@ -41,7 +47,7 @@ import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
 
 import { appItemTypeValues } from "data/enums";
 import { appTypesEnumTranscripts } from "data/transcripts";
-import sortRequests from "utils/sortAccessRequests";
+import filterRequests from "utils/filterAccessRequests";
 import getFullName from "utils/getFullName";
 import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
 import getObjectWithHandledDates from "utils/getObjectWithHandeledDates";
@@ -87,7 +93,7 @@ const Requests: FC = () => {
     const [selectReqValue, setSelectReqValue] = useState(
         sessionStorage.getItem("selectUserRequestsValue") || MY_REQUESTS
     );
-    const [sortValue, setSortValue] = useState("");
+    const [handlingValue, setHandlingValue] = useState("");
 
     const isBookingReq = selectReqValue === BOOKING;
 
@@ -98,8 +104,8 @@ const Requests: FC = () => {
 
     useEffect(() => {
         !isBookingReq
-            ? setSortValue(sessionStorage.getItem("sortUserRequestsValue") || DATE)
-            : setSortValue(sessionStorage.getItem("sortUserShowValue") || ALL_BOOKINGS);
+            ? setHandlingValue(sessionStorage.getItem("filterUserRequestsValue") || ALL)
+            : setHandlingValue(sessionStorage.getItem("sortUserShowValue") || ALL_BOOKINGS);
     }, [isBookingReq]);
 
     useEffect(() => {
@@ -151,10 +157,12 @@ const Requests: FC = () => {
                       ];
                   })
                 : Object.entries(copiedRequests);
-            const searchedAndSortedData = sortRequests(sortValue, searchedData);
-            setAllRequests(Object.fromEntries(searchedAndSortedData));
+            const searchedAndHandledData = accessShowValuesNamesArr.includes(handlingValue)
+                ? searchedData //change for sort util foo
+                : filterRequests(handlingValue, searchedData);
+            setAllRequests(Object.fromEntries(searchedAndHandledData));
         }
-    }, [searchStr, isBookingReq, copiedRequests, sortValue]);
+    }, [searchStr, isBookingReq, copiedRequests, handlingValue]);
 
     const updateReqData = useCallback(
         (data: IAccessAppDataByCurrentUserViewModel) => {
@@ -171,14 +179,14 @@ const Requests: FC = () => {
         setSelectReqValue(v);
     }, []);
 
-    const handleChangeSortValue = useCallback(
+    const handleChangeHandlingValue = useCallback(
         (v: string) => {
             if (!isBookingReq) {
-                sessionStorage.setItem("sortUserRequestsValue", v);
+                sessionStorage.setItem("filterUserRequestsValue", v);
             } else {
                 sessionStorage.setItem("sortUserShowValue", v);
             }
-            setSortValue(v);
+            setHandlingValue(v);
         },
         [isBookingReq]
     );
@@ -291,11 +299,11 @@ const Requests: FC = () => {
                     </Select>
                     <Text className={classes.textForSelection}>Показать:</Text>
                     <Select
-                        className={cx(classes.select, classes.sortSelect)}
-                        value={sortValue}
-                        onChange={handleChangeSortValue}
+                        className={cx(classes.select, classes.handlingSelect)}
+                        value={handlingValue}
+                        onChange={handleChangeHandlingValue}
                     >
-                        {(!isBookingReq ? sortAccessReqValues : sortAccessShowValues).map(
+                        {(!isBookingReq ? accessReqStatuses : accessShowValues).map(
                             ({ value, label }) => (
                                 <Option value={value} key={value + label}>
                                     {label}

@@ -19,7 +19,7 @@ export default createUseStyles({
             borderColor: (theme: ITheme) => `${theme.color.lines} !important`
         }
     },
-    sortSelect: {
+    handlingSelect: {
         marginLeft: (theme: ITheme) => theme.layout.smallMargin
     },
     input: {
