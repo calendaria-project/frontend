@@ -94,12 +94,12 @@ const MenuComponent: FC = () => {
         {
             key: mainMenuEnum.incoming,
             icon: <ImportOutlined className={classes.icon} />,
-            label: "Входящие"
+            label: "Внутренние сервисы"
         },
         {
             key: mainMenuEnum.outgoing,
             icon: <ExportOutlined className={classes.icon} />,
-            label: "Исходящие"
+            label: "Внешние сервисы"
         },
         {
             key: mainMenuEnum.requests,

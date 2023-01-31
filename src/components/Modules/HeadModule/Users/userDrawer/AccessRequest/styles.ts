@@ -74,5 +74,8 @@ export default createUseStyles({
         height: "16px",
         borderRadius: "50%",
         marginRight: "8px"
+    },
+    onApprovementBtnContainer: {
+        width: "100%"
     }
 });

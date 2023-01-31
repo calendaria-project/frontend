@@ -25,7 +25,11 @@ import getFullName from "utils/getFullName";
 
 const UserDrawer = React.lazy(() => import("./userDrawer"));
 
-const Users: FC = () => {
+interface IUsers {
+    // initialCurrentUserInfo?: IUsersWithPhotoInfoModel;
+}
+
+const Users: FC<IUsers> = (/*{ initialCurrentUserInfo }*/) => {
     const dispatch = useDispatch();
     const authContext = useContext(AuthContext);
 
@@ -41,6 +45,7 @@ const Users: FC = () => {
     const [currentUserInfo, setCurrentUserInfo] = useState<IUsersWithPhotoInfoModel>(
         {} as IUsersWithPhotoInfoModel
     );
+
     const [userDrawerOpen, setUserDrawerOpen] = useState(false);
 
     const [currentUserDivisionId, setCurrentUserDivisionId] = useState<number | undefined>(
@@ -49,6 +54,13 @@ const Users: FC = () => {
 
     const [query, setQuery] = useState("");
     const { searchStr, handleFiltrationChange } = useDelayedInputSearch(query, setQuery);
+
+    // useEffect(() => {
+    //     if (initialCurrentUserInfo) {
+    //         setCurrentUserInfo(initialCurrentUserInfo);
+    //         setUserDrawerOpen(true);
+    //     }
+    // }, []);
 
     useEffect(() => {
         initData();

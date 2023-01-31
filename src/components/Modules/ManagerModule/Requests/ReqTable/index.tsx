@@ -18,7 +18,7 @@ import { getFormattedDateFromNow } from "utils/getFormattedDates";
 import { getReqBallStyle } from "utils/getReqBallStyle";
 
 const { Text } = Typography;
-const AgreementDrawer = React.lazy(() => import("./TableAgreementDrawer"));
+const SolveDrawer = React.lazy(() => import("./TableSolveDrawer"));
 const SharedInfoDrawer = React.lazy(() => import("components/Shared/SharedRequestInfoDrawer"));
 
 const ReqTable: FC<{
@@ -29,13 +29,13 @@ const ReqTable: FC<{
     // @ts-ignore
     const classes = useStyles(theme);
 
-    const [agreementDrawerOpened, setAgreementDrawerOpened] = useState(false);
+    const [solveDrawerOpened, setSolveDrawerOpened] = useState(false);
     const [sharedInfoDrawerOpened, setSharedInfoDrawerOpened] = useState(false);
     const [currentAppId, setCurrentAppId] = useState<number | undefined>();
 
     const handleOpenDrawer = (applicationId: number) => () => {
         setCurrentAppId(applicationId);
-        setAgreementDrawerOpened(true);
+        setSolveDrawerOpened(true);
     };
 
     const handleOpenInfoDrawer = (applicationId: number) => () => {
@@ -74,11 +74,17 @@ const ReqTable: FC<{
                             {(data || []).map((accessItem) => {
                                 const profilePhoto = accessItem.applicationUser?.currentPhotoId;
                                 const reqStatus = accessItem.status;
+                                const onProcessStatus =
+                                    reqStatus === accessRequestStatuses.ON_PROCESS;
                                 const applicationId = accessItem.applicationId;
                                 return (
                                     <Row key={applicationId} className={classes.reqContainer}>
                                         <div
-                                            onClick={handleOpenInfoDrawer(applicationId)}
+                                            onClick={
+                                                onProcessStatus
+                                                    ? handleOpenDrawer(applicationId)
+                                                    : handleOpenInfoDrawer(applicationId)
+                                            }
                                             className={classes.accessItemFioContainer}
                                         >
                                             <img
@@ -100,13 +106,13 @@ const ReqTable: FC<{
                                         <Text>{getFormattedDateFromNow(accessItem.createdAt)}</Text>
                                         <Text>{getFormattedDateFromNow(accessItem.endDate)}</Text>
                                         {getReqStatusWithBall(reqStatus)}
-                                        {reqStatus === accessRequestStatuses.ON_PROCESS ? (
+                                        {onProcessStatus ? (
                                             <Button
                                                 customType={"regular"}
                                                 onClick={handleOpenDrawer(applicationId)}
                                                 className={classes.toAccessBtn}
                                             >
-                                                Согласовать заявку
+                                                Перейти к выполнению
                                             </Button>
                                         ) : (
                                             <div className={classes.emptyDiv} />
@@ -121,9 +127,9 @@ const ReqTable: FC<{
                 <EmptyTableContent />
             )}
             <Suspense>
-                <AgreementDrawer
-                    open={agreementDrawerOpened}
-                    setOpen={setAgreementDrawerOpened}
+                <SolveDrawer
+                    open={solveDrawerOpened}
+                    setOpen={setSolveDrawerOpened}
                     reqData={reqData}
                     currentAppId={currentAppId!}
                     updateReqData={updateReqData}

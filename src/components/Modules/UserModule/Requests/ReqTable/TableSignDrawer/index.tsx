@@ -8,11 +8,11 @@ import {
 } from "interfaces";
 import useStyles from "./styles";
 import { useTheme } from "react-jss";
-import ReqCard from "./Cards/ReqCard";
-import ReqExtraCard from "./Cards/ReqExtraCard";
+import ReqCard from "./ReqCard";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
+import ReqExtraCardSharedContent from "components/Shared/SharedRequestInfoDrawer/Cards/ReqExtraCard/ReqExtraCardSharedContent";
 
-interface ITableAgreementDrawer {
+interface ITableSignDrawer {
     open: boolean;
     setOpen: (val: boolean) => void;
     reqData: IAccessAppDataByCurrentUserViewModel;
@@ -20,7 +20,7 @@ interface ITableAgreementDrawer {
     updateReqData: (data: IAccessAppDataByCurrentUserViewModel) => void;
 }
 
-const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({
+const TableSignDrawer: FC<ITableSignDrawer> = ({
     open,
     setOpen,
     reqData,
@@ -82,10 +82,15 @@ const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({
                     />
                 </Col>
                 <Col span={4} className={classes.reqActions}>
-                    <ReqExtraCard currentReqData={currentReqData} appHistory={appHistory} />
+                    <Row>
+                        <ReqExtraCardSharedContent
+                            currentReqData={currentReqData}
+                            appHistory={appHistory}
+                        />
+                    </Row>
                 </Col>
             </Row>
         </Drawer>
     );
 };
-export default memo(TableAgreementDrawer);
+export default memo(TableSignDrawer);

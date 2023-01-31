@@ -1,34 +1,36 @@
 import React, { FC, memo, useEffect, useState } from "react";
+import { Col, Row, Typography } from "antd";
+import getFullName from "utils/getFullName";
+import { accessRequestHistoryTranscripts } from "data/transcripts";
+import { accessRequestHistoryStatuses } from "data/enums";
+import getLastNameWithInitials from "utils/getLastNameWithInitials";
+import { getFormattedDateFromNowWithTime } from "utils/getFormattedDates";
+import cx from "classnames";
+import { ArrowDownOutlined } from "@ant-design/icons";
 import {
     IAccessAppDataByCurrentUserInKeyViewModel,
     IAccessApplicationHistoryViewModel
 } from "interfaces";
-import useStyles from "./styles";
 import { useTheme } from "react-jss";
-import { Col, Row, Typography } from "antd";
-import { ArrowDownOutlined } from "@ant-design/icons";
+import useStyles from "./styles";
 import { actionMethodResultSync } from "functions/actionMethodResult";
-import getFullName from "utils/getFullName";
-import cx from "classnames";
-import { getFormattedDateFromNowWithTime } from "utils/getFormattedDates";
-import { accessRequestHistoryTranscripts } from "data/transcripts";
-import getLastNameWithInitials from "utils/getLastNameWithInitials";
-import { accessRequestHistoryStatuses } from "data/enums";
 
 const { Text } = Typography;
 
-interface IReqCard {
+interface IReqExtraCardSharedContent {
     currentReqData: IAccessAppDataByCurrentUserInKeyViewModel;
     appHistory: IAccessApplicationHistoryViewModel[];
 }
 
-const ReqActionsCard: FC<IReqCard> = ({ currentReqData, appHistory }) => {
+const ReqExtraCardSharedContent: FC<IReqExtraCardSharedContent> = ({
+    currentReqData,
+    appHistory
+}) => {
     const theme = useTheme();
     // @ts-ignore
     const classes = useStyles(theme);
 
     const comment = currentReqData.comment;
-
     const cancelReason = currentReqData.cancelReason;
     const creatorUser = currentReqData.creatorUser ?? {};
     const [creatorUserPhoto, setCreatorUserPhoto] = useState<string | undefined>(undefined);
@@ -49,7 +51,7 @@ const ReqActionsCard: FC<IReqCard> = ({ currentReqData, appHistory }) => {
     }, [creatorUser, comment]);
 
     return (
-        <Row className={classes.container}>
+        <>
             {comment && (
                 <Row className={classes.sectionContainer}>
                     <Row align={"middle"} className={classes.titleContainer}>
@@ -89,7 +91,7 @@ const ReqActionsCard: FC<IReqCard> = ({ currentReqData, appHistory }) => {
                                 <React.Fragment key={histItem.historyId}>
                                     <Row className={classes.histRow}>
                                         <Text strong>
-                                            {accessRequestHistoryTranscripts[histItem.status]}
+                                            {accessRequestHistoryTranscripts[status]}
                                         </Text>
                                         {cancelReason &&
                                             status === accessRequestHistoryStatuses.REJECTED && (
@@ -120,7 +122,7 @@ const ReqActionsCard: FC<IReqCard> = ({ currentReqData, appHistory }) => {
                     </Row>
                 </Row>
             )}
-        </Row>
+        </>
     );
 };
-export default memo(ReqActionsCard);
+export default memo(ReqExtraCardSharedContent);

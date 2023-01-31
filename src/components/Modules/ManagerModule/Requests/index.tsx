@@ -364,9 +364,7 @@ const Requests: FC = () => {
                             </Option>
                         ))}
                     </Select>
-                    <Text className={classes.textForSelection}>
-                        {!isBooking ? "Сортировать по:" : "Показать:"}
-                    </Text>
+                    <Text className={classes.textForSelection}>Показать:</Text>
                     <Select
                         className={cx(classes.select, classes.sortSelect)}
                         value={sortValue}

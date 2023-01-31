@@ -23,7 +23,7 @@ const CancelReqModal = React.lazy(
     () => import("components/Shared/modalRenderer/ReadyModals/SimpleConfirmationModal")
 );
 const SharedInfoDrawer = React.lazy(() => import("components/Shared/SharedRequestInfoDrawer"));
-const SignModal = React.lazy(() => import("./modal"));
+const TableSignDrawer = React.lazy(() => import("./TableSignDrawer"));
 
 const { Text } = Typography;
 
@@ -35,7 +35,7 @@ const ReqTable: FC<{
     // @ts-ignore
     const classes = useStyles(theme);
 
-    const [signModalVisible, setSignModalVisible] = useState(false);
+    const [signDrawerVisible, setSignDrawerVisible] = useState(false);
 
     const [currentReq, setCurrentReq] = useState<IAccessAppDataByCurrentUserInKeyViewModel>(
         {} as IAccessAppDataByCurrentUserInKeyViewModel
@@ -46,7 +46,7 @@ const ReqTable: FC<{
 
     const [cancelReqModalVisible, setCancelReqModalVisible] = useState(false);
 
-    const { cancelAccessApplicationById, signAccessApplicationTaskById } = useSimpleHttpFunctions();
+    const { cancelAccessApplicationById } = useSimpleHttpFunctions();
 
     const handleOpenInfoDrawer = (applicationId: number) => () => {
         setCurrentAppId(applicationId);
@@ -77,29 +77,10 @@ const ReqTable: FC<{
         }
     }, [currentReq, reqData, updateReqData]);
 
-    const handleOpenSignModal = (req: IAccessAppDataByCurrentUserInKeyViewModel) => () => {
-        setCurrentReq(req);
-        setSignModalVisible(true);
+    const handleOpenSignDrawer = (applicationId: number) => () => {
+        setCurrentAppId(applicationId);
+        setSignDrawerVisible(true);
     };
-
-    const handleSignTask = useCallback(async () => {
-        const signId = currentReq.applicationId;
-        if (signId) {
-            await signAccessApplicationTaskById(signId);
-
-            const dataForUpdate = getReqDataForUpdate(
-                reqData,
-                currentReq,
-                signId,
-                accessRequestStatuses.DONE,
-                accessRequestStatuses.ON_EMPLOYER_SIGN
-            );
-
-            updateReqData(dataForUpdate);
-            message.success("Заявка подписана!");
-            setSignModalVisible(false);
-        }
-    }, [currentReq, reqData, updateReqData]);
 
     const getReqStatusWithBall = (status: string) => {
         return (
@@ -130,11 +111,17 @@ const ReqTable: FC<{
                             </Row>
                             {(data || []).map((accessItem) => {
                                 const reqStatus = accessItem.status;
+                                const onEmployerSignStatus =
+                                    reqStatus === accessRequestStatuses.ON_EMPLOYER_SIGN;
                                 const applicationId = accessItem.applicationId;
                                 return (
                                     <Row key={applicationId} className={classes.reqContainer}>
                                         <Text
-                                            onClick={handleOpenInfoDrawer(applicationId)}
+                                            onClick={
+                                                onEmployerSignStatus
+                                                    ? handleOpenSignDrawer(applicationId)
+                                                    : handleOpenInfoDrawer(applicationId)
+                                            }
                                             className={classes.reqTypeText}
                                             strong
                                         >
@@ -153,12 +140,12 @@ const ReqTable: FC<{
                                                     Отменить заявку
                                                 </span>
                                             </div>
-                                        ) : reqStatus === accessRequestStatuses.ON_EMPLOYER_SIGN ? (
+                                        ) : onEmployerSignStatus ? (
                                             <Button
                                                 customType={"regular"}
-                                                onClick={handleOpenSignModal(accessItem)}
+                                                onClick={handleOpenSignDrawer(applicationId)}
                                             >
-                                                Подписать
+                                                Перейти к подписанию
                                             </Button>
                                         ) : (
                                             <div className={classes.emptyDiv} />
@@ -189,11 +176,12 @@ const ReqTable: FC<{
                 />
             </Suspense>
             <Suspense>
-                <SignModal
-                    title={"Подпишите соглашение"}
-                    isVisible={signModalVisible}
-                    setIsVisible={setSignModalVisible}
-                    onSignTask={handleSignTask}
+                <TableSignDrawer
+                    open={signDrawerVisible}
+                    setOpen={setSignDrawerVisible}
+                    reqData={reqData}
+                    currentAppId={currentAppId!}
+                    updateReqData={updateReqData}
                 />
             </Suspense>
         </Row>

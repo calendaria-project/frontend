@@ -25,5 +25,31 @@ export default createUseStyles({
         padding: (theme: ITheme) => theme.layout.padding,
         width: "100%",
         height: "100%"
+    },
+    signTitleCol: {
+        marginTop: "40px",
+        marginBottom: (theme: ITheme) => theme.layout.margin
+    },
+    signTitleText: {
+        fontSize: "20px",
+        fontWeight: (theme: ITheme) => theme.fontWeight.bold
+    },
+    signContainer: {
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        gap: "20px"
+    },
+    fullWidth: {
+        width: "100%"
+    },
+    checkbox: {
+        display: "flex",
+        alignItems: "center",
+        gap: "10px"
+    },
+    btnContainer: {
+        width: "100%",
+        margin: "10px 0"
     }
 });

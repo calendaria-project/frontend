@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useMemo, useState, Suspense } from "react";
+import React, { FC, Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { SetCurrentOpenedMenu } from "store/actions";
 import {
     accessRequestStatuses,
@@ -6,21 +6,21 @@ import {
     dictionaryCodesEnum,
     mainMenuEnum
 } from "data/enums";
-import { accessRequestTranscripts } from "data/transcripts";
+import { accessRequestTranscripts, appTypesEnumTranscripts } from "data/transcripts";
 import { useDispatch } from "react-redux";
 import { useTheme } from "react-jss";
 import {
+    Button,
     Col,
+    Dropdown,
+    Form,
     Input,
+    Menu,
+    message,
     Row,
     Select,
-    Typography,
-    Menu,
-    Dropdown,
     Space,
-    Button,
-    Form,
-    message
+    Typography
 } from "antd";
 
 import useStyles from "./styles";
@@ -33,7 +33,7 @@ import {
     ISimpleDictionaryViewModel,
     IUsersViewModel
 } from "interfaces";
-import { SearchOutlined, DownOutlined, PlusOutlined } from "@ant-design/icons";
+import { DownOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { BOOKING, OUTGOING, selectReqValues } from "./defaultValues";
 import { ALL_BOOKINGS, DATE, sortAccessReqValues, sortAccessShowValues } from "data/constants";
 import cx from "classnames";
@@ -42,8 +42,6 @@ import Spinner from "ui/Spinner";
 import { ITheme } from "styles/theme/interface";
 import useDelayedInputSearch from "hooks/useDelayedInputSearch";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
-
-import { appTypesEnumTranscripts } from "data/transcripts";
 import sortRequests from "utils/sortAccessRequests";
 import getFullName from "utils/getFullName";
 import { getFormattedDateFromNow } from "utils/getFormattedDates";
@@ -74,6 +72,7 @@ const Requests: FC = () => {
     const [isAddReqFlag, setIsAddReqFlag] = useState(false);
     const [modalValues, setModalValues] = useState<ISimpleDictionaryViewModel[]>([]);
     const [currentUser, setCurrentUser] = useState<IUsersViewModel>({} as IUsersViewModel);
+    const currentUserId = currentUser?.userId;
 
     const [reqModalVisible, setReqModalVisible] = useState(false);
 
@@ -287,12 +286,16 @@ const Requests: FC = () => {
                 form.resetFields();
                 setReqModalVisible(false);
 
+                console.log(finalAccessAppData, currentUserId);
+
+                const currentAccessReqStatus =
+                    finalAccessAppData.applicationUser?.userId === currentUserId
+                        ? accessRequestStatuses.ON_APPROVEMENT
+                        : accessRequestStatuses.ON_PROCESS;
                 updateReqData({
                     ...allRequests,
-                    [accessRequestStatuses.ON_PROCESS]: allRequests[
-                        accessRequestStatuses.ON_PROCESS
-                    ]
-                        ? [...allRequests[accessRequestStatuses.ON_PROCESS], finalAccessAppData]
+                    [currentAccessReqStatus]: allRequests[currentAccessReqStatus]
+                        ? [...allRequests[currentAccessReqStatus], finalAccessAppData]
                         : [finalAccessAppData]
                 });
             }
@@ -322,7 +325,7 @@ const Requests: FC = () => {
             //         message.error("Ошибка создания!");
             //     });
         },
-        [modalValues, allRequests, updateReqData]
+        [modalValues, allRequests, updateReqData, currentUserId]
     );
 
     const handleOpenReqModal = (addReqFlag: boolean) => () => {
@@ -371,9 +374,7 @@ const Requests: FC = () => {
                             </Option>
                         ))}
                     </Select>
-                    <Text className={classes.textForSelection}>
-                        {!isBooking ? "Сортировать по:" : "Показать:"}
-                    </Text>
+                    <Text className={classes.textForSelection}>Показать:</Text>
                     <Select
                         className={cx(classes.select, classes.sortSelect)}
                         value={sortValue}
@@ -420,7 +421,7 @@ const Requests: FC = () => {
                     </div>
                 ) : (
                     <ReqTable
-                        currentUserId={currentUser?.userId}
+                        currentUserId={currentUserId}
                         reqData={allRequests}
                         updateReqData={updateReqData}
                     />

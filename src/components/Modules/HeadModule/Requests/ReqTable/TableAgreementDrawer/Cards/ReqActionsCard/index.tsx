@@ -6,29 +6,29 @@ import {
 } from "interfaces";
 import useStyles from "./styles";
 import { useTheme } from "react-jss";
-import { Col, Form, Row, Typography } from "antd";
+import { Form, Row } from "antd";
 import Button from "ui/Button";
-import { CloseOutlined, CheckOutlined, ArrowDownOutlined } from "@ant-design/icons";
-import { actionMethodResultSync } from "functions/actionMethodResult";
-import getFullName from "utils/getFullName";
+import { CloseOutlined, CheckOutlined } from "@ant-design/icons";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
-import cx from "classnames";
-import { getFormattedDateFromNowWithTime } from "utils/getFormattedDates";
-import { accessRequestHistoryStatuses, accessRequestStatuses } from "data/enums";
-import { accessRequestHistoryTranscripts } from "data/transcripts";
+import { accessRequestStatuses } from "data/enums";
 import getReqDataForUpdate from "utils/getReqDataForUpdate";
-import getLastNameWithInitials from "utils/getLastNameWithInitials";
+import ReqExtraCardSharedContent from "components/Shared/SharedRequestInfoDrawer/Cards/ReqExtraCard/ReqExtraCardSharedContent";
 
-const { Text } = Typography;
 const CancelReqModal = React.lazy(() => import("./modal"));
 
 interface IReqCard {
     reqData: IAccessAppDataByCurrentUserViewModel;
     currentReqData: IAccessAppDataByCurrentUserInKeyViewModel;
     updateReqData: (data: IAccessAppDataByCurrentUserViewModel) => void;
+    onlyFilterReqs?: boolean;
 }
 
-const ReqActionsCard: FC<IReqCard> = ({ reqData, currentReqData, updateReqData }) => {
+const ReqActionsCard: FC<IReqCard> = ({
+    reqData,
+    currentReqData,
+    updateReqData,
+    onlyFilterReqs
+}) => {
     const theme = useTheme();
     // @ts-ignore
     const classes = useStyles(theme);
@@ -38,11 +38,6 @@ const ReqActionsCard: FC<IReqCard> = ({ reqData, currentReqData, updateReqData }
     const [appHistory, setAppHistory] = useState<IAccessApplicationHistoryViewModel[]>([]);
 
     const applicationId = currentReqData.applicationId;
-    const comment = currentReqData.comment;
-    const cancelReason = currentReqData.cancelReason;
-
-    const creatorUser = currentReqData.creatorUser || {};
-    const [creatorUserPhoto, setCreatorUserPhoto] = useState<string | undefined>(undefined);
 
     const [reqApproved, setReqApproved] = useState(false);
     const [reqCancelled, setReqCancelled] = useState(false);
@@ -71,21 +66,6 @@ const ReqActionsCard: FC<IReqCard> = ({ reqData, currentReqData, updateReqData }
         setAppHistory(hist);
     };
 
-    useEffect(() => {
-        if (comment) {
-            const photoId = creatorUser?.profilePhotoId;
-            if (photoId) {
-                actionMethodResultSync("FILE", `file/download/${photoId}/base64`, "get").then(
-                    (res) => {
-                        setCreatorUserPhoto(res);
-                    }
-                );
-            } else {
-                setCreatorUserPhoto(undefined);
-            }
-        }
-    }, [creatorUser, comment]);
-
     const onApproveRequest = useCallback(async () => {
         await approveAccessApplicationById(applicationId);
 
@@ -96,7 +76,7 @@ const ReqActionsCard: FC<IReqCard> = ({ reqData, currentReqData, updateReqData }
             applicationId,
             accessRequestStatuses.ON_PROCESS,
             accessRequestStatuses.ON_APPROVEMENT,
-            true
+            onlyFilterReqs ?? true
         );
 
         updateReqData(dataForUpdate);
@@ -130,7 +110,7 @@ const ReqActionsCard: FC<IReqCard> = ({ reqData, currentReqData, updateReqData }
     );
 
     return (
-        <Row className={classes.container}>
+        <Row>
             <Row justify={"space-between"} className={classes.btnContainer}>
                 {reqApproved ? (
                     <span className={classes.agreedText}>Заявка успешно подписана!</span>
@@ -155,76 +135,7 @@ const ReqActionsCard: FC<IReqCard> = ({ reqData, currentReqData, updateReqData }
                     </>
                 )}
             </Row>
-            {comment && (
-                <Row className={classes.sectionContainer}>
-                    <Row align={"middle"} className={classes.titleContainer}>
-                        Комментарии к заявке
-                    </Row>
-                    <Row className={classes.innerSectionContainer}>
-                        <Col span={24}>
-                            {creatorUserPhoto && (
-                                <img
-                                    className={classes.img}
-                                    alt={""}
-                                    src={creatorUserPhoto}
-                                    width={"30px"}
-                                    height={"30px"}
-                                />
-                            )}
-                            <Text strong>
-                                {getFullName(creatorUser.firstname, creatorUser.lastname)}
-                            </Text>
-                        </Col>
-                        <Col className={classes.textCol} span={24}>
-                            <Text>{comment}</Text>
-                        </Col>
-                    </Row>
-                </Row>
-            )}
-            {appHistory && appHistory.length && (
-                <Row className={classes.sectionContainer}>
-                    <Row align={"middle"} className={classes.titleContainer}>
-                        История изменений
-                    </Row>
-                    <Row className={classes.innerSectionContainer}>
-                        {appHistory.map((histItem, index) => {
-                            const histUser = histItem.user ?? {};
-                            const status = histItem.status;
-                            return (
-                                <React.Fragment key={histItem.historyId}>
-                                    <Row className={classes.histRow}>
-                                        <Text strong>
-                                            {accessRequestHistoryTranscripts[histItem.status]}
-                                        </Text>
-                                        {cancelReason &&
-                                            status === accessRequestHistoryStatuses.REJECTED && (
-                                                <Text>Причина: {cancelReason}</Text>
-                                            )}
-                                        <Text>
-                                            {getLastNameWithInitials(
-                                                histUser.firstname,
-                                                histUser.lastname,
-                                                histUser.patronymic
-                                            )}
-                                        </Text>
-                                        <Text className={classes.extraText}>
-                                            {getFormattedDateFromNowWithTime(histItem.createdAt)}
-                                        </Text>
-                                    </Row>
-                                    {index !== appHistory.length - 1 && (
-                                        <Row
-                                            className={cx(classes.histRow, classes.histArrow)}
-                                            justify={"center"}
-                                        >
-                                            <ArrowDownOutlined />
-                                        </Row>
-                                    )}
-                                </React.Fragment>
-                            );
-                        })}
-                    </Row>
-                </Row>
-            )}
+            <ReqExtraCardSharedContent currentReqData={currentReqData} appHistory={appHistory} />
             <Suspense>
                 <CancelReqModal
                     form={form}

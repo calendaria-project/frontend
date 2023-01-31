@@ -21,6 +21,23 @@ export default createUseStyles({
         color: (theme: ITheme) => theme.color.primary,
         fontWeight: (theme: ITheme) => theme.fontWeight.bold
     },
+    btnsCol: {
+        display: "flex",
+        flexWrap: "nowrap",
+        columnGap: (theme: ITheme) => theme.layout.margin
+    },
+    statusBtn: {
+        border: "1px solid transparent",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "0 20px",
+        borderRadius: (theme: ITheme) => theme.borderRadius,
+        color: (theme: ITheme) => theme.color.primary
+    },
+    solveBtn: {
+        borderColor: "transparent !important"
+    },
     contentContainer: {
         padding: (theme: ITheme) => theme.layout.padding,
         width: "100%",

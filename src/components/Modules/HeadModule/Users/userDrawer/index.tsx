@@ -63,6 +63,13 @@ const UserDrawer: FC<IExternalUserDrawer> = ({ divisionsEquality, open, setOpen,
     const [currentAccessAppRequests, setCurrentAccessAppRequests] =
         useState<IAccessAppDataByCurrentUserViewModel>({} as IAccessAppDataByCurrentUserViewModel);
 
+    const updateCurrentAccessAppRequests = useCallback(
+        (v: IAccessAppDataByCurrentUserViewModel) => {
+            setCurrentAccessAppRequests(v);
+        },
+        []
+    );
+
     const { getDictionaryValues, getAccessApplicationByUserId } = useSimpleHttpFunctions();
 
     useEffect(() => {
@@ -221,7 +228,10 @@ const UserDrawer: FC<IExternalUserDrawer> = ({ divisionsEquality, open, setOpen,
                                 <Spinner />
                             </Row>
                         ) : isObjectNotEmpty(currentAccessAppRequests) ? (
-                            <AccessRequest reqData={currentAccessAppRequests} />
+                            <AccessRequest
+                                reqData={currentAccessAppRequests}
+                                updateReqData={updateCurrentAccessAppRequests}
+                            />
                         ) : (
                             <EmptyAccessRequest onOpenModal={handleOpenModal} />
                         )}
