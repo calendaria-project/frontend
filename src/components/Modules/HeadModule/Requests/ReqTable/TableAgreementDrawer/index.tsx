@@ -18,6 +18,7 @@ interface ITableAgreementDrawer {
     currentAppId: number;
     updateReqData: (data: IAccessAppDataByCurrentUserViewModel) => void;
     onlyFilterReqs?: boolean;
+    hideToCardBtnFlag?: boolean;
 }
 
 const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({
@@ -26,7 +27,8 @@ const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({
     reqData,
     currentAppId,
     updateReqData,
-    onlyFilterReqs
+    onlyFilterReqs,
+    hideToCardBtnFlag
 }) => {
     const onClose = () => {
         setOpen(false);
@@ -63,7 +65,10 @@ const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({
         >
             <Row className={classes.container}>
                 <Col span={20} className={classes.reqCard}>
-                    <ReqCard currentReqData={currentReqData} />
+                    <ReqCard
+                        currentReqData={currentReqData}
+                        hideToCardBtnFlag={hideToCardBtnFlag}
+                    />
                 </Col>
                 <Col span={4} className={classes.reqActions}>
                     <ReqActionsCard

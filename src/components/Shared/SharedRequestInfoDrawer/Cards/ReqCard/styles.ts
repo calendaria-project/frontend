@@ -32,6 +32,11 @@ export default createUseStyles({
     creatorInfoCol: {
         margin: "6px 0"
     },
+    toCardText: {
+        marginLeft: (theme: ITheme) => theme.layout.margin,
+        color: (theme: ITheme) => theme.color.regular,
+        cursor: "pointer"
+    },
     titleCol: {
         marginTop: "40px",
         marginBottom: (theme: ITheme) => theme.layout.margin

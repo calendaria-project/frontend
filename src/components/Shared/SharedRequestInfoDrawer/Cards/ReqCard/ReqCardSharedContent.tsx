@@ -2,23 +2,56 @@ import { Checkbox, Col, Row, Typography } from "antd";
 import getFullName from "utils/getFullName";
 import { getFormattedDateFromNowWithTime } from "utils/getFormattedDates";
 import diffDateAndToString from "utils/diffDateAndToString";
-import React, { FC, memo } from "react";
+import React, { FC, memo, useContext } from "react";
 import useStyles from "./styles";
 import { useTheme } from "react-jss";
 import { IAccessAppDataByCurrentUserInKeyViewModel } from "interfaces";
-import { accessItemRequestStatuses } from "data/enums";
+import { accessItemRequestStatuses, mainMenuEnum } from "data/enums";
 import { getReqBallStyle } from "utils/getReqBallStyle";
 import { accessItemRequestTranscripts } from "data/transcripts";
 import { ITheme } from "styles/theme/interface";
+import { AuthContext } from "context/AuthContextProvider";
+import { SetCurrentLayoutMenu } from "store/actions";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { BMS_HR } from "context/roles";
+import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 
 const { Text } = Typography;
 
-const ReqCardSharedContent: FC<{ currentReqData: IAccessAppDataByCurrentUserInKeyViewModel }> = ({
-    currentReqData
-}) => {
+interface IReqCardSharedContent {
+    currentReqData: IAccessAppDataByCurrentUserInKeyViewModel;
+    hideToCardBtnFlag?: boolean;
+}
+
+const ReqCardSharedContent: FC<IReqCardSharedContent> = ({ currentReqData, hideToCardBtnFlag }) => {
+    const authContext = useContext(AuthContext);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const theme = useTheme<ITheme>();
     // @ts-ignore
     const classes = useStyles(theme);
+
+    console.log(authContext);
+
+    const creatorUserData = currentReqData.creatorUser || {};
+    const applicationUserData = currentReqData.applicationUser || {};
+    const creationTime = currentReqData.createdAt;
+    const editionTime = currentReqData.updatedAt;
+
+    const { getUsersWithPhotoId } = useSimpleHttpFunctions();
+
+    const handleToCardRedirect = async () => {
+        const usersMenu = mainMenuEnum.users;
+        dispatch(SetCurrentLayoutMenu(usersMenu));
+        sessionStorage.setItem("mainMenuTab", usersMenu);
+
+        const appUsersWithPhoto = await getUsersWithPhotoId([applicationUserData]);
+
+        authContext.roles.includes(BMS_HR)
+            ? navigate(`/${usersMenu}/${applicationUserData?.userId}`)
+            : navigate(`/${usersMenu}`, { state: { userData: appUsersWithPhoto?.[0] } });
+    };
 
     const getItemNameAndItemStatusWithBall = (name: string, status: string) => (
         <div className={classes.statusContainer}>
@@ -32,11 +65,6 @@ const ReqCardSharedContent: FC<{ currentReqData: IAccessAppDataByCurrentUserInKe
             ) : null}
         </div>
     );
-
-    const creatorUserData = currentReqData.creatorUser || {};
-    const applicationUserData = currentReqData.applicationUser || {};
-    const creationTime = currentReqData.createdAt;
-    const editionTime = currentReqData.updatedAt;
 
     return (
         <>
@@ -55,6 +83,11 @@ const ReqCardSharedContent: FC<{ currentReqData: IAccessAppDataByCurrentUserInKe
                         applicationUserData.firstname,
                         applicationUserData.lastname,
                         applicationUserData.patronymic
+                    )}
+                    {!hideToCardBtnFlag && (
+                        <span onClick={handleToCardRedirect} className={classes.toCardText}>
+                            Перейти на карточку сотрудника
+                        </span>
                     )}
                 </Col>
                 <Col className={classes.creatorInfoCol} span={24}>

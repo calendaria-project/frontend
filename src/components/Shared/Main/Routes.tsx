@@ -18,6 +18,7 @@ import {
 } from "context/roles";
 import UserUsers from "components/Modules/UserModule/Users";
 import HeadUsers from "components/Modules/HeadModule/Users";
+import ManagerUsers from "components/Modules/ManagerModule/Users";
 import UserRequests from "components/Modules/UserModule/Requests";
 import HeadRequests from "components/Modules/HeadModule/Requests";
 import ManagerRequests from "components/Modules/ManagerModule/Requests";
@@ -66,7 +67,7 @@ const RoutesComponent = () => {
     const GET_ALL_MANAGERS_AND_ADMIN_REQ_ROUTES = () => (
         <>
             {/* как у head */}
-            <Route key="users-route" path="/users" element={<HeadUsers />} />
+            <Route key="users-route" path="/users" element={<ManagerUsers />} />
             <Route key="requests-route" path="/requests" element={<ManagerRequests />} />
         </>
     );

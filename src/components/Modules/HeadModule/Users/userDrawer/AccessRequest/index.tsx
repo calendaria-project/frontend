@@ -1,26 +1,25 @@
-import { Row, Typography, Collapse, Checkbox } from "antd";
+import { Row, Typography } from "antd";
 import React, { FC, memo, useState, Suspense } from "react";
 import useStyles from "./styles";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import { IAccessAppDataByCurrentUserViewModel } from "interfaces";
-import { accessRequestTranscripts, appTypesEnumTranscripts } from "data/transcripts";
-import { getFormattedDateFromNow } from "utils/getFormattedDates";
-import { getReqBallStyle } from "utils/getReqBallStyle";
+import { accessRequestTranscripts } from "data/transcripts";
 import { accessRequestStatuses } from "data/enums";
 import Button from "ui/Button";
+import SharedCollapse from "components/Shared/SharedRequestUsers/userDrawer/AccessRequest/SharedCollapse";
 
 const ReqAgreementDrawer = React.lazy(
     () => import("components/Modules/HeadModule/Requests/ReqTable/TableAgreementDrawer")
 );
 
-const { Panel } = Collapse;
 const { Text } = Typography;
 
 const AccessRequest: FC<{
+    isCurrentUserCreatorFlag: boolean;
     reqData: IAccessAppDataByCurrentUserViewModel;
     updateReqData: (v: IAccessAppDataByCurrentUserViewModel) => void;
-}> = ({ reqData, updateReqData }) => {
+}> = ({ isCurrentUserCreatorFlag, reqData, updateReqData }) => {
     const theme = useTheme<ITheme>();
     // @ts-ignore
     const classes = useStyles(theme);
@@ -31,22 +30,6 @@ const AccessRequest: FC<{
     const handleOpenDrawer = (applicationId: number) => () => {
         setCurrentAppId(applicationId);
         setReqAgreementDrawerOpened(true);
-    };
-
-    const getPanelHeader = (appType: string, createdAt: string, status: string) => {
-        return (
-            <Row className={classes.panelContainer}>
-                <Text>{appTypesEnumTranscripts[appType] ?? ""}</Text>
-                <Text>{getFormattedDateFromNow(createdAt)}</Text>
-                <div className={classes.panelStatusContainer}>
-                    <div
-                        className={classes.panelStatusBall}
-                        style={getReqBallStyle(theme, status)}
-                    />
-                    <Text strong>{accessRequestTranscripts[status] ?? ""}</Text>
-                </div>
-            </Row>
-        );
     };
 
     return (
@@ -71,49 +54,21 @@ const AccessRequest: FC<{
                             console.log(accessItem);
                             return (
                                 <React.Fragment key={applicationId}>
-                                    <Collapse className={classes.reqCollapseItem}>
-                                        <Panel
-                                            key={aIndex}
-                                            header={getPanelHeader(
-                                                accessItem.appType,
-                                                accessItem.createdAt,
-                                                accessItem.status
-                                            )}
-                                        >
-                                            {(accessItem.items || []).map((item, index) => (
-                                                <Row
-                                                    key={"_" + item.accessType?.code + index}
-                                                    className={classes.accessItemContainer}
-                                                >
-                                                    <Checkbox
-                                                        className={classes.accessItemCheckbox}
-                                                        disabled
-                                                        checked={item.needAccess}
-                                                    >
-                                                        {item.appItemType?.nameRu}
-                                                    </Checkbox>
-                                                    <Text className={classes.accessItemStatus}>
-                                                        {item.accessType?.nameRu ??
-                                                            item.tariff?.nameRu ??
-                                                            ""}
-                                                    </Text>
-                                                </Row>
-                                            ))}
-                                        </Panel>
-                                    </Collapse>
-                                    {status === accessRequestStatuses.ON_APPROVEMENT && (
-                                        <Row
-                                            className={classes.onApprovementBtnContainer}
-                                            justify={"end"}
-                                        >
-                                            <Button
-                                                onClick={handleOpenDrawer(applicationId)}
-                                                customType={"regular"}
+                                    <SharedCollapse collapseKey={aIndex} accessItem={accessItem} />
+                                    {status === accessRequestStatuses.ON_APPROVEMENT &&
+                                        !isCurrentUserCreatorFlag && (
+                                            <Row
+                                                className={classes.onApprovementBtnContainer}
+                                                justify={"end"}
                                             >
-                                                Перейти к согласованию
-                                            </Button>
-                                        </Row>
-                                    )}
+                                                <Button
+                                                    onClick={handleOpenDrawer(applicationId)}
+                                                    customType={"regular"}
+                                                >
+                                                    Перейти к согласованию
+                                                </Button>
+                                            </Row>
+                                        )}
                                 </React.Fragment>
                             );
                         })}
@@ -128,6 +83,7 @@ const AccessRequest: FC<{
                     currentAppId={currentAppId!}
                     updateReqData={updateReqData}
                     onlyFilterReqs={false}
+                    hideToCardBtnFlag={true}
                 />
             </Suspense>
         </Row>

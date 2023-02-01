@@ -6,6 +6,7 @@ import { CSSProperties } from "react";
 import { useTheme } from "react-jss";
 import useStyles from "./styles";
 import { ITheme } from "styles/theme/interface";
+import * as React from "react";
 
 interface IButton {
     children?: any;
@@ -29,7 +30,7 @@ interface IButton {
     size?: "large" | "middle" | "small";
     target?: string;
     type?: "primary" | "ghost" | "dashed" | "link" | "text" | "default";
-    onClick?: () => void;
+    onClick?: React.MouseEventHandler<HTMLElement>;
     style?: CSSProperties;
 }
 

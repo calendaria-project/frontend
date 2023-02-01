@@ -24,25 +24,19 @@ import Spinner from "ui/Spinner";
 
 import EmptyAccessRequest from "components/Shared/SharedRequestUsers/userDrawer/EmptyAccessRequest";
 import SharedDrawerContent from "components/Shared/SharedRequestUsers/userDrawer/SharedDrawerContent";
+
 const AddRequestModal = React.lazy(
     () => import("components/Shared/modalRenderer/ReadyModals/AccessReqModal")
 );
 
 interface IExternalUserDrawer {
     divisionsEquality: boolean;
-    isCurrentUserCreatorFlag: boolean;
     open: boolean;
     setOpen: (val: boolean) => void;
     userData: IUsersWithPhotoInfoModel;
 }
 
-const UserDrawer: FC<IExternalUserDrawer> = ({
-    divisionsEquality,
-    isCurrentUserCreatorFlag,
-    open,
-    setOpen,
-    userData
-}) => {
+const UserDrawer: FC<IExternalUserDrawer> = ({ divisionsEquality, open, setOpen, userData }) => {
     const authContext = useContext(AuthContext);
     const theme = useTheme<ITheme>();
     // @ts-ignore
@@ -59,13 +53,6 @@ const UserDrawer: FC<IExternalUserDrawer> = ({
     const [requestsLoading, setRequestsLoading] = useState(false);
     const [currentAccessAppRequests, setCurrentAccessAppRequests] =
         useState<IAccessAppDataByCurrentUserViewModel>({} as IAccessAppDataByCurrentUserViewModel);
-
-    const updateCurrentAccessAppRequests = useCallback(
-        (v: IAccessAppDataByCurrentUserViewModel) => {
-            setCurrentAccessAppRequests(v);
-        },
-        []
-    );
 
     const { getDictionaryValues, getAccessApplicationByUserId } = useSimpleHttpFunctions();
 
@@ -172,11 +159,7 @@ const UserDrawer: FC<IExternalUserDrawer> = ({
                                 <Spinner />
                             </Row>
                         ) : isObjectNotEmpty(currentAccessAppRequests) ? (
-                            <AccessRequest
-                                isCurrentUserCreatorFlag={isCurrentUserCreatorFlag}
-                                reqData={currentAccessAppRequests}
-                                updateReqData={updateCurrentAccessAppRequests}
-                            />
+                            <AccessRequest reqData={currentAccessAppRequests} />
                         ) : (
                             <EmptyAccessRequest onOpenModal={handleOpenModal} />
                         )}

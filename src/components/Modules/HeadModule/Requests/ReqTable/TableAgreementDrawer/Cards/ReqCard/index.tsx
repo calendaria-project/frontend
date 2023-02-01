@@ -8,11 +8,12 @@ import ReqCardSharedContent from "components/Shared/SharedRequestInfoDrawer/Card
 
 interface IReqCard {
     currentReqData: IAccessAppDataByCurrentUserInKeyViewModel;
+    hideToCardBtnFlag?: boolean;
 }
 
 const { Text } = Typography;
 
-const ReqCard: FC<IReqCard> = ({ currentReqData }) => {
+const ReqCard: FC<IReqCard> = ({ currentReqData, hideToCardBtnFlag }) => {
     const theme = useTheme<ITheme>();
     // @ts-ignore
     const classes = useStyles(theme);
@@ -23,7 +24,10 @@ const ReqCard: FC<IReqCard> = ({ currentReqData }) => {
                 <Text className={classes.title}>Заявка #{currentReqData.applicationId}</Text>
             </Row>
             <Row className={classes.contentContainer}>
-                <ReqCardSharedContent currentReqData={currentReqData} />
+                <ReqCardSharedContent
+                    currentReqData={currentReqData}
+                    hideToCardBtnFlag={hideToCardBtnFlag}
+                />
             </Row>
         </Row>
     );
