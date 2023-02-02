@@ -22,12 +22,11 @@ import { ColumnDefinition } from "tabulator-tables";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { IUsersViewModel } from "interfaces";
 import getFullName from "utils/getFullName";
-import { useLocation } from "react-router";
 
 const WithUsers: FC<{ drawerChild: any }> = ({ drawerChild }) => {
     const dispatch = useDispatch();
     const authContext = useContext(AuthContext);
-    const location = useLocation();
+    // const location = useLocation();
     const theme = useTheme<ITheme>();
     const classes = useStyles(theme);
 
@@ -51,13 +50,13 @@ const WithUsers: FC<{ drawerChild: any }> = ({ drawerChild }) => {
     const [query, setQuery] = useState("");
     const { searchStr, handleFiltrationChange } = useDelayedInputSearch(query, setQuery);
 
-    useEffect(() => {
-        const userData = location?.state?.userData;
-        if (userData) {
-            setUserInfo(userData);
-            setUserDrawerOpen(true);
-        }
-    }, []);
+    // useEffect(() => {
+    //     const userData = location?.state?.userData;
+    //     if (userData) {
+    //         setUserInfo(userData);
+    //         setUserDrawerOpen(true);
+    //     }
+    // }, []);
 
     useEffect(() => {
         initData();

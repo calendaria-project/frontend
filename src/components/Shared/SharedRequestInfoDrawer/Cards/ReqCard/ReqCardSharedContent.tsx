@@ -2,20 +2,18 @@ import { Checkbox, Col, Row, Typography } from "antd";
 import getFullName from "utils/getFullName";
 import { getFormattedDateFromNowWithTime } from "utils/getFormattedDates";
 import diffDateAndToString from "utils/diffDateAndToString";
-import React, { FC, memo, useContext } from "react";
+import React, { FC, memo, useState, Suspense } from "react";
 import useStyles from "./styles";
 import { useTheme } from "react-jss";
 import { IAccessAppDataByCurrentUserInKeyViewModel } from "interfaces";
-import { accessItemRequestStatuses, mainMenuEnum } from "data/enums";
+import { accessItemRequestStatuses } from "data/enums";
 import { getReqBallStyle } from "utils/getReqBallStyle";
 import { accessItemRequestTranscripts } from "data/transcripts";
 import { ITheme } from "styles/theme/interface";
-import { AuthContext } from "context/AuthContextProvider";
-import { SetCurrentLayoutMenu } from "store/actions";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { BMS_HR } from "context/roles";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
+import { IUsersWithPhotoInfoModel } from "interfaces/extended";
+
+const UserDrawer = React.lazy(() => import("components/Modules/UserModule/Users/userDrawer"));
 
 const { Text } = Typography;
 
@@ -25,14 +23,14 @@ interface IReqCardSharedContent {
 }
 
 const ReqCardSharedContent: FC<IReqCardSharedContent> = ({ currentReqData, hideToCardBtnFlag }) => {
-    const authContext = useContext(AuthContext);
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
     const theme = useTheme<ITheme>();
     // @ts-ignore
     const classes = useStyles(theme);
 
-    console.log(authContext);
+    const [cardInfoDrawerOpen, setCardInfoDrawerOpen] = useState(false);
+    const [appUsersWithPhoto, setAppUsersWithPhoto] = useState<IUsersWithPhotoInfoModel>(
+        {} as IUsersWithPhotoInfoModel
+    );
 
     const creatorUserData = currentReqData.creatorUser || {};
     const applicationUserData = currentReqData.applicationUser || {};
@@ -41,17 +39,23 @@ const ReqCardSharedContent: FC<IReqCardSharedContent> = ({ currentReqData, hideT
 
     const { getUsersWithPhotoId } = useSimpleHttpFunctions();
 
-    const handleToCardRedirect = async () => {
-        const usersMenu = mainMenuEnum.users;
-        dispatch(SetCurrentLayoutMenu(usersMenu));
-        sessionStorage.setItem("mainMenuTab", usersMenu);
-
+    const handleOpenCardDrawer = async () => {
         const appUsersWithPhoto = await getUsersWithPhotoId([applicationUserData]);
-
-        authContext.roles.includes(BMS_HR)
-            ? navigate(`/${usersMenu}/${applicationUserData?.userId}`)
-            : navigate(`/${usersMenu}`, { state: { userData: appUsersWithPhoto?.[0] } });
+        setAppUsersWithPhoto(appUsersWithPhoto?.[0]);
+        setCardInfoDrawerOpen(true);
     };
+
+    // const handleToCardRedirect = async () => {
+    //     const usersMenu = mainMenuEnum.users;
+    //     dispatch(SetCurrentLayoutMenu(usersMenu));
+    //     sessionStorage.setItem("mainMenuTab", usersMenu);
+    //
+    //     const appUsersWithPhoto = await getUsersWithPhotoId([applicationUserData]);
+    //
+    //     authContext.roles.includes(BMS_HR)
+    //         ? navigate(`/${usersMenu}/${applicationUserData?.userId}`)
+    //         : navigate(`/${usersMenu}`, { state: { userData: appUsersWithPhoto?.[0] } });
+    // };
 
     const getItemNameAndItemStatusWithBall = (name: string, status: string) => (
         <div className={classes.statusContainer}>
@@ -85,7 +89,7 @@ const ReqCardSharedContent: FC<IReqCardSharedContent> = ({ currentReqData, hideT
                         applicationUserData.patronymic
                     )}
                     {!hideToCardBtnFlag && (
-                        <span onClick={handleToCardRedirect} className={classes.toCardText}>
+                        <span onClick={handleOpenCardDrawer} className={classes.toCardText}>
                             Перейти на карточку сотрудника
                         </span>
                     )}
@@ -136,6 +140,13 @@ const ReqCardSharedContent: FC<IReqCardSharedContent> = ({ currentReqData, hideT
                     </Row>
                 ))}
             </Row>
+            <Suspense>
+                <UserDrawer
+                    userData={appUsersWithPhoto}
+                    open={cardInfoDrawerOpen}
+                    setOpen={setCardInfoDrawerOpen}
+                />
+            </Suspense>
         </>
     );
 };
