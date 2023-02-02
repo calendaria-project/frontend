@@ -2,18 +2,23 @@ import { Checkbox, Col, Row, Typography } from "antd";
 import getFullName from "utils/getFullName";
 import { getFormattedDateFromNowWithTime } from "utils/getFormattedDates";
 import diffDateAndToString from "utils/diffDateAndToString";
-import React, { FC, memo, useState, Suspense } from "react";
+import React, { FC, memo, useState, useEffect, Suspense, useContext } from "react";
 import useStyles from "./styles";
 import { useTheme } from "react-jss";
-import { IAccessAppDataByCurrentUserInKeyViewModel } from "interfaces";
+import { IAccessAppDataByCurrentUserInKeyViewModel, IUsersViewModel } from "interfaces";
 import { accessItemRequestStatuses } from "data/enums";
 import { getReqBallStyle } from "utils/getReqBallStyle";
 import { accessItemRequestTranscripts } from "data/transcripts";
 import { ITheme } from "styles/theme/interface";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { IUsersWithPhotoInfoModel } from "interfaces/extended";
+import { AuthContext } from "context/AuthContextProvider";
+import defineIsHeadingRole from "utils/defineIsHeadingRole";
 
 const UserDrawer = React.lazy(() => import("components/Modules/UserModule/Users/userDrawer"));
+const HeadingUserDrawer = React.lazy(
+    () => import("components/Modules/ManagerModule/Users/userDrawer")
+);
 
 const { Text } = Typography;
 
@@ -23,24 +28,39 @@ interface IReqCardSharedContent {
 }
 
 const ReqCardSharedContent: FC<IReqCardSharedContent> = ({ currentReqData, hideToCardBtnFlag }) => {
+    const authContext = useContext(AuthContext);
     const theme = useTheme<ITheme>();
     // @ts-ignore
     const classes = useStyles(theme);
 
-    const [cardInfoDrawerOpen, setCardInfoDrawerOpen] = useState(false);
+    const [currenUserData, setCurrentUserData] = useState({} as IUsersViewModel);
+
     const [appUsersWithPhoto, setAppUsersWithPhoto] = useState<IUsersWithPhotoInfoModel>(
         {} as IUsersWithPhotoInfoModel
     );
+    const [cardInfoDrawerOpen, setCardInfoDrawerOpen] = useState(false);
+    const [divisionsEquality, setDivisionsEquality] = useState(false);
 
     const creatorUserData = currentReqData.creatorUser || {};
     const applicationUserData = currentReqData.applicationUser || {};
     const creationTime = currentReqData.createdAt;
     const editionTime = currentReqData.updatedAt;
 
-    const { getUsersWithPhotoId } = useSimpleHttpFunctions();
+    const { getUsersWithPhotoId, getCurrentUserData } = useSimpleHttpFunctions();
+
+    useEffect(() => {
+        initCurrUserData();
+    }, []);
+
+    const initCurrUserData = async () => {
+        const data = await getCurrentUserData();
+        setCurrentUserData(data);
+    };
 
     const handleOpenCardDrawer = async () => {
         const appUsersWithPhoto = await getUsersWithPhotoId([applicationUserData]);
+
+        setDivisionsEquality(currenUserData.divisionId === applicationUserData.divisionId);
         setAppUsersWithPhoto(appUsersWithPhoto?.[0]);
         setCardInfoDrawerOpen(true);
     };
@@ -141,11 +161,20 @@ const ReqCardSharedContent: FC<IReqCardSharedContent> = ({ currentReqData, hideT
                 ))}
             </Row>
             <Suspense>
-                <UserDrawer
-                    userData={appUsersWithPhoto}
-                    open={cardInfoDrawerOpen}
-                    setOpen={setCardInfoDrawerOpen}
-                />
+                {defineIsHeadingRole(authContext.roles) ? (
+                    <HeadingUserDrawer
+                        divisionsEquality={divisionsEquality}
+                        userData={appUsersWithPhoto}
+                        open={cardInfoDrawerOpen}
+                        setOpen={setCardInfoDrawerOpen}
+                    />
+                ) : (
+                    <UserDrawer
+                        userData={appUsersWithPhoto}
+                        open={cardInfoDrawerOpen}
+                        setOpen={setCardInfoDrawerOpen}
+                    />
+                )}
             </Suspense>
         </>
     );
