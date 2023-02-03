@@ -6,10 +6,9 @@ import {
     BMS_SYS_ADMIN
 } from "context/roles";
 
-const defineIsHeadingRole = (roles: typeof ALL_ROLES) =>
-    roles.includes(BMS_HEAD) ||
+export const defineIsHeadRole = (roles: typeof ALL_ROLES) => roles.includes(BMS_HEAD);
+
+export const defineIsManagerRole = (roles: typeof ALL_ROLES) =>
     roles.includes(BMS_OFFICE_MANAGER) ||
     roles.includes(BMS_1C_MANAGER) ||
     roles.includes(BMS_SYS_ADMIN);
-
-export default defineIsHeadingRole;

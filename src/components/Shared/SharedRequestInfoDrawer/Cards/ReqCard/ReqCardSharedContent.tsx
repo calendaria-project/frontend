@@ -13,10 +13,11 @@ import { ITheme } from "styles/theme/interface";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { IUsersWithPhotoInfoModel } from "interfaces/extended";
 import { AuthContext } from "context/AuthContextProvider";
-import defineIsHeadingRole from "utils/defineIsHeadingRole";
+import { defineIsManagerRole, defineIsHeadRole } from "utils/defineRole";
 
-const UserDrawer = React.lazy(() => import("components/Modules/UserModule/Users/userDrawer"));
-const HeadingUserDrawer = React.lazy(
+const UsersDrawer = React.lazy(() => import("components/Modules/UserModule/Users/userDrawer"));
+const HeadUsersDrawer = React.lazy(() => import("components/Modules/HeadModule/Users/userDrawer"));
+const ManagerUsersDrawer = React.lazy(
     () => import("components/Modules/ManagerModule/Users/userDrawer")
 );
 
@@ -29,22 +30,30 @@ interface IReqCardSharedContent {
 
 const ReqCardSharedContent: FC<IReqCardSharedContent> = ({ currentReqData, hideToCardBtnFlag }) => {
     const authContext = useContext(AuthContext);
+    const roles = authContext.roles;
     const theme = useTheme<ITheme>();
     // @ts-ignore
     const classes = useStyles(theme);
 
-    const [currenUserData, setCurrentUserData] = useState({} as IUsersViewModel);
+    const [currentUserData, setCurrentUserData] = useState({} as IUsersViewModel);
 
     const [appUsersWithPhoto, setAppUsersWithPhoto] = useState<IUsersWithPhotoInfoModel>(
         {} as IUsersWithPhotoInfoModel
     );
     const [cardInfoDrawerOpen, setCardInfoDrawerOpen] = useState(false);
     const [divisionsEquality, setDivisionsEquality] = useState(false);
+    const [isCurrentUserCreatorFlag, setIsCurrentUserCreatorFlag] = useState(false);
 
     const creatorUserData = currentReqData.creatorUser || {};
     const applicationUserData = currentReqData.applicationUser || {};
     const creationTime = currentReqData.createdAt;
     const editionTime = currentReqData.updatedAt;
+
+    const sharedDrawerProps = {
+        userData: appUsersWithPhoto,
+        open: cardInfoDrawerOpen,
+        setOpen: setCardInfoDrawerOpen
+    };
 
     const { getUsersWithPhotoId, getCurrentUserData } = useSimpleHttpFunctions();
 
@@ -60,22 +69,11 @@ const ReqCardSharedContent: FC<IReqCardSharedContent> = ({ currentReqData, hideT
     const handleOpenCardDrawer = async () => {
         const appUsersWithPhoto = await getUsersWithPhotoId([applicationUserData]);
 
-        setDivisionsEquality(currenUserData.divisionId === applicationUserData.divisionId);
+        setDivisionsEquality(currentUserData.divisionId === applicationUserData.divisionId);
+        setIsCurrentUserCreatorFlag(currentUserData.userId === applicationUserData.userId);
         setAppUsersWithPhoto(appUsersWithPhoto?.[0]);
         setCardInfoDrawerOpen(true);
     };
-
-    // const handleToCardRedirect = async () => {
-    //     const usersMenu = mainMenuEnum.users;
-    //     dispatch(SetCurrentLayoutMenu(usersMenu));
-    //     sessionStorage.setItem("mainMenuTab", usersMenu);
-    //
-    //     const appUsersWithPhoto = await getUsersWithPhotoId([applicationUserData]);
-    //
-    //     authContext.roles.includes(BMS_HR)
-    //         ? navigate(`/${usersMenu}/${applicationUserData?.userId}`)
-    //         : navigate(`/${usersMenu}`, { state: { userData: appUsersWithPhoto?.[0] } });
-    // };
 
     const getItemNameAndItemStatusWithBall = (name: string, status: string) => (
         <div className={classes.statusContainer}>
@@ -161,19 +159,19 @@ const ReqCardSharedContent: FC<IReqCardSharedContent> = ({ currentReqData, hideT
                 ))}
             </Row>
             <Suspense>
-                {defineIsHeadingRole(authContext.roles) ? (
-                    <HeadingUserDrawer
+                {defineIsHeadRole(roles) ? (
+                    <HeadUsersDrawer
                         divisionsEquality={divisionsEquality}
-                        userData={appUsersWithPhoto}
-                        open={cardInfoDrawerOpen}
-                        setOpen={setCardInfoDrawerOpen}
+                        isCurrentUserCreatorFlag={isCurrentUserCreatorFlag}
+                        {...sharedDrawerProps}
+                    />
+                ) : defineIsManagerRole(roles) ? (
+                    <ManagerUsersDrawer
+                        divisionsEquality={divisionsEquality}
+                        {...sharedDrawerProps}
                     />
                 ) : (
-                    <UserDrawer
-                        userData={appUsersWithPhoto}
-                        open={cardInfoDrawerOpen}
-                        setOpen={setCardInfoDrawerOpen}
-                    />
+                    <UsersDrawer {...sharedDrawerProps} />
                 )}
             </Suspense>
         </>

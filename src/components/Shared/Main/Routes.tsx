@@ -8,20 +8,14 @@ import MainMenu from "components/Modules/HRModule/MainMenu";
 import OrganizationStructure from "components/Modules/HRModule/OrganizationStructure";
 import ExternalUsers from "components/Modules/HRModule/ExternalUsers";
 import { AuthContext } from "context/AuthContextProvider";
-import {
-    BMS_1C_MANAGER,
-    BMS_SYS_ADMIN,
-    BMS_HEAD,
-    BMS_HR,
-    BMS_OFFICE_MANAGER,
-    BMS_USER
-} from "context/roles";
+import { BMS_HEAD, BMS_HR, BMS_USER } from "context/roles";
 import UserUsers from "components/Modules/UserModule/Users";
 import HeadUsers from "components/Modules/HeadModule/Users";
 import ManagerUsers from "components/Modules/ManagerModule/Users";
 import UserRequests from "components/Modules/UserModule/Requests";
 import HeadRequests from "components/Modules/HeadModule/Requests";
 import ManagerRequests from "components/Modules/ManagerModule/Requests";
+import { defineIsManagerRole } from "utils/defineRole";
 
 const RoutesComponent = () => {
     const authContext = useContext(AuthContext);
@@ -82,11 +76,7 @@ const RoutesComponent = () => {
         if (roles.includes(BMS_HEAD)) {
             routes.push(GET_HEAD_ROUTES());
         }
-        if (
-            roles.includes(BMS_OFFICE_MANAGER) ||
-            roles.includes(BMS_1C_MANAGER) ||
-            roles.includes(BMS_SYS_ADMIN)
-        ) {
+        if (defineIsManagerRole(roles)) {
             routes.push(GET_ALL_MANAGERS_AND_ADMIN_REQ_ROUTES());
         }
 
