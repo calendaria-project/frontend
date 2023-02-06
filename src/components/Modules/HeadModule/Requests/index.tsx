@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useMemo, useState, Suspense } from "react";
+import React, { FC, Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { SetCurrentOpenedMenu } from "store/actions";
 import {
     accessRequestStatuses,
@@ -6,21 +6,21 @@ import {
     dictionaryCodesEnum,
     mainMenuEnum
 } from "data/enums";
-import { accessRequestTranscripts } from "data/transcripts";
+import { accessRequestTranscripts, appTypesEnumTranscripts } from "data/transcripts";
 import { useDispatch } from "react-redux";
 import { useTheme } from "react-jss";
 import {
+    Button,
     Col,
+    Dropdown,
+    Form,
     Input,
+    Menu,
+    message,
     Row,
     Select,
-    Typography,
-    Menu,
-    Dropdown,
     Space,
-    Button,
-    Form,
-    message
+    Typography
 } from "antd";
 
 import useStyles from "./styles";
@@ -33,18 +33,22 @@ import {
     ISimpleDictionaryViewModel,
     IUsersViewModel
 } from "interfaces";
-import { SearchOutlined, DownOutlined, PlusOutlined } from "@ant-design/icons";
+import { DownOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { BOOKING, OUTGOING, selectReqValues } from "./defaultValues";
-import { ALL_BOOKINGS, DATE, sortAccessReqValues, sortAccessShowValues } from "data/constants";
+import {
+    ALL_BOOKINGS,
+    ALL,
+    accessReqStatuses,
+    accessShowValues,
+    accessShowValuesNamesArr
+} from "data/constants";
 import cx from "classnames";
 import ReqTable from "./ReqTable";
 import Spinner from "ui/Spinner";
 import { ITheme } from "styles/theme/interface";
 import useDelayedInputSearch from "hooks/useDelayedInputSearch";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
-
-import { appTypesEnumTranscripts } from "data/transcripts";
-import sortRequests from "utils/sortAccessRequests";
+import filterRequests from "utils/filterAccessRequests";
 import getFullName from "utils/getFullName";
 import { getFormattedDateFromNow } from "utils/getFormattedDates";
 import { IUsersWithInfoModel } from "interfaces/extended";
@@ -74,6 +78,7 @@ const Requests: FC = () => {
     const [isAddReqFlag, setIsAddReqFlag] = useState(false);
     const [modalValues, setModalValues] = useState<ISimpleDictionaryViewModel[]>([]);
     const [currentUser, setCurrentUser] = useState<IUsersViewModel>({} as IUsersViewModel);
+    const currentUserId = currentUser?.userId;
 
     const [reqModalVisible, setReqModalVisible] = useState(false);
 
@@ -88,9 +93,15 @@ const Requests: FC = () => {
     const [selectReqValue, setSelectReqValue] = useState(
         sessionStorage.getItem("selectHeadRequestsValue") || OUTGOING
     );
-    const [sortValue, setSortValue] = useState("");
+    const [handlingValue, setHandlingValue] = useState("");
 
     const isBooking = selectReqValue === BOOKING;
+
+    useEffect(() => {
+        !isBooking
+            ? setHandlingValue(sessionStorage.getItem("filterHeadRequestsStatuses") || ALL)
+            : setHandlingValue(sessionStorage.getItem("sortHeadShowValue") || ALL_BOOKINGS);
+    }, [isBooking]);
 
     const [query, setQuery] = useState("");
     const { searchStr, handleFiltrationChange } = useDelayedInputSearch(query, setQuery);
@@ -103,12 +114,6 @@ const Requests: FC = () => {
         getUsersByCompanyId,
         getDictionaryValues
     } = useSimpleHttpFunctions();
-
-    useEffect(() => {
-        !isBooking
-            ? setSortValue(sessionStorage.getItem("sortHeadRequestsValue") || DATE)
-            : setSortValue(sessionStorage.getItem("sortHeadShowValue") || ALL_BOOKINGS);
-    }, [isBooking]);
 
     useEffect(() => {
         initModalData();
@@ -207,10 +212,12 @@ const Requests: FC = () => {
                       ];
                   })
                 : Object.entries(copiedRequests);
-            const searchedAndSortedData = sortRequests(sortValue, searchedData);
-            setAllRequests(Object.fromEntries(searchedAndSortedData));
+            const searchedAndHandledData = accessShowValuesNamesArr.includes(handlingValue)
+                ? searchedData //change for sort util foo
+                : filterRequests(handlingValue, searchedData);
+            setAllRequests(Object.fromEntries(searchedAndHandledData));
         }
-    }, [searchStr, isBooking, copiedRequests, sortValue]);
+    }, [searchStr, isBooking, copiedRequests, handlingValue]);
 
     const updateReqData = useCallback(
         (data: IAccessAppDataByCurrentUserViewModel) => {
@@ -225,14 +232,14 @@ const Requests: FC = () => {
         setSelectReqValue(v);
     }, []);
 
-    const handleChangeSortValue = useCallback(
+    const handleChangeHandlingValue = useCallback(
         (v: string) => {
             if (!isBooking) {
-                sessionStorage.setItem("sortHeadRequestsValue", v);
+                sessionStorage.setItem("filterHeadRequestsStatuses", v);
             } else {
                 sessionStorage.setItem("sortHeadShowValue", v);
             }
-            setSortValue(v);
+            setHandlingValue(v);
         },
         [isBooking]
     );
@@ -287,42 +294,21 @@ const Requests: FC = () => {
                 form.resetFields();
                 setReqModalVisible(false);
 
+                console.log(finalAccessAppData, currentUserId);
+
+                const currentAccessReqStatus =
+                    finalAccessAppData.applicationUser?.userId === currentUserId
+                        ? accessRequestStatuses.ON_APPROVEMENT
+                        : accessRequestStatuses.ON_PROCESS;
                 updateReqData({
                     ...allRequests,
-                    [accessRequestStatuses.ON_PROCESS]: allRequests[
-                        accessRequestStatuses.ON_PROCESS
-                    ]
-                        ? [...allRequests[accessRequestStatuses.ON_PROCESS], finalAccessAppData]
+                    [currentAccessReqStatus]: allRequests[currentAccessReqStatus]
+                        ? [...allRequests[currentAccessReqStatus], finalAccessAppData]
                         : [finalAccessAppData]
                 });
             }
-
-            // actionMethodResultSync(
-            //     "HELPDESK",
-            //     "access-application",
-            //     "post",
-            //     getRequestHeader(authContext.token),
-            //     finalReqData
-            // )
-            //     .then((d) => {
-            //         message.success("Успешно создано");
-            //         console.log(d);
-            //         form.resetFields();
-            //         setReqModalVisible(false);
-            //         updateReqData({
-            //             ...allRequests,
-            //             [accessRequestStatuses.ON_PROCESS]: allRequests[
-            //                 accessRequestStatuses.ON_PROCESS
-            //             ]
-            //                 ? [...allRequests[accessRequestStatuses.ON_PROCESS], d]
-            //                 : [d]
-            //         });
-            //     })
-            //     .catch(() => {
-            //         message.error("Ошибка создания!");
-            //     });
         },
-        [modalValues, allRequests, updateReqData]
+        [modalValues, allRequests, updateReqData, currentUserId]
     );
 
     const handleOpenReqModal = (addReqFlag: boolean) => () => {
@@ -371,15 +357,13 @@ const Requests: FC = () => {
                             </Option>
                         ))}
                     </Select>
-                    <Text className={classes.textForSelection}>
-                        {!isBooking ? "Сортировать по:" : "Показать:"}
-                    </Text>
+                    <Text className={classes.textForSelection}>Показать:</Text>
                     <Select
-                        className={cx(classes.select, classes.sortSelect)}
-                        value={sortValue}
-                        onChange={handleChangeSortValue}
+                        className={cx(classes.select, classes.handlingSelect)}
+                        value={handlingValue}
+                        onChange={handleChangeHandlingValue}
                     >
-                        {(!isBooking ? sortAccessReqValues : sortAccessShowValues).map(
+                        {(!isBooking ? accessReqStatuses : accessShowValues).map(
                             ({ value, label }) => (
                                 <Option value={value} key={value + label}>
                                     {label}
@@ -420,7 +404,7 @@ const Requests: FC = () => {
                     </div>
                 ) : (
                     <ReqTable
-                        currentUserId={currentUser?.userId}
+                        currentUserId={currentUserId}
                         reqData={allRequests}
                         updateReqData={updateReqData}
                     />

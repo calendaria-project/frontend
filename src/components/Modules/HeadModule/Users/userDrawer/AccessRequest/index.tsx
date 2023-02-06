@@ -1,35 +1,35 @@
-import { Row, Typography, Collapse, Checkbox } from "antd";
-import React, { FC, memo } from "react";
+import { Row, Typography } from "antd";
+import React, { FC, memo, useState, Suspense } from "react";
 import useStyles from "./styles";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import { IAccessAppDataByCurrentUserViewModel } from "interfaces";
-import { accessRequestTranscripts, appTypesEnumTranscripts } from "data/transcripts";
-import { getFormattedDateFromNow } from "utils/getFormattedDates";
-import { getReqBallStyle } from "utils/getReqBallStyle";
+import { accessRequestTranscripts } from "data/transcripts";
+import { accessRequestStatuses } from "data/enums";
+import Button from "ui/Button";
+import SharedCollapse from "components/Shared/SharedRequestUsers/userDrawer/AccessRequest/SharedCollapse";
 
-const { Panel } = Collapse;
+const ReqAgreementDrawer = React.lazy(
+    () => import("components/Modules/HeadModule/Requests/ReqTable/TableAgreementDrawer")
+);
+
 const { Text } = Typography;
 
-const AccessRequest: FC<{ reqData: IAccessAppDataByCurrentUserViewModel }> = ({ reqData }) => {
+const AccessRequest: FC<{
+    isCurrentUserCreatorFlag: boolean;
+    reqData: IAccessAppDataByCurrentUserViewModel;
+    updateReqData: (v: IAccessAppDataByCurrentUserViewModel) => void;
+}> = ({ isCurrentUserCreatorFlag, reqData, updateReqData }) => {
     const theme = useTheme<ITheme>();
     // @ts-ignore
     const classes = useStyles(theme);
 
-    const getPanelHeader = (appType: string, createdAt: string, status: string) => {
-        return (
-            <Row className={classes.panelContainer}>
-                <Text>{appTypesEnumTranscripts[appType] ?? ""}</Text>
-                <Text>{getFormattedDateFromNow(createdAt)}</Text>
-                <div className={classes.panelStatusContainer}>
-                    <div
-                        className={classes.panelStatusBall}
-                        style={getReqBallStyle(theme, status)}
-                    />
-                    <Text strong>{accessRequestTranscripts[status] ?? ""}</Text>
-                </div>
-            </Row>
-        );
+    const [reqAgreementDrawerOpened, setReqAgreementDrawerOpened] = useState(false);
+    const [currentAppId, setCurrentAppId] = useState<number | undefined>(undefined);
+
+    const handleOpenDrawer = (applicationId: number) => () => {
+        setCurrentAppId(applicationId);
+        setReqAgreementDrawerOpened(true);
     };
 
     return (
@@ -48,44 +48,44 @@ const AccessRequest: FC<{ reqData: IAccessAppDataByCurrentUserViewModel }> = ({ 
                         <Row className={classes.reqTitle}>
                             <Text strong>{accessRequestTranscripts[key]}</Text>
                         </Row>
-                        {(data || []).map((accessItem, aIndex) => (
-                            <Collapse
-                                key={accessItem.applicationId}
-                                className={classes.reqCollapseItem}
-                            >
-                                <Panel
-                                    key={aIndex}
-                                    header={getPanelHeader(
-                                        accessItem.appType,
-                                        accessItem.createdAt,
-                                        accessItem.status
-                                    )}
-                                >
-                                    {(accessItem.items || []).map((item, index) => (
-                                        <Row
-                                            key={"_" + item.accessType?.code + index}
-                                            className={classes.accessItemContainer}
-                                        >
-                                            <Checkbox
-                                                className={classes.accessItemCheckbox}
-                                                disabled
-                                                checked={item.needAccess}
+                        {(data || []).map((accessItem, aIndex) => {
+                            const status = accessItem.status;
+                            const applicationId = accessItem.applicationId;
+                            console.log(accessItem);
+                            return (
+                                <React.Fragment key={applicationId}>
+                                    <SharedCollapse collapseKey={aIndex} accessItem={accessItem} />
+                                    {status === accessRequestStatuses.ON_APPROVEMENT &&
+                                        !isCurrentUserCreatorFlag && (
+                                            <Row
+                                                className={classes.onApprovementBtnContainer}
+                                                justify={"end"}
                                             >
-                                                {item.appItemType?.nameRu}
-                                            </Checkbox>
-                                            <Text className={classes.accessItemStatus}>
-                                                {item.accessType?.nameRu ??
-                                                    item.tariff?.nameRu ??
-                                                    ""}
-                                            </Text>
-                                        </Row>
-                                    ))}
-                                </Panel>
-                            </Collapse>
-                        ))}
+                                                <Button
+                                                    onClick={handleOpenDrawer(applicationId)}
+                                                    customType={"regular"}
+                                                >
+                                                    Перейти к согласованию
+                                                </Button>
+                                            </Row>
+                                        )}
+                                </React.Fragment>
+                            );
+                        })}
                     </React.Fragment>
                 ))}
             </Row>
+            <Suspense>
+                <ReqAgreementDrawer
+                    open={reqAgreementDrawerOpened}
+                    setOpen={setReqAgreementDrawerOpened}
+                    reqData={reqData}
+                    currentAppId={currentAppId!}
+                    updateReqData={updateReqData}
+                    onlyFilterReqs={false}
+                    hideToCardBtnFlag={true}
+                />
+            </Suspense>
         </Row>
     );
 };

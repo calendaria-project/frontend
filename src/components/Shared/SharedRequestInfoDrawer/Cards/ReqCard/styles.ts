@@ -32,27 +32,32 @@ export default createUseStyles({
     creatorInfoCol: {
         margin: "6px 0"
     },
-    creatorInfoLastCol: {
+    toCardText: {
+        marginLeft: (theme: ITheme) => theme.layout.margin,
+        color: (theme: ITheme) => theme.color.regular,
+        cursor: "pointer"
+    },
+    titleCol: {
         marginTop: "40px",
         marginBottom: (theme: ITheme) => theme.layout.margin
     },
-    highlightedTime: {
-        color: (theme: ITheme) => theme.color.removing
-    },
-    describeTitle: {
+    titleText: {
         fontSize: "20px",
         fontWeight: (theme: ITheme) => theme.fontWeight.bold
+    },
+    highlightedTime: {
+        color: (theme: ITheme) => theme.color.removing
     },
     aboutReqContainer: {
         width: "100%",
         flexDirection: "column"
     },
+    aboutReqItemStatus: {
+        color: (theme: ITheme) => theme.color.extraText
+    },
     aboutReqItemContainer: {
         margin: "6px 0",
         justifyContent: "space-between"
-    },
-    aboutReqItemStatus: {
-        color: (theme: ITheme) => theme.color.extraText
     },
     aboutReqItemCheckbox: {
         "& .ant-checkbox-disabled + span": {

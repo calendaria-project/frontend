@@ -77,11 +77,19 @@ const ReqTable: FC<{
                             {(data || []).map((accessItem) => {
                                 const profilePhoto = accessItem.applicationUser?.currentPhotoId;
                                 const reqStatus = accessItem.status;
+                                const onApprovementStatus =
+                                    reqStatus === accessRequestStatuses.ON_APPROVEMENT;
+                                const creatorUserId = accessItem.creatorUserId;
                                 const applicationId = accessItem.applicationId;
                                 return (
                                     <Row key={applicationId} className={classes.reqContainer}>
                                         <div
-                                            onClick={handleOpenInfoDrawer(applicationId)}
+                                            onClick={
+                                                onApprovementStatus &&
+                                                currentUserId !== creatorUserId
+                                                    ? handleOpenDrawer(applicationId)
+                                                    : handleOpenInfoDrawer(applicationId)
+                                            }
                                             className={classes.accessItemFioContainer}
                                         >
                                             <img
@@ -103,19 +111,24 @@ const ReqTable: FC<{
                                         <Text>{getFormattedDateFromNow(accessItem.createdAt)}</Text>
                                         <Text>{getFormattedDateFromNow(accessItem.endDate)}</Text>
                                         {getReqStatusWithBall(reqStatus)}
-                                        {reqStatus === accessRequestStatuses.ON_APPROVEMENT ? (
-                                            <Button
-                                                customType={"regular"}
-                                                disabled={
-                                                    currentUserId === accessItem.creatorUserId
-                                                }
-                                                onClick={handleOpenDrawer(applicationId)}
-                                                className={classes.toAccessBtn}
-                                            >
-                                                Перейти к согласованию
-                                            </Button>
+                                        {onApprovementStatus ? (
+                                            currentUserId !== creatorUserId ? (
+                                                <Button
+                                                    customType={"regular"}
+                                                    onClick={handleOpenDrawer(applicationId)}
+                                                    className={classes.actionsSection}
+                                                >
+                                                    Перейти к согласованию
+                                                </Button>
+                                            ) : (
+                                                <div className={classes.actionsSection}>
+                                                    <span className={classes.signedText}>
+                                                        Подписано
+                                                    </span>
+                                                </div>
+                                            )
                                         ) : (
-                                            <div className={classes.emptyDiv} />
+                                            <div className={classes.actionsSection} />
                                         )}
                                     </Row>
                                 );

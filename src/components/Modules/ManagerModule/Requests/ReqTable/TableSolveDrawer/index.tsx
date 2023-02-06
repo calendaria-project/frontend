@@ -3,32 +3,30 @@ import { LeftOutlined } from "@ant-design/icons";
 import { Col, Drawer, Row } from "antd";
 import {
     IAccessAppDataByCurrentUserInKeyViewModel,
-    IAccessAppDataByCurrentUserViewModel
+    IAccessAppDataByCurrentUserViewModel,
+    IAccessApplicationHistoryViewModel
 } from "interfaces";
 import useStyles from "./styles";
 import { useTheme } from "react-jss";
-import ReqCard from "./Cards/ReqCard";
-import ReqActionsCard from "./Cards/ReqActionsCard";
+import ReqCard from "./ReqCard";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
+import { accessRequestHistoryStatuses } from "data/enums";
+import ReqExtraCardSharedContent from "components/Shared/SharedRequestInfoDrawer/Cards/ReqExtraCard/ReqExtraCardSharedContent";
 
-interface ITableAgreementDrawer {
+interface ITableSolveDrawer {
     open: boolean;
     setOpen: (val: boolean) => void;
     reqData: IAccessAppDataByCurrentUserViewModel;
     currentAppId: number;
     updateReqData: (data: IAccessAppDataByCurrentUserViewModel) => void;
-    onlyFilterReqs?: boolean;
-    hideToCardBtnFlag?: boolean;
 }
 
-const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({
+const TableSolveDrawer: FC<ITableSolveDrawer> = ({
     open,
     setOpen,
     reqData,
     currentAppId,
-    updateReqData,
-    onlyFilterReqs,
-    hideToCardBtnFlag
+    updateReqData
 }) => {
     const onClose = () => {
         setOpen(false);
@@ -41,8 +39,20 @@ const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({
     const [currentReqData, setCurrentReqData] = useState<IAccessAppDataByCurrentUserInKeyViewModel>(
         {} as IAccessAppDataByCurrentUserInKeyViewModel
     );
+    const [appHistory, setAppHistory] = useState<IAccessApplicationHistoryViewModel[]>([]);
 
-    const { getAccessApplicationById } = useSimpleHttpFunctions();
+    const { getAccessApplicationHistoryById, getAccessApplicationById } = useSimpleHttpFunctions();
+
+    useEffect(() => {
+        if (currentAppId) {
+            initAppHistory();
+        }
+    }, [currentAppId]);
+
+    const initAppHistory = async () => {
+        const hist = await getAccessApplicationHistoryById(currentAppId);
+        setAppHistory(hist);
+    };
 
     useEffect(() => {
         if (currentAppId) {
@@ -55,6 +65,10 @@ const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({
         setCurrentReqData(data);
     };
 
+    const reqFinishedFlag = appHistory.some(
+        (histItem) => histItem.status === accessRequestHistoryStatuses.FINISHED
+    );
+
     return (
         <Drawer
             title="Вернуться назад"
@@ -66,20 +80,23 @@ const TableAgreementDrawer: FC<ITableAgreementDrawer> = ({
             <Row className={classes.container}>
                 <Col span={20} className={classes.reqCard}>
                     <ReqCard
-                        currentReqData={currentReqData}
-                        hideToCardBtnFlag={hideToCardBtnFlag}
-                    />
-                </Col>
-                <Col span={4} className={classes.reqActions}>
-                    <ReqActionsCard
                         reqData={reqData}
                         currentReqData={currentReqData}
                         updateReqData={updateReqData}
-                        onlyFilterReqs={onlyFilterReqs}
+                        initAppHistory={initAppHistory}
+                        reqFinishedFlag={reqFinishedFlag}
                     />
+                </Col>
+                <Col span={4} className={classes.reqActions}>
+                    <Row>
+                        <ReqExtraCardSharedContent
+                            currentReqData={currentReqData}
+                            appHistory={appHistory}
+                        />
+                    </Row>
                 </Col>
             </Row>
         </Drawer>
     );
 };
-export default memo(TableAgreementDrawer);
+export default memo(TableSolveDrawer);

@@ -69,6 +69,9 @@ export default createUseStyles({
     cancelText: {
         color: (theme: ITheme) => theme.color.removing
     },
+    signedText: {
+        color: (theme: ITheme) => theme.color.successful
+    },
     accessItemFioContainer: {
         cursor: "pointer",
         width: "150px",
@@ -84,10 +87,8 @@ export default createUseStyles({
     accessItemFioText: {
         marginLeft: (theme: ITheme) => theme.layout.margin
     },
-    emptyDiv: {
-        width: "220px"
-    },
-    toAccessBtn: {
+    actionsSection: {
+        textAlign: "end",
         width: "220px"
     }
 });

@@ -29,8 +29,5 @@ export default createUseStyles({
     reqTitle: {
         width: "100%",
         marginTop: (theme: ITheme) => theme.layout.margin
-    },
-    onApprovementBtnContainer: {
-        width: "100%"
     }
 });

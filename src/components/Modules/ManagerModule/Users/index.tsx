@@ -1,9 +1,9 @@
 import React, { FC, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { IUsersWithPhotoInfoModel } from "interfaces/extended";
 import { SetCurrentOpenedMenu } from "store/actions";
 import { mainMenuEnum } from "data/enums";
 import WithUsers from "components/Shared/SharedRequestUsers/WithUsers";
+import { IUsersWithPhotoInfoModel } from "interfaces/extended";
 
 const UserDrawer = React.lazy(() => import("./userDrawer"));
 
@@ -19,6 +19,7 @@ const Users: FC = () => {
             drawerChild={
                 <UserDrawer
                     //initial empty values
+                    divisionsEquality={false}
                     open={false}
                     setOpen={() => {}}
                     userData={{} as IUsersWithPhotoInfoModel}
