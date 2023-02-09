@@ -31,6 +31,7 @@ const AddRequestModal = React.lazy(
 interface IExternalUserDrawer {
     divisionsEquality: boolean;
     isCurrentUserCreatorFlag: boolean;
+    currentUserId: string;
     open: boolean;
     setOpen: (val: boolean) => void;
     userData: IUsersWithPhotoInfoModel;
@@ -39,6 +40,7 @@ interface IExternalUserDrawer {
 const UserDrawer: FC<IExternalUserDrawer> = ({
     divisionsEquality,
     isCurrentUserCreatorFlag,
+    currentUserId,
     open,
     setOpen,
     userData
@@ -116,11 +118,12 @@ const UserDrawer: FC<IExternalUserDrawer> = ({
 
             const finalReqData: IAccessApplicationViewModel = {
                 appType: filteredDataWithDate.appType,
-                endDate: filteredDataWithDate.endDate,
                 comment: filteredDataWithDate.comment || null,
                 applicationUserId: userId,
                 items: reqItems
             };
+
+            console.log(finalReqData);
 
             actionMethodResultSync(
                 "HELPDESK",
@@ -174,6 +177,7 @@ const UserDrawer: FC<IExternalUserDrawer> = ({
                         ) : isObjectNotEmpty(currentAccessAppRequests) ? (
                             <AccessRequest
                                 isCurrentUserCreatorFlag={isCurrentUserCreatorFlag}
+                                currentUserId={currentUserId}
                                 reqData={currentAccessAppRequests}
                                 updateReqData={updateCurrentAccessAppRequests}
                             />
@@ -196,6 +200,7 @@ const UserDrawer: FC<IExternalUserDrawer> = ({
                         userData.lastname,
                         userData.patronymic
                     )}
+                    userId={userData.userId}
                     modalValues={modalValues}
                 />
             </Suspense>

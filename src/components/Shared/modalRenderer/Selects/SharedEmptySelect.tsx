@@ -10,6 +10,7 @@ interface ISelect {
     propertyName: string;
     initialValue?: any;
     placeholder?: string;
+    disabled?: boolean;
 }
 
 const SharedEmptySelect: FC<ISelect> = ({
@@ -18,13 +19,17 @@ const SharedEmptySelect: FC<ISelect> = ({
     propertyName,
     initialValue,
     id,
-    placeholder
+    placeholder,
+    disabled
 }) => {
     const [selectValue, setSelectValue] = useState<any | undefined>(undefined);
 
     useEffect(() => {
         if (initialValue) {
-            setSelectValue(initialValue);
+            const currentValueObject: any | undefined = selectValues.find(
+                (item) => item[id] === initialValue
+            );
+            setSelectValue(currentValueObject);
         }
     }, []);
 
@@ -45,6 +50,7 @@ const SharedEmptySelect: FC<ISelect> = ({
             placeholder={placeholder}
             value={selectValue?.nameRu}
             onChange={handleChangeValue}
+            disabled={disabled}
         >
             {(selectValues || []).map((el, i) => (
                 <Option value={el[id]} key={i}>

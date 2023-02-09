@@ -312,6 +312,17 @@ const useSimpleHttpFunctions = () => {
         });
     };
 
+    const getAccessStorageItemsByUserId = (userId: string) => {
+        return actionMethodResultSync(
+            "HELPDESK",
+            `access-storage/get-items-by-user?userId=${userId}`,
+            "get",
+            getRequestHeader(authContext.token)
+        ).then((data) => {
+            return data;
+        });
+    };
+
     return {
         companies,
         positions,
@@ -340,7 +351,8 @@ const useSimpleHttpFunctions = () => {
         approveAccessApplicationById,
         rejectAccessApplicationById,
         doAccessApplicationTaskById,
-        signAccessApplicationTaskById
+        signAccessApplicationTaskById,
+        getAccessStorageItemsByUserId
     };
 };
 export default useSimpleHttpFunctions;

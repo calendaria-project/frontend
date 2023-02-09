@@ -37,6 +37,8 @@ import { SelectionMethodTypeTable } from "./Tables/selectionMethodTypeTable";
 import { AnalysisMethodTypeTable } from "./Tables/analysisMethodTypeTable";
 import { AppItemTypeTable } from "./Tables/appItemTypeTable";
 import { MobileTariffTable } from "./Tables/mobileTariffTable";
+import { AccessRemoveTypeTable } from "./Tables/accessRemoveTypeTable";
+import { AccessRemoveReasonTable } from "./Tables/accessRemoveReasonTable";
 
 const Dictionary = () => {
     const dispatch = useDispatch();
@@ -195,6 +197,16 @@ const Dictionary = () => {
             label: "Мобильные тарифы",
             key: "28",
             children: <MobileTariffTable />
+        },
+        {
+            label: "Вид отзыва",
+            key: "29",
+            children: <AccessRemoveTypeTable />
+        },
+        {
+            label: "Причина отзыва",
+            key: "30",
+            children: <AccessRemoveReasonTable />
         }
     ];
 

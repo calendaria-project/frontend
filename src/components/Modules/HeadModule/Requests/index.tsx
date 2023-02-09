@@ -1,8 +1,10 @@
 import React, { FC, Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { SetCurrentOpenedMenu } from "store/actions";
 import {
+    accessRemoveTypeEnum,
     accessRequestStatuses,
     appItemTypeValues,
+    appTypesEnum,
     dictionaryCodesEnum,
     mainMenuEnum
 } from "data/enums";
@@ -29,7 +31,6 @@ import {
     IAccessAppDataByCurrentUserInKeyViewModel,
     IAccessAppDataByCurrentUserViewModel,
     IAccessApplicationItemModel,
-    IAccessApplicationViewModel,
     ISimpleDictionaryViewModel,
     IUsersViewModel
 } from "interfaces";
@@ -57,6 +58,9 @@ import getObjectWithHandledDates from "utils/getObjectWithHandeledDates";
 
 const AccessReqModal = React.lazy(
     () => import("components/Shared/modalRenderer/ReadyModals/AccessReqModal")
+);
+const RemoveAccessReqModal = React.lazy(
+    () => import("components/Shared/modalRenderer/ReadyModals/RemoveAccessReqModal")
 );
 const { Option } = Select;
 const { Text } = Typography;
@@ -205,7 +209,6 @@ const Requests: FC = () => {
                                   ) +
                                   (appTypesEnumTranscripts[req.appType] || "") +
                                   (getFormattedDateFromNow(req.createdAt) || "") +
-                                  (getFormattedDateFromNow(req.endDate) || "") +
                                   (accessRequestTranscripts[req.status] || "");
                               return reqDataStr.toLowerCase().includes(searchStr.toLowerCase());
                           })
@@ -267,13 +270,29 @@ const Requests: FC = () => {
                 }
             });
 
-            const finalReqData: IAccessApplicationViewModel = {
+            let finalReqData: any = {
                 appType: filteredDataWithDate.appType,
-                endDate: filteredDataWithDate.endDate,
                 comment: filteredDataWithDate.comment || null,
                 applicationUserId: filteredDataWithDate.applicationUserId,
                 items: reqItems
             };
+
+            if (filteredDataWithDate.appType === appTypesEnum.REMOVE_ACCESS) {
+                if (filteredDataWithDate.accessRemoveType.code === accessRemoveTypeEnum.DISMISSAL) {
+                    finalReqData = {
+                        ...finalReqData,
+                        confirmationDocId: filteredDataWithDate.confirmationDocId,
+                        accessRemoveType: filteredDataWithDate.accessRemoveType
+                    };
+                } else {
+                    finalReqData = {
+                        ...finalReqData,
+                        accessRemoveType: filteredDataWithDate.accessRemoveType,
+                        accessRemoveReason: filteredDataWithDate.accessRemoveReason,
+                        applicationEndDate: filteredDataWithDate.applicationEndDate
+                    };
+                }
+            }
 
             const accessAppData: IAccessAppDataByCurrentUserInKeyViewModel =
                 await postAccessApplication(finalReqData).catch(() =>
@@ -341,6 +360,15 @@ const Requests: FC = () => {
         ),
         []
     );
+
+    const modalProps = {
+        form: form,
+        isVisible: reqModalVisible,
+        setIsVisible: setReqModalVisible,
+        onFinish: onFinishReqModal,
+        usersData: allUsers,
+        modalValues: modalValues
+    };
 
     return (
         <Row className={classes.wrapper}>
@@ -413,17 +441,15 @@ const Requests: FC = () => {
                 <></>
             )}
             <Suspense>
-                <AccessReqModal
-                    form={form}
-                    title={isAddReqFlag ? "Добавить заявку" : "Отзыв прав"}
-                    isVisible={reqModalVisible}
-                    setIsVisible={setReqModalVisible}
-                    okText={isAddReqFlag ? "Добавить" : "Отправить"}
-                    onFinish={onFinishReqModal}
-                    usersData={allUsers}
-                    modalValues={modalValues}
-                    removeAccess={!isAddReqFlag}
-                />
+                {isAddReqFlag ? (
+                    <AccessReqModal {...modalProps} title={"Добавить заявку"} okText={"Добавить"} />
+                ) : (
+                    <RemoveAccessReqModal
+                        {...modalProps}
+                        title={"Отзыв прав"}
+                        okText={"Отправить"}
+                    />
+                )}
             </Suspense>
         </Row>
     );

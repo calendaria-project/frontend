@@ -149,6 +149,7 @@ const WithUsers: FC<{ drawerChild: any }> = ({ drawerChild }) => {
                     {cloneElement(drawerChild, {
                         divisionsEquality: userInfo.divisionId === currentUserDivisionId,
                         isCurrentUserCreatorFlag: userInfo.userId === currentUserId,
+                        currentUserId: currentUserId,
                         open: userDrawerOpen,
                         setOpen: setUserDrawerOpen,
                         userData: userInfo

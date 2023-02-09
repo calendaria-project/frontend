@@ -10,10 +10,7 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 
-const AvatarDropZone: FC<{ form: FormInstance; userSign?: string | null }> = ({
-    form,
-    userSign
-}) => {
+const SignDropZone: FC<{ form: FormInstance; userSign?: string | null }> = ({ form, userSign }) => {
     const authContext = useContext(AuthContext);
 
     const theme = useTheme<ITheme>();
@@ -81,4 +78,4 @@ const AvatarDropZone: FC<{ form: FormInstance; userSign?: string | null }> = ({
         </Form.Item>
     );
 };
-export default memo(AvatarDropZone);
+export default memo(SignDropZone);

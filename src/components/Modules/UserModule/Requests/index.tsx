@@ -1,6 +1,12 @@
 import React, { FC, Suspense, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { SetCurrentOpenedMenu } from "store/actions";
-import { accessRequestStatuses, dictionaryCodesEnum, mainMenuEnum } from "data/enums";
+import {
+    accessRemoveTypeEnum,
+    accessRequestStatuses,
+    appTypesEnum,
+    dictionaryCodesEnum,
+    mainMenuEnum
+} from "data/enums";
 import { accessRequestTranscripts } from "data/transcripts";
 import { useDispatch } from "react-redux";
 import { useTheme } from "react-jss";
@@ -25,7 +31,6 @@ import {
     IAccessAppDataByCurrentUserInKeyViewModel,
     IAccessAppDataByCurrentUserViewModel,
     IAccessApplicationItemModel,
-    IAccessApplicationViewModel,
     ISimpleDictionaryViewModel,
     IUsersViewModel
 } from "interfaces";
@@ -56,8 +61,11 @@ import { getRequestHeader } from "functions/common";
 import { AuthContext } from "context/AuthContextProvider";
 import { getFormattedDateFromNow } from "utils/getFormattedDates";
 
-const AddRequestModal = React.lazy(
+const AccessReqModal = React.lazy(
     () => import("components/Shared/modalRenderer/ReadyModals/AccessReqModal")
+);
+const RemoveRequestModal = React.lazy(
+    () => import("components/Shared/modalRenderer/ReadyModals/RemoveAccessReqModal")
 );
 
 const { Option } = Select;
@@ -150,7 +158,6 @@ const Requests: FC = () => {
                               const tableDataStr =
                                   (appTypesEnumTranscripts[req.appType] || "") +
                                   (getFormattedDateFromNow(req.createdAt) || "") +
-                                  (getFormattedDateFromNow(req.endDate) || "") +
                                   (accessRequestTranscripts[req.status] || "");
                               return tableDataStr.toLowerCase().includes(searchStr.toLowerCase());
                           })
@@ -191,7 +198,7 @@ const Requests: FC = () => {
         [isBookingReq]
     );
 
-    const onFinishAddReqModal = useCallback(
+    const onFinishReqModal = useCallback(
         async (data: any) => {
             const filteredData = removeEmptyValuesFromAnyLevelObject(data);
             const filteredDataWithDate = getObjectWithHandledDates(filteredData);
@@ -214,13 +221,29 @@ const Requests: FC = () => {
                 }
             });
 
-            const finalReqData: IAccessApplicationViewModel = {
+            let finalReqData: any = {
                 appType: filteredDataWithDate.appType,
-                endDate: filteredDataWithDate.endDate,
                 comment: filteredDataWithDate.comment || null,
                 applicationUserId: userId,
                 items: reqItems
             };
+
+            if (filteredDataWithDate.appType === appTypesEnum.REMOVE_ACCESS) {
+                if (filteredDataWithDate.accessRemoveType.code === accessRemoveTypeEnum.DISMISSAL) {
+                    finalReqData = {
+                        ...finalReqData,
+                        confirmationDocId: filteredDataWithDate.confirmationDocId,
+                        accessRemoveType: filteredDataWithDate.accessRemoveType
+                    };
+                } else {
+                    finalReqData = {
+                        ...finalReqData,
+                        accessRemoveType: filteredDataWithDate.accessRemoveType,
+                        accessRemoveReason: filteredDataWithDate.accessRemoveReason,
+                        applicationEndDate: filteredDataWithDate.applicationEndDate
+                    };
+                }
+            }
 
             console.log(finalReqData);
 
@@ -281,6 +304,20 @@ const Requests: FC = () => {
         ),
         []
     );
+
+    const modalProps = {
+        form,
+        isVisible: reqModalVisible,
+        setIsVisible: setReqModalVisible,
+        onFinish: onFinishReqModal,
+        userName: getFullName(
+            currUserData.firstname,
+            currUserData.lastname,
+            currUserData.patronymic
+        ),
+        userId: userId,
+        modalValues: modalValues
+    };
 
     return (
         <Row className={classes.wrapper}>
@@ -347,21 +384,15 @@ const Requests: FC = () => {
                 <></>
             )}
             <Suspense>
-                <AddRequestModal
-                    form={form}
-                    title={isAddReqFlag ? "Добавить и подписать заявку" : "Отзыв прав"}
-                    isVisible={reqModalVisible}
-                    setIsVisible={setReqModalVisible}
-                    okText={isAddReqFlag ? "Добавить и подписать" : "Отправить"}
-                    onFinish={onFinishAddReqModal}
-                    userName={getFullName(
-                        currUserData.firstname,
-                        currUserData.lastname,
-                        currUserData.patronymic
-                    )}
-                    modalValues={modalValues}
-                    removeAccess={!isAddReqFlag}
-                />
+                {isAddReqFlag ? (
+                    <AccessReqModal
+                        {...modalProps}
+                        title={"Добавить и подписать заявку"}
+                        okText={"Добавить и подписать"}
+                    />
+                ) : (
+                    <RemoveRequestModal {...modalProps} title={"Отзыв прав"} okText={"Отправить"} />
+                )}
             </Suspense>
         </Row>
     );

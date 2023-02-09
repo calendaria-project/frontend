@@ -9,8 +9,9 @@ import { appTypesEnum, layoutConstantTypes } from "data/enums";
 import { appTypesEnumTranscripts } from "data/transcripts";
 import FormItem from "./FormItem";
 import { IUsersWithInfoModel } from "interfaces/extended";
+import RemovingFormItems from "./RemovingFormItems";
 
-export interface AddRequestModal {
+export interface RemoveRequestModal {
     okText: string;
     title: string;
     isVisible: boolean;
@@ -21,12 +22,13 @@ export interface AddRequestModal {
     userId?: string;
     usersData?: IUsersWithInfoModel[];
     modalValues: ISimpleDictionaryViewModel[];
+    removeAccess?: boolean;
 }
 
 const { Text } = Typography;
 const { Option } = Select;
 
-const AccessReqModal: FC<AddRequestModal> = ({
+const RemoveAccessReqModal: FC<RemoveRequestModal> = ({
     okText,
     title,
     isVisible,
@@ -43,14 +45,16 @@ const AccessReqModal: FC<AddRequestModal> = ({
     }, []);
 
     const [selectedUserId, setSelectedUserId] = useState<string | undefined>(undefined);
+    const [disabledFormItemsFlag, setDisabledFormItemsFlag] = useState(false);
 
+    //initial value
     useEffect(() => {
-        form.setFieldValue("applicationUserId", userId);
         setSelectedUserId(userId);
+        form.setFieldValue("applicationUserId", userId);
     }, [userId]);
 
     useEffect(() => {
-        form.setFieldValue(["appType"], appTypesEnum.GET_ACCESS);
+        form.setFieldValue(["appType"], appTypesEnum.REMOVE_ACCESS);
     }, []);
 
     const handleChangeSelectedUserId = useCallback(
@@ -60,6 +64,8 @@ const AccessReqModal: FC<AddRequestModal> = ({
         },
         [form]
     );
+
+    console.log(selectedUserId);
 
     return (
         <Modal title={title} open={isVisible} footer={null} onCancel={handleCancel} destroyOnClose>
@@ -81,14 +87,18 @@ const AccessReqModal: FC<AddRequestModal> = ({
                                 <Input disabled />
                             </Form.Item>
                         ) : usersData ? (
-                            <Form.Item name={"applicationUserId"}>
+                            <Form.Item
+                                initialValue={userId}
+                                name={"applicationUserId"}
+                                rules={[{ required: true }]}
+                            >
                                 <Select
                                     value={selectedUserId}
                                     onChange={handleChangeSelectedUserId}
                                     placeholder={"Для кого"}
                                 >
-                                    {usersData.map((user, index) => (
-                                        <Option key={"" + user.userId + index} value={user.userId}>
+                                    {usersData.map((user, i) => (
+                                        <Option value={user.userId} key={"" + user.userId + i}>
                                             {user.fullName}
                                         </Option>
                                     ))}
@@ -96,12 +106,16 @@ const AccessReqModal: FC<AddRequestModal> = ({
                             </Form.Item>
                         ) : null}
                         <Form.Item name={"appType"}>
-                            <Select placeholder={"Тип заявки"} value={appTypesEnum.GET_ACCESS}>
-                                <Option value={appTypesEnum.GET_ACCESS}>
-                                    {appTypesEnumTranscripts[appTypesEnum.GET_ACCESS]}
+                            <Select placeholder={"Тип заявки"} value={appTypesEnum.REMOVE_ACCESS}>
+                                <Option value={appTypesEnum.REMOVE_ACCESS}>
+                                    {appTypesEnumTranscripts[appTypesEnum.REMOVE_ACCESS]}
                                 </Option>
                             </Select>
                         </Form.Item>
+                        <RemovingFormItems
+                            form={form}
+                            setDisabledFormItemsFlag={setDisabledFormItemsFlag}
+                        />
                         {(modalValues || [])
                             .sort((a, b) => a.id - b.id)
                             .map((item, index) => (
@@ -115,6 +129,7 @@ const AccessReqModal: FC<AddRequestModal> = ({
                                         form={form}
                                         currentDictionary={item}
                                         selectedUserId={selectedUserId}
+                                        disabledAllFlag={disabledFormItemsFlag}
                                     />
                                 </React.Fragment>
                             ))}
@@ -136,4 +151,4 @@ const AccessReqModal: FC<AddRequestModal> = ({
         </Modal>
     );
 };
-export default memo(AccessReqModal);
+export default memo(RemoveAccessReqModal);

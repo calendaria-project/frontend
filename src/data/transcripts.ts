@@ -32,6 +32,9 @@ export const accessRequestHistoryTranscripts: { [key: string]: string } = {
     [accessRequestHistoryStatuses.ON_EMPLOYER_SIGN]: "На подписании сотрудником",
     [accessRequestHistoryStatuses.EMPLOYER_SIGNED]: "Подписано сотрудником",
     [accessRequestHistoryStatuses.APPROVED]: "Заявка согласована",
+    [accessRequestHistoryStatuses.FINISHED]: "Заявка завершена",
+    [accessRequestHistoryStatuses.CANCELED]: "Заявка отменена",
+
     [accessRequestHistoryStatuses.SYSTEM_ACCOUNTS_CREATED]: "Cистемные учетные записи созданы",
     [accessRequestHistoryStatuses.ACCOUNT_TENDERIX_CREATED]: "Аккаунт tenderix создан",
     [accessRequestHistoryStatuses.ACCOUNT_1C_CREATED]: "Аккаунт 1C создан",
@@ -39,6 +42,22 @@ export const accessRequestHistoryTranscripts: { [key: string]: string } = {
     [accessRequestHistoryStatuses.SKUD_CREATED]: "СКУД выдан",
     [accessRequestHistoryStatuses.ACCOUNT_BITRIX_CREATED]: "Аккаунт в bitrix создан",
     [accessRequestHistoryStatuses.MOBILE_NUM_ISSUED]: "Cлужебный номер выдан",
-    [accessRequestHistoryStatuses.FINISHED]: "Заявка завершена",
-    [accessRequestHistoryStatuses.CANCELED]: "Заявка отменена"
+
+    [accessRequestHistoryStatuses.SYSTEM_ACCOUNTS_BLOCKED]:
+        "Системные учетные записи заблокированы",
+    [accessRequestHistoryStatuses.ACCOUNT_TENDERIX_BLOCKED]: "Аккаунт tenderix заблокирован",
+    [accessRequestHistoryStatuses.ACCOUNT_1C_BLOCKED]: "Аккаунс 1С заблокирован",
+    [accessRequestHistoryStatuses.ACCOUNT_ADATA_BLOCKED]: "Аккаунт adata заблокирован",
+    [accessRequestHistoryStatuses.SKUD_BLOCKED]: "СКУД заблокирован",
+    [accessRequestHistoryStatuses.ACCOUNT_BITRIX_BLOCKED]: "Аккаунт в bitrix заблокирован",
+    [accessRequestHistoryStatuses.MOBILE_NUM_BLOCKED]: "Служебный номер заблокирован",
+
+    [accessRequestHistoryStatuses.SYSTEM_ACCOUNTS_RECOVERED]:
+        "Системные учетные записи восстановлены",
+    [accessRequestHistoryStatuses.ACCOUNT_TENDERIX_RECOVERED]: "Аккаунт tenderix восстановлен",
+    [accessRequestHistoryStatuses.ACCOUNT_1C_RECOVERED]: "Аккаунс 1С восстановлен",
+    [accessRequestHistoryStatuses.ACCOUNT_ADATA_RECOVERED]: "Аккаунт adata восстановлен",
+    [accessRequestHistoryStatuses.SKUD_RECOVERED]: "СКУД восстановлен",
+    [accessRequestHistoryStatuses.ACCOUNT_BITRIX_RECOVERED]: "Аккаунт в bitrix восстановлен",
+    [accessRequestHistoryStatuses.MOBILE_NUM_RECOVERED]: "Служебный номер восстановлен"
 };

@@ -103,7 +103,6 @@ const UserDrawer: FC<IExternalUserDrawer> = ({ divisionsEquality, open, setOpen,
 
             const finalReqData: IAccessApplicationViewModel = {
                 appType: filteredDataWithDate.appType,
-                endDate: filteredDataWithDate.endDate,
                 comment: filteredDataWithDate.comment || null,
                 applicationUserId: userId,
                 items: reqItems
@@ -179,6 +178,7 @@ const UserDrawer: FC<IExternalUserDrawer> = ({ divisionsEquality, open, setOpen,
                         userData.lastname,
                         userData.patronymic
                     )}
+                    userId={userData.userId}
                     modalValues={modalValues}
                 />
             </Suspense>

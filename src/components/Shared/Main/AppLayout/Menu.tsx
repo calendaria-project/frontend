@@ -92,12 +92,12 @@ const MenuComponent: FC = () => {
 
     const USER_DEFAULT_ITEMS = [
         {
-            key: mainMenuEnum.incoming,
+            key: mainMenuEnum.internal,
             icon: <ImportOutlined className={classes.icon} />,
             label: "Внутренние сервисы"
         },
         {
-            key: mainMenuEnum.outgoing,
+            key: mainMenuEnum.external,
             icon: <ExportOutlined className={classes.icon} />,
             label: "Внешние сервисы"
         },

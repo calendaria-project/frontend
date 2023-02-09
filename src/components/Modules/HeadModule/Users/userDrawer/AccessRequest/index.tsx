@@ -17,9 +17,10 @@ const { Text } = Typography;
 
 const AccessRequest: FC<{
     isCurrentUserCreatorFlag: boolean;
+    currentUserId: string;
     reqData: IAccessAppDataByCurrentUserViewModel;
     updateReqData: (v: IAccessAppDataByCurrentUserViewModel) => void;
-}> = ({ isCurrentUserCreatorFlag, reqData, updateReqData }) => {
+}> = ({ isCurrentUserCreatorFlag, currentUserId, reqData, updateReqData }) => {
     const theme = useTheme<ITheme>();
     // @ts-ignore
     const classes = useStyles(theme);
@@ -56,7 +57,8 @@ const AccessRequest: FC<{
                                 <React.Fragment key={applicationId}>
                                     <SharedCollapse collapseKey={aIndex} accessItem={accessItem} />
                                     {status === accessRequestStatuses.ON_APPROVEMENT &&
-                                        !isCurrentUserCreatorFlag && (
+                                        !isCurrentUserCreatorFlag &&
+                                        currentUserId !== accessItem.creatorUserId && (
                                             <Row
                                                 className={classes.onApprovementBtnContainer}
                                                 justify={"end"}

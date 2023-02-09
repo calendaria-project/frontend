@@ -348,6 +348,20 @@ export interface IAccessApplicationItemModel {
     tariff?: ISimpleDictionaryViewModel;
 }
 
+export interface IAccessApplicationStorageItemModel {
+    accessStorageId: number;
+    accessTypeId: number;
+    appItemTypeId: number;
+    hasAccess: boolean;
+    tariffId?: number;
+    userId: string;
+}
+
+export interface IAccessApplicationStorageItemViewModel extends IAccessApplicationStorageItemModel {
+    createdAt: string;
+    updatedAt: string;
+}
+
 export interface IAccessApplicationItemViewModel extends IAccessApplicationItemModel {
     applicationItemId: number;
     status: string;
@@ -357,7 +371,6 @@ export interface IAccessApplicationItemViewModel extends IAccessApplicationItemM
 
 export interface IAccessApplicationViewModel {
     appType: appTypesEnum.GET_ACCESS | appTypesEnum.REMOVE_ACCESS;
-    endDate: string;
     comment: string;
     applicationUserId: string;
     items: IAccessApplicationItemModel[];
@@ -381,11 +394,15 @@ export interface IAccessApplicationUserViewModel {
 }
 
 export interface IAccessAppDataByCurrentUserInKeyViewModel {
+    accessRemoveReason: ISimpleDictionaryViewModel;
+    accessRemoveType: ISimpleDictionaryViewModel;
     appType: appTypesEnum.GET_ACCESS | appTypesEnum.REMOVE_ACCESS;
     applicationId: number;
     companyId: number;
     divisionId: number;
-    endDate: string;
+    applicationEndDate: string; //при увольнении срок
+    processingDeadline: string; //автоматический дедлайн на 24ч
+    confirmationDocId: string;
     cancelReason: string;
     comment: string;
     status: string;

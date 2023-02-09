@@ -21,6 +21,7 @@ const Users: FC = () => {
                     //initial empty values
                     divisionsEquality={false}
                     isCurrentUserCreatorFlag={false}
+                    currentUserId={""}
                     open={false}
                     setOpen={() => {}}
                     userData={{} as IUsersWithPhotoInfoModel}

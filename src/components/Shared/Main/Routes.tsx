@@ -24,8 +24,8 @@ const RoutesComponent = () => {
         <>
             <Route key="mainMenu-route" path="/" element={<>user mainMenu</>} />
             <Route key="users-route" path="/users" element={<UserUsers />} />
-            <Route key="incoming-route" path="/incoming" element={<>user incoming</>} />
-            <Route key="outgoing-route" path="/outgoing" element={<>user outgoing</>} />
+            <Route key="internal-route" path="/internal" element={<>user internal services</>} />
+            <Route key="external-route" path="/external" element={<>user external services</>} />
             <Route key="requests-route" path="/requests" element={<UserRequests />} />
             <Route key="information-route" path="/information" element={<>user information</>} />
         </>
@@ -35,8 +35,8 @@ const RoutesComponent = () => {
         <>
             <Route key="mainMenu-route" path="/" element={<>head mainMenu</>} />
             <Route key="users-route" path="/users" element={<HeadUsers />} />
-            <Route key="incoming-route" path="/incoming" element={<>head incoming</>} />
-            <Route key="outgoing-route" path="/outgoing" element={<>head outgoing</>} />
+            <Route key="internal-route" path="/internal" element={<>head internal services</>} />
+            <Route key="external-route" path="/external" element={<>head external services</>} />
             <Route key="requests-route" path="/requests" element={<HeadRequests />} />
             <Route key="information-route" path="/information" element={<>head information</>} />
         </>
