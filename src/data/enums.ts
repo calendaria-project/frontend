@@ -60,7 +60,9 @@ export enum dictionaryCodesEnum {
     SELECTION_METHOD_TYPE = "SELECTION_METHOD_TYPE",
     ANALYSIS_METHOD_TYPE = "ANALYSIS_METHOD_TYPE",
     APP_ITEM_TYPE = "APP_ITEM_TYPE",
-    MOBILE_TARIFF = "MOBILE_TARIFF"
+    MOBILE_TARIFF = "MOBILE_TARIFF",
+    ACCESS_REMOVE_TYPE = "ACCESS_REMOVE_TYPE",
+    ACCESS_REMOVE_REASON = "ACCESS_REMOVE_REASON"
 }
 
 export enum mainMenuEnum {
@@ -71,8 +73,8 @@ export enum mainMenuEnum {
     userItem = "userItem",
     organizationStructure = "organizationStructure",
     externalUsers = "externalUsers",
-    incoming = "incoming",
-    outgoing = "outgoing",
+    internal = "internal",
+    external = "external",
     requests = "requests",
     information = "information"
 }
@@ -96,6 +98,11 @@ export enum appItemTypeValues {
 export enum appTypesEnum {
     GET_ACCESS = "GET_ACCESS",
     REMOVE_ACCESS = "REMOVE_ACCESS"
+}
+
+export enum accessRemoveTypeEnum {
+    TEMP = "temp",
+    DISMISSAL = "dismissal"
 }
 
 export enum accessRequestStatuses {
@@ -128,5 +135,6 @@ export enum accessRequestHistoryStatuses {
     ACCOUNT_BITRIX_CREATED = "ACCOUNT_BITRIX_CREATED",
     MOBILE_NUM_ISSUED = "MOBILE_NUM_ISSUED",
     FINISHED = "FINISHED",
-    CANCELED = "CANCELED"
+    CANCELED = "CANCELED",
+    SYSTEM_ACCOUNTS_BLOCKED = "SYSTEM_ACCOUNTS_BLOCKED"
 }

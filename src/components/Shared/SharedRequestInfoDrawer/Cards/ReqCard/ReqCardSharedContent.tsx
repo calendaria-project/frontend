@@ -46,6 +46,7 @@ const ReqCardSharedContent: FC<IReqCardSharedContent> = ({ currentReqData, hideT
 
     const creatorUserData = currentReqData.creatorUser || {};
     const applicationUserData = currentReqData.applicationUser || {};
+    const processingDeadline = currentReqData.processingDeadline;
     const creationTime = currentReqData.createdAt;
     const editionTime = currentReqData.updatedAt;
 
@@ -125,11 +126,13 @@ const ReqCardSharedContent: FC<IReqCardSharedContent> = ({ currentReqData, hideT
                 <Col className={classes.creatorInfoCol} span={24}>
                     <Text strong>Осталось до выполнения: </Text>
                     <span className={classes.highlightedTime}>
-                        {diffDateAndToString(
-                            new Date(),
-                            new Date(currentReqData.endDate),
-                            "Время истекло"
-                        )}
+                        {processingDeadline
+                            ? diffDateAndToString(
+                                  new Date(),
+                                  new Date(processingDeadline),
+                                  "Время истекло"
+                              )
+                            : ""}
                     </span>
                 </Col>
                 <Col className={classes.titleCol} span={24}>

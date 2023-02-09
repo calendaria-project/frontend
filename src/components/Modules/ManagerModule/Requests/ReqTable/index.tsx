@@ -58,7 +58,6 @@ const ReqTable: FC<{
                 <Text className={classes.headerText}>ФИО</Text>
                 <Text className={classes.headerText}>Вид заявки</Text>
                 <Text className={classes.headerText}>Дата отправки</Text>
-                <Text className={classes.headerText}>Дедлайн заявки</Text>
                 <Text className={classes.headerText}>Статус</Text>
                 <Text className={classes.headerText}>Действия</Text>
             </Row>
@@ -104,7 +103,6 @@ const ReqTable: FC<{
                                             {appTypesEnumTranscripts[accessItem.appType] ?? ""}
                                         </Text>
                                         <Text>{getFormattedDateFromNow(accessItem.createdAt)}</Text>
-                                        <Text>{getFormattedDateFromNow(accessItem.endDate)}</Text>
                                         {getReqStatusWithBall(reqStatus)}
                                         {onProcessStatus ? (
                                             <Button

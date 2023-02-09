@@ -40,5 +40,6 @@ export const accessRequestHistoryTranscripts: { [key: string]: string } = {
     [accessRequestHistoryStatuses.ACCOUNT_BITRIX_CREATED]: "Аккаунт в bitrix создан",
     [accessRequestHistoryStatuses.MOBILE_NUM_ISSUED]: "Cлужебный номер выдан",
     [accessRequestHistoryStatuses.FINISHED]: "Заявка завершена",
-    [accessRequestHistoryStatuses.CANCELED]: "Заявка отменена"
+    [accessRequestHistoryStatuses.CANCELED]: "Заявка отменена",
+    [accessRequestHistoryStatuses.SYSTEM_ACCOUNTS_BLOCKED]: "Системные аккаунты заблокированы"
 };

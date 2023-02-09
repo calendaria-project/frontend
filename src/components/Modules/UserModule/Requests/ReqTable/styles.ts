@@ -66,8 +66,9 @@ export default createUseStyles({
     cancelReqTextContainer: {
         display: "flex",
         alignItems: "center",
+        justifyContent: "end",
         cursor: "pointer",
-        width: "160px"
+        width: "200px"
     },
     cancelIcon: {
         color: (theme: ITheme) => theme.image.color.removing,
@@ -77,6 +78,9 @@ export default createUseStyles({
         color: (theme: ITheme) => theme.color.removing
     },
     emptyDiv: {
-        width: "160px"
+        width: "200px"
+    },
+    signBtn: {
+        width: "200px"
     }
 });

@@ -50,6 +50,8 @@ const ReqExtraCardSharedContent: FC<IReqExtraCardSharedContent> = ({
         }
     }, [creatorUser, comment]);
 
+    console.log(appHistory);
+
     return (
         <>
             {comment && (

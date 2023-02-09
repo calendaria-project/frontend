@@ -35,8 +35,6 @@ const SharedDrawerContent: FC<{
         }
     };
 
-    console.log(divisionsEquality, divisionsEqualMsg);
-
     useEffect(() => {
         setDivisionsEqualMsg(false);
     }, [userData]);

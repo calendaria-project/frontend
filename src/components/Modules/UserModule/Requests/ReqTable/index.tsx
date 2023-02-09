@@ -96,7 +96,6 @@ const ReqTable: FC<{
             <Row className={classes.headerRow}>
                 <Text className={classes.headerText}>Вид заявки</Text>
                 <Text className={classes.headerText}>Дата отправки</Text>
-                <Text className={classes.headerText}>Дедлайн заявки</Text>
                 <Text className={classes.headerText}>Статус</Text>
                 <Text className={classes.headerText}>Действия</Text>
             </Row>
@@ -128,7 +127,6 @@ const ReqTable: FC<{
                                             {appTypesEnumTranscripts[accessItem.appType] ?? ""}
                                         </Text>
                                         <Text>{getFormattedDateFromNow(accessItem.createdAt)}</Text>
-                                        <Text>{getFormattedDateFromNow(accessItem.endDate)}</Text>
                                         {getReqStatusWithBall(reqStatus)}
                                         {reqStatus === accessRequestStatuses.ON_APPROVEMENT ? (
                                             <div
@@ -143,6 +141,7 @@ const ReqTable: FC<{
                                         ) : onEmployerSignStatus ? (
                                             <Button
                                                 customType={"regular"}
+                                                className={classes.signBtn}
                                                 onClick={handleOpenSignDrawer(applicationId)}
                                             >
                                                 Перейти к подписанию
