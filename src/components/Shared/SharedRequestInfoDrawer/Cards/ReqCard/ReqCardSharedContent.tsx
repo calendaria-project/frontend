@@ -8,7 +8,7 @@ import { useTheme } from "react-jss";
 import { IAccessAppDataByCurrentUserInKeyViewModel, IUsersViewModel } from "interfaces";
 import { accessItemRequestStatuses } from "data/enums";
 import { getReqBallStyle } from "utils/getReqBallStyle";
-import { accessItemRequestTranscripts } from "data/transcripts";
+import { accessItemRequestTranscripts, appTypesEnumTranscripts } from "data/transcripts";
 import { ITheme } from "styles/theme/interface";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { IUsersWithPhotoInfoModel } from "interfaces/extended";
@@ -42,6 +42,7 @@ const ReqCardSharedContent: FC<IReqCardSharedContent> = ({ currentReqData, hideT
     );
     const [cardInfoDrawerOpen, setCardInfoDrawerOpen] = useState(false);
     const [divisionsEquality, setDivisionsEquality] = useState(false);
+    const [currentUserId, setCurrentUserId] = useState<string>("");
     const [isCurrentUserCreatorFlag, setIsCurrentUserCreatorFlag] = useState(false);
 
     const creatorUserData = currentReqData.creatorUser || {};
@@ -72,6 +73,7 @@ const ReqCardSharedContent: FC<IReqCardSharedContent> = ({ currentReqData, hideT
 
         setDivisionsEquality(currentUserData.divisionId === applicationUserData.divisionId);
         setIsCurrentUserCreatorFlag(currentUserData.userId === applicationUserData.userId);
+        setCurrentUserId(currentUserData.userId);
         setAppUsersWithPhoto(appUsersWithPhoto?.[0]);
         setCardInfoDrawerOpen(true);
     };
@@ -112,6 +114,10 @@ const ReqCardSharedContent: FC<IReqCardSharedContent> = ({ currentReqData, hideT
                             Перейти на карточку сотрудника
                         </span>
                     )}
+                </Col>
+                <Col className={classes.creatorInfoCol} span={24}>
+                    <Text strong>Тип заявки: </Text>
+                    {appTypesEnumTranscripts[currentReqData.appType]}
                 </Col>
                 <Col className={classes.creatorInfoCol} span={24}>
                     <Text strong>Заявка подана: </Text>
@@ -166,6 +172,7 @@ const ReqCardSharedContent: FC<IReqCardSharedContent> = ({ currentReqData, hideT
                     <HeadUsersDrawer
                         divisionsEquality={divisionsEquality}
                         isCurrentUserCreatorFlag={isCurrentUserCreatorFlag}
+                        currentUserId={currentUserId}
                         {...sharedDrawerProps}
                     />
                 ) : defineIsManagerRole(roles) ? (

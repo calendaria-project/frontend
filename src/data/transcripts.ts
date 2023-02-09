@@ -41,5 +41,12 @@ export const accessRequestHistoryTranscripts: { [key: string]: string } = {
     [accessRequestHistoryStatuses.MOBILE_NUM_ISSUED]: "Cлужебный номер выдан",
     [accessRequestHistoryStatuses.FINISHED]: "Заявка завершена",
     [accessRequestHistoryStatuses.CANCELED]: "Заявка отменена",
-    [accessRequestHistoryStatuses.SYSTEM_ACCOUNTS_BLOCKED]: "Системные аккаунты заблокированы"
+    [accessRequestHistoryStatuses.SYSTEM_ACCOUNTS_BLOCKED]:
+        "Системные учетные записи заблокированы",
+    [accessRequestHistoryStatuses.ACCOUNT_TENDERIX_BLOCKED]: "Аккаунт tenderix заблокирован",
+    [accessRequestHistoryStatuses.ACCOUNT_1C_BLOCKED]: "Аккаунс 1С заблокирован",
+    [accessRequestHistoryStatuses.ACCOUNT_ADATA_BLOCKED]: "Аккаунт adata заблокирован",
+    [accessRequestHistoryStatuses.SKUD_BLOCKED]: "СКУД заблокирован",
+    [accessRequestHistoryStatuses.ACCOUNT_BITRIX_BLOCKED]: "Аккаунт в bitrix заблокирован",
+    [accessRequestHistoryStatuses.MOBILE_NUM_BLOCKED]: "Служебный номер заблокирован"
 };
