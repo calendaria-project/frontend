@@ -1,0 +1,13 @@
+stages:
+    - build
+    - deploy
+
+include:
+  - project: 'deploy/common-cicd'
+    file: '/common-project.yml'
+    ref: 'main'
+
+docker-build:
+    extends: .docker-service-build
+    after_script: 
+      - docker run -d --hostname ${CI_PROJECT_NAME} --rm --network ${ENVIRONMENT_CODE} --name ${CI_PROJECT_NAME}_${ENVIRONMENT_CODE} ${CI_REGISTRY_IMAGE}:${ENVIRONMENT_CODE}
