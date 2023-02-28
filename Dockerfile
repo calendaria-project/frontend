@@ -8,7 +8,7 @@ ARG NPM_BUILD_SCRIPT
 RUN npm install
 # RUN npm audit fix --force
 COPY . .
-RUN npm run ${NPM_BUILD_SCRIPT}
+RUN ["npm", "run", ${NPM_BUILD_SCRIPT}]
 
 FROM nginx
 COPY --from=builder /app/build /usr/share/nginx/html
