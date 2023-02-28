@@ -11,10 +11,10 @@ docker-build:
     rules:
       - if: '$CI_COMMIT_BRANCH == "main"'
         variables:
-          DOCKER_BUILD_ARGS: --build-arg NPM_BUILD_SCRIPT="build:production"
+          DOCKER_BUILD_ARGS: --build-arg NPM_BUILD_SCRIPT=build:production
       - if: '$CI_COMMIT_BRANCH == "dev"'
         variables:
-          DOCKER_BUILD_ARGS: --build-arg NPM_BUILD_SCRIPT="build:development"
+          DOCKER_BUILD_ARGS: --build-arg NPM_BUILD_SCRIPT=build:development
     extends: .docker-service-build
     after_script: 
       - docker run -d --hostname ${CI_PROJECT_NAME} --rm --network ${ENVIRONMENT_CODE} --name ${CI_PROJECT_NAME}_${ENVIRONMENT_CODE} ${CI_REGISTRY_IMAGE}:${ENVIRONMENT_CODE}
