@@ -12,7 +12,7 @@ const baseUrl = `${protocol}//${hostname}${port ? `:${port}` : ""}`;
 const keycloakConfig: KeycloakConfig = {
     realm: "calendaria",
     clientId: process.env.KEYCLOAK_CLIENT_ID || "",
-    url: "http://192.168.64.40:8001/auth"
+    url: "https://dev.alageum.kz/auth"
     // url: "https://lemur-16.cloud-iam.com/auth", //temporary server
 };
 

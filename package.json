@@ -25,7 +25,7 @@
     "devextreme-react": "^22.1.5",
     "js-file-download": "^0.4.12",
     "jwt-decode": "^3.1.2",
-    "keycloak-js": "^19.0.2",
+    "keycloak-js": "^19.0.3",
     "lodash": "^4.17.21",
     "rc-virtual-list": "^3.4.8",
     "re-reselect": "^4.0.1",
