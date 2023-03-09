@@ -12,11 +12,13 @@ docker-build:
       - if: '$CI_COMMIT_BRANCH == "main"'
         variables:
           DOCKER_BUILD_ARGS: --build-arg NPM_BUILD_SCRIPT=build:production
+          DOMAIN: ${DOMAIN_URL:-alageum.kz}
       - if: '$CI_COMMIT_BRANCH == "dev"'
         variables:
           DOCKER_BUILD_ARGS: --build-arg NPM_BUILD_SCRIPT=build:development
+          DOMAIN: ${DEV_DOMAIN_URL:-dev.alageum.kz}
     extends: .docker-service-build
     after_script:
       - docker stop ${CI_PROJECT_NAME}-${ENVIRONMENT_CODE} || true
       - docker run -d --hostname ${CI_PROJECT_NAME} --rm --network ${ENVIRONMENT_CODE} --name ${CI_PROJECT_NAME}-${ENVIRONMENT_CODE} ${CI_REGISTRY_IMAGE}:${ENVIRONMENT_CODE}
-      -  docker exec -i webserver ahp dev.alageum.kz iam-frontend-dev "/" http://iam-frontend-dev/
+      -  docker exec -i webserver ahp ${DOMAIN} ${CI_PROJECT_NAME}-${ENVIRONMENT_CODE} "/" http://${CI_PROJECT_NAME}-${ENVIRONMENT_CODE}/
