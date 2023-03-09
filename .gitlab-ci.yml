@@ -12,11 +12,11 @@ docker-build:
       - if: '$CI_COMMIT_BRANCH == "main"'
         variables:
           DOCKER_BUILD_ARGS: --build-arg NPM_BUILD_SCRIPT=build:production
-          DOMAIN: ${DOMAIN_URL:-alageum.kz}
+          DOMAIN: alageum.kz
       - if: '$CI_COMMIT_BRANCH == "dev"'
         variables:
           DOCKER_BUILD_ARGS: --build-arg NPM_BUILD_SCRIPT=build:development
-          DOMAIN: ${DEV_DOMAIN_URL:-dev.alageum.kz}
+          DOMAIN: dev.alageum.kz
     extends: .docker-service-build
     after_script:
       - docker stop ${CI_PROJECT_NAME}-${ENVIRONMENT_CODE} || true
