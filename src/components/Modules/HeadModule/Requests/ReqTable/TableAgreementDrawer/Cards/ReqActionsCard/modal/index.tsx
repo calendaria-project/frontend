@@ -1,7 +1,7 @@
 import { Col, FormInstance, Input, Modal, Row } from "antd";
 
 import React, { FC, memo, useCallback } from "react";
-import ModalBtns from "components/Shared/modalRenderer/modalBtns";
+import ModalBtns from "components/Shared/ModalRenderer/modalBtns";
 import { validateMessages } from "data/constants";
 import { Form } from "antd";
 

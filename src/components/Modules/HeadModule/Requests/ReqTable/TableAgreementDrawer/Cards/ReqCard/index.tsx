@@ -4,7 +4,7 @@ import useStyles from "./styles";
 import { useTheme } from "react-jss";
 import { Row, Typography } from "antd";
 import { ITheme } from "styles/theme/interface";
-import ReqCardSharedContent from "components/Shared/SharedRequestInfoDrawer/Cards/ReqCard/ReqCardSharedContent";
+import ReqCardSharedContent from "components/Shared/Requests/InfoDrawer/ReqCard/ReqCardSharedContent";
 
 interface IReqCard {
     currentReqData: IAccessAppDataByCurrentUserInKeyViewModel;

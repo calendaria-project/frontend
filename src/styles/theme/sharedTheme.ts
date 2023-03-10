@@ -20,7 +20,8 @@ const sharedTheme: ITheme = {
         primary: "#FFFFFF",
         secondary: "#2C2C2C",
         regular: "#016FC0",
-        highlight: "#FAFAFA"
+        highlight: "#FAFAFA",
+        lightedHighlight: "#E8E8E8"
     },
     border: "1px solid",
     borderRadius: "6px",

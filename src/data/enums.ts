@@ -71,6 +71,7 @@ export enum mainMenuEnum {
     staffing = "staffing",
     users = "users",
     userItem = "userItem",
+    auditMenu = "auditMenu",
     organizationStructure = "organizationStructure",
     externalUsers = "externalUsers",
     internal = "internal",
@@ -102,7 +103,8 @@ export enum appTypesEnum {
 
 export enum accessRemoveTypeEnum {
     TEMP = "temp",
-    DISMISSAL = "dismissal"
+    DISMISSAL = "dismissal",
+    PERMANENT = "permanent"
 }
 
 export enum accessRequestStatuses {

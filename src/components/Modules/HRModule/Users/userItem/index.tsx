@@ -27,7 +27,7 @@ import { ARCHIVE } from "data/constants";
 
 const UserEditDrawer = React.lazy(() => import("../userDrawer/UserEditDrawer"));
 const UserItemArchiveModal = React.lazy(
-    () => import("components/Shared/modalRenderer/ReadyModals/SimpleConfirmationModal")
+    () => import("components/Shared/ModalRenderer/readyModals/SimpleConfirmationModal")
 );
 
 const UserItem: FC = () => {

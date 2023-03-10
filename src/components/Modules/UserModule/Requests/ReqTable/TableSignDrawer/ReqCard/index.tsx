@@ -12,7 +12,7 @@ import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import getReqDataForUpdate from "utils/getReqDataForUpdate";
 import { accessRequestStatuses } from "data/enums";
-import ReqCardSharedContent from "components/Shared/SharedRequestInfoDrawer/Cards/ReqCard/ReqCardSharedContent";
+import ReqCardSharedContent from "components/Shared/Requests/InfoDrawer/ReqCard/ReqCardSharedContent";
 
 interface IReqCard {
     reqData: IAccessAppDataByCurrentUserViewModel;

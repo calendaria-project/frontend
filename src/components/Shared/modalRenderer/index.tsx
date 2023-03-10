@@ -2,12 +2,12 @@ import React, { FC, memo } from "react";
 import { TLayoutModalData } from "data/types";
 import { layoutConstantTypes } from "data/enums";
 import { Form, FormInstance, Typography } from "antd";
-import Select from "./Selects/Select";
+import Select from "./selects/Select";
 import Input from "./Input";
 import DatePicker from "./DatePicker";
-import MultipleSelect from "./Selects/MultipleSelect";
-import DivisionSelect from "./Selects/DivisionSelect";
-import PositionSelect from "./Selects/PositionSelect";
+import MultipleSelect from "./selects/MultipleSelect";
+import DivisionSelect from "./selects/DivisionSelect";
+import PositionSelect from "./selects/PositionSelect";
 import Checkbox from "./Checkbox";
 
 const { Text } = Typography;

@@ -4,13 +4,13 @@ import React, { FC, memo, useCallback } from "react";
 
 import { arrayKeyTypes } from "../constants";
 import { TLayoutModalData } from "data/types";
-import WithFormItem, { getFormItemContent } from "components/Shared/modalRenderer";
+import WithFormItem, { getFormItemContent } from "components/Shared/ModalRenderer";
 
 import { CONTRACT, SUB_CONTRACT, REDUCED_CONTRACT_INFO, validateMessages } from "data/constants";
 
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { getCurrentUserDataItemInfo, getSelectedKey } from "store/reducers/userReducer";
-import ModalBtns from "components/Shared/modalRenderer/modalBtns";
+import ModalBtns from "components/Shared/ModalRenderer/modalBtns";
 
 interface IUserItemModal {
     okText: string;

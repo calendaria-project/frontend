@@ -11,7 +11,7 @@ import { useTheme } from "react-jss";
 import ReqCard from "./ReqCard";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { accessRequestHistoryStatuses } from "data/enums";
-import ReqExtraCardSharedContent from "components/Shared/SharedRequestInfoDrawer/Cards/ReqExtraCard/ReqExtraCardSharedContent";
+import ReqExtraCardSharedContent from "components/Shared/Requests/InfoDrawer/ReqExtraCard/ReqExtraCardSharedContent";
 
 interface ITableSolveDrawer {
     open: boolean;

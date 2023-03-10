@@ -13,6 +13,7 @@ import { mainMenuEnum } from "data/enums";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { useNavigate } from "react-router";
 import getFullName from "utils/getFullName";
+import { mainMenuEnumTranscripts } from "data/transcripts";
 
 const { Header: AntdHeader } = Layout;
 
@@ -85,29 +86,20 @@ const Header: FC = () => {
     );
 
     const getHeaderTitle = () => {
-        return (
-            <div>
-                {selectedMainMenuPoint === mainMenuEnum.staffing ? (
-                    <UIHeader size="h2">Штатное расписание</UIHeader>
-                ) : selectedMainMenuPoint === mainMenuEnum.dictionary ? (
-                    <UIHeader size="h2">Справочники</UIHeader>
-                ) : selectedMainMenuPoint === mainMenuEnum.users ? (
-                    <UIHeader size="h2">Сотрудники</UIHeader>
-                ) : selectedMainMenuPoint === mainMenuEnum.userItem ? (
-                    <div className={classes.userItemHeader} onClick={() => navigate("/users")}>
-                        <UIHeader size="h2">
-                            <LeftOutlined /> Сотрудники
-                        </UIHeader>
-                    </div>
-                ) : selectedMainMenuPoint === mainMenuEnum.organizationStructure ? (
-                    <UIHeader size="h2">Орг структура</UIHeader>
-                ) : selectedMainMenuPoint === mainMenuEnum.externalUsers ? (
-                    <UIHeader size="h2">Внешние пользователи</UIHeader>
-                ) : selectedMainMenuPoint === mainMenuEnum.requests ? (
-                    <UIHeader size="h2">Заявки</UIHeader>
-                ) : null}
-            </div>
-        );
+        if (!selectedMainMenuPoint) return null;
+
+        const currentTranscript = mainMenuEnumTranscripts[selectedMainMenuPoint];
+        if (selectedMainMenuPoint === mainMenuEnum.userItem) {
+            return (
+                <div className={classes.userItemHeader} onClick={() => navigate("/users")}>
+                    <UIHeader size="h2">
+                        <LeftOutlined /> {currentTranscript}
+                    </UIHeader>
+                </div>
+            );
+        } else {
+            return <UIHeader size="h2">{currentTranscript}</UIHeader>;
+        }
     };
 
     return (

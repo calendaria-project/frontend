@@ -30,7 +30,7 @@ import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 
 const SharedModal = React.lazy(() => import("./modal"));
 const SharedDeleteModal = React.lazy(
-    () => import("components/Shared/modalRenderer/ReadyModals/SimpleConfirmationModal")
+    () => import("components/Shared/ModalRenderer/readyModals/SimpleConfirmationModal")
 );
 
 const OrganizationStructure: FC = () => {

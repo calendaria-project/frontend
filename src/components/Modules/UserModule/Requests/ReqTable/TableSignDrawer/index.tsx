@@ -10,7 +10,7 @@ import useStyles from "./styles";
 import { useTheme } from "react-jss";
 import ReqCard from "./ReqCard";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
-import ReqExtraCardSharedContent from "components/Shared/SharedRequestInfoDrawer/Cards/ReqExtraCard/ReqExtraCardSharedContent";
+import ReqExtraCardSharedContent from "components/Shared/Requests/InfoDrawer/ReqExtraCard/ReqExtraCardSharedContent";
 
 interface ITableSignDrawer {
     open: boolean;

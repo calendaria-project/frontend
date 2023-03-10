@@ -47,7 +47,6 @@ export const saveNode = (list: DataNodeItem[], data: DataNodeItem): DataNodeItem
 export const addNode = (list: DataNodeItem[], id: number, data: DataNodeItem): DataNodeItem[] =>
     list.map((node) => {
         if (node.id === id) {
-            console.log("sssss");
             return {
                 ...node,
                 children: [...node.children, data]

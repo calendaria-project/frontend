@@ -6,7 +6,7 @@ import useStyles from "./styles";
 import React from "react";
 
 import { ISharedModal } from "../../../TableRenderer/SharedModal";
-import ModalBtns from "components/Shared/modalRenderer/modalBtns";
+import ModalBtns from "components/Shared/ModalRenderer/modalBtns";
 
 const CompanyTypeModal = ({
     title,

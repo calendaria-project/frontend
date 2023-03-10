@@ -6,7 +6,7 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import React from "react";
-import ModalBtns from "components/Shared/modalRenderer/modalBtns";
+import ModalBtns from "components/Shared/ModalRenderer/modalBtns";
 
 export interface IDivisionDirectoryModal {
     okText: string;

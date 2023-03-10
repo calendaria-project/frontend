@@ -1,13 +1,6 @@
 import React, { FC, Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { SetCurrentOpenedMenu } from "store/actions";
-import {
-    accessRemoveTypeEnum,
-    accessRequestStatuses,
-    appItemTypeValues,
-    appTypesEnum,
-    dictionaryCodesEnum,
-    mainMenuEnum
-} from "data/enums";
+import { accessRequestStatuses, dictionaryCodesEnum, mainMenuEnum } from "data/enums";
 import { accessRequestTranscripts, appTypesEnumTranscripts } from "data/transcripts";
 import { useDispatch } from "react-redux";
 import { useTheme } from "react-jss";
@@ -30,7 +23,6 @@ import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import {
     IAccessAppDataByCurrentUserInKeyViewModel,
     IAccessAppDataByCurrentUserViewModel,
-    IAccessApplicationItemModel,
     ISimpleDictionaryViewModel,
     IUsersViewModel
 } from "interfaces";
@@ -53,14 +45,11 @@ import filterRequests from "utils/filterAccessRequests";
 import getFullName from "utils/getFullName";
 import { getFormattedDateFromNow } from "utils/getFormattedDates";
 import { IUsersWithInfoModel } from "interfaces/extended";
-import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
-import getObjectWithHandledDates from "utils/getObjectWithHandeledDates";
+import getParsedRequestData from "utils/getParsedRequestData";
 
-const AccessReqModal = React.lazy(
-    () => import("components/Shared/modalRenderer/ReadyModals/AccessReqModal")
-);
+const AccessReqModal = React.lazy(() => import("components/Shared/Requests/modals/AccessReqModal"));
 const RemoveAccessReqModal = React.lazy(
-    () => import("components/Shared/modalRenderer/ReadyModals/RemoveAccessReqModal")
+    () => import("components/Shared/Requests/modals/RemoveAccessReqModal")
 );
 const { Option } = Select;
 const { Text } = Typography;
@@ -249,50 +238,7 @@ const Requests: FC = () => {
 
     const onFinishReqModal = useCallback(
         async (data: any) => {
-            const filteredData = removeEmptyValuesFromAnyLevelObject(data);
-            const filteredDataWithDate = getObjectWithHandledDates(filteredData);
-
-            const reqItems: IAccessApplicationItemModel[] = [];
-            modalValues.forEach((v) => {
-                const needAccess = !!data[v.code];
-                if (v.code === appItemTypeValues.MOBILE) {
-                    reqItems.push({
-                        appItemType: v,
-                        needAccess,
-                        ...(needAccess ? { tariff: data[`item.${v.code}`] } : {})
-                    });
-                } else {
-                    reqItems.push({
-                        appItemType: v,
-                        needAccess,
-                        ...(needAccess ? { accessType: data[`item.${v.code}`] } : {})
-                    });
-                }
-            });
-
-            let finalReqData: any = {
-                appType: filteredDataWithDate.appType,
-                comment: filteredDataWithDate.comment || null,
-                applicationUserId: filteredDataWithDate.applicationUserId,
-                items: reqItems
-            };
-
-            if (filteredDataWithDate.appType === appTypesEnum.REMOVE_ACCESS) {
-                if (filteredDataWithDate.accessRemoveType.code === accessRemoveTypeEnum.DISMISSAL) {
-                    finalReqData = {
-                        ...finalReqData,
-                        confirmationDocId: filteredDataWithDate.confirmationDocId,
-                        accessRemoveType: filteredDataWithDate.accessRemoveType
-                    };
-                } else {
-                    finalReqData = {
-                        ...finalReqData,
-                        accessRemoveType: filteredDataWithDate.accessRemoveType,
-                        accessRemoveReason: filteredDataWithDate.accessRemoveReason,
-                        applicationEndDate: filteredDataWithDate.applicationEndDate
-                    };
-                }
-            }
+            const finalReqData = getParsedRequestData(data, modalValues);
 
             const accessAppData: IAccessAppDataByCurrentUserInKeyViewModel =
                 await postAccessApplication(finalReqData).catch(() =>

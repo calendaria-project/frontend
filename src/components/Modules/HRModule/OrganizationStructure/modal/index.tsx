@@ -26,7 +26,7 @@ import {
 import CompanySelect from "components/Modules/HRModule/Dictionary/companiesTreeView/modal/Select";
 import { mailMessage, mailPattern } from "data/patterns";
 import { inputLengthHandler } from "utils/inputLengthHandler";
-import ModalBtns from "components/Shared/modalRenderer/modalBtns";
+import ModalBtns from "components/Shared/ModalRenderer/modalBtns";
 
 const { Option } = Select;
 

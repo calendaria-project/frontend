@@ -2,8 +2,24 @@ import {
     accessItemRequestStatuses,
     accessRequestHistoryStatuses,
     accessRequestStatuses,
-    appTypesEnum
+    appTypesEnum,
+    mainMenuEnum
 } from "./enums";
+
+export const mainMenuEnumTranscripts: { [key: string]: string } = {
+    [mainMenuEnum.mainMenu]: "",
+    [mainMenuEnum.dictionary]: "Справочники",
+    [mainMenuEnum.staffing]: "Штатное расписание",
+    [mainMenuEnum.users]: "Сотрудники",
+    [mainMenuEnum.userItem]: "Сотрудники",
+    [mainMenuEnum.auditMenu]: "Меню аудита",
+    [mainMenuEnum.organizationStructure]: "Орг структура",
+    [mainMenuEnum.externalUsers]: "Внешние пользователи",
+    [mainMenuEnum.internal]: "Внутренние сервисы",
+    [mainMenuEnum.external]: "Внешние сервисы",
+    [mainMenuEnum.requests]: "Заявки",
+    [mainMenuEnum.information]: "Информация"
+};
 
 export const appTypesEnumTranscripts: { [key: string]: string } = {
     [appTypesEnum.GET_ACCESS]: "Получение доступа",

@@ -35,7 +35,7 @@ import { inputLengthHandler } from "utils/inputLengthHandler";
 // import ValuesSelect from "./Select";
 import axios from "axios";
 import getCurrentSimpleError from "utils/getCurrentSimpleError";
-import SharedEmptySelect from "components/Shared/modalRenderer/Selects/SharedEmptySelect";
+import SharedEmptySelect from "components/Shared/ModalRenderer/selects/SharedEmptySelect";
 
 export interface IUserAddDrawer {
     companyId?: number;

@@ -4,7 +4,7 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import { IUsersWithPhotoInfoModel } from "interfaces/extended";
-import SharedDrawerContent from "components/Shared/SharedRequestUsers/userDrawer/SharedDrawerContent";
+import SharedDrawerContent from "components/Shared/Users/userDrawer/SharedDrawerContent";
 
 interface IExternalUserDrawer {
     open: boolean;

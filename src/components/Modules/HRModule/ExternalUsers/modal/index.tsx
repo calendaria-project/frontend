@@ -10,7 +10,7 @@ import PhoneInput from "utils/PhoneInput";
 import AvatarDropZone from "utils/DropZones/AvatarDropZone";
 import { IExternalUsersDataModel } from "interfaces/extended";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
-import ModalBtns from "components/Shared/modalRenderer/modalBtns";
+import ModalBtns from "components/Shared/ModalRenderer/modalBtns";
 
 const { Option } = Select;
 

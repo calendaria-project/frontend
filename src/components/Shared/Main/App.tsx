@@ -14,7 +14,7 @@ import AppLayout from "./AppLayout";
 import extraStyles from "styles/extraStyles";
 
 window.onbeforeunload = () => {
-    if (process.env.DEV_MODE) {
+    if (process.env.LOCAL_MODE) {
         sessionStorage.setItem("location", window.location.pathname);
     }
 };

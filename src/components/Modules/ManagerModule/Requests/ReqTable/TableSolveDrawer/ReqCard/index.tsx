@@ -12,10 +12,10 @@ import Button from "ui/Button";
 import getReqDataForUpdate from "utils/getReqDataForUpdate";
 import { accessRequestStatuses } from "data/enums";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
-import ReqCardSharedContent from "components/Shared/SharedRequestInfoDrawer/Cards/ReqCard/ReqCardSharedContent";
+import ReqCardSharedContent from "components/Shared/Requests/InfoDrawer/ReqCard/ReqCardSharedContent";
 
 const SimpleConfirmationModal = React.lazy(
-    () => import("components/Shared/modalRenderer/ReadyModals/SimpleConfirmationModal")
+    () => import("components/Shared/ModalRenderer/readyModals/SimpleConfirmationModal")
 );
 
 const { Text } = Typography;

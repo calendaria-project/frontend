@@ -12,7 +12,7 @@ import { CloseOutlined, CheckOutlined } from "@ant-design/icons";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { accessRequestStatuses } from "data/enums";
 import getReqDataForUpdate from "utils/getReqDataForUpdate";
-import ReqExtraCardSharedContent from "components/Shared/SharedRequestInfoDrawer/Cards/ReqExtraCard/ReqExtraCardSharedContent";
+import ReqExtraCardSharedContent from "components/Shared/Requests/InfoDrawer/ReqExtraCard/ReqExtraCardSharedContent";
 
 const CancelReqModal = React.lazy(() => import("./modal"));
 

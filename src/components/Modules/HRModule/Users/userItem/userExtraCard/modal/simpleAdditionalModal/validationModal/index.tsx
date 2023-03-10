@@ -11,12 +11,12 @@ import { TLayoutModalData } from "data/types";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { AuthContext } from "context/AuthContextProvider";
-import WithFormItem, { getFormItemContent } from "components/Shared/modalRenderer";
+import WithFormItem, { getFormItemContent } from "components/Shared/ModalRenderer";
 import getObjectWithHandledDates from "utils/getObjectWithHandeledDates";
 import _ from "lodash";
 import { removeEmptyObjectProperties } from "utils/removeObjectProperties";
 import { getModalEditingNameByKey } from "utils/getModalEditingNameByKey";
-import ModalBtns from "components/Shared/modalRenderer/modalBtns";
+import ModalBtns from "components/Shared/ModalRenderer/modalBtns";
 
 interface IExtraValidationModal {
     okText: string;

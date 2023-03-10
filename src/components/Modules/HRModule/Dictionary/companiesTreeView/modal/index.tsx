@@ -12,7 +12,7 @@ import useStyles from "./styles";
 import CompanySelect from "./Select";
 import { mailMessage, mailPattern } from "data/patterns";
 import { inputLengthHandler } from "utils/inputLengthHandler";
-import ModalBtns from "components/Shared/modalRenderer/modalBtns";
+import ModalBtns from "components/Shared/ModalRenderer/modalBtns";
 
 const { Option } = Select;
 

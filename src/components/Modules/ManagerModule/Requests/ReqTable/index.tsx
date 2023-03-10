@@ -13,13 +13,13 @@ import emptyImage from "assets/icons/question.png";
 import getFullName from "utils/getFullName";
 import Button from "ui/Button";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
-import EmptyTableContent from "components/Shared/tableRenderer/EmptyTableContent";
+import EmptyTableContent from "components/Shared/TableRenderer/EmptyTableContent";
 import { getFormattedDateFromNow } from "utils/getFormattedDates";
 import { getReqBallStyle } from "utils/getReqBallStyle";
 
 const { Text } = Typography;
 const SolveDrawer = React.lazy(() => import("./TableSolveDrawer"));
-const SharedInfoDrawer = React.lazy(() => import("components/Shared/SharedRequestInfoDrawer"));
+const SharedInfoDrawer = React.lazy(() => import("components/Shared/Requests/InfoDrawer"));
 
 const ReqTable: FC<{
     reqData: IAccessAppDataByCurrentUserViewModel;

@@ -26,7 +26,7 @@ import { ALL, ARCHIVE } from "data/constants";
 import { IFinishData } from "../index";
 
 const ArchiveExternalUserModal = React.lazy(
-    () => import("components/Shared/modalRenderer/ReadyModals/SimpleConfirmationModal")
+    () => import("components/Shared/ModalRenderer/readyModals/SimpleConfirmationModal")
 );
 const SharedExternalUserModal = React.lazy(() => import("../modal"));
 

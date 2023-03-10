@@ -1,4 +1,5 @@
-# Getting Started with Create React Index
+# alageum_web
+
 
 This project was bootstrapped with [Create React Index](https://github.com/facebook/create-react-app).
 

@@ -14,15 +14,15 @@ import { getFormattedDateFromNow } from "utils/getFormattedDates";
 import { CloseOutlined } from "@ant-design/icons";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
-import EmptyTableContent from "components/Shared/tableRenderer/EmptyTableContent";
+import EmptyTableContent from "components/Shared/TableRenderer/EmptyTableContent";
 import { getReqBallStyle } from "utils/getReqBallStyle";
 import getReqDataForUpdate from "utils/getReqDataForUpdate";
 import Button from "ui/Button";
 
 const CancelReqModal = React.lazy(
-    () => import("components/Shared/modalRenderer/ReadyModals/SimpleConfirmationModal")
+    () => import("components/Shared/ModalRenderer/readyModals/SimpleConfirmationModal")
 );
-const SharedInfoDrawer = React.lazy(() => import("components/Shared/SharedRequestInfoDrawer"));
+const SharedInfoDrawer = React.lazy(() => import("components/Shared/Requests/InfoDrawer"));
 const TableSignDrawer = React.lazy(() => import("./TableSignDrawer"));
 
 const { Text } = Typography;

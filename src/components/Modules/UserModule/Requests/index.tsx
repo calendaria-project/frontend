@@ -1,12 +1,6 @@
 import React, { FC, Suspense, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { SetCurrentOpenedMenu } from "store/actions";
-import {
-    accessRemoveTypeEnum,
-    accessRequestStatuses,
-    appTypesEnum,
-    dictionaryCodesEnum,
-    mainMenuEnum
-} from "data/enums";
+import { accessRequestStatuses, dictionaryCodesEnum, mainMenuEnum } from "data/enums";
 import { accessRequestTranscripts } from "data/transcripts";
 import { useDispatch } from "react-redux";
 import { useTheme } from "react-jss";
@@ -30,7 +24,6 @@ import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import {
     IAccessAppDataByCurrentUserInKeyViewModel,
     IAccessAppDataByCurrentUserViewModel,
-    IAccessApplicationItemModel,
     ISimpleDictionaryViewModel,
     IUsersViewModel
 } from "interfaces";
@@ -50,22 +43,18 @@ import { ITheme } from "styles/theme/interface";
 import useDelayedInputSearch from "hooks/useDelayedInputSearch";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
 
-import { appItemTypeValues } from "data/enums";
 import { appTypesEnumTranscripts } from "data/transcripts";
 import filterRequests from "utils/filterAccessRequests";
 import getFullName from "utils/getFullName";
-import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
-import getObjectWithHandledDates from "utils/getObjectWithHandeledDates";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { AuthContext } from "context/AuthContextProvider";
 import { getFormattedDateFromNow } from "utils/getFormattedDates";
+import getParsedRequestData from "utils/getParsedRequestData";
 
-const AccessReqModal = React.lazy(
-    () => import("components/Shared/modalRenderer/ReadyModals/AccessReqModal")
-);
+const AccessReqModal = React.lazy(() => import("components/Shared/Requests/modals/AccessReqModal"));
 const RemoveRequestModal = React.lazy(
-    () => import("components/Shared/modalRenderer/ReadyModals/RemoveAccessReqModal")
+    () => import("components/Shared/Requests/modals/RemoveAccessReqModal")
 );
 
 const { Option } = Select;
@@ -200,52 +189,7 @@ const Requests: FC = () => {
 
     const onFinishReqModal = useCallback(
         async (data: any) => {
-            const filteredData = removeEmptyValuesFromAnyLevelObject(data);
-            const filteredDataWithDate = getObjectWithHandledDates(filteredData);
-
-            const reqItems: IAccessApplicationItemModel[] = [];
-            modalValues.forEach((v) => {
-                const needAccess = !!data[v.code];
-                if (v.code === appItemTypeValues.MOBILE) {
-                    reqItems.push({
-                        appItemType: v,
-                        needAccess,
-                        ...(needAccess ? { tariff: data[`item.${v.code}`] } : {})
-                    });
-                } else {
-                    reqItems.push({
-                        appItemType: v,
-                        needAccess,
-                        ...(needAccess ? { accessType: data[`item.${v.code}`] } : {})
-                    });
-                }
-            });
-
-            let finalReqData: any = {
-                appType: filteredDataWithDate.appType,
-                comment: filteredDataWithDate.comment || null,
-                applicationUserId: userId,
-                items: reqItems
-            };
-
-            if (filteredDataWithDate.appType === appTypesEnum.REMOVE_ACCESS) {
-                if (filteredDataWithDate.accessRemoveType.code === accessRemoveTypeEnum.DISMISSAL) {
-                    finalReqData = {
-                        ...finalReqData,
-                        confirmationDocId: filteredDataWithDate.confirmationDocId,
-                        accessRemoveType: filteredDataWithDate.accessRemoveType
-                    };
-                } else {
-                    finalReqData = {
-                        ...finalReqData,
-                        accessRemoveType: filteredDataWithDate.accessRemoveType,
-                        accessRemoveReason: filteredDataWithDate.accessRemoveReason,
-                        applicationEndDate: filteredDataWithDate.applicationEndDate
-                    };
-                }
-            }
-
-            console.log(finalReqData);
+            const finalReqData = getParsedRequestData(data, modalValues, userId);
 
             actionMethodResultSync(
                 "HELPDESK",
@@ -294,7 +238,7 @@ const Requests: FC = () => {
                     {
                         key: "2",
                         label: (
-                            <span onClick={handleOpenReqModal(false)}>
+                            <span onClick={() => {} /*handleOpenReqModal(false)*/}>
                                 Заявка на удаление доступа
                             </span>
                         )

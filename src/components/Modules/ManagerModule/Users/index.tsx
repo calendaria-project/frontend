@@ -2,7 +2,7 @@ import React, { FC, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { SetCurrentOpenedMenu } from "store/actions";
 import { mainMenuEnum } from "data/enums";
-import WithUsers from "components/Shared/SharedRequestUsers/WithUsers";
+import WithUsers from "components/Shared/Users/WithUsers";
 import { IUsersWithPhotoInfoModel } from "interfaces/extended";
 
 const UserDrawer = React.lazy(() => import("./userDrawer"));

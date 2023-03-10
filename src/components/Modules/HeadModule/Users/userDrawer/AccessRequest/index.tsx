@@ -7,7 +7,7 @@ import { IAccessAppDataByCurrentUserViewModel } from "interfaces";
 import { accessRequestTranscripts } from "data/transcripts";
 import { accessRequestStatuses } from "data/enums";
 import Button from "ui/Button";
-import SharedCollapse from "components/Shared/SharedRequestUsers/userDrawer/AccessRequest/SharedCollapse";
+import SharedCollapse from "components/Shared/Users/userDrawer/AccessRequest/SharedCollapse";
 
 const ReqAgreementDrawer = React.lazy(
     () => import("components/Modules/HeadModule/Requests/ReqTable/TableAgreementDrawer")
@@ -36,7 +36,7 @@ const AccessRequest: FC<{
     return (
         <Row className={classes.accessRequestsContainer}>
             <Row>
-                <Text className={classes.title}>Учетные записи</Text>
+                <Text className={classes.title}>Заявки</Text>
             </Row>
             <Row className={classes.headerRow}>
                 <Text strong>Приложение</Text>

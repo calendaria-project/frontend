@@ -9,10 +9,10 @@ import useStyles from "./styles";
 import { IErrorModifiedItem } from "data/errorCodes";
 import { getModalEditingNameByKey } from "utils/getModalEditingNameByKey";
 import { useTheme } from "react-jss";
-import WithFormItem, { getFormItemContent } from "components/Shared/modalRenderer";
+import WithFormItem, { getFormItemContent } from "components/Shared/ModalRenderer";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { getSelectedKey } from "store/reducers/userReducer";
-import ModalBtns from "components/Shared/modalRenderer/modalBtns";
+import ModalBtns from "components/Shared/ModalRenderer/modalBtns";
 import { SUB_CONTRACT, validateMessages } from "data/constants";
 
 const ExtraValidationModal = React.lazy(() => import("./validationModal"));

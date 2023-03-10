@@ -18,17 +18,11 @@ import {
     ImportOutlined,
     ExportOutlined,
     ToolOutlined,
-    QuestionCircleOutlined
+    QuestionCircleOutlined,
+    AuditOutlined
 } from "@ant-design/icons";
 import { AuthContext } from "context/AuthContextProvider";
-import {
-    BMS_1C_MANAGER,
-    BMS_HEAD,
-    BMS_HR,
-    BMS_OFFICE_MANAGER,
-    BMS_SYS_ADMIN,
-    BMS_USER
-} from "context/roles";
+import { BMS_HR, BMS_SYS_ADMIN, BMS_USER } from "context/roles";
 
 const MenuComponent: FC = () => {
     const authContext = useContext(AuthContext);
@@ -63,6 +57,13 @@ const MenuComponent: FC = () => {
             key: mainMenuEnum.users,
             icon: <IdcardOutlined className={classes.icon} />,
             label: "Сотрудники"
+        }
+    ];
+
+    const ADMIN_ITEMS = [
+        {
+            key: mainMenuEnum.auditMenu,
+            icon: <AuditOutlined className={classes.icon} />
         }
     ];
 
@@ -121,13 +122,13 @@ const MenuComponent: FC = () => {
         if (roles.includes(BMS_HR)) {
             items = [...items!, ...HR_ITEMS];
         }
-        if (
-            roles.includes(BMS_USER) ||
-            roles.includes(BMS_HEAD) ||
-            roles.includes(BMS_SYS_ADMIN) ||
-            roles.includes(BMS_1C_MANAGER) ||
-            roles.includes(BMS_OFFICE_MANAGER)
-        ) {
+
+        if (roles.includes(BMS_SYS_ADMIN)) {
+            items = [...items!, ...ADMIN_ITEMS];
+        }
+
+        if (roles.includes(BMS_USER)) {
+            //all roles arrays contain users
             items = [...items!, ...USER_DEFAULT_ITEMS];
         }
 

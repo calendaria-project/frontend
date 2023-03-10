@@ -5,27 +5,21 @@ import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import getFullName from "utils/getFullName";
 import { IUsersWithPhotoInfoModel } from "interfaces/extended";
-import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
-import {
-    IAccessAppDataByCurrentUserViewModel,
-    IAccessApplicationItemModel,
-    IAccessApplicationViewModel,
-    ISimpleDictionaryViewModel
-} from "interfaces";
-import { accessRequestStatuses, dictionaryCodesEnum, appItemTypeValues } from "data/enums";
+import { IAccessAppDataByCurrentUserViewModel, ISimpleDictionaryViewModel } from "interfaces";
+import { accessRequestStatuses, dictionaryCodesEnum } from "data/enums";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { AuthContext } from "context/AuthContextProvider";
-import getObjectWithHandledDates from "utils/getObjectWithHandeledDates";
 import { actionMethodResultSync } from "functions/actionMethodResult";
 import { getRequestHeader } from "functions/common";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
 import AccessRequest from "./AccessRequest";
 import Spinner from "ui/Spinner";
 
-import EmptyAccessRequest from "components/Shared/SharedRequestUsers/userDrawer/EmptyAccessRequest";
-import SharedDrawerContent from "components/Shared/SharedRequestUsers/userDrawer/SharedDrawerContent";
-const AddRequestModal = React.lazy(
-    () => import("components/Shared/modalRenderer/ReadyModals/AccessReqModal")
+import EmptyAccessRequest from "components/Shared/Users/userDrawer/EmptyAccessRequest";
+import SharedDrawerContent from "components/Shared/Users/userDrawer/SharedDrawerContent";
+import getParsedRequestData from "utils/getParsedRequestData";
+const UnitedAccessReqModal = React.lazy(
+    () => import("components/Shared/Requests/modals/UnitedAccessReqModal")
 );
 
 interface IExternalUserDrawer {
@@ -56,7 +50,9 @@ const UserDrawer: FC<IExternalUserDrawer> = ({
     const [form] = Form.useForm();
     const [modalVisible, setModalVisible] = useState(false);
     const [modalValues, setModalValues] = useState<ISimpleDictionaryViewModel[]>([]);
-    const handleOpenModal = useCallback(() => setModalVisible(true), []);
+    const handleOpenModal = useCallback(() => {
+        setModalVisible(true);
+    }, []);
 
     const [requestsLoading, setRequestsLoading] = useState(false);
     const [currentAccessAppRequests, setCurrentAccessAppRequests] =
@@ -95,35 +91,7 @@ const UserDrawer: FC<IExternalUserDrawer> = ({
 
     const onFinishModal = useCallback(
         (data: any) => {
-            const filteredData = removeEmptyValuesFromAnyLevelObject(data);
-            const filteredDataWithDate = getObjectWithHandledDates(filteredData);
-
-            const reqItems: IAccessApplicationItemModel[] = [];
-            modalValues.forEach((v) => {
-                const needAccess = !!data[v.code];
-                if (v.code === appItemTypeValues.MOBILE) {
-                    reqItems.push({
-                        appItemType: v,
-                        needAccess,
-                        ...(needAccess ? { tariff: data[`item.${v.code}`] } : {})
-                    });
-                } else {
-                    reqItems.push({
-                        appItemType: v,
-                        needAccess,
-                        ...(needAccess ? { accessType: data[`item.${v.code}`] } : {})
-                    });
-                }
-            });
-
-            const finalReqData: IAccessApplicationViewModel = {
-                appType: filteredDataWithDate.appType,
-                comment: filteredDataWithDate.comment || null,
-                applicationUserId: userId,
-                items: reqItems
-            };
-
-            console.log(finalReqData);
+            const finalReqData = getParsedRequestData(data, modalValues, userId);
 
             actionMethodResultSync(
                 "HELPDESK",
@@ -150,7 +118,7 @@ const UserDrawer: FC<IExternalUserDrawer> = ({
                     message.error("Ошибка создания!");
                 });
         },
-        [modalValues, userData, currentAccessAppRequests]
+        [modalValues, userId, currentAccessAppRequests]
     );
 
     return (
@@ -188,12 +156,10 @@ const UserDrawer: FC<IExternalUserDrawer> = ({
                 )}
             </Row>
             <Suspense>
-                <AddRequestModal
+                <UnitedAccessReqModal
                     form={form}
-                    title={"Добавить заявку"}
                     isVisible={modalVisible}
                     setIsVisible={setModalVisible}
-                    okText={"Добавить"}
                     onFinish={onFinishModal}
                     userName={getFullName(
                         userData.firstname,

@@ -6,7 +6,7 @@ import { ITheme } from "styles/theme/interface";
 import { IAccessAppDataByCurrentUserViewModel } from "interfaces";
 import { accessRequestTranscripts } from "data/transcripts";
 
-import SharedCollapse from "components/Shared/SharedRequestUsers/userDrawer/AccessRequest/SharedCollapse";
+import SharedCollapse from "components/Shared/Users/userDrawer/AccessRequest/SharedCollapse";
 
 const { Text } = Typography;
 
@@ -20,7 +20,7 @@ const AccessRequest: FC<{
     return (
         <Row className={classes.accessRequestsContainer}>
             <Row>
-                <Text className={classes.title}>Учетные записи</Text>
+                <Text className={classes.title}>Заявки</Text>
             </Row>
             <Row className={classes.headerRow}>
                 <Text strong>Приложение</Text>
