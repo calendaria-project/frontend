@@ -1,0 +1,83 @@
+{
+    "presets": [
+        [
+            "@babel/preset-env",
+            {
+                "modules": false,
+                "targets": {
+                    "browsers": [
+                        "last 2 Chrome versions",
+                        "last 2 Firefox versions",
+                        "last 2 Safari versions",
+                        "last 2 iOS versions",
+                        "last 1 Android version",
+                        "last 1 ChromeAndroid version",
+                        "ie 11"
+                    ]
+                }
+            }
+        ],
+        "@babel/preset-react"
+    ],
+    "plugins": [
+        "@babel/plugin-proposal-class-properties",
+        [
+            "@babel/plugin-transform-runtime",
+            {
+                "regenerator": true
+            }
+        ],
+        "macros"
+    ],
+    "env": {
+        "test": {
+            "presets": [
+                [
+                    "@babel/preset-env",
+                    {
+                        "modules": "commonjs",
+                        "debug": false
+                    }
+                ],
+                "@babel/preset-flow",
+                "@babel/preset-react"
+            ],
+            "plugins": [
+                "@babel/plugin-syntax-dynamic-import",
+                "@babel/plugin-proposal-class-properties"
+            ]
+        },
+        "production": {
+            "presets": [
+                [
+                    "@babel/preset-env",
+                    {
+                        "modules": false
+                    }
+                ],
+                "@babel/preset-flow",
+                "@babel/preset-react"
+            ],
+            "plugins": [
+                "@babel/plugin-syntax-dynamic-import",
+                "@babel/plugin-proposal-class-properties"
+            ]
+        },
+        "development": {
+            "presets": [
+                [
+                    "@babel/preset-env",
+                    {
+                        "modules": false
+                    }
+                ],
+                "@babel/preset-flow",
+                "@babel/preset-react"
+            ],
+            "plugins": [
+                "@babel/plugin-syntax-dynamic-import",
+                "@babel/plugin-proposal-class-properties"
+            ]
+        }
+    }
+}
