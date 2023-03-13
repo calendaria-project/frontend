@@ -50,21 +50,22 @@ const ReqCard: FC<IReqCard> = ({
 
     const handleSolveReq = useCallback(async () => {
         const applicationId = currentReqData.applicationId;
-        await doAccessApplicationTaskById(applicationId).catch((e) => console.log(e));
+        await doAccessApplicationTaskById(applicationId).then(() => {
+            const dataForUpdate = getReqDataForUpdate(
+                reqData,
+                currentReqData,
+                applicationId,
+                accessRequestStatuses.DONE,
+                accessRequestStatuses.ON_PROCESS,
+                true
+            );
 
-        const dataForUpdate = getReqDataForUpdate(
-            reqData,
-            currentReqData,
-            applicationId,
-            accessRequestStatuses.DONE,
-            accessRequestStatuses.ON_PROCESS,
-            true
-        );
+            updateReqData(dataForUpdate);
+            initAppHistory();
+            setReqSolved(true);
+            setSolveModalVisible(false);
+        }).catch((e) => console.log(e));
 
-        updateReqData(dataForUpdate);
-        initAppHistory();
-        setReqSolved(true);
-        setSolveModalVisible(false);
     }, [reqData, currentReqData, updateReqData, initAppHistory]);
 
     return (

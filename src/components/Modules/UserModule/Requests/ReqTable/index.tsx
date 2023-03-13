@@ -61,19 +61,19 @@ const ReqTable: FC<{
     const onCancelRequest = useCallback(async () => {
         const cancelId = currentReq.applicationId;
         if (cancelId) {
-            await cancelAccessApplicationById(cancelId).catch(() =>
+            await cancelAccessApplicationById(cancelId).then(() => {
+                const dataForUpdate = getReqDataForUpdate(
+                    reqData,
+                    currentReq,
+                    cancelId,
+                    accessRequestStatuses.CANCELED
+                );
+
+                updateReqData(dataForUpdate);
+                message.success("Заявка отменена!");
+            }).catch(() =>
                 message.error("Ошибка отмены заявки!")
             );
-
-            const dataForUpdate = getReqDataForUpdate(
-                reqData,
-                currentReq,
-                cancelId,
-                accessRequestStatuses.CANCELED
-            );
-
-            updateReqData(dataForUpdate);
-            message.success("Заявка отменена!");
         }
     }, [currentReq, reqData, updateReqData]);
 
