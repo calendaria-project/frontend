@@ -105,10 +105,10 @@ const AuthContextProvider = (props: AuthContextProviderProps) => {
                     setRoles(keycloak.realmAccess?.roles || []);
                     setToken(keycloak.token);
                     console.log(keycloak);
-                    keycloak.loadUserInfo().then((user: any) => {
-                        console.log(user);
-                        setUserInfo(user);
-                    });
+                    // keycloak.loadUserInfo().then((user: any) => {
+                    //     console.log(user);
+                    //     setUserInfo(user);
+                    // });
                 }
                 setAuthenticated(isAuthenticatedResponse);
             } catch {
