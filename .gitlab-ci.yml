@@ -16,7 +16,6 @@ docker-build:
       - if: '$CI_COMMIT_BRANCH == "dev"'
         variables:
           DOCKER_BUILD_ARGS: --build-arg NPM_BUILD_SCRIPT=build:development
-          DOCKER_RUN_ENV: dockerenvtest=test1
     after_script:
-      - echo DEV http://${CI_PROJECT_NAME}-${ENVIRONMENT_CODE} ${DOCKER_RUN_DEF_ENV}
+      - echo DEV http://${CI_PROJECT_NAME}-${ENVIRONMENT_CODE}
       - docker exec -i webserver ahp ${DOMAIN} ${CI_PROJECT_NAME}-${ENVIRONMENT_CODE} "/" http://${CI_PROJECT_NAME}-${ENVIRONMENT_CODE}/
