@@ -17,5 +17,5 @@ docker-build:
           DOCKER_BUILD_ARGS: ${DOCKER_BUILD_ARGS?} --build-arg NPM_BUILD_SCRIPT=build:development
     extends: .docker-service-build
     after_script:
-      - echo DEV http://${CI_PROJECT_NAME}-${ENVIRONMENT_CODE}
+      - echo DEV http://${CI_PROJECT_NAME}-${ENVIRONMENT_CODE} ${DOCKER_BUILD_ARGS?}
       - docker exec -i webserver ahp ${DOMAIN} ${CI_PROJECT_NAME}-${ENVIRONMENT_CODE} "/" http://${CI_PROJECT_NAME}-${ENVIRONMENT_CODE}/
