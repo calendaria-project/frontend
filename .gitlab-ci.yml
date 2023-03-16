@@ -10,10 +10,10 @@ include:
 docker-build:
     extends: .docker-service-build
     rules:
-      - if: '$CI_COMMIT_BRANCH == "main"'
+      - if: '$ENVIRONMENT_CODE  == "stage"'
         variables:
           DOCKER_BUILD_ARGS: --build-arg NPM_BUILD_SCRIPT=build:production
-      - if: '$CI_COMMIT_BRANCH == "dev"'
+      - if: '$ENVIRONMENT_CODE  == "dev"'
         variables:
           DOCKER_BUILD_ARGS: --build-arg NPM_BUILD_SCRIPT=build:development
     after_script:
