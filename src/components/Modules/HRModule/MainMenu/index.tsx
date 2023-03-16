@@ -99,6 +99,9 @@ const MainMenu: FC = () => {
             actionMethodResultSync("FILE", `file/download/${photoId}/base64`, "get").then((res) => {
                 setCurrentUserPhotoLoading(false);
                 setCurrentUserPhoto(res);
+            }).catch(() => {
+                setCurrentUserPhotoLoading(false);
+                setCurrentUserPhoto(null);
             });
         } else {
             setCurrentUserPhotoLoading(false);

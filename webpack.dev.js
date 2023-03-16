@@ -20,7 +20,8 @@ module.exports = merge(common, {
         historyApiFallback: true,
         static: './public',
         //hotmodulereplacementeplugin
-        hot: true
+        hot: true,
+        https: true
     },
     output: {
         path: path.resolve(__dirname, 'build'),
