@@ -10,7 +10,7 @@ include:
 docker-build:
     extends: .docker-service-build
     rules:
-      - if: '$ENVIRONMENT_CODE  == "dev"'
+      - if: '$ENVIRONMENT_CODE  == "stage"'
         variables:
           DOCKER_BUILD_ARGS: --build-arg NPM_BUILD_SCRIPT=build:production
       - if: '$ENVIRONMENT_CODE  == "dev"'
