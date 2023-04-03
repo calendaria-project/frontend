@@ -2,7 +2,7 @@ import React, { FC, memo } from "react";
 import { Checkbox, Collapse, Row, Typography } from "antd";
 import { accessRequestTranscripts, appTypesEnumTranscripts } from "data/transcripts";
 import { getFormattedDateFromNow } from "utils/getFormattedDates";
-import { getReqBallStyle } from "utils/getReqBallStyle";
+import { getReqBallStyle } from "utils/getBallStyle";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";

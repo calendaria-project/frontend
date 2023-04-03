@@ -13,6 +13,7 @@ export const mainMenuEnumTranscripts: { [key: string]: string } = {
     [mainMenuEnum.users]: "Сотрудники",
     [mainMenuEnum.userItem]: "Сотрудники",
     [mainMenuEnum.auditMenu]: "Меню аудита",
+    [mainMenuEnum.roleModel]: "Ролевая модель",
     [mainMenuEnum.organizationStructure]: "Орг структура",
     [mainMenuEnum.externalUsers]: "Внешние пользователи",
     [mainMenuEnum.internal]: "Внутренние сервисы",

@@ -4,10 +4,10 @@ import { ColumnDefinition } from "tabulator-tables";
 
 import { AuthContext } from "context/AuthContextProvider";
 import { companiesColumns } from "data/columns";
-import { actionMethodResultSync } from "functions/actionMethodResult";
-import { getRequestHeader } from "functions/common";
+import { actionMethodResultSync } from "http/actionMethodResult";
+import { getRequestHeader } from "http/common";
 import { ICompanyCreateViewModel, ICompanyViewModel, ICompanyTreeNodeModel } from "interfaces";
-import { createTableViaTabulator } from "services/tabulator";
+import { createTableViaTabulator } from "libs/tabulator";
 import { DataNode } from "antd/es/tree";
 import { ITable } from "../TableRenderer/ITable";
 import SearchingRow from "../TableRenderer/SearchingRow";

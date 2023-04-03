@@ -9,8 +9,8 @@ import { IAccessAppDataByCurrentUserViewModel, ISimpleDictionaryViewModel } from
 import { accessRequestStatuses, dictionaryCodesEnum } from "data/enums";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { AuthContext } from "context/AuthContextProvider";
-import { actionMethodResultSync } from "functions/actionMethodResult";
-import { getRequestHeader } from "functions/common";
+import { actionMethodResultSync } from "http/actionMethodResult";
+import { getRequestHeader } from "http/common";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
 import Tabs from "./Tabs";
 import Spinner from "ui/Spinner";

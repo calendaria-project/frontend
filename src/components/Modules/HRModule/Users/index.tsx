@@ -6,14 +6,14 @@ import Button from "ui/Button";
 import { FC, useContext, useEffect, useState } from "react";
 import { AuthContext } from "context/AuthContextProvider";
 import { usersColumns } from "data/columns";
-import { actionMethodResultSync } from "functions/actionMethodResult";
-import { getRequestHeader } from "functions/common";
+import { actionMethodResultSync } from "http/actionMethodResult";
+import { getRequestHeader } from "http/common";
 import { useNavigate } from "react-router";
 import {
     createTableViaTabulator,
     customGroupHeader,
     fullNameTableActionsFormatter
-} from "services/tabulator";
+} from "libs/tabulator";
 import { ColumnDefinition } from "tabulator-tables";
 
 import useDelayedInputSearch from "hooks/useDelayedInputSearch";

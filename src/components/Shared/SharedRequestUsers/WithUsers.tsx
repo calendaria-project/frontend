@@ -8,15 +8,15 @@ import { SetCurrentOpenedMenu } from "store/actions";
 import { mainMenuEnum } from "data/enums";
 import { Row, Col, Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import { actionMethodResultSync } from "functions/actionMethodResult";
-import { getRequestHeader } from "functions/common";
+import { actionMethodResultSync } from "http/actionMethodResult";
+import { getRequestHeader } from "http/common";
 import { AuthContext } from "context/AuthContextProvider";
 import useDelayedInputSearch from "hooks/useDelayedInputSearch";
 import {
     createTableViaTabulator,
     fullNameTableActionsFormatter,
     customGroupHeader
-} from "services/tabulator";
+} from "libs/tabulator";
 import { userUsersColumns } from "data/columns";
 import { ColumnDefinition } from "tabulator-tables";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";

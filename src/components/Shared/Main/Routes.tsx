@@ -23,8 +23,10 @@ import HeadRequests from "components/Modules/HeadModule/Requests";
 import ManagerRequests from "components/Modules/ManagerModule/Requests";
 import ManagerUsers from "components/Modules/ManagerModule/Users";
 
+import AdminMainMenu from "components/Modules/AdminModule/MainMenu";
 import AdminUsers from "components/Modules/AdminModule/Users";
 import AdminAudit from "components/Modules/AdminModule/Audit";
+import AdminRoleModel from "components/Modules/AdminModule/RoleModel";
 
 import { defineIsManagerRole } from "utils/defineRole";
 
@@ -60,9 +62,10 @@ const RoutesComponent = () => {
 
     const GET_ADMIN_ROUTES = () => (
         <>
-            <Route key="mainMenu-route" path="/" element={<>admin main menu</>} />
+            <Route key="mainMenu-route" path="/" element={<AdminMainMenu />} />
             <Route key="users-route" path="/users" element={<AdminUsers />} />
             <Route key="audit-route" path="/auditMenu" element={<AdminAudit />} />
+            <Route key="roleModel-route" path="roleModel" element={<AdminRoleModel />} />
         </>
     );
 

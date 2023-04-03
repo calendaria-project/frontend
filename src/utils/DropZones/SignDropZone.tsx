@@ -1,8 +1,8 @@
 import { FC, memo, useEffect } from "react";
 import { Button, FormInstance, Form, Input } from "antd";
 import Dropzone from "react-dropzone";
-import { actionMethodResultSync } from "functions/actionMethodResult";
-import { postFormDataHeader } from "functions/common";
+import { actionMethodResultSync } from "http/actionMethodResult";
+import { postFormDataHeader } from "http/common";
 import { useContext, useState } from "react";
 import { AuthContext } from "context/AuthContextProvider";
 import { acceptedFiles } from "./acceptedFiles";

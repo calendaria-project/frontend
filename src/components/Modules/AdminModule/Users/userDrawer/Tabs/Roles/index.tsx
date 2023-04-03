@@ -8,6 +8,7 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import tempData, { ITempRoleData, riskLevelsTranscripts } from "./tempData";
 import { checkIsContainRole, getFilteredRoles } from "./helpers";
+import {getRiskLevelBallStyle} from "utils/getBallStyle";
 
 const { Text } = Typography;
 
@@ -24,6 +25,15 @@ const Roles = () => {
         } else {
             setSelectedRoles([...selectedRoles, clickedRole]);
         }
+    };
+
+    const getRiskLevelWithBall = (riskLevel: string) => {
+        return (
+            <div className={classes.statusContainer}>
+                <div className={classes.statusBall} style={getRiskLevelBallStyle(theme, riskLevel)} />
+                <Text strong>{riskLevelsTranscripts[riskLevel] ?? ""}</Text>
+            </div>
+        );
     };
 
     return (
@@ -66,7 +76,7 @@ const Roles = () => {
                     <Text strong className={classes.tempItemName}>
                         {roleItem.roleName}
                     </Text>
-                    <Text>{riskLevelsTranscripts[roleItem.riskLevel]}</Text>
+                    {getRiskLevelWithBall(roleItem.riskLevel)}
                     <Text>{roleItem.temp}</Text>
                 </Row>
             ))}

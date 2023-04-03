@@ -30,9 +30,9 @@ import {
 import { EditOutlined, DownloadOutlined } from "@ant-design/icons";
 
 import { getModalEditingNameByKey } from "utils/getModalEditingNameByKey";
-import { actionMethodResultSync } from "functions/actionMethodResult";
-import getUserRequestUrl from "functions/getUserRequestUrl";
-import { getFileRequestHeader, getRequestHeader } from "functions/common";
+import { actionMethodResultSync } from "http/actionMethodResult";
+import getUserRequestUrl from "utils/getUserRequestUrl";
+import { getFileRequestHeader, getRequestHeader } from "http/common";
 import { SetCurrentUserDataItemInfo } from "store/actions";
 import { removeEmptyObjectProperties } from "utils/removeObjectProperties";
 import { AuthContext } from "context/AuthContextProvider";

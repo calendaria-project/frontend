@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "context/AuthContextProvider";
 import { IDivisionViewModel, IPositionViewModel, ISimpleDictionaryViewModel } from "interfaces";
-import { actionMethodResultSync } from "functions/actionMethodResult";
-import { getRequestHeader } from "functions/common";
+import { actionMethodResultSync } from "http/actionMethodResult";
+import { getRequestHeader } from "http/common";
 
 export const useInitialData = (companyId?: number, divisionId?: number) => {
     const authContext = useContext(AuthContext);

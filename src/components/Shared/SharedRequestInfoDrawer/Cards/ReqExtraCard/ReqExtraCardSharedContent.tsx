@@ -13,7 +13,7 @@ import {
 } from "interfaces";
 import { useTheme } from "react-jss";
 import useStyles from "./styles";
-import { actionMethodResultSync } from "functions/actionMethodResult";
+import { actionMethodResultSync } from "http/actionMethodResult";
 
 const { Text } = Typography;
 

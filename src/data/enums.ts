@@ -62,7 +62,9 @@ export enum dictionaryCodesEnum {
     APP_ITEM_TYPE = "APP_ITEM_TYPE",
     MOBILE_TARIFF = "MOBILE_TARIFF",
     ACCESS_REMOVE_TYPE = "ACCESS_REMOVE_TYPE",
-    ACCESS_REMOVE_REASON = "ACCESS_REMOVE_REASON"
+    ACCESS_REMOVE_REASON = "ACCESS_REMOVE_REASON",
+
+    RISK_LEVEL = "RISK_LEVEL"
 }
 
 export enum mainMenuEnum {
@@ -72,6 +74,7 @@ export enum mainMenuEnum {
     users = "users",
     userItem = "userItem",
     auditMenu = "auditMenu",
+    roleModel = "roleModel",
     organizationStructure = "organizationStructure",
     externalUsers = "externalUsers",
     internal = "internal",

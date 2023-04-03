@@ -1,5 +1,5 @@
-import { actionMethodResultSync } from "functions/actionMethodResult";
-import { getRequestHeader } from "functions/common";
+import { actionMethodResultSync } from "http/actionMethodResult";
+import { getRequestHeader } from "http/common";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "context/AuthContextProvider";
 import { IAccessApplicationViewModel, ICompanyViewModel, IPositionViewModel } from "interfaces";

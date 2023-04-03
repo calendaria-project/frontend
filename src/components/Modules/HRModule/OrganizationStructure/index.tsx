@@ -7,8 +7,8 @@ import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";
 import { AuthContext } from "context/AuthContextProvider";
-import { actionMethodResultSync } from "functions/actionMethodResult";
-import { getRequestHeader } from "functions/common";
+import { actionMethodResultSync } from "http/actionMethodResult";
+import { getRequestHeader } from "http/common";
 import {
     BranchesOutlined,
     ClusterOutlined,

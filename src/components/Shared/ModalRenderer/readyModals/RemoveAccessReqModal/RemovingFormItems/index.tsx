@@ -3,7 +3,7 @@ import { Form, FormInstance } from "antd";
 import { accessRemoveTypeEnum, dictionaryCodesEnum, layoutConstantTypes } from "data/enums";
 import { ISimpleDictionaryViewModel } from "interfaces";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
-import RendererDatePicker from "components/Shared/modalRenderer/DatePicker";
+import RendererDatePicker from "components/Shared/ModalRenderer/DatePicker";
 import SelectComponent from "./SelectComponent";
 import DocumentDropZone from "./DocumentDropZone";
 

@@ -5,14 +5,14 @@ import { ColumnDefinition } from "tabulator-tables";
 
 import { AuthContext } from "context/AuthContextProvider";
 import { divisionsColumns } from "data/columns";
-import { actionMethodResultSync } from "functions/actionMethodResult";
-import { getRequestHeader } from "functions/common";
+import { actionMethodResultSync } from "http/actionMethodResult";
+import { getRequestHeader } from "http/common";
 import {
     IDivisionCreateViewModel,
     IDivisionTreeNodeViewModel,
     IDivisionViewModel
 } from "interfaces";
-import { createTableViaTabulator } from "services/tabulator";
+import { createTableViaTabulator } from "libs/tabulator";
 import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
 import { ITable } from "../TableRenderer/ITable";
 import SearchingRow from "../TableRenderer/SearchingRow";

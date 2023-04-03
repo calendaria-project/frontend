@@ -19,7 +19,8 @@ import {
     ExportOutlined,
     ToolOutlined,
     QuestionCircleOutlined,
-    AuditOutlined
+    AuditOutlined,
+    UsergroupAddOutlined
 } from "@ant-design/icons";
 import { AuthContext } from "context/AuthContextProvider";
 import { BMS_HR, BMS_SYS_ADMIN, BMS_USER } from "context/roles";
@@ -63,7 +64,13 @@ const MenuComponent: FC = () => {
     const ADMIN_ITEMS = [
         {
             key: mainMenuEnum.auditMenu,
-            icon: <AuditOutlined className={classes.icon} />
+            icon: <AuditOutlined className={classes.icon} />,
+            label: "Меню аудита"
+        },
+        {
+            key: mainMenuEnum.roleModel,
+            icon: <UsergroupAddOutlined className={classes.icon} />,
+            label: "Ролевая модель"
         }
     ];
 

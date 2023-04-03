@@ -10,8 +10,8 @@ import useStyles from "./styles";
 import { IUsersViewModel, IAllStatisticsViewModel } from "interfaces";
 import { IBirthStatItemWithPhotoModel } from "interfaces/extended";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
-import { actionMethodResultSync } from "functions/actionMethodResult";
-import { getRequestHeader } from "functions/common";
+import { actionMethodResultSync } from "http/actionMethodResult";
+import { getRequestHeader } from "http/common";
 import { Col, Row } from "antd";
 import cx from "classnames";
 import SmallInfoCard from "./Cards/SmallInfoCard";
@@ -20,7 +20,7 @@ import { UP, DOWN } from "./defaultValues";
 import PieChartCard from "./Cards/PieChartCard";
 import BirthdayInfoCard from "./Cards/BirthdayInfoCard";
 import CurrentUserCard from "./Cards/CurrentUserCard";
-import { createTableViaTabulator, fullNameTableActionsFormatter } from "services/tabulator";
+import { createTableViaTabulator, fullNameTableActionsFormatter } from "libs/tabulator";
 import { externalUsersColumns } from "data/columns";
 import { ColumnDefinition } from "tabulator-tables";
 import StaffingCard from "./Cards/StaffingCard";
@@ -96,13 +96,15 @@ const MainMenu: FC = () => {
 
         const photoId = currentUserData?.profilePhotoId;
         if (photoId) {
-            actionMethodResultSync("FILE", `file/download/${photoId}/base64`, "get").then((res) => {
-                setCurrentUserPhotoLoading(false);
-                setCurrentUserPhoto(res);
-            }).catch(() => {
-                setCurrentUserPhotoLoading(false);
-                setCurrentUserPhoto(null);
-            });
+            actionMethodResultSync("FILE", `file/download/${photoId}/base64`, "get")
+                .then((res) => {
+                    setCurrentUserPhotoLoading(false);
+                    setCurrentUserPhoto(res);
+                })
+                .catch(() => {
+                    setCurrentUserPhotoLoading(false);
+                    setCurrentUserPhoto(null);
+                });
         } else {
             setCurrentUserPhotoLoading(false);
             setCurrentUserPhoto(null);

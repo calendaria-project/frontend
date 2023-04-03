@@ -17,8 +17,8 @@ import {
 import getFullName from "utils/getFullName";
 import Button from "ui/Button";
 import { AuthContext } from "context/AuthContextProvider";
-import { actionMethodResultSync } from "functions/actionMethodResult";
-import { getRequestHeader } from "functions/common";
+import { actionMethodResultSync } from "http/actionMethodResult";
+import { getRequestHeader } from "http/common";
 import { removeEmptyValuesFromAnyLevelObject } from "utils/removeObjectProperties";
 import { parsePointObjectKey } from "utils/parsePointObjectKey";
 import _ from "lodash";

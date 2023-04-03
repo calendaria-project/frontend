@@ -34,14 +34,14 @@ import { getModalEditingNameByKey } from "utils/getModalEditingNameByKey";
 
 import RowData, { ListedRowData } from "./RowData";
 import { AuthContext } from "context/AuthContextProvider";
-import { actionMethodResultSync } from "functions/actionMethodResult";
-import { getRequestHeader } from "functions/common";
+import { actionMethodResultSync } from "http/actionMethodResult";
+import { getRequestHeader } from "http/common";
 import { getCurrentUserDataItemInfo, getSelectedKey } from "store/reducers/userReducer";
 import { removeEmptyObjectProperties } from "utils/removeObjectProperties";
 
 import { SetCurrentUserDataItemInfo, SetUserSelectedKey } from "store/actions";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
-import getUserRequestUrl from "functions/getUserRequestUrl";
+import getUserRequestUrl from "utils/getUserRequestUrl";
 import { useTheme } from "react-jss";
 import { ITheme } from "styles/theme/interface";
 import useStyles from "./styles";

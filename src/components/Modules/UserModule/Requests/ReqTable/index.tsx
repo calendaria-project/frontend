@@ -15,7 +15,7 @@ import { CloseOutlined } from "@ant-design/icons";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
 import EmptyTableContent from "components/Shared/TableRenderer/EmptyTableContent";
-import { getReqBallStyle } from "utils/getReqBallStyle";
+import { getReqBallStyle } from "utils/getBallStyle";
 import getReqDataForUpdate from "utils/getReqDataForUpdate";
 import Button from "ui/Button";
 

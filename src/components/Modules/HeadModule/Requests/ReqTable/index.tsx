@@ -15,7 +15,7 @@ import Button from "ui/Button";
 import { isObjectNotEmpty } from "utils/isObjectNotEmpty";
 import EmptyTableContent from "components/Shared/TableRenderer/EmptyTableContent";
 import { getFormattedDateFromNow } from "utils/getFormattedDates";
-import { getReqBallStyle } from "utils/getReqBallStyle";
+import { getReqBallStyle } from "utils/getBallStyle";
 
 const { Text } = Typography;
 const AgreementDrawer = React.lazy(() => import("./TableAgreementDrawer"));

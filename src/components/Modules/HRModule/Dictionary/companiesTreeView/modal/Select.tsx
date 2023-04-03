@@ -1,7 +1,7 @@
 import { FC, useContext, useEffect, useState } from "react";
 import { FormInstance, Select as AntdSelect } from "antd";
-import { actionMethodResultSync } from "functions/actionMethodResult";
-import { getRequestHeader } from "functions/common";
+import { actionMethodResultSync } from "http/actionMethodResult";
+import { getRequestHeader } from "http/common";
 import { AuthContext } from "context/AuthContextProvider";
 
 const { Option } = AntdSelect;

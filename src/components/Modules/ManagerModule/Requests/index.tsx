@@ -47,7 +47,7 @@ import filterRequests from "utils/filterAccessRequests";
 import getFullName from "utils/getFullName";
 import { getFormattedDateFromNow } from "utils/getFormattedDates";
 import { IUsersWithInfoModel } from "interfaces/extended";
-import { getRequestHeader } from "functions/common";
+import { getRequestHeader } from "http/common";
 import { AuthContext } from "context/AuthContextProvider";
 import axios from "axios";
 import getParsedRequestData from "utils/getParsedRequestData";

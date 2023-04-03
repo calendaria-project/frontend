@@ -2,8 +2,8 @@ import React, { FC, useCallback, useContext, useEffect, useState, Suspense } fro
 import { Button, Form, Input, Table } from "antd";
 
 import { AuthContext } from "context/AuthContextProvider";
-import { actionMethodResultSync } from "functions/actionMethodResult";
-import { getRequestHeader } from "functions/common";
+import { actionMethodResultSync } from "http/actionMethodResult";
+import { getRequestHeader } from "http/common";
 import { ICompanyTypeViewModel } from "interfaces";
 import { ITable } from "../../TableRenderer/ITable";
 import SearchingRow from "../../TableRenderer/SearchingRow";

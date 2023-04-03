@@ -25,7 +25,19 @@ export default createUseStyles({
         marginTop: (theme: ITheme) => theme.layout.mediumMargin
     },
     tempItemName: {
-        width: "90px",
+        width: "140px",
         color: (theme: ITheme) => theme.color.regular
+    },
+    statusContainer: {
+        width: "140px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "start"
+    },
+    statusBall: {
+        width: "16px",
+        height: "16px",
+        borderRadius: "50%",
+        marginRight: "8px"
     }
 });

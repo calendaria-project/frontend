@@ -7,7 +7,7 @@ import useStyles from "./styles";
 import { useTheme } from "react-jss";
 import { IAccessAppDataByCurrentUserInKeyViewModel, IUsersViewModel } from "interfaces";
 import { accessItemRequestStatuses } from "data/enums";
-import { getReqBallStyle } from "utils/getReqBallStyle";
+import { getReqBallStyle } from "utils/getBallStyle";
 import { accessItemRequestTranscripts, appTypesEnumTranscripts } from "data/transcripts";
 import { ITheme } from "styles/theme/interface";
 import useSimpleHttpFunctions from "hooks/useSimpleHttpFunctions";
