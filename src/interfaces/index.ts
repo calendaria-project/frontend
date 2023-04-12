@@ -301,7 +301,7 @@ export interface IOrgStructureTreeItemViewModel {
     nameRu: string;
     nameKz: string;
     nameEn: string;
-    nodeType: nodeTypeEnum.DIVISION | nodeTypeEnum.DIVISION_UNIT | nodeTypeEnum.COMPANY;
+    nodeType: nodeTypeEnum;
     parentId?: number;
     isCompanyHead: boolean;
     isDivisionHead: boolean;
@@ -370,7 +370,7 @@ export interface IAccessApplicationItemViewModel extends IAccessApplicationItemM
 }
 
 export interface IAccessApplicationViewModel {
-    appType: appTypesEnum.GET_ACCESS | appTypesEnum.REMOVE_ACCESS;
+    appType: appTypesEnum;
     comment: string;
     applicationUserId: string;
     items: IAccessApplicationItemModel[];
@@ -396,7 +396,7 @@ export interface IAccessApplicationUserViewModel {
 export interface IAccessAppDataByCurrentUserInKeyViewModel {
     accessRemoveReason: ISimpleDictionaryViewModel;
     accessRemoveType: ISimpleDictionaryViewModel;
-    appType: appTypesEnum.GET_ACCESS | appTypesEnum.REMOVE_ACCESS;
+    appType: appTypesEnum;
     applicationId: number;
     companyId: number;
     divisionId: number;

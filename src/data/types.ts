@@ -1,7 +1,8 @@
 import { CONTRACT, SUB_CONTRACT } from "./constants";
+import {layoutConstantTypes} from "./enums";
 
 export type TLayoutModalData = {
-    type: string; //тип поля в модальном окне
+    type: layoutConstantTypes; //тип поля в модальном окне
     placeholder: string; //плейсхолдер
     propertyName: string; //название поля из swagger для формирования запроса
     dictionaryCode?: string; //код справочника для type select для формирования запроса
